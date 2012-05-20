@@ -116,3 +116,28 @@ void RenderHelper::RenderArrowT( float x, float y, float length, float arrowsize
 	RenderLine(x, y-length, x+arrowsize, y-length+arrowsize, col);
 	RenderLine(x, y-length, x-arrowsize, y-length+arrowsize, col);
 }
+
+void RenderHelper::TargetQuadRender( HTARGET tar, float x, float y, DWORD col/*=0*/ )
+{
+	if (!tar)
+	{
+		return;
+	}
+	HTEXTURE tex = hge->Target_GetTexture(tar);
+	if (!tex.tex)
+	{
+		return;
+	}
+	int tw = hge->Texture_GetWidth(tex);
+	int th = hge->Texture_GetHeight(tex);
+
+	hgeQuad quad;
+	quad.blend = BLEND_DEFAULT;
+	quad.tex = tex;
+	quad.v[0].x = x; quad.v[0].y = y; quad.v[0].tx = 0; quad.v[0].ty = 0, quad.v[0].z = 0, quad.v[0].col = col;
+	quad.v[1].x = x+tw; quad.v[1].y = y; quad.v[1].tx = 1; quad.v[1].ty = 0, quad.v[1].z = 0, quad.v[1].col = col;
+	quad.v[2].x = x+tw; quad.v[2].y = y+th; quad.v[2].tx = 1; quad.v[2].ty = 1, quad.v[2].z = 0, quad.v[2].col = col;
+	quad.v[3].x = x; quad.v[3].y = y+th; quad.v[3].tx = 0; quad.v[3].ty = 1, quad.v[3].z = 0, quad.v[3].col = col;
+
+	hge->Gfx_RenderQuad(&quad);
+}

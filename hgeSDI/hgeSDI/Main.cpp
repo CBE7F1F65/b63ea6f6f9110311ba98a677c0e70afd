@@ -23,6 +23,9 @@ MainInterface::MainInterface()
 	bgcol = 0xfff0f0f0;
 	wheelscalefactor = 1.25f;
 
+	cursorleftkeyindex = 0;
+	cursorrightkeyindex = 1;
+
 	manageloop = false;
 }
 
@@ -126,11 +129,21 @@ bool MainInterface::Frame()
 	lastmousewheel = mousewheel;
 	mousewheel = hge->Input_GetMouseWheel();
 
+	Command * pcommand = Command::getInstance();
+
 	GUICoordinate * pguic = GUICoordinate::getInstance();
 	if (mousewheel != lastmousewheel)
 	{
-		pguic->DoScale(powf(wheelscalefactor, mousewheel-lastmousewheel));
+		pcommand->CreateCommand(COMM_DOZOOM);
+		pcommand->SetParamXY(CSP_DOZOOM_C_XY_SCALE, mousex, mousey);
+		pcommand->SetParamF(CSP_DOZOOM_C_XY_SCALE, powf(wheelscalefactor, mousewheel-lastmousewheel));
 	}
+
+	if (hge->Input_GetDIKey(DIK_SPACE, DIKEY_DOWN))
+	{
+		pcommand->CreateCommand(COMM_PAN);
+	}
+	/*
 	if (hge->Input_GetDIKey(DIK_SPACE))
 	{
 		if (hge->Input_GetDIKey(DIK_SPACE, DIKEY_DOWN))
@@ -146,12 +159,16 @@ bool MainInterface::Frame()
 	{
 		GUICursor::getInstance()->ChangeCursor();
 	}
+	*/
 
-	GUICoordinate::getInstance()->SetCursorPosition(mousex, mousey);
+	pguic->SetCursorPosition(mousex, mousey);
+
+	pcommand->ProcessCommand();
+
 	DoUpdateFPS();
 	DoUpdateStatusInfo();
 
-	if (hge->Input_GetDIMouseKey(0, DIKEY_UP) && hge->Input_IsMouseOver()
+	if (hge->Input_GetDIMouseKey(cursorrightkeyindex, DIKEY_UP) && hge->Input_IsMouseOver()
 		|| hge->Input_GetDIKey(DIK_APPS, DIKEY_UP)
 		)
 	{
@@ -235,6 +252,13 @@ bool MainInterface::OnInit(void * parent, int w, int h)
 	
 	hge->System_Initiate();
 
+#ifdef __WIN32
+	if (GetSystemMetrics(SM_SWAPBUTTON))
+	{
+		cursorleftkeyindex = 1;
+		cursorrightkeyindex = 0;
+	}
+#endif
 	hge->Input_GetMousePos(&mousex, &mousey);
 
 	//
@@ -286,13 +310,14 @@ void MainInterface::CallUpdateStatusBarText( int id, const char * text )
 
 int MainInterface::OnCommand( DWORD comm )
 {
-	return Command::DispatchCommand(comm);
+	return Command::getInstance()->CreateCommand(comm);
 }
 
 void MainInterface::DoResizeWindow()
 {
 	if (resizewindow_w >= 0 && resizewindow_h >= 0)
 	{
+		// No Command (internal process)
 		MoveWindow(hge->System_GetState(HGE_HWND), 0, 0, resizewindow_w, resizewindow_h, TRUE);
 		GUICoordinate::getInstance()->UpdateScreenMeasure();
 		resizewindow_w = -1;
@@ -302,6 +327,7 @@ void MainInterface::DoResizeWindow()
 
 void MainInterface::DoUpdateFPS()
 {
+	// No Command (internal process)
 	char fpsstr[M_STRMAX];
 	sprintf_s(fpsstr, M_STRMAX, "%.2f", hge->Timer_GetFPS(30));
 	CallUpdateStatusBarText(IDS_STATUS_PANE2, fpsstr);
@@ -309,8 +335,9 @@ void MainInterface::DoUpdateFPS()
 
 void MainInterface::DoUpdateStatusInfo()
 {
+	// No Command (internal process)
 	char statusstr[M_STRMAX];
 	GUICoordinate * pguic = GUICoordinate::getInstance();
-	sprintf_s(statusstr, M_STRMAX, "%.4f, %.4f, %.4f", pguic->cursorxcoord, pguic->cursorycoord, pguic->scale);
+	sprintf_s(statusstr, M_STRMAX, "%.4f, %.4f, %.4f", pguic->cursorx_c, pguic->cursory_c, pguic->scale);
 	CallUpdateStatusBarText(IDS_STATUS_PANE1, statusstr);
 }

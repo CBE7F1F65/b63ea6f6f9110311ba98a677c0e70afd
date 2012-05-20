@@ -19,10 +19,14 @@ public:
 	void SetGrid(int measuretype, float originxpos=0, float originypos=0, float scale=1.0f);
 	void SetGridColors(DWORD gridcol, DWORD subgridcol, DWORD xaxiscol, DWORD yaxiscol, DWORD coordcol);
 
-	void SetCursorPosition(float x, float y);
+	void SetCursorPosition(float x_s, float y_s);
 
-	void DoPan(float xoffset, float yoffset);
-	void DoScale(float scale);
+	int DoPanCommand();
+	void DoPan(float xoffset_s, float yoffset_s);
+
+	int DoZoomCommand();
+	void DoZoom(float cx_s, float cy_s, float scale);
+
 	void ClientToCoordinate(float * x, float * y);
 	void CoordinateToClient(float * x, float * y);
 	void RenderGrid();
@@ -37,19 +41,19 @@ public:
 	void UpdateScreenMeasure();
 
 	int measuretype;
-	float scroriginx;
-	float scroriginy;
+	float originx_s;
+	float originy_s;
 	float scale;
 
-	float scrlmeasure;
-	float scrrmeasure;
-	float scrtmeasure;
-	float scrbmeasure;
-	float scrw;
-	float scrh;
+	float lboundary_c;
+	float rboundary_c;
+	float tboundary_c;
+	float bboundary_c;
+	float scrw_s;
+	float scrh_s;
 
-	float subgridspace;
-	float subgridscrspace;
+	float subgridspace_c;
+	float subgridspace_s;
 	int nsubgrid;
 
 	DWORD gridcol;
@@ -60,16 +64,16 @@ public:
 
 	float cursorx_s;
 	float cursory_s;
-	float cursorxcoord;
-	float cursorycoord;
+	float cursorx_c;
+	float cursory_c;
 
 	struct GridInfo 
 	{
 		float scrvalue;
 		int mgridID;
 	};
-	vector<GridInfo> scrgridxs;
-	vector<GridInfo> scrgridys;
+	vector<GridInfo> gridxs_s;
+	vector<GridInfo> gridys_s;
 
 	HTARGET targrid;
 	HGE * hge;

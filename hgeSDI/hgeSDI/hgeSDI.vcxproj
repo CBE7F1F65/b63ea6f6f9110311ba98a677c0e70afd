@@ -115,6 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Command.h" />
+    <ClInclude Include="CommandParamIndex.h" />
     <ClInclude Include="GUICoordinate.h" />
     <ClInclude Include="GUICursor.h" />
     <ClInclude Include="LineCommand.h" />

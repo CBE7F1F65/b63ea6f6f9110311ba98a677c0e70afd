@@ -301,7 +301,8 @@ bool CMainFrame::SetStatusBarText( int id, LPCTSTR text )
 //		CSize size = GetDC()->GetTextExtent(text);
 		element->SetText(text);
 		m_wndStatusBar.RecalcLayout();
-		element->Redraw();
+//		element->Redraw();
+		m_wndStatusBar.RedrawWindow();
 		return true;
 	}
 	return false;

@@ -20,6 +20,8 @@ public:
 	static void RenderArrowL(float x, float y, float length, float arrowsize, DWORD col=0);
 	static void RenderArrowT(float x, float y, float length, float arrowsize, DWORD col=0);
 
+	static void TargetQuadRender(HTARGET tar, float x, float y, DWORD col=0);
+
 	static HGE * hge;
 };
 

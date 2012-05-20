@@ -55,6 +55,9 @@ public:
 
 	float wheelscalefactor;
 
+	int cursorleftkeyindex;
+	int cursorrightkeyindex;
+
 	DWORD bgcol;
 
 	bool manageloop;

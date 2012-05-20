@@ -6,6 +6,10 @@
 
 #include "RenderHelper.h"
 
+#include "GUICursor.h"
+
+#include "Command.h"
+
 #define _GUICG_MGID_SUB		0
 #define _GUICG_MGID_MAIN	1
 #define _GUICG_MGID_AXIS	2
@@ -42,9 +46,9 @@ GUICoordinate * GUICoordinate::getInstance()
 
 void GUICoordinate::RenderGridReDraw()
 {
-	for (vector<GridInfo>::iterator it=scrgridxs.begin(); it!=scrgridxs.end(); ++it)
+	for (vector<GridInfo>::iterator it=gridxs_s.begin(); it!=gridxs_s.end(); ++it)
 	{
-		for (vector<GridInfo>::iterator jt=scrgridys.begin(); jt!=scrgridys.end(); ++jt)
+		for (vector<GridInfo>::iterator jt=gridys_s.begin(); jt!=gridys_s.end(); ++jt)
 		{
 			DWORD col;
 			switch (it->mgridID)
@@ -59,7 +63,7 @@ void GUICoordinate::RenderGridReDraw()
 				col = subgridcol;
 				break;
 			}
-			RenderHelper::RenderLineB(it->scrvalue, 0, scrh, col);
+			RenderHelper::RenderLineB(it->scrvalue, 0, scrh_s, col);
 			switch (jt->mgridID)
 			{
 			case _GUICG_MGID_AXIS:
@@ -72,7 +76,7 @@ void GUICoordinate::RenderGridReDraw()
 				col = subgridcol;
 				break;
 			}
-			RenderHelper::RenderLineR(0, jt->scrvalue, scrw, col);
+			RenderHelper::RenderLineR(0, jt->scrvalue, scrw_s, col);
 		}
 	}
 }
@@ -85,15 +89,18 @@ void GUICoordinate::RenderGrid()
 	}
 	else
 	{
+		RenderHelper::TargetQuadRender(targrid, 0, 0, 0xffffffff);
+		/*
 		HTEXTURE tex = hge->Target_GetTexture(targrid);
 		hgeQuad quad;
 		quad.blend = BLEND_DEFAULT;
 		quad.tex = tex;
 		quad.v[0].x = 0; quad.v[0].y = 0; quad.v[0].tx = 0; quad.v[0].ty = 0, quad.v[0].z = 0, quad.v[0].col = 0xffffffff;
-		quad.v[1].x = scrw; quad.v[1].y = 0; quad.v[1].tx = 1; quad.v[1].ty = 0, quad.v[1].z = 0, quad.v[1].col = 0xffffffff;
-		quad.v[2].x = scrw; quad.v[2].y = scrh; quad.v[2].tx = 1; quad.v[2].ty = 1, quad.v[2].z = 0, quad.v[2].col = 0xffffffff;
-		quad.v[3].x = 0; quad.v[3].y = scrh; quad.v[3].tx = 0; quad.v[3].ty = 1, quad.v[3].z = 0, quad.v[3].col = 0xffffffff;
+		quad.v[1].x = scrw_s; quad.v[1].y = 0; quad.v[1].tx = 1; quad.v[1].ty = 0, quad.v[1].z = 0, quad.v[1].col = 0xffffffff;
+		quad.v[2].x = scrw_s; quad.v[2].y = scrh_s; quad.v[2].tx = 1; quad.v[2].ty = 1, quad.v[2].z = 0, quad.v[2].col = 0xffffffff;
+		quad.v[3].x = 0; quad.v[3].y = scrh_s; quad.v[3].tx = 0; quad.v[3].ty = 1, quad.v[3].z = 0, quad.v[3].col = 0xffffffff;
 		hge->Gfx_RenderQuad(&quad);
+		*/
 	}
 }
 
@@ -104,19 +111,19 @@ void GUICoordinate::RenderCoordinate()
 #define _GUICC_LETTERSSIZE		8
 #define _GUICC_LETTERMARGIN		2
 #define _GUICC_LETTERBEGIN		(_GUICC_LETTERMARGIN+_GUICC_LENGTH)
-	if (scroriginx >= 0 && scroriginx <= scrw && scroriginy >= 0 && scroriginy <= scrh)
+	if (originx_s >= 0 && originx_s <= scrw_s && originy_s >= 0 && originy_s <= scrh_s)
 	{
-		RenderHelper::RenderLineR(scroriginx, scroriginy, _GUICC_LENGTH, coordcol);
-		RenderHelper::RenderLineB(scroriginx, scroriginy, _GUICC_LENGTH, coordcol);
+		RenderHelper::RenderLineR(originx_s, originy_s, _GUICC_LENGTH, coordcol);
+		RenderHelper::RenderLineB(originx_s, originy_s, _GUICC_LENGTH, coordcol);
 
-		RenderHelper::RenderSquare(scroriginx-_GUICC_BOXSIZE, scroriginy-_GUICC_BOXSIZE, _GUICC_BOXSIZE*2, coordcol);
+		RenderHelper::RenderSquare(originx_s-_GUICC_BOXSIZE, originy_s-_GUICC_BOXSIZE, _GUICC_BOXSIZE*2, coordcol);
 
 		// X
-		RenderHelper::RenderLine(scroriginx+_GUICC_LETTERBEGIN, scroriginy+_GUICC_LETTERMARGIN, scroriginx+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE, scroriginy+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE, coordcol);
-		RenderHelper::RenderLine(scroriginx+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE, scroriginy+_GUICC_LETTERMARGIN, scroriginx+_GUICC_LETTERBEGIN, scroriginy+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE, coordcol);
+		RenderHelper::RenderLine(originx_s+_GUICC_LETTERBEGIN, originy_s+_GUICC_LETTERMARGIN, originx_s+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE, originy_s+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE, coordcol);
+		RenderHelper::RenderLine(originx_s+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE, originy_s+_GUICC_LETTERMARGIN, originx_s+_GUICC_LETTERBEGIN, originy_s+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE, coordcol);
 		// Y
-		RenderHelper::RenderArrowB(scroriginx+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE/2, scroriginy+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE/2, 0, _GUICC_LETTERSSIZE/2, coordcol);
-		RenderHelper::RenderLineB(scroriginx+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE/2, scroriginy+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE/2, _GUICC_LETTERSSIZE/2, coordcol);
+		RenderHelper::RenderArrowB(originx_s+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE/2, originy_s+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE/2, 0, _GUICC_LETTERSSIZE/2, coordcol);
+		RenderHelper::RenderLineB(originx_s+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE/2, originy_s+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE/2, _GUICC_LETTERSSIZE/2, coordcol);
 
 		/*
 		// Arrow
@@ -139,8 +146,8 @@ void GUICoordinate::RenderCoordinate()
 void GUICoordinate::SetGrid( int _measuretype, float _originxpos, float _originypos, float _scale/*=1.0f*/ )
 {
 	measuretype = _measuretype;
-	scroriginx = _originxpos;
-	scroriginy = _originypos;
+	originx_s = _originxpos;
+	originy_s = _originypos;
 	switch (measuretype)
 	{
 	case GUICG_METRIC:
@@ -150,18 +157,59 @@ void GUICoordinate::SetGrid( int _measuretype, float _originxpos, float _originy
 		nsubgrid = 4;
 		break;
 	}
-	DoScale(_scale);
+	DoZoom(0, 0, _scale);
 }
 
-void GUICoordinate::DoPan( float xoffset, float yoffset )
+int GUICoordinate::DoZoomCommand()
+{
+	Command * pcommand = Command::getInstance();
+	float x, y, _scale;
+	pcommand->GetParamXY(CSP_DOZOOM_C_XY_SCALE, &x, &y);
+	_scale = pcommand->GetParamF(CSP_DOZOOM_C_XY_SCALE);
+	DoZoom(x, y, _scale);
+	return pcommand->FinishCommand();
+}
+
+void GUICoordinate::DoPan( float xoffset_s, float yoffset_s )
 {
 //	ClientToCoordinate(&xoffset, &yoffset);
-	scroriginx += xoffset;
-	scroriginy += yoffset;
-	UpdateScreenMeasure();
+	originx_s += xoffset_s;
+	originy_s += yoffset_s;
+	if (xoffset_s || yoffset_s)
+	{
+		UpdateScreenMeasure();
+	}
 }
 
-void GUICoordinate::DoScale( float _scale )
+int GUICoordinate::DoPanCommand()
+{
+	Command * pcommand = Command::getInstance();
+	MainInterface * pmain = MainInterface::getInstance();
+	switch (pcommand->GetStep())
+	{
+	case CSI_PAN_INIT:
+		GUICursor::getInstance()->ChangeCursor(GUIC_HAND);
+		pcommand->StepTo(CSI_PAN_READY);
+		break;
+	case CSI_PAN_READY:
+		if (hge->Input_GetDIKey(DIK_SPACE, DIKEY_UP) || hge->Input_GetDIKey(DIK_ESCAPE, DIKEY_UP))
+		{
+			pcommand->StepTo(CSI_TERMINAL);
+		}
+		if (hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex) && !hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_DOWN))
+		{
+			DoPan(pmain->mousex-pmain->lastmousex, pmain->mousey-pmain->lastmousey);
+		}
+		break;
+	case CSI_TERMINAL:
+		GUICursor::getInstance()->ChangeCursor();
+		pcommand->FinishCommand();
+		break;
+	}
+	return 0;
+}
+
+void GUICoordinate::DoZoom(float cx_s, float cy_s, float _scale )
 {
 	float oldscale = scale;
 	scale *= _scale;
@@ -174,8 +222,8 @@ void GUICoordinate::DoScale( float _scale )
 		scale = _GUIC_SCALEMIN;
 	}
 	float invchangescale = scale/oldscale;
-	scroriginx = cursorx_s*(1-invchangescale)+scroriginx*invchangescale;
-	scroriginy = cursory_s*(1-invchangescale)+scroriginy*invchangescale;
+	originx_s = cx_s*(1-invchangescale)+originx_s*invchangescale;
+	originy_s = cy_s*(1-invchangescale)+originy_s*invchangescale;
 //	scroriginx *= invchangescale;
 //	scroriginy *= invchangescale;
 	UpdateScreenMeasure();
@@ -188,8 +236,8 @@ void GUICoordinate::ClientToCoordinate( float * x, float * y )
 		return;
 	}
 	CheckScale();
-	*x = ((*x)-scroriginx)/scale;
-	*y = ((*y)-scroriginy)/scale;
+	*x = ((*x)-originx_s)/scale;
+	*y = ((*y)-originy_s)/scale;
 }
 
 void GUICoordinate::CoordinateToClient( float * x, float * y )
@@ -199,8 +247,8 @@ void GUICoordinate::CoordinateToClient( float * x, float * y )
 		return;
 	}
 	CheckScale();
-	*x = (*x)*scale+scroriginx;
-	*y = (*y)*scale+scroriginy;
+	*x = (*x)*scale+originx_s;
+	*y = (*y)*scale+originy_s;
 }
 
 void GUICoordinate::UpdateScreenMeasure()
@@ -210,14 +258,14 @@ void GUICoordinate::UpdateScreenMeasure()
 	float x = 0;
 	float y = 0;
 	ClientToCoordinate(&x, &y);
-	scrlmeasure = x;
-	scrtmeasure = y;
+	lboundary_c = x;
+	tboundary_c = y;
 	
-	scrw = x = hge->System_GetState(HGE_SCREENWIDTH);
-	scrh = y = hge->System_GetState(HGE_SCREENHEIGHT);
+	scrw_s = x = hge->System_GetState(HGE_SCREENWIDTH);
+	scrh_s = y = hge->System_GetState(HGE_SCREENHEIGHT);
 	ClientToCoordinate(&x, &y);
-	scrrmeasure = x;
-	scrbmeasure = y;
+	rboundary_c = x;
+	bboundary_c = y;
 
 
 #define _SCALEB_L1T 8.0f
@@ -227,40 +275,40 @@ void GUICoordinate::UpdateScreenMeasure()
 
 	if (scale > _SCALEB_L1T)
 	{
-		subgridspace = nsubgrid;
-		subgridscrspace = subgridspace*scale;
+		subgridspace_c = nsubgrid;
+		subgridspace_s = subgridspace_c*scale;
 	}
 	else
 	{
-		subgridspace = _SCALESPACE*nsubgrid;
-		subgridscrspace = subgridspace*scale;
-		while (subgridscrspace < _SCALESUBSCRMIN)
+		subgridspace_c = _SCALESPACE*nsubgrid;
+		subgridspace_s = subgridspace_c*scale;
+		while (subgridspace_s < _SCALESUBSCRMIN)
 		{
-			subgridspace *= _SCALESPACE;
-			subgridscrspace *= _SCALESPACE;
+			subgridspace_c *= _SCALESPACE;
+			subgridspace_s *= _SCALESPACE;
 		}
 	}
 
-	scrgridxs.clear();
-	scrgridys.clear();
-	float coordscrl = scrlmeasure;
-	float coordscrt = scrtmeasure;
+	gridxs_s.clear();
+	gridys_s.clear();
+	float coordscrl = lboundary_c;
+	float coordscrt = tboundary_c;
 
-	int nxbegin = (int)(coordscrl/subgridspace+0.5f);
-	int nybegin = (int)(coordscrt/subgridspace+0.5f);
-	float nearestxbegin = nxbegin*subgridspace;
-	float nearestybegin = nybegin*subgridspace;
+	int nxbegin = (int)(coordscrl/subgridspace_c+0.5f);
+	int nybegin = (int)(coordscrt/subgridspace_c+0.5f);
+	float nearestxbegin = nxbegin*subgridspace_c;
+	float nearestybegin = nybegin*subgridspace_c;
 
 
 	CoordinateToClient(&nearestxbegin, &nearestybegin);
 	if (nearestxbegin < 0)
 	{
-		nearestxbegin += subgridscrspace;
+		nearestxbegin += subgridspace_s;
 		nxbegin++;
 	}
 	if (nearestybegin < 0)
 	{
-		nearestybegin += subgridscrspace;
+		nearestybegin += subgridspace_s;
 		nybegin++;
 	}
 	int nxnow = nxbegin;
@@ -268,7 +316,7 @@ void GUICoordinate::UpdateScreenMeasure()
 	int xloopbeginval = nxbegin%nsubgrid;
 	int yloopbeginval = nybegin%nsubgrid;
 
-	for (float f=nearestxbegin; f<=scrw; f+=subgridscrspace)
+	for (float f=nearestxbegin; f<=scrw_s; f+=subgridspace_s)
 	{
 		GridInfo _ginfo;
 		_ginfo.scrvalue = f;
@@ -287,7 +335,7 @@ void GUICoordinate::UpdateScreenMeasure()
 		{
 			_ginfo.mgridID = _GUICG_MGID_SUB;
 		}
-		scrgridxs.push_back(_ginfo);
+		gridxs_s.push_back(_ginfo);
 		nxnow++;
 		xloopbeginval++;
 		if (xloopbeginval == nsubgrid)
@@ -295,7 +343,7 @@ void GUICoordinate::UpdateScreenMeasure()
 			xloopbeginval = 0;
 		}
 	}
-	for (float f=nearestybegin; f<=scrh; f+=subgridscrspace)
+	for (float f=nearestybegin; f<=scrh_s; f+=subgridspace_s)
 	{
 		GridInfo _ginfo;
 		_ginfo.scrvalue = f;
@@ -314,7 +362,7 @@ void GUICoordinate::UpdateScreenMeasure()
 		{
 			_ginfo.mgridID = _GUICG_MGID_SUB;
 		}
-		scrgridys.push_back(_ginfo);
+		gridys_s.push_back(_ginfo);
 		yloopbeginval++;
 		nynow++;
 		if (yloopbeginval == nsubgrid)
@@ -323,7 +371,7 @@ void GUICoordinate::UpdateScreenMeasure()
 		}
 	}
 
-	targrid = RenderTargetManager::getInstance()->UpdateTarget(RTID_GRID, scrw, scrh);
+	targrid = RenderTargetManager::getInstance()->UpdateTarget(RTID_GRID, scrw_s, scrh_s);
 	if (targrid)
 	{
 		hge->Gfx_BeginScene(targrid);
@@ -342,9 +390,9 @@ void GUICoordinate::SetGridColors( DWORD _gridcol, DWORD _subgridcol, DWORD _xax
 	coordcol = _coordcol;
 }
 
-void GUICoordinate::SetCursorPosition( float x, float y )
+void GUICoordinate::SetCursorPosition( float x_s, float y_s )
 {
-	cursorx_s = cursorxcoord = x;
-	cursory_s = cursorycoord = y;
-	ClientToCoordinate(&cursorxcoord, &cursorycoord);
+	cursorx_s = cursorx_c = x_s;
+	cursory_s = cursory_c = y_s;
+	ClientToCoordinate(&cursorx_c, &cursory_c);
 }
