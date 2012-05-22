@@ -308,6 +308,11 @@ void MainInterface::CallUpdateStatusBarText( int id, const char * text )
 	parentview->GetMainFrame()->SetStatusBarText(id, text);
 }
 
+void MainInterface::CallAppendCommandLogText( const char * text )
+{
+	parentview->GetMainFrame()->AppendCommandLogText(text);
+}
+
 int MainInterface::OnCommand( DWORD comm )
 {
 	return Command::getInstance()->CreateCommand(comm);

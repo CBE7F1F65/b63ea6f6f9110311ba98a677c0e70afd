@@ -28,6 +28,7 @@ public:
 	// To Frame
 	void CallContextMenu(float x, float y);
 	void CallUpdateStatusBarText(int id, const char * text);
+	void CallAppendCommandLogText(const char * text);
 
 	// Do
 	void DoResizeWindow();

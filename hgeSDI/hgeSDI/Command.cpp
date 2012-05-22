@@ -3,6 +3,7 @@
 
 #include "LineCommand.h"
 #include "GUICoordinate.h"
+#include "Main.h"
 
 Command * pCommandSingleton = NULL;
 
@@ -41,6 +42,8 @@ int Command::CreateCommand(int comm)
 		ClearCurrentCommand(true);
 		ccomm.command = comm;
 	}
+
+	MainInterface::getInstance()->CallAppendCommandLogText("abc");
 
 	return ccomm.command;
 }

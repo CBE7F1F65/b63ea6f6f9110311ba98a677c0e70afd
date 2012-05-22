@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include "UICommandBox.h"
+
 class CMainFrame : public CFrameWndEx
 {
 	
@@ -27,7 +29,7 @@ protected:
 public:
 
 	bool SetStatusBarText(int id, LPCTSTR text);
-
+	bool AppendCommandLogText(LPCTSTR text);
 // 操作
 public:
 
@@ -51,6 +53,8 @@ protected:  // 控件条嵌入成员
 	CMFCRibbonStatusBar  m_wndStatusBar;
 	CMFCCaptionBar    m_wndCaptionBar;
 
+	UICommandBox	m_wndUICommandBox;
+
 // 生成的消息映射函数
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -65,6 +69,12 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 	BOOL CreateCaptionBar();
+public:
+	afx_msg void OnUpdateEditcommand(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateEditcommandlog(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateStatusbarPane1(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateStatusbarPane2(CCmdUI *pCmdUI);
+
 };
 
 

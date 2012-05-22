@@ -36,6 +36,10 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CMainFrame::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CMainFrame::OnFilePrintPreview)
 	ON_UPDATE_COMMAND_UI(ID_FILE_PRINT_PREVIEW, &CMainFrame::OnUpdateFilePrintPreview)
+	ON_UPDATE_COMMAND_UI(ID_EDITCOMMAND, &CMainFrame::OnUpdateEditcommand)
+	ON_UPDATE_COMMAND_UI(ID_EDITCOMMANDLOG, &CMainFrame::OnUpdateEditcommandlog)
+	ON_UPDATE_COMMAND_UI(ID_STATUSBAR_PANE1, &CMainFrame::OnUpdateStatusbarPane1)
+	ON_UPDATE_COMMAND_UI(ID_STATUSBAR_PANE2, &CMainFrame::OnUpdateStatusbarPane2)
 END_MESSAGE_MAP()
 
 // CMainFrame 构造/析构
@@ -76,6 +80,14 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	ASSERT(bNameValid);
 	m_wndStatusBar.AddElement(new CMFCRibbonStatusBarPane(ID_STATUSBAR_PANE1, strTitlePane1, TRUE), strTitlePane1);
 	m_wndStatusBar.AddExtendedElement(new CMFCRibbonStatusBarPane(ID_STATUSBAR_PANE2, strTitlePane2, TRUE), strTitlePane2);
+	
+
+	m_wndUICommandBox.Create(_T("Output"), this, CRect (0, 0, 150, 150),
+		TRUE /* Has gripper */, 12345,
+		WS_CHILD | WS_VISIBLE | CBRS_BOTTOM | CBRS_FLOAT_MULTI);
+
+	m_wndUICommandBox.EnableDocking(CBRS_ALIGN_ANY);
+	DockPane(&m_wndUICommandBox);
 
 	// 启用 Visual Studio 2005 样式停靠窗口行为
 	CDockingManager::SetDockingMode(DT_SMART);
@@ -118,7 +130,7 @@ BOOL CMainFrame::CreateCaptionBar()
 		TRACE0("未能创建标题栏\n");
 		return FALSE;
 	}
-
+	
 	BOOL bNameValid;
 
 	CString strTemp, strTemp2;
@@ -139,7 +151,7 @@ BOOL CMainFrame::CreateCaptionBar()
 	bNameValid = strTemp2.LoadString(IDS_CAPTION_IMAGE_TEXT);
 	ASSERT(bNameValid);
 	m_wndCaptionBar.SetImageToolTip(strTemp, strTemp2);
-
+	
 	return TRUE;
 }
 
@@ -306,4 +318,37 @@ bool CMainFrame::SetStatusBarText( int id, LPCTSTR text )
 		return true;
 	}
 	return false;
+}
+
+bool CMainFrame::AppendCommandLogText( LPCTSTR text )
+{
+	m_wndUICommandBox.AppendCommandLogText(text);
+	return true;
+}
+
+void CMainFrame::OnUpdateEditcommand(CCmdUI *pCmdUI)
+{
+	// TODO: 在此添加命令更新用户界面处理程序代码
+	pCmdUI->Enable(TRUE);
+}
+
+
+void CMainFrame::OnUpdateEditcommandlog(CCmdUI *pCmdUI)
+{
+	// TODO: 在此添加命令更新用户界面处理程序代码
+	pCmdUI->Enable(TRUE);
+}
+
+
+void CMainFrame::OnUpdateStatusbarPane1(CCmdUI *pCmdUI)
+{
+	// TODO: 在此添加命令更新用户界面处理程序代码
+	pCmdUI->Enable(TRUE);
+}
+
+
+void CMainFrame::OnUpdateStatusbarPane2(CCmdUI *pCmdUI)
+{
+	// TODO: 在此添加命令更新用户界面处理程序代码
+	pCmdUI->Enable(TRUE);
 }
