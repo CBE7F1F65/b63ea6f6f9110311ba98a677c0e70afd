@@ -21,6 +21,8 @@
 #include "hgeSDIDoc.h"
 #include "hgeSDIView.h"
 
+#include "Main.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -152,7 +154,7 @@ int ChgeSDIApp::ExitInstance()
 {
 	//TODO: 处理可能已添加的附加资源
 	AfxOleTerm(FALSE);
-
+	MainInterface::getInstance().Exit();
 	return CWinAppEx::ExitInstance();
 }
 

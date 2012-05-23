@@ -153,7 +153,7 @@ void ChgeSDIView::OnInitialUpdate()
 	CView::OnInitialUpdate();
 	RECT rect;
 	this->GetClientRect(&rect);
-	bool manageloop = MainInterface::getInstance()->OnInit(this, rect.right-rect.left, rect.bottom-rect.top);
+	bool manageloop = MainInterface::getInstance().OnInit(this, rect.right-rect.left, rect.bottom-rect.top);
 
 	if (!manageloop)
 	{
@@ -164,7 +164,7 @@ void ChgeSDIView::OnInitialUpdate()
 void ChgeSDIView::OnSize(UINT nType, int cx, int cy)
 {
 	CView::OnSize(nType, cx, cy);
-	MainInterface::getInstance()->OnResizeWindow(cx, cy);
+	MainInterface::getInstance().OnResizeWindow(cx, cy);
 }
 
 // ChgeSDIView 消息处理程序
@@ -173,7 +173,7 @@ void ChgeSDIView::OnSize(UINT nType, int cx, int cy)
 void ChgeSDIView::OnLine()
 {
 	// TODO: 在此添加命令处理程序代码
-	MainInterface::getInstance()->OnCommand(COMM_LINE);
+	MainInterface::getInstance().OnCommand(COMM_LINE);
 }
 
 
@@ -192,7 +192,7 @@ void ChgeSDIView::OnTimer(UINT_PTR nIDEvent)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 
 	CView::OnTimer(nIDEvent);
-	MainInterface::getInstance()->OnUpdateTimer();
+	MainInterface::getInstance().OnUpdateTimer();
 	
 }
 
@@ -205,11 +205,11 @@ void ChgeSDIView::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pD
 	/*
 	if (bActivate)
 	{
-		MainInterface::getInstance()->FocusGain();
+		MainInterface::getInstance().FocusGain();
 	}
 	else
 	{
-		MainInterface::getInstance()->FocusLost();
+		MainInterface::getInstance().FocusLost();
 	}
 	*/
 }
@@ -219,7 +219,7 @@ int ChgeSDIView::OnMouseActivate(CWnd* pDesktopWnd, UINT nHitTest, UINT message)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 
-	MainInterface::getInstance()->OnMouseActivate();
+	MainInterface::getInstance().OnMouseActivate();
 	return CView::OnMouseActivate(pDesktopWnd, nHitTest, message);
 }
 

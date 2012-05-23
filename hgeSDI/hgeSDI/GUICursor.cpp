@@ -5,25 +5,13 @@
 #include "RenderHelper.h"
 #include "ColorManager.h"
 
-GUICursor * pGUICursorSingleton = NULL;
-
 GUICursor::GUICursor()
 {
-	assert(pGUICursorSingleton==NULL);
 	guic = lastguic = GUIC_NORMAL;
 }
 GUICursor::~GUICursor()
 {
 
-}
-
-GUICursor * GUICursor::getInstance()
-{
-	if (!pGUICursorSingleton)
-	{
-		pGUICursorSingleton = new GUICursor();
-	}
-	return pGUICursorSingleton;
 }
 
 void GUICursor::ChangeCursor( int _guic )
@@ -41,7 +29,7 @@ void GUICursor::ChangeCursor( int _guic )
 
 void GUICursor::Render( float x, float y )
 {
-	HGE * hge = MainInterface::getInstance()->hge;
+	HGE * hge = MainInterface::getInstance().hge;
 	if (hge)
 	{
 		DWORD col = ColorManager::GetCursorColor();

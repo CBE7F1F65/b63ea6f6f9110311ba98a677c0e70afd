@@ -12,11 +12,9 @@
 #define COMMANDLOGSTR_PARAM				"SetParam: "
 #define COMMANDLOGSTR_WANTNEXT			"Please Input: "
 
-Command * pCommandSingleton = NULL;
 
 Command::Command()
 {
-	assert(pCommandSingleton==NULL);
 	ZeroMemory(&ccomm, sizeof(ccomm));
 	tarcommand = 0;
 	Init();
@@ -25,15 +23,6 @@ Command::Command()
 Command::~Command()
 {
 
-}
-
-Command * Command::getInstance()
-{
-	if (!pCommandSingleton)
-	{
-		pCommandSingleton = new Command();
-	}
-	return pCommandSingleton;
 }
 
 void Command::Init()
@@ -48,7 +37,7 @@ void Command::LogCreate()
 	{
 		char strlog[M_STRMAX];
 		sprintf_s(strlog, M_STRMAX, "%s%s", COMMANDLOGSTR_CREATECOMMAND, GetCommandStr());
-		MainInterface::getInstance()->CallAppendCommandLogText(strlog);
+		MainInterface::getInstance().CallAppendCommandLogText(strlog);
 	}
 }
 
@@ -58,7 +47,7 @@ void Command::LogFinish()
 	{
 		char strlog[M_STRMAX];
 		sprintf_s(strlog, M_STRMAX, "%s%s", COMMANDLOGSTR_FINISHCOMMAND, GetCommandStr());
-		MainInterface::getInstance()->CallAppendCommandLogText(strlog);
+		MainInterface::getInstance().CallAppendCommandLogText(strlog);
 	}
 }
 
@@ -68,7 +57,7 @@ void Command::LogTerminal()
 	{
 		char strlog[M_STRMAX];
 		sprintf_s(strlog, M_STRMAX, "%s%s", COMMANDLOGSTR_TERMINALCOMMAND, GetCommandStr());
-		MainInterface::getInstance()->CallAppendCommandLogText(strlog);
+		MainInterface::getInstance().CallAppendCommandLogText(strlog);
 	}
 }
 
@@ -101,7 +90,7 @@ void Command::LogParam( int index, int useflag )
 			
 		}
 		sprintf_s(strlog, M_STRMAX*4, "(%s) %s%s%s", GetCommandStr(), COMMANDLOGSTR_PARAM, GetWantPromptStr(), paramstr);
-		MainInterface::getInstance()->CallAppendCommandLogText(strlog);
+		MainInterface::getInstance().CallAppendCommandLogText(strlog);
 	}
 }
 
@@ -115,7 +104,7 @@ void Command::LogWantNext()
 	{
 		char strlog[M_STRMAX];
 		sprintf_s(strlog, M_STRMAX, "%s: %s%s", GetCommandStr(), COMMANDLOGSTR_WANTNEXT, GetWantPromptStr());
-		MainInterface::getInstance()->CallAppendCommandLogText(strlog);
+		MainInterface::getInstance().CallAppendCommandLogText(strlog);
 	}
 }
 
@@ -130,7 +119,7 @@ void Command::LogError( const char * str )
 	{
 		sprintf_s(strlog, M_STRMAX*4, "%s%s", COMMANDLOGSTR_ERROR, str);
 	}
-	MainInterface::getInstance()->CallAppendCommandLogText(strlog);
+	MainInterface::getInstance().CallAppendCommandLogText(strlog);
 }
 
 int Command::CreateCommand(int comm)

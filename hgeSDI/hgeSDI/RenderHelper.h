@@ -8,6 +8,8 @@ public:
 	RenderHelper(void);
 	~RenderHelper(void);
 
+	static void Release();
+
 	static void BeginRenderTar(HTARGET tar, DWORD col=0);
 	static void EndRenderTar();
 

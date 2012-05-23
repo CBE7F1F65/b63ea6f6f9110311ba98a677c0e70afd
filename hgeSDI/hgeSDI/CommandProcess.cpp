@@ -16,12 +16,12 @@ int Command::ProcessCommand()
 	switch (ccomm.command)
 	{
 	case COMM_PAN:
-		return GUICoordinate::getInstance()->DoPanCommand();
+		return GUICoordinate::getInstance().DoPanCommand();
 		break;
 	case COMM_DOZOOM:
-		return GUICoordinate::getInstance()->DoZoomCommand();
+		return GUICoordinate::getInstance().DoZoomCommand();
 	case COMM_LINE:
-		return LineCommand::getInstance()->Line();
+		return LineCommand::getInstance().Line();
 	}
 	return ccomm.command;
 }

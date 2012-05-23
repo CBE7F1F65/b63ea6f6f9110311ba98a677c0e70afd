@@ -1,25 +1,17 @@
 #include "StdAfx.h"
 #include "RenderTargetManager.h"
 
-RenderTargetManager * pRenderTargetManagerSingleton = NULL;
 
 RenderTargetManager::RenderTargetManager()
 {
-	assert(pRenderTargetManagerSingleton==NULL);
 	hge = hgeCreate(HGE_VERSION);
 }
 RenderTargetManager::~RenderTargetManager()
 {
-
-}
-
-RenderTargetManager * RenderTargetManager::getInstance()
-{
-	if (!pRenderTargetManagerSingleton)
+	if (hge)
 	{
-		pRenderTargetManagerSingleton = new RenderTargetManager();
+		hge->Release();
 	}
-	return pRenderTargetManagerSingleton;
 }
 
 HTARGET RenderTargetManager::UpdateTarget( int id, int w/*=0*/, int h/*=0*/ )

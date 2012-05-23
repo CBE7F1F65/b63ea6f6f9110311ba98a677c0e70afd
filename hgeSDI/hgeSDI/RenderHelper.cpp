@@ -14,6 +14,14 @@ RenderHelper::~RenderHelper(void)
 {
 }
 
+void RenderHelper::Release()
+{
+	if (hge)
+	{
+		hge->Release();
+	}
+}
+
 void RenderHelper::RenderLine( float x1, float y1, float x2, float y2, DWORD col/*=0*/ )
 {
 	hge->Gfx_RenderLine(x1, y1, x2, y2, col);

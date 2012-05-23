@@ -9,36 +9,27 @@
 #include "RenderTargetManager.h"
 #include "ColorManager.h"
 
-LineCommand * plc = NULL;
+#include "GLine.h"
+#include "GObjectManager.h"
+
 
 LineCommand::LineCommand()
 {
-	assert(plc==NULL);
 }
 LineCommand::~LineCommand()
 {
 
 }
-
-LineCommand * LineCommand::getInstance()
-{
-	if (!plc)
-	{
-		plc = new LineCommand();
-	}
-	return plc;
-}
-
 int LineCommand::Line()
 {
-	Command * pcommand = Command::getInstance();
-	MainInterface * pmain = MainInterface::getInstance();
-	GUICoordinate * pguic = GUICoordinate::getInstance();
+	Command * pcommand = &Command::getInstance();
+	MainInterface * pmain = &MainInterface::getInstance();
+	GUICoordinate * pguic = &GUICoordinate::getInstance();
 	switch (pcommand->GetStep())
 	{
 	case CSI_INIT:
 
-		GUICursor::getInstance()->ChangeCursor(GUIC_CREATEPOINT);
+		GUICursor::getInstance().ChangeCursor(GUIC_CREATEPOINT);
 		pcommand->StepTo(
 			CSI_LINE_WANTX1, 
 			CSP_LINE_B_XY, 
@@ -154,53 +145,64 @@ int LineCommand::Line()
 		}
 		break;
 	case CSI_PAUSE:
-		GUICursor::getInstance()->ChangeCursor();
+		GUICursor::getInstance().ChangeCursor();
 		ReleaseTarget();
 		break;
 	case CSI_RESUME:
-		GUICursor::getInstance()->ChangeCursor(GUIC_CREATEPOINT);
+		GUICursor::getInstance().ChangeCursor(GUIC_CREATEPOINT);
 		break;
 
 	case CSI_FINISH:
-		GUICursor::getInstance()->ChangeCursor();
+		GUICursor::getInstance().ChangeCursor();
 		ReleaseTarget();
+		DoneLineCommand();
 		pcommand->FinishCommand();
 		break;
 
 	case CSI_TERMINAL:
-		GUICursor::getInstance()->ChangeCursor();
+		GUICursor::getInstance().ChangeCursor();
 		ReleaseTarget();
 		pcommand->TerminalCommand();
 		break;
 	}
-	LineRenderToTarget();
+	LineCommandRenderToTarget();
 	return 0;
 }
 
-void LineCommand::LineRenderToTarget()
+void LineCommand::LineCommandRenderToTarget()
 {
-	Command * pcommand = Command::getInstance();
+	Command * pcommand = &Command::getInstance();
 	int nstep = pcommand->GetStep();
 	if (nstep >= CSI_LINE_WANTX2 && nstep <= CSI_LINE_WANTY2)
 	{
 		float x1, y1;
 		pcommand->GetParamXY(CSP_LINE_B_XY, &x1, &y1);
-		GUICoordinate::getInstance()->CoordinateToClient(&x1, &y1);
+		GUICoordinate::getInstance().CoordinateToClient(&x1, &y1);
 
-		float x2 = MainInterface::getInstance()->mousex;
-		float y2 = MainInterface::getInstance()->mousey;
+		float x2 = MainInterface::getInstance().mousex;
+		float y2 = MainInterface::getInstance().mousey;
 
-		HTARGET tar = RenderTargetManager::getInstance()->UpdateTarget(RTID_COMMAND);
+		HTARGET tar = RenderTargetManager::getInstance().UpdateTarget(RTID_COMMAND);
 
 		RenderHelper::BeginRenderTar(tar);
 		RenderHelper::RenderLine(x1, y1, x2, y2, ColorManager::GetLayerLineColor());
 		RenderHelper::EndRenderTar();
 
-		Command::getInstance()->SetRenderTarget(tar);
+		Command::getInstance().SetRenderTarget(tar);
 	}
 }
 
 void LineCommand::ReleaseTarget()
 {
-	Command::getInstance()->SetRenderTarget(0);
+	Command::getInstance().SetRenderTarget(0);
+}
+
+void LineCommand::DoneLineCommand()
+{
+	GStraightLine * line = new GStraightLine(&(GObjectManager::getInstance().basenode));
+	Command * pcommand = &Command::getInstance();
+	float xb, yb, xe, ye;
+	pcommand->GetParamXY(CSP_LINE_B_XY, &xb, &yb);
+	pcommand->GetParamXY(CSP_LINE_E_XY, &xe, &ye);
+	line->SetBeginEnd(xb, yb, xe, ye);
 }

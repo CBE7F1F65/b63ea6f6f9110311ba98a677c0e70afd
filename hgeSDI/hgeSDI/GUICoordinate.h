@@ -10,11 +10,22 @@ enum {
 class GUICoordinate
 {
 public:
+	static GUICoordinate& getInstance()
+	{
+		static GUICoordinate instance;
+		// Guaranteed to be destroyed. Instantiated on first use.
+		return instance;
+	}
+private:
 	GUICoordinate();
 	~GUICoordinate();
+	// Don't forget to declare these two.
+	GUICoordinate(GUICoordinate const&);
+	// Don't Implement
+	void operator=(GUICoordinate const&);
+	// Don't implement
 
-	static GUICoordinate * getInstance();
-
+public:
 
 	void SetGrid(int measuretype, float originxpos=0, float originypos=0, float scale=1.0f);
 	void SetGridColors(DWORD gridcol, DWORD subgridcol, DWORD xaxiscol, DWORD yaxiscol, DWORD coordcol);

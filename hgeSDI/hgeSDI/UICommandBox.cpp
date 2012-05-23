@@ -204,7 +204,7 @@ void UICommandBox::CommitCommand()
 	}
 	CString str;
 	m_wndCommandEdit.GetWindowText(str);
-	MainInterface::getInstance()->OnCommitCommand(str.GetBuffer());
+	MainInterface::getInstance().OnCommitCommand(str.GetBuffer());
 }
 
 void UICommandBox::ClearLog()

@@ -8,11 +8,24 @@
 class MainInterface
 {
 public:
+	static MainInterface& getInstance()
+	{
+		static MainInterface instance;
+		// Guaranteed to be destroyed. Instantiated on first use.
+		return instance;
+	}
+
+private:
 	MainInterface();
 	~MainInterface();
+	// Don't forget to declare these two.
+	MainInterface(MainInterface const&);
+	// Don't Implement
+	void operator=(MainInterface const&);
+	// Don't implement
 
-	static MainInterface * getInstance();
-
+public:
+	
 	bool IsMainViewActive();
 
 	// From Frame

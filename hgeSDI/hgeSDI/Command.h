@@ -44,11 +44,24 @@ struct CommittedCommand
 class Command
 {
 public:
+	static Command& getInstance()
+	{
+		static Command instance;
+		// Guaranteed to be destroyed. Instantiated on first use.
+		return instance;
+	}
+
+private:
 	Command();
 	~Command();
+	// Don't forget to declare these two.
+	Command(Command const&);
+	// Don't Implement
+	void operator=(Command const&);
+	// Don't implement
 
-	static Command * getInstance();
-
+public:
+	
 	void Init();
 	void InitCommandStrInfo();
 	void InitWantPromptInfo();

@@ -20,28 +20,19 @@
 #define _GUIC_SCALEMIN	1.0f
 #define _GUIC_DEFAULTSCALE	4.0f
 
-GUICoordinate * pGUICoordinateSingleton = NULL;
-
 GUICoordinate::GUICoordinate()
 {
-	assert(pGUICoordinateSingleton==NULL);
-
 	hge = hgeCreate(HGE_VERSION);
 	targrid = NULL;
 	scale = _GUIC_DEFAULTSCALE;
 }
+
 GUICoordinate::~GUICoordinate()
 {
-
-}
-
-GUICoordinate * GUICoordinate::getInstance()
-{
-	if (!pGUICoordinateSingleton)
+	if (hge)
 	{
-		pGUICoordinateSingleton = new GUICoordinate();
+		hge->Release();
 	}
-	return pGUICoordinateSingleton;
 }
 
 void GUICoordinate::RenderGridReDraw()
@@ -162,7 +153,7 @@ void GUICoordinate::SetGrid( int _measuretype, float _originxpos, float _originy
 
 int GUICoordinate::DoZoomCommand()
 {
-	Command * pcommand = Command::getInstance();
+	Command * pcommand = &(Command::getInstance());
 	float x, y, _scale;
 	pcommand->GetParamXY(CSP_DOZOOM_C_XY_SCALE, &x, &y);
 	_scale = pcommand->GetParamF(CSP_DOZOOM_C_XY_SCALE);
@@ -183,13 +174,13 @@ void GUICoordinate::DoPan( float xoffset_s, float yoffset_s )
 
 int GUICoordinate::DoPanCommand()
 {
-	Command * pcommand = Command::getInstance();
-	MainInterface * pmain = MainInterface::getInstance();
+	Command * pcommand = &Command::getInstance();
+	MainInterface * pmain = &MainInterface::getInstance();
 	switch (pcommand->GetStep())
 	{
 	case CSI_INIT:
 		panwillterminate = false;
-		GUICursor::getInstance()->ChangeCursor(GUIC_HAND);
+		GUICursor::getInstance().ChangeCursor(GUIC_HAND);
 		pcommand->StepTo(CSI_PAN_READY);
 		break;
 	case CSI_PAN_READY:
@@ -214,17 +205,17 @@ int GUICoordinate::DoPanCommand()
 		}
 		break;
 	case CSI_PAUSE:
-		GUICursor::getInstance()->ChangeCursor();
+		GUICursor::getInstance().ChangeCursor();
 		break;
 	case CSI_RESUME:
-		GUICursor::getInstance()->ChangeCursor(GUIC_HAND);
+		GUICursor::getInstance().ChangeCursor(GUIC_HAND);
 		break;
 	case CSI_FINISH:
-		GUICursor::getInstance()->ChangeCursor();
+		GUICursor::getInstance().ChangeCursor();
 		pcommand->FinishCommand();
 		break;
 	case CSI_TERMINAL:
-		GUICursor::getInstance()->ChangeCursor();
+		GUICursor::getInstance().ChangeCursor();
 		pcommand->TerminalCommand();
 		break;
 	}
@@ -393,7 +384,7 @@ void GUICoordinate::UpdateScreenMeasure()
 		}
 	}
 
-	targrid = RenderTargetManager::getInstance()->UpdateTarget(RTID_GRID);
+	targrid = RenderTargetManager::getInstance().UpdateTarget(RTID_GRID);
 	if (targrid)
 	{
 		RenderHelper::BeginRenderTar(targrid);

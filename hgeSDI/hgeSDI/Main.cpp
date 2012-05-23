@@ -5,14 +5,15 @@
 #include "GUICursor.h"
 #include "GUICoordinate.h"
 #include "ColorManager.h"
+#include "GObjectManager.h"
+#include "RenderHelper.h"
+#include "RenderTargetManager.h"
 
 #include "Resource.h"
 
-MainInterface * pmi = NULL;
 
 MainInterface::MainInterface()
 {
-	assert(pmi==NULL);
 	hge = hgeCreate(HGE_VERSION);
 
 	resizewindow_w = -1;
@@ -36,47 +37,37 @@ MainInterface::~MainInterface()
 	if (hge)
 	{
 		hge->Release();
-		hge = NULL;
 	}
-}
-
-MainInterface * MainInterface::getInstance()
-{
-	if (!pmi)
-	{
-		pmi = new MainInterface();
-	}
-	return pmi;
 }
 
 bool RenderFunc()
 {
-	return MainInterface::getInstance()->Render();
+	return MainInterface::getInstance().Render();
 }
 
 bool FrameFunc()
 {
-	return MainInterface::getInstance()->Frame();
+	return MainInterface::getInstance().Frame();
 }
 
 bool FocusLostFunc()
 {
-	return MainInterface::getInstance()->FocusLost();
+	return MainInterface::getInstance().FocusLost();
 }
 
 bool FocusGainFunc()
 {
-	return MainInterface::getInstance()->FocusGain();
+	return MainInterface::getInstance().FocusGain();
 }
 
 bool ExitFunc()
 {
-	return MainInterface::getInstance()->Exit();
+	return MainInterface::getInstance().Exit();
 }
 
 bool GfxRestoreFunc()
 {
-	return MainInterface::getInstance()->GfxRestore();
+	return MainInterface::getInstance().GfxRestore();
 }
 
 bool MainInterface::Render()
@@ -92,28 +83,17 @@ bool MainInterface::Render()
 	hge->Input_GetMousePos(&mousex, &mousey);
 
 	// Render Grids
-	GUICoordinate::getInstance()->RenderGrid();
+	GUICoordinate::getInstance().RenderGrid();
 
-	/*
-	float x[2], y[2];
-	for (int i = 0; i < 2 ; i++)
-	{
-		x[i] = hge->Random_Float(0, scrw);
-		y[i] = hge->Random_Float(0, scrh);
-	}
-	for (int i = 0; i < 400 ; i++)
-	{
-		hge->Gfx_RenderLine(x[0], y[0], x[1], y[1], 0xff000000|((DWORD)hge->Random_Int(0, 0xffffff)));
-	}
-	*/
-
+	// All Nodes
+	GObjectManager::getInstance().Render();
 	// Render Command Floating
-	Command::getInstance()->Render();
+	Command::getInstance().Render();
 
 	// Render Coord
-	GUICoordinate::getInstance()->RenderCoordinate();
+	GUICoordinate::getInstance().RenderCoordinate();
 	// Render Cursor
-	GUICursor::getInstance()->Render(mousex, mousey);
+	GUICursor::getInstance().Render(mousex, mousey);
 
 	hge->Gfx_EndScene();
 	return false;
@@ -134,9 +114,9 @@ bool MainInterface::Frame()
 	lastmousewheel = mousewheel;
 	mousewheel = hge->Input_GetMouseWheel();
 
-	Command * pcommand = Command::getInstance();
+	Command * pcommand = &Command::getInstance();
 
-	GUICoordinate * pguic = GUICoordinate::getInstance();
+	GUICoordinate * pguic = &GUICoordinate::getInstance();
 	if (mousewheel != lastmousewheel)
 	{
 		pcommand->CreateCommand(COMM_DOZOOM);
@@ -165,7 +145,7 @@ bool MainInterface::Frame()
 	{
 		if (hge->Input_GetDIKey(DIK_SPACE, DIKEY_DOWN))
 		{
-			GUICursor::getInstance()->ChangeCursor(GUIC_HAND);
+			GUICursor::getInstance().ChangeCursor(GUIC_HAND);
 		}
 		if (hge->Input_GetDIMouseKey(1) && !hge->Input_GetDIMouseKey(1, DIKEY_DOWN))
 		{
@@ -174,14 +154,16 @@ bool MainInterface::Frame()
 	}
 	if (hge->Input_GetDIKey(DIK_SPACE, DIKEY_UP))
 	{
-		GUICursor::getInstance()->ChangeCursor();
+		GUICursor::getInstance().ChangeCursor();
 	}
 	*/
 
 	pguic->SetCursorPosition(mousex, mousey);
 
+	GObjectManager::getInstance().Update();
 	pcommand->ProcessCommand();
 
+	GObjectManager::getInstance().Delete();
 	DoUpdateFPS();
 	DoUpdateStatusInfo();
 
@@ -208,6 +190,9 @@ bool MainInterface::FocusGain()
 
 bool MainInterface::Exit()
 {
+	GObjectManager::getInstance().Release();
+	RenderHelper::Release();
+	hge->System_Shutdown();
 	return false;
 }
 
@@ -218,7 +203,7 @@ bool MainInterface::GfxRestore()
 
 void _HGEThreadFunc(void * dummy)
 {
-	if (MainInterface::getInstance()->HGEThreadFunc())
+	if (MainInterface::getInstance().HGEThreadFunc())
 	{
 		_endthread();
 	}
@@ -279,8 +264,9 @@ bool MainInterface::OnInit(void * parent, int w, int h)
 	hge->Input_GetMousePos(&mousex, &mousey);
 
 	//
-	Command::getInstance()->Init();
-	GUICoordinate::getInstance()->SetGrid(GUICG_METRIC, 0, 0);
+	Command::getInstance().Init();
+	GUICoordinate::getInstance().SetGrid(GUICG_METRIC, 0, 0);
+	GObjectManager::getInstance().Init();
 
 	return manageloop;
 
@@ -333,12 +319,12 @@ void MainInterface::CallAppendCommandLogText( const char * text )
 
 int MainInterface::OnCommand( DWORD comm )
 {
-	return Command::getInstance()->CreateCommand(comm);
+	return Command::getInstance().CreateCommand(comm);
 }
 
 int MainInterface::OnCommitCommand( const char * str )
 {
-	return Command::getInstance()->CommitCommand(str);
+	return Command::getInstance().CommitCommand(str);
 }
 
 void MainInterface::DoResizeWindow()
@@ -347,7 +333,7 @@ void MainInterface::DoResizeWindow()
 	{
 		// No Command (internal process)
 		MoveWindow(hge->System_GetState(HGE_HWND), 0, 0, resizewindow_w, resizewindow_h, TRUE);
-		GUICoordinate::getInstance()->UpdateScreenMeasure();
+		GUICoordinate::getInstance().UpdateScreenMeasure();
 		resizewindow_w = -1;
 		resizewindow_h = -1;
 	}
@@ -365,7 +351,7 @@ void MainInterface::DoUpdateStatusInfo()
 {
 	// No Command (internal process)
 	char statusstr[M_STRMAX];
-	GUICoordinate * pguic = GUICoordinate::getInstance();
+	GUICoordinate * pguic = &GUICoordinate::getInstance();
 	sprintf_s(statusstr, M_STRMAX, "%.4f, %.4f, %.4f", pguic->cursorx_c, pguic->cursory_c, pguic->scale);
 	CallUpdateStatusBarText(IDS_STATUS_PANE1, statusstr);
 }

@@ -119,6 +119,12 @@
     <ClInclude Include="ColorManager.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="CommandDefines.h" />
+    <ClInclude Include="GLine.h" />
+    <ClInclude Include="GObject.h" />
+    <ClInclude Include="GObjectManager.h" />
+    <ClInclude Include="GPiece.h" />
+    <ClInclude Include="GPoint.h" />
+    <ClInclude Include="GShape.h" />
     <ClInclude Include="GUICoordinate.h" />
     <ClInclude Include="GUICursor.h" />
     <ClInclude Include="LineCommand.h" />
@@ -142,6 +148,12 @@
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="CommandProcess.cpp" />
     <ClCompile Include="CommandStrings.cpp" />
+    <ClCompile Include="GLine.cpp" />
+    <ClCompile Include="GObject.cpp" />
+    <ClCompile Include="GObjectManager.cpp" />
+    <ClCompile Include="GPiece.cpp" />
+    <ClCompile Include="GPoint.cpp" />
+    <ClCompile Include="GShape.cpp" />
     <ClCompile Include="GUICoordinate.cpp" />
     <ClCompile Include="GUICursor.cpp" />
     <ClCompile Include="LineCommand.cpp" />
