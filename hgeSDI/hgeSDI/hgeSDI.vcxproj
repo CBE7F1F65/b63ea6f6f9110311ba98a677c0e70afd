@@ -117,7 +117,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Command.h" />
-    <ClInclude Include="CommandParamIndex.h" />
+    <ClInclude Include="CommandDefines.h" />
     <ClInclude Include="GUICoordinate.h" />
     <ClInclude Include="GUICursor.h" />
     <ClInclude Include="LineCommand.h" />
@@ -138,6 +138,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Command.cpp" />
+    <ClCompile Include="CommandProcess.cpp" />
+    <ClCompile Include="CommandStrings.cpp" />
     <ClCompile Include="GUICoordinate.cpp" />
     <ClCompile Include="GUICursor.cpp" />
     <ClCompile Include="LineCommand.cpp" />

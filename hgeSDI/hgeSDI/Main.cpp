@@ -27,6 +27,8 @@ MainInterface::MainInterface()
 	cursorrightkeyindex = 1;
 
 	manageloop = false;
+
+	pickstate = 0;
 }
 
 MainInterface::~MainInterface()
@@ -135,13 +137,25 @@ bool MainInterface::Frame()
 	if (mousewheel != lastmousewheel)
 	{
 		pcommand->CreateCommand(COMM_DOZOOM);
-		pcommand->SetParamXY(CSP_DOZOOM_C_XY_SCALE, mousex, mousey);
+		pcommand->SetParamX(CSP_DOZOOM_C_XY_SCALE, mousex);
+		pcommand->SetParamY(CSP_DOZOOM_C_XY_SCALE, mousey);
 		pcommand->SetParamF(CSP_DOZOOM_C_XY_SCALE, powf(wheelscalefactor, mousewheel-lastmousewheel));
 	}
 
-	if (hge->Input_GetDIKey(DIK_SPACE, DIKEY_DOWN))
+	if (hge->Input_GetDIKey(DIK_SPACE, DIKEY_DOWN) && IsMainViewActive())
 	{
 		pcommand->CreateCommand(COMM_PAN);
+	}
+	if (hge->Input_GetDIKey(DIK_ESCAPE, DIKEY_UP))
+	{
+		if (pcommand->ccomm.command)
+		{
+			pcommand->StepTo(CSI_TERMINAL);
+		}
+	}
+	if (IsMainViewActive())
+	{
+		UpdatePickPoint();
 	}
 	/*
 	if (hge->Input_GetDIKey(DIK_SPACE))
@@ -262,6 +276,7 @@ bool MainInterface::OnInit(void * parent, int w, int h)
 	hge->Input_GetMousePos(&mousex, &mousey);
 
 	//
+	Command::getInstance()->Init();
 	GUICoordinate::getInstance()->SetGrid(GUICG_METRIC, 0, 0);
 
 	return manageloop;
@@ -318,6 +333,11 @@ int MainInterface::OnCommand( DWORD comm )
 	return Command::getInstance()->CreateCommand(comm);
 }
 
+int MainInterface::OnCommitCommand( const char * str )
+{
+	return Command::getInstance()->CommitCommand(str);
+}
+
 void MainInterface::DoResizeWindow()
 {
 	if (resizewindow_w >= 0 && resizewindow_h >= 0)
@@ -345,4 +365,48 @@ void MainInterface::DoUpdateStatusInfo()
 	GUICoordinate * pguic = GUICoordinate::getInstance();
 	sprintf_s(statusstr, M_STRMAX, "%.4f, %.4f, %.4f", pguic->cursorx_c, pguic->cursory_c, pguic->scale);
 	CallUpdateStatusBarText(IDS_STATUS_PANE1, statusstr);
+}
+
+#define _PICKSTATE_NULL	0
+#define _PICKSTATE_PICKING		1
+#define _PICKSTATE_READY		2
+
+bool MainInterface::DoPickPoint( int restrict/*=0*/ )
+{
+	if (pickstate == _PICKSTATE_NULL)
+	{
+		pickrestrict = restrict;
+		pickstate = _PICKSTATE_PICKING;
+	}
+	if (pickstate == _PICKSTATE_READY)
+	{
+		pickstate = _PICKSTATE_NULL;
+		return true;
+	}
+	return false;
+}
+
+bool MainInterface::UpdatePickPoint()
+{
+	if (pickstate != _PICKSTATE_PICKING)
+	{
+		return false;
+	}
+	if (hge->Input_GetDIMouseKey(cursorleftkeyindex, DIKEY_UP))
+	{
+		pickx = mousex;
+		picky = mousey;
+		pickstate = _PICKSTATE_READY;
+		return true;
+	}
+	return false;
+}
+
+bool MainInterface::IsMainViewActive()
+{
+	if (hge->Input_IsMouseOver())
+	{
+		return true;
+	}
+	return false;
 }

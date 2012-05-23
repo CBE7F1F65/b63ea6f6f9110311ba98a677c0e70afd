@@ -13,6 +13,8 @@ public:
 
 	static MainInterface * getInstance();
 
+	bool IsMainViewActive();
+
 	// From Frame
 	bool OnInit(void * parent, int w, int h);
 	void OnResizeWindow(int x, int y);
@@ -24,6 +26,7 @@ public:
 		COMM_LINE,
 	};
 	int OnCommand(DWORD comm);
+	int OnCommitCommand(const char * str);
 
 	// To Frame
 	void CallContextMenu(float x, float y);
@@ -34,6 +37,10 @@ public:
 	void DoResizeWindow();
 	void DoUpdateFPS();
 	void DoUpdateStatusInfo();
+
+	bool DoPickPoint(int restrict=0);
+
+	bool UpdatePickPoint();
 
 	bool HGEThreadFunc();
 
@@ -62,6 +69,12 @@ public:
 	DWORD bgcol;
 
 	bool manageloop;
+
+	int pickstate;
+	int pickrestrict;
+	float pickx;
+	float picky;
+	int pickid;
 
 	// MFC
 	ChgeSDIView * parentview;

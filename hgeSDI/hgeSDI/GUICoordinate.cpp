@@ -187,7 +187,7 @@ int GUICoordinate::DoPanCommand()
 	MainInterface * pmain = MainInterface::getInstance();
 	switch (pcommand->GetStep())
 	{
-	case CSI_PAN_INIT:
+	case CSI_INIT:
 		GUICursor::getInstance()->ChangeCursor(GUIC_HAND);
 		pcommand->StepTo(CSI_PAN_READY);
 		break;
@@ -201,9 +201,13 @@ int GUICoordinate::DoPanCommand()
 			DoPan(pmain->mousex-pmain->lastmousex, pmain->mousey-pmain->lastmousey);
 		}
 		break;
-	case CSI_TERMINAL:
+	case CSI_FINISH:
 		GUICursor::getInstance()->ChangeCursor();
 		pcommand->FinishCommand();
+		break;
+	case CSI_TERMINAL:
+		GUICursor::getInstance()->ChangeCursor();
+		pcommand->TerminalCommand();
 		break;
 	}
 	return 0;
