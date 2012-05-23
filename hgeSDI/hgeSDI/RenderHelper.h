@@ -8,6 +8,9 @@ public:
 	RenderHelper(void);
 	~RenderHelper(void);
 
+	static void BeginRenderTar(HTARGET tar, DWORD col=0);
+	static void EndRenderTar();
+
 	static void RenderLine(float x1, float y1, float x2, float y2, DWORD col=0);
 	static void RenderLineR(float x, float y, float length, DWORD col=0);
 	static void RenderLineB(float x, float y, float length, DWORD col=0);

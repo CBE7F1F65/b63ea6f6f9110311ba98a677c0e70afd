@@ -4,6 +4,7 @@
 #include "Command.h"
 #include "GUICursor.h"
 #include "GUICoordinate.h"
+#include "ColorManager.h"
 
 #include "Resource.h"
 
@@ -20,7 +21,6 @@ MainInterface::MainInterface()
 	mousey = 0;
 	mousewheel = 0;
 	lastmousewheel = 0;
-	bgcol = 0xfff0f0f0;
 	wheelscalefactor = 1.25f;
 
 	cursorleftkeyindex = 0;
@@ -82,7 +82,7 @@ bool GfxRestoreFunc()
 bool MainInterface::Render()
 {
 	hge->Gfx_BeginScene();
-	hge->Gfx_Clear(bgcol);
+	hge->Gfx_Clear(ColorManager::GetBGColor());
 
 	float scrw=hge->System_GetState(HGE_SCREENWIDTH);
 	float scrh=hge->System_GetState(HGE_SCREENWIDTH);
@@ -106,6 +106,9 @@ bool MainInterface::Render()
 		hge->Gfx_RenderLine(x[0], y[0], x[1], y[1], 0xff000000|((DWORD)hge->Random_Int(0, 0xffffff)));
 	}
 	*/
+
+	// Render Command Floating
+	Command::getInstance()->Render();
 
 	// Render Coord
 	GUICoordinate::getInstance()->RenderCoordinate();
@@ -367,18 +370,23 @@ void MainInterface::DoUpdateStatusInfo()
 	CallUpdateStatusBarText(IDS_STATUS_PANE1, statusstr);
 }
 
-#define _PICKSTATE_NULL	0
-#define _PICKSTATE_PICKING		1
-#define _PICKSTATE_READY		2
+#define _PICKSTATE_NULL					0
+#define _PICKSTATE_REQUIREUPDATE		1
+#define _PICKSTATE_AFTERUPDATE			2
+#define _PICKSTATE_READY				3
 
 bool MainInterface::DoPickPoint( int restrict/*=0*/ )
 {
 	if (pickstate == _PICKSTATE_NULL)
 	{
 		pickrestrict = restrict;
-		pickstate = _PICKSTATE_PICKING;
+		pickstate = _PICKSTATE_REQUIREUPDATE;
 	}
-	if (pickstate == _PICKSTATE_READY)
+	else if (pickstate == _PICKSTATE_AFTERUPDATE)
+	{
+		pickstate = _PICKSTATE_REQUIREUPDATE;
+	}
+	else if (pickstate == _PICKSTATE_READY)
 	{
 		pickstate = _PICKSTATE_NULL;
 		return true;
@@ -388,10 +396,11 @@ bool MainInterface::DoPickPoint( int restrict/*=0*/ )
 
 bool MainInterface::UpdatePickPoint()
 {
-	if (pickstate != _PICKSTATE_PICKING)
+	if (pickstate != _PICKSTATE_REQUIREUPDATE)
 	{
 		return false;
 	}
+	pickstate = _PICKSTATE_AFTERUPDATE;
 	if (hge->Input_GetDIMouseKey(cursorleftkeyindex, DIKEY_UP))
 	{
 		pickx = mousex;

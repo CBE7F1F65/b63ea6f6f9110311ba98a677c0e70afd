@@ -116,6 +116,7 @@
     <None Include="res\writesmall.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ColorManager.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="CommandDefines.h" />
     <ClInclude Include="GUICoordinate.h" />
@@ -137,6 +138,7 @@
     <ClInclude Include="UICommandBox.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ColorManager.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="CommandProcess.cpp" />
     <ClCompile Include="CommandStrings.cpp" />

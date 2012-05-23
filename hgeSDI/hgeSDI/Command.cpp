@@ -2,6 +2,7 @@
 #include "Command.h"
 
 #include "Main.h"
+#include "RenderHelper.h"
 
 #define COMMANDLOGSTR_CREATECOMMAND		"OnCommand: "
 #define COMMANDLOGSTR_PROCESSCOMMAND	"Processing: "
@@ -9,6 +10,7 @@
 #define COMMANDLOGSTR_TERMINALCOMMAND	"TerminalCommand: "
 #define COMMANDLOGSTR_ERROR				"Error: "
 #define COMMANDLOGSTR_PARAM				"SetParam: "
+#define COMMANDLOGSTR_WANTNEXT			"Please Input: "
 
 Command * pCommandSingleton = NULL;
 
@@ -16,6 +18,7 @@ Command::Command()
 {
 	assert(pCommandSingleton==NULL);
 	ZeroMemory(&ccomm, sizeof(ccomm));
+	tarcommand = 0;
 	Init();
 }
 
@@ -102,6 +105,20 @@ void Command::LogParam( int index, int useflag )
 	}
 }
 
+void Command::LogWantNext()
+{
+	if (!ccomm.wantnext || IsInternalProcessing())
+	{
+		return;
+	}
+	if (ccomm.command < _COMM_NOLOGCOMMANDBEGIN || ccomm.command > _COMM_NOLOGCOMMANDEND)
+	{
+		char strlog[M_STRMAX];
+		sprintf_s(strlog, M_STRMAX, "%s: %s%s", GetCommandStr(), COMMANDLOGSTR_WANTNEXT, GetWantPromptStr());
+		MainInterface::getInstance()->CallAppendCommandLogText(strlog);
+	}
+}
+
 void Command::LogError( const char * str )
 {
 	char strlog[M_STRMAX*4];
@@ -139,6 +156,17 @@ int Command::FinishCommand()
 {
 	LogFinish();
 
+	for (list<CommandStepInfo>::iterator it = histcomm.begin(); it!=histcomm.end();)
+	{
+		if (it->command == ccomm.command)
+		{
+			it = histcomm.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
 	if (ccomm.command > _COMM_PUSHCOMMANDBEGIN && ccomm.command < _COMM_PUSHCOMMANDEND)
 	{
 		return PullCommand();
@@ -153,13 +181,24 @@ int Command::TerminalCommand()
 {
 	LogTerminal();
 
+	for (list<CommandStepInfo>::iterator it = histcomm.begin(); it!=histcomm.end();)
+	{
+		if (it->command == ccomm.command)
+		{
+			it = histcomm.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
 	if (ccomm.command > _COMM_PUSHCOMMANDBEGIN && ccomm.command < _COMM_PUSHCOMMANDEND)
 	{
 		return PullCommand();
 	}
 	else
 	{
-		return ClearCurrentCommand(true);
+		return ClearCurrentCommand();
 	}
 }
 
@@ -194,6 +233,7 @@ int Command::PullCommand()
 
 int Command::ClearCurrentCommand(bool callterminal /*=false*/)
 {
+	inputcommandlist.clear();
 	if (ccomm.command && callterminal)
 	{
 		StepTo(CSI_TERMINAL);
@@ -439,12 +479,16 @@ int Command::CommitCommand( const char * str )
 			LogError(_ic.substr);
 			return ccomm.command;
 		}
-		/*
+		
 		if (inext)
 		{
-			inext = _FindNextSubStr(str, commandsubstr, M_STRMAX, inext);
+			inext = _FindNextSubStr(str, _ic.substr, M_STRMAX, inext);
 		}
-		*/
+		else
+		{
+			return ccomm.command;
+		}
+		
 	}
 	/*
 	if (!ccomm.wantnext)
@@ -498,12 +542,12 @@ int Command::CommitCommand( const char * str )
 			break;
 		}
 		*/
+		inputcommandlist.push_back(_ic);
 		if (!inext)
 		{
 			break;
 		}
 		inext = _FindNextSubStr(str, _ic.substr, M_STRMAX, inext);
-		inputcommandlist.push_back(_ic);
 	}
 	return ccomm.command;
 }
@@ -587,13 +631,20 @@ int Command::_FindNextSubStr( const char * str, char * substr, int maxnsubstr, i
 	return i;
 }
 
-int Command::StepTo( int step, int wantnextindex/*=0*/, int wantnext/*=0*/, int wantnextprompt/*=0*/ )
+int Command::StepTo( int step, int wantnextindex/*=0*/, int wantnext/*=0*/, int wantnextprompt/*=0*/, bool pushback/*=true*/ )
 {
-	ccomm.savedstep = ccomm.step;
+	if (pushback)
+	{
+		histcomm.push_back(ccomm);
+	}
 	ccomm.step=step;
 	ccomm.wantnextindex = wantnextindex;
 	ccomm.wantnext = wantnext;
 	ccomm.wantprompt = wantnextprompt;
+	if (pushback)
+	{
+		LogWantNext();
+	}
 	return ccomm.step;
 }
 
@@ -607,4 +658,33 @@ int Command::FindCommandByStr( const char * str )
 		}
 	}
 	return 0;
+}
+
+int Command::StepBack()
+{
+	if (!histcomm.empty())
+	{
+		for (list<CommandStepInfo>::reverse_iterator it = histcomm.rbegin(); it!= histcomm.rend(); ++it)
+		{
+			if (it->command == ccomm.command)
+			{
+				StepTo(it->step, it->wantnextindex, it->wantnext, it->wantprompt, false);
+				histcomm.erase(--(it.base()));
+				break;
+			}
+		}
+	}
+	return ccomm.step;
+}
+
+void Command::Render()
+{
+	RenderHelper::TargetQuadRender(tarcommand, tarx, tary, 0xffffffff);
+}
+
+void Command::SetRenderTarget( HTARGET tar, float x/*=0*/, float y/*=0*/ )
+{
+	tarcommand = tar;
+	tarx = x;
+	tary = y;
 }

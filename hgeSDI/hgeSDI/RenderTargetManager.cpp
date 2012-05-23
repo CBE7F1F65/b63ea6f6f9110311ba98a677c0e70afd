@@ -22,8 +22,13 @@ RenderTargetManager * RenderTargetManager::getInstance()
 	return pRenderTargetManagerSingleton;
 }
 
-HTARGET RenderTargetManager::UpdateTarget( int id, int w, int h )
+HTARGET RenderTargetManager::UpdateTarget( int id, int w/*=0*/, int h/*=0*/ )
 {
+	if (!w && !h)
+	{
+		w = hge->System_GetState(HGE_SCREENWIDTH);
+		h = hge->System_GetState(HGE_SCREENHEIGHT);
+	}
 	for (list<RenderTargetInfo>::iterator it=tars.begin(); it!=tars.end(); ++it)
 	{
 		if (it->id == id)

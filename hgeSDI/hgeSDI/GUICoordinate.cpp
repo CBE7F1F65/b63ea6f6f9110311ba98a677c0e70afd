@@ -5,6 +5,7 @@
 #include "RenderTargetManager.h"
 
 #include "RenderHelper.h"
+#include "ColorManager.h"
 
 #include "GUICursor.h"
 
@@ -24,7 +25,6 @@ GUICoordinate * pGUICoordinateSingleton = NULL;
 GUICoordinate::GUICoordinate()
 {
 	assert(pGUICoordinateSingleton==NULL);
-	SetGridColors(0xffa0a0a0, 0xffd0d0d0, 0xffff0000, 0xff00ff00, 0xff000000);
 
 	hge = hgeCreate(HGE_VERSION);
 	targrid = NULL;
@@ -54,26 +54,26 @@ void GUICoordinate::RenderGridReDraw()
 			switch (it->mgridID)
 			{
 			case _GUICG_MGID_AXIS:
-				col = xaxiscol;
+				col = ColorManager::GetGridXAxisColor();
 				break;
 			case _GUICG_MGID_MAIN:
-				col = gridcol;
+				col = ColorManager::GetGridMainColor();
 				break;
 			case _GUICG_MGID_SUB:
-				col = subgridcol;
+				col = ColorManager::GetGridSubColor();
 				break;
 			}
 			RenderHelper::RenderLineB(it->scrvalue, 0, scrh_s, col);
 			switch (jt->mgridID)
 			{
 			case _GUICG_MGID_AXIS:
-				col = yaxiscol;
+				col = ColorManager::GetGridYAxisColor();
 				break;
 			case _GUICG_MGID_MAIN:
-				col = gridcol;
+				col = ColorManager::GetGridMainColor();
 				break;
 			case _GUICG_MGID_SUB:
-				col = subgridcol;
+				col = ColorManager::GetGridSubColor();
 				break;
 			}
 			RenderHelper::RenderLineR(0, jt->scrvalue, scrw_s, col);
@@ -104,43 +104,43 @@ void GUICoordinate::RenderGrid()
 	}
 }
 
-void GUICoordinate::RenderCoordinate()
+void GUICoordinate::DoRenderCoordinate( float renderatx, float renderaty )
 {
 #define _GUICC_LENGTH		48
 #define _GUICC_BOXSIZE		3
 #define _GUICC_LETTERSSIZE		8
 #define _GUICC_LETTERMARGIN		2
 #define _GUICC_LETTERBEGIN		(_GUICC_LETTERMARGIN+_GUICC_LENGTH)
-	if (originx_s >= 0 && originx_s <= scrw_s && originy_s >= 0 && originy_s <= scrh_s)
+
+	DWORD coordcol = ColorManager::GetCoordColor();
+
+	RenderHelper::RenderLineR(renderatx, renderaty, _GUICC_LENGTH, coordcol);
+	RenderHelper::RenderLineB(renderatx, renderaty, _GUICC_LENGTH, coordcol);
+
+	RenderHelper::RenderSquare(renderatx-_GUICC_BOXSIZE, renderaty-_GUICC_BOXSIZE, _GUICC_BOXSIZE*2, coordcol);
+
+	// X
+	RenderHelper::RenderLine(renderatx+_GUICC_LETTERBEGIN, renderaty+_GUICC_LETTERMARGIN, renderatx+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE, renderaty+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE, coordcol);
+	RenderHelper::RenderLine(renderatx+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE, renderaty+_GUICC_LETTERMARGIN, renderatx+_GUICC_LETTERBEGIN, renderaty+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE, coordcol);
+	// Y
+	RenderHelper::RenderArrowB(renderatx+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE/2, renderaty+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE/2, 0, _GUICC_LETTERSSIZE/2, coordcol);
+	RenderHelper::RenderLineB(renderatx+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE/2, renderaty+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE/2, _GUICC_LETTERSSIZE/2, coordcol);
+}
+
+void GUICoordinate::RenderCoordinate()
+{
+
+#define _GUICC_RENDERAT	15
+
+	if (originx_s < 0 || originx_s > scrw_s || originy_s < 0 || originy_s > scrh_s)
 	{
-		RenderHelper::RenderLineR(originx_s, originy_s, _GUICC_LENGTH, coordcol);
-		RenderHelper::RenderLineB(originx_s, originy_s, _GUICC_LENGTH, coordcol);
-
-		RenderHelper::RenderSquare(originx_s-_GUICC_BOXSIZE, originy_s-_GUICC_BOXSIZE, _GUICC_BOXSIZE*2, coordcol);
-
-		// X
-		RenderHelper::RenderLine(originx_s+_GUICC_LETTERBEGIN, originy_s+_GUICC_LETTERMARGIN, originx_s+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE, originy_s+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE, coordcol);
-		RenderHelper::RenderLine(originx_s+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE, originy_s+_GUICC_LETTERMARGIN, originx_s+_GUICC_LETTERBEGIN, originy_s+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE, coordcol);
-		// Y
-		RenderHelper::RenderArrowB(originx_s+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE/2, originy_s+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE/2, 0, _GUICC_LETTERSSIZE/2, coordcol);
-		RenderHelper::RenderLineB(originx_s+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE/2, originy_s+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE/2, _GUICC_LETTERSSIZE/2, coordcol);
-
-		/*
-		// Arrow
-		hge->Gfx_RenderLine(scroriginx, scroriginy, scroriginx+_GUICC_SIZE, scroriginy, coordcol);
-		hge->Gfx_RenderLine(scroriginx, scroriginy, scroriginx, scroriginy+_GUICC_SIZE, coordcol);
-
-		// Box
-		hge->Gfx_RenderLine(scroriginx-_GUICC_BOXSIZE, scroriginy-_GUICC_BOXSIZE, scroriginx+_GUICC_BOXSIZE, scroriginy-_GUICC_BOXSIZE, coordcol);
-		hge->Gfx_RenderLine(scroriginx+_GUICC_BOXSIZE, scroriginy-_GUICC_BOXSIZE, scroriginx+_GUICC_BOXSIZE, scroriginy+_GUICC_BOXSIZE, coordcol);
-		hge->Gfx_RenderLine(scroriginx+_GUICC_BOXSIZE, scroriginy+_GUICC_BOXSIZE, scroriginx-_GUICC_BOXSIZE, scroriginy+_GUICC_BOXSIZE, coordcol);
-		hge->Gfx_RenderLine(scroriginx-_GUICC_BOXSIZE, scroriginy+_GUICC_BOXSIZE, scroriginx-_GUICC_BOXSIZE, scroriginy-_GUICC_BOXSIZE, coordcol);
-
-		// Letter
-		hge->Gfx_RenderLine(scroriginx+_GUICC_LETTERBEGIN, scroriginy+_GUICC_LETTERMARGIN, scroriginx+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE, scroriginy+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE, coordcol);
-		hge->Gfx_RenderLine(scroriginx+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE, scroriginy+_GUICC_LETTERMARGIN, scroriginx+_GUICC_LETTERBEGIN, scroriginy+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE, coordcol);
-		*/
 	}
+	else
+	{
+		DoRenderCoordinate(originx_s, originy_s);
+	}
+	DoRenderCoordinate(_GUICC_RENDERAT, _GUICC_RENDERAT);
+
 }
 
 void GUICoordinate::SetGrid( int _measuretype, float _originxpos, float _originypos, float _scale/*=1.0f*/ )
@@ -188,18 +188,36 @@ int GUICoordinate::DoPanCommand()
 	switch (pcommand->GetStep())
 	{
 	case CSI_INIT:
+		panwillterminate = false;
 		GUICursor::getInstance()->ChangeCursor(GUIC_HAND);
 		pcommand->StepTo(CSI_PAN_READY);
 		break;
 	case CSI_PAN_READY:
-		if (hge->Input_GetDIKey(DIK_SPACE, DIKEY_UP) || hge->Input_GetDIKey(DIK_ESCAPE, DIKEY_UP))
+		if (hge->Input_GetDIKey(DIK_SPACE, DIKEY_UP))
 		{
-			pcommand->StepTo(CSI_TERMINAL);
+			if (hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex))
+			{
+				panwillterminate = true;
+			}
+			else
+			{
+				pcommand->StepTo(CSI_FINISH);
+			}
 		}
 		if (hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex) && !hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_DOWN))
 		{
 			DoPan(pmain->mousex-pmain->lastmousex, pmain->mousey-pmain->lastmousey);
 		}
+		else if (panwillterminate && !hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex))
+		{
+			pcommand->StepTo(CSI_FINISH);
+		}
+		break;
+	case CSI_PAUSE:
+		GUICursor::getInstance()->ChangeCursor();
+		break;
+	case CSI_RESUME:
+		GUICursor::getInstance()->ChangeCursor(GUIC_HAND);
 		break;
 	case CSI_FINISH:
 		GUICursor::getInstance()->ChangeCursor();
@@ -375,23 +393,13 @@ void GUICoordinate::UpdateScreenMeasure()
 		}
 	}
 
-	targrid = RenderTargetManager::getInstance()->UpdateTarget(RTID_GRID, scrw_s, scrh_s);
+	targrid = RenderTargetManager::getInstance()->UpdateTarget(RTID_GRID);
 	if (targrid)
 	{
-		hge->Gfx_BeginScene(targrid);
-		hge->Gfx_Clear(0x0);
+		RenderHelper::BeginRenderTar(targrid);
 		RenderGridReDraw();
-		hge->Gfx_EndScene();
+		RenderHelper::EndRenderTar();
 	}
-}
-
-void GUICoordinate::SetGridColors( DWORD _gridcol, DWORD _subgridcol, DWORD _xaxiscol, DWORD _yaxiscol, DWORD _coordcol )
-{
-	gridcol = _gridcol;
-	subgridcol = _subgridcol;
-	xaxiscol = _xaxiscol;
-	yaxiscol = _yaxiscol;
-	coordcol = _coordcol;
 }
 
 void GUICoordinate::SetCursorPosition( float x_s, float y_s )

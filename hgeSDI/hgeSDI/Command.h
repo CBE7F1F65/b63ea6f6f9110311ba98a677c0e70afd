@@ -1,5 +1,6 @@
 #pragma once
 
+#include "MainDependency.h"
 #include "CommandDefines.h"
 
 struct CommandParam
@@ -18,7 +19,6 @@ struct CommandStepInfo
 {
 	int command;
 	int step;
-	int savedstep;
 	int wantnext;
 	int wantnextindex;
 	int wantprompt;
@@ -52,6 +52,7 @@ public:
 	void Init();
 	void InitCommandStrInfo();
 	void InitWantPromptInfo();
+	void Render();
 
 	int CreateCommand(int comm);
 	int ProcessCommand();
@@ -67,6 +68,7 @@ public:
 	void LogFinish();
 	void LogTerminal();
 	void LogParam(int index, int useflag);
+	void LogWantNext();
 	void LogError(const char * str);
 
 	int PushCommand();
@@ -78,6 +80,7 @@ protected:
 public:
 
 	CommandStepInfo ccomm;
+	list<CommandStepInfo> histcomm;
 	list<CommandStepInfo> pushedcomm;
 	CommandStrInfo scinfo[COMMANDINDEXMAX];
 	WantPromptInfo wpinfo[COMMANDWANTPROMPTMAX];
@@ -108,11 +111,8 @@ public:
 		return ccomm.step;
 	};
 
-	int StepTo(int step, int wantnextindex=0, int wantnext=0, int wantnextprompt=0);
-	inline int StepBack()
-	{
-		return StepTo(ccomm.savedstep);
-	};
+	int StepTo(int step, int wantnextindex=0, int wantnext=0, int wantnextprompt=0, bool pushback=true);
+	int StepBack();
 
 	inline const char * GetWantPromptStr(int wantprompt=-1)
 	{
@@ -138,5 +138,10 @@ public:
 			command = ccomm.command;
 		}
 		return scinfo[command].shortstr;
-	}
+	};
+
+	HTARGET tarcommand;
+	float tarx;
+	float tary;
+	void SetRenderTarget(HTARGET tar, float x=0, float y=0);
 };

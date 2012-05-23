@@ -3,6 +3,7 @@
 
 #include "Main.h"
 #include "RenderHelper.h"
+#include "ColorManager.h"
 
 GUICursor * pGUICursorSingleton = NULL;
 
@@ -10,7 +11,6 @@ GUICursor::GUICursor()
 {
 	assert(pGUICursorSingleton==NULL);
 	guic = lastguic = GUIC_NORMAL;
-	col = 0xff000000;
 }
 GUICursor::~GUICursor()
 {
@@ -24,11 +24,6 @@ GUICursor * GUICursor::getInstance()
 		pGUICursorSingleton = new GUICursor();
 	}
 	return pGUICursorSingleton;
-}
-
-void GUICursor::SetCursorColor( DWORD _col )
-{
-	col = _col;
 }
 
 void GUICursor::ChangeCursor( int _guic )
@@ -49,6 +44,7 @@ void GUICursor::Render( float x, float y )
 	HGE * hge = MainInterface::getInstance()->hge;
 	if (hge)
 	{
+		DWORD col = ColorManager::GetCursorColor();
 #define _GUICN_SIZE		48
 #define _GUICN_BOXSIZE	3
 #define _GUICN_SMALLSIZE		16

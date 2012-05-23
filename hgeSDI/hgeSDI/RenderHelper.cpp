@@ -141,3 +141,14 @@ void RenderHelper::TargetQuadRender( HTARGET tar, float x, float y, DWORD col/*=
 
 	hge->Gfx_RenderQuad(&quad);
 }
+
+void RenderHelper::BeginRenderTar( HTARGET tar, DWORD col/*=0*/ )
+{
+	hge->Gfx_BeginScene(tar);
+	hge->Gfx_Clear(col);
+}
+
+void RenderHelper::EndRenderTar()
+{
+	hge->Gfx_EndScene();
+}

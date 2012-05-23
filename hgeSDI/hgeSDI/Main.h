@@ -65,9 +65,7 @@ public:
 
 	int cursorleftkeyindex;
 	int cursorrightkeyindex;
-
-	DWORD bgcol;
-
+	
 	bool manageloop;
 
 	int pickstate;

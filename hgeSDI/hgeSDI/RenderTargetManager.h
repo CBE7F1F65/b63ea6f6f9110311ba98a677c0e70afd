@@ -5,6 +5,7 @@
 enum
 {
 	RTID_GRID,
+	RTID_COMMAND,
 };
 
 struct RenderTargetInfo
@@ -23,7 +24,7 @@ public:
 
 	static RenderTargetManager * getInstance();
 
-	HTARGET UpdateTarget(int id, int w, int h);
+	HTARGET UpdateTarget(int id, int w=0, int h=0);
 
 	list<RenderTargetInfo> tars;
 	HGE * hge;

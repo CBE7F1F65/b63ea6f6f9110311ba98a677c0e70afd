@@ -9,4 +9,6 @@ public:
 	static LineCommand * getInstance();
 
 	int Line();
+	void LineRenderToTarget();
+	void ReleaseTarget();
 };

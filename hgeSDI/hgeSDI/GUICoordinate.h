@@ -32,6 +32,7 @@ public:
 	void RenderGrid();
 	void RenderGridReDraw();
 	void RenderCoordinate();
+	void DoRenderCoordinate(float atx, float aty);
 	void CheckScale()
 	{
 		if (scale == 0.0f)
@@ -56,12 +57,6 @@ public:
 	float subgridspace_s;
 	int nsubgrid;
 
-	DWORD gridcol;
-	DWORD subgridcol;
-	DWORD xaxiscol;
-	DWORD yaxiscol;
-	DWORD coordcol;
-
 	float cursorx_s;
 	float cursory_s;
 	float cursorx_c;
@@ -74,6 +69,8 @@ public:
 	};
 	vector<GridInfo> gridxs_s;
 	vector<GridInfo> gridys_s;
+
+	bool panwillterminate;
 
 	HTARGET targrid;
 	HGE * hge;
