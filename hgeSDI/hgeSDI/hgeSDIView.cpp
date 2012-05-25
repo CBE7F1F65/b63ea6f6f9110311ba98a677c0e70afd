@@ -45,6 +45,7 @@ BEGIN_MESSAGE_MAP(ChgeSDIView, CView)
 	ON_WM_ACTIVATE()
 	ON_WM_TIMER()
 	ON_WM_MOUSEACTIVATE()
+//	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
 // ChgeSDIView 构造/析构
@@ -112,11 +113,24 @@ void ChgeSDIView::OnRButtonUp(UINT /* nFlags */, CPoint point)
 	OnContextMenu(this, point);
 }
 
+#include "Main.h"
+
 void ChgeSDIView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 {
+	GetMainFrame()->CallShowContextMenu(point.x, point.y);
+	/*
 #ifndef SHARED_HANDLERS
-	theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EDIT, point.x, point.y, this, TRUE);
+	MainInterface::getInstance().SetMainViewActive(false);
+	
+	CMenu menu;
+	menu.LoadMenu(IDR_POPUP_EDIT);
+	HMENU hmenuPopup = ::GetSubMenu(menu.Detach(), 0);
+	theApp.GetContextMenuManager()->TrackPopupMenu(hmenuPopup, point.x, point.y, this);
+	
+//	theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EDIT, point.x, point.y, this, TRUE);
+	MainInterface::getInstance().SetMainViewActive(true);
 #endif
+	*/
 }
 
 
@@ -228,3 +242,11 @@ void ChgeSDIView::OnUpdate(CView* /*pSender*/, LPARAM /*lHint*/, CObject* /*pHin
 {
 	// TODO: 在此添加专用代码和/或调用基类
 }
+
+
+//void ChgeSDIView::OnMouseMove(UINT nFlags, CPoint point)
+//{
+//	// TODO: 在此添加消息处理程序代码和/或调用默认值
+//	GetMainFrame()->m_wndUIFloatingCommand.SetWindowPos(NULL, point.x+20, point.y+20, 100, 100, SWP_DRAWFRAME);
+//	CView::OnMouseMove(nFlags, point);
+//}

@@ -20,11 +20,8 @@ LineCommand::~LineCommand()
 {
 
 }
-int LineCommand::Line()
+void LineCommand::OnProcessCommand()
 {
-	Command * pcommand = &Command::getInstance();
-	MainInterface * pmain = &MainInterface::getInstance();
-	GUICoordinate * pguic = &GUICoordinate::getInstance();
 	switch (pcommand->GetStep())
 	{
 	case CSI_INIT:
@@ -53,11 +50,8 @@ int LineCommand::Line()
 		{
 			if (!pcommand->IsInternalProcessing())
 			{
-				float x = pmain->pickx;
-				float y = pmain->picky;
-				pguic->ClientToCoordinate(&x, &y);
-				pcommand->SetParamX(CSP_LINE_B_XY, x);
-				pcommand->SetParamY(CSP_LINE_B_XY, y);
+				pcommand->SetParamX(CSP_LINE_B_XY, pguic->StoCx(pmain->pickx));
+				pcommand->SetParamY(CSP_LINE_B_XY, pguic->StoCy(pmain->picky));
 				pcommand->StepTo(
 					CSI_LINE_WANTX2, 
 					CSP_LINE_E_XY, 
@@ -83,11 +77,8 @@ int LineCommand::Line()
 		{
 			if (!pcommand->IsInternalProcessing())
 			{
-				float x = pmain->pickx;
-				float y = pmain->picky;
-				pguic->ClientToCoordinate(&x, &y);
-				pcommand->SetParamX(CSP_LINE_B_XY, x);
-				pcommand->SetParamY(CSP_LINE_B_XY, y);
+				pcommand->SetParamX(CSP_LINE_B_XY,  pguic->StoCx(pmain->pickx));
+				pcommand->SetParamY(CSP_LINE_B_XY,  pguic->StoCy(pmain->picky));
 				pcommand->StepTo(
 					CSI_LINE_WANTX2, 
 					CSP_LINE_E_XY, 
@@ -113,11 +104,8 @@ int LineCommand::Line()
 		{
 			if (!pcommand->IsInternalProcessing())
 			{
-				float x = pmain->pickx;
-				float y = pmain->picky;
-				pguic->ClientToCoordinate(&x, &y);
-				pcommand->SetParamX(CSP_LINE_E_XY, x);
-				pcommand->SetParamY(CSP_LINE_E_XY, y);
+				pcommand->SetParamX(CSP_LINE_E_XY, pguic->StoCx(pmain->pickx));
+				pcommand->SetParamY(CSP_LINE_E_XY, pguic->StoCy(pmain->picky));
 				pcommand->StepTo(CSI_FINISH);
 			}
 		}
@@ -135,11 +123,8 @@ int LineCommand::Line()
 		{
 			if (!pcommand->IsInternalProcessing())
 			{
-				float x = pmain->pickx;
-				float y = pmain->picky;
-				pguic->ClientToCoordinate(&x, &y);
-				pcommand->SetParamX(CSP_LINE_E_XY, x);
-				pcommand->SetParamY(CSP_LINE_E_XY, y);
+				pcommand->SetParamX(CSP_LINE_E_XY, pguic->StoCx(pmain->pickx));
+				pcommand->SetParamY(CSP_LINE_E_XY, pguic->StoCy(pmain->picky));
 				pcommand->StepTo(CSI_FINISH);
 			}
 		}
@@ -153,10 +138,22 @@ int LineCommand::Line()
 		break;
 
 	case CSI_FINISH:
-		GUICursor::getInstance().ChangeCursor();
+//		GUICursor::getInstance().ChangeCursor();
 		ReleaseTarget();
-		DoneLineCommand();
-		pcommand->FinishCommand();
+		DoneCommand();
+		if (true)
+		{
+			float nx1, ny1;
+			pcommand->GetParamXY(CSP_LINE_E_XY, &nx1, &ny1);
+
+			pcommand->FinishCommand();
+
+			pcommand->CreateCommand(COMM_LINE);
+			pcommand->SetParamX(CSP_LINE_B_XY, nx1);
+			pcommand->SetParamY(CSP_LINE_B_XY, ny1);
+			pcommand->StepTo(CSI_LINE_WANTX2);
+		}
+
 		break;
 
 	case CSI_TERMINAL:
@@ -165,22 +162,21 @@ int LineCommand::Line()
 		pcommand->TerminalCommand();
 		break;
 	}
-	LineCommandRenderToTarget();
-	return 0;
+	RenderToTarget();
 }
 
-void LineCommand::LineCommandRenderToTarget()
+void LineCommand::RenderToTarget()
 {
-	Command * pcommand = &Command::getInstance();
 	int nstep = pcommand->GetStep();
 	if (nstep >= CSI_LINE_WANTX2 && nstep <= CSI_LINE_WANTY2)
 	{
 		float x1, y1;
 		pcommand->GetParamXY(CSP_LINE_B_XY, &x1, &y1);
-		GUICoordinate::getInstance().CoordinateToClient(&x1, &y1);
 
 		float x2 = MainInterface::getInstance().mousex;
 		float y2 = MainInterface::getInstance().mousey;
+		x2 = GUICoordinate::getInstance().StoCx(x2);
+		y2 = GUICoordinate::getInstance().StoCy(y2);
 
 		HTARGET tar = RenderTargetManager::getInstance().UpdateTarget(RTID_COMMAND);
 
@@ -192,15 +188,9 @@ void LineCommand::LineCommandRenderToTarget()
 	}
 }
 
-void LineCommand::ReleaseTarget()
-{
-	Command::getInstance().SetRenderTarget(0);
-}
-
-void LineCommand::DoneLineCommand()
+void LineCommand::DoneCommand()
 {
 	GStraightLine * line = new GStraightLine(&(GObjectManager::getInstance().basenode));
-	Command * pcommand = &Command::getInstance();
 	float xb, yb, xe, ye;
 	pcommand->GetParamXY(CSP_LINE_B_XY, &xb, &yb);
 	pcommand->GetParamXY(CSP_LINE_E_XY, &xe, &ye);

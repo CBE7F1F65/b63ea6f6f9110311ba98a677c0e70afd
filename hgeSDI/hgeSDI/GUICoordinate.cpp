@@ -29,10 +29,12 @@ GUICoordinate::GUICoordinate()
 
 GUICoordinate::~GUICoordinate()
 {
+	/*
 	if (hge)
 	{
 		hge->Release();
 	}
+	*/
 }
 
 void GUICoordinate::RenderGridReDraw()
@@ -54,7 +56,7 @@ void GUICoordinate::RenderGridReDraw()
 				col = ColorManager::GetGridSubColor();
 				break;
 			}
-			RenderHelper::RenderLineB(it->scrvalue, 0, scrh_s, col);
+			RenderHelper::RenderLineB_S(it->scrvalue, 0, scrh_s, col);
 			switch (jt->mgridID)
 			{
 			case _GUICG_MGID_AXIS:
@@ -67,7 +69,7 @@ void GUICoordinate::RenderGridReDraw()
 				col = ColorManager::GetGridSubColor();
 				break;
 			}
-			RenderHelper::RenderLineR(0, jt->scrvalue, scrw_s, col);
+			RenderHelper::RenderLineR_S(0, jt->scrvalue, scrw_s, col);
 		}
 	}
 }
@@ -80,7 +82,7 @@ void GUICoordinate::RenderGrid()
 	}
 	else
 	{
-		RenderHelper::TargetQuadRender(targrid, 0, 0, 0xffffffff);
+		RenderHelper::TargetQuadRender_S(targrid, 0, 0, 0xffffffff);
 		/*
 		HTEXTURE tex = hge->Target_GetTexture(targrid);
 		hgeQuad quad;
@@ -105,17 +107,17 @@ void GUICoordinate::DoRenderCoordinate( float renderatx, float renderaty )
 
 	DWORD coordcol = ColorManager::GetCoordColor();
 
-	RenderHelper::RenderLineR(renderatx, renderaty, _GUICC_LENGTH, coordcol);
-	RenderHelper::RenderLineB(renderatx, renderaty, _GUICC_LENGTH, coordcol);
+	RenderHelper::RenderLineR_S(renderatx, renderaty, _GUICC_LENGTH, coordcol);
+	RenderHelper::RenderLineB_S(renderatx, renderaty, _GUICC_LENGTH, coordcol);
 
-	RenderHelper::RenderSquare(renderatx-_GUICC_BOXSIZE, renderaty-_GUICC_BOXSIZE, _GUICC_BOXSIZE*2, coordcol);
+	RenderHelper::RenderSquare_S(renderatx-_GUICC_BOXSIZE, renderaty-_GUICC_BOXSIZE, _GUICC_BOXSIZE*2, coordcol);
 
 	// X
-	RenderHelper::RenderLine(renderatx+_GUICC_LETTERBEGIN, renderaty+_GUICC_LETTERMARGIN, renderatx+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE, renderaty+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE, coordcol);
-	RenderHelper::RenderLine(renderatx+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE, renderaty+_GUICC_LETTERMARGIN, renderatx+_GUICC_LETTERBEGIN, renderaty+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE, coordcol);
+	RenderHelper::RenderLine_S(renderatx+_GUICC_LETTERBEGIN, renderaty+_GUICC_LETTERMARGIN, renderatx+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE, renderaty+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE, coordcol);
+	RenderHelper::RenderLine_S(renderatx+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE, renderaty+_GUICC_LETTERMARGIN, renderatx+_GUICC_LETTERBEGIN, renderaty+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE, coordcol);
 	// Y
-	RenderHelper::RenderArrowB(renderatx+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE/2, renderaty+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE/2, 0, _GUICC_LETTERSSIZE/2, coordcol);
-	RenderHelper::RenderLineB(renderatx+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE/2, renderaty+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE/2, _GUICC_LETTERSSIZE/2, coordcol);
+	RenderHelper::RenderArrowB_S(renderatx+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE/2, renderaty+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE/2, 0, _GUICC_LETTERSSIZE/2, coordcol);
+	RenderHelper::RenderLineB_S(renderatx+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE/2, renderaty+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE/2, _GUICC_LETTERSSIZE/2, coordcol);
 }
 
 void GUICoordinate::RenderCoordinate()
@@ -151,14 +153,14 @@ void GUICoordinate::SetGrid( int _measuretype, float _originxpos, float _originy
 	DoZoom(0, 0, _scale);
 }
 
-int GUICoordinate::DoZoomCommand()
+void GUICoordinate::OnProcessZoomCommand()
 {
 	Command * pcommand = &(Command::getInstance());
 	float x, y, _scale;
 	pcommand->GetParamXY(CSP_DOZOOM_C_XY_SCALE, &x, &y);
 	_scale = pcommand->GetParamF(CSP_DOZOOM_C_XY_SCALE);
 	DoZoom(x, y, _scale);
-	return pcommand->FinishCommand();
+	pcommand->FinishCommand();
 }
 
 void GUICoordinate::DoPan( float xoffset_s, float yoffset_s )
@@ -172,7 +174,7 @@ void GUICoordinate::DoPan( float xoffset_s, float yoffset_s )
 	}
 }
 
-int GUICoordinate::DoPanCommand()
+void GUICoordinate::OnProcessPanCommand()
 {
 	Command * pcommand = &Command::getInstance();
 	MainInterface * pmain = &MainInterface::getInstance();
@@ -219,7 +221,6 @@ int GUICoordinate::DoPanCommand()
 		pcommand->TerminalCommand();
 		break;
 	}
-	return 0;
 }
 
 void GUICoordinate::DoZoom(float cx_s, float cy_s, float _scale )
@@ -242,43 +243,17 @@ void GUICoordinate::DoZoom(float cx_s, float cy_s, float _scale )
 	UpdateScreenMeasure();
 }
 
-void GUICoordinate::ClientToCoordinate( float * x, float * y )
-{
-	if (!x || !y)
-	{
-		return;
-	}
-	CheckScale();
-	*x = ((*x)-originx_s)/scale;
-	*y = ((*y)-originy_s)/scale;
-}
-
-void GUICoordinate::CoordinateToClient( float * x, float * y )
-{
-	if (!x || !y)
-	{
-		return;
-	}
-	CheckScale();
-	*x = (*x)*scale+originx_s;
-	*y = (*y)*scale+originy_s;
-}
-
 void GUICoordinate::UpdateScreenMeasure()
 {
 	CheckScale();
 
-	float x = 0;
-	float y = 0;
-	ClientToCoordinate(&x, &y);
-	lboundary_c = x;
-	tboundary_c = y;
+	lboundary_c = StoCx(0);
+	tboundary_c = StoCy(0);
 	
-	scrw_s = x = hge->System_GetState(HGE_SCREENWIDTH);
-	scrh_s = y = hge->System_GetState(HGE_SCREENHEIGHT);
-	ClientToCoordinate(&x, &y);
-	rboundary_c = x;
-	bboundary_c = y;
+	scrw_s = hge->System_GetState(HGE_SCREENWIDTH);
+	scrh_s = hge->System_GetState(HGE_SCREENHEIGHT);
+	rboundary_c = StoCx(scrw_s);
+	bboundary_c = StoCy(scrh_s);
 
 
 #define _SCALEB_L1T 8.0f
@@ -313,7 +288,8 @@ void GUICoordinate::UpdateScreenMeasure()
 	float nearestybegin = nybegin*subgridspace_c;
 
 
-	CoordinateToClient(&nearestxbegin, &nearestybegin);
+	nearestxbegin = CtoSx(nearestxbegin);
+	nearestybegin = CtoSy(nearestybegin);
 	if (nearestxbegin < 0)
 	{
 		nearestxbegin += subgridspace_s;
@@ -391,11 +367,13 @@ void GUICoordinate::UpdateScreenMeasure()
 		RenderGridReDraw();
 		RenderHelper::EndRenderTar();
 	}
+	RenderTargetManager::getInstance().SetNeedUpdate();
 }
 
 void GUICoordinate::SetCursorPosition( float x_s, float y_s )
 {
-	cursorx_s = cursorx_c = x_s;
-	cursory_s = cursory_c = y_s;
-	ClientToCoordinate(&cursorx_c, &cursory_c);
+	cursorx_s = x_s;
+	cursory_s = y_s;
+	cursorx_c = StoCx(cursorx_s);
+	cursory_c = StoCy(cursory_s);
 }

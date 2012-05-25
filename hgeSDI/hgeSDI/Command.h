@@ -68,7 +68,7 @@ public:
 	void Render();
 
 	int CreateCommand(int comm);
-	int ProcessCommand();
+	void ProcessCommand();
 	int ProcessCommittedCommand();
 	int FinishCommand();
 	int TerminalCommand();

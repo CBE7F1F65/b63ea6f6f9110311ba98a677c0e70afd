@@ -2,9 +2,11 @@
 #include "GObjectManager.h"
 
 #include "RenderTargetManager.h"
+#include "RenderHelper.h"
 
 GObjectManager::GObjectManager()
 {
+	tarobjs = NULL;
 }
 GObjectManager::~GObjectManager()
 {
@@ -14,11 +16,25 @@ GObjectManager::~GObjectManager()
 void GObjectManager::Update()
 {
 	basenode.OnUpdate();
+
+	bool tarupdated=false;
+	HTARGET tar = RenderTargetManager::getInstance().UpdateTarget(RTID_GOBJECTS, &tarupdated);
+	if (tar != tarobjs || tarupdated || basenode.bModified)
+	{
+		tarobjs = tar;
+		RenderHelper::BeginRenderTar(tar);
+		basenode.OnRender();
+		RenderHelper::EndRenderTar();
+	}
+	basenode.OnClearModify();
 }
 
 void GObjectManager::Render()
 {
-	basenode.OnRender();
+	if (tarobjs)
+	{
+		RenderHelper::TargetQuadRender_S(tarobjs, 0, 0, 0xffffffff);
+	}
 }
 
 void GObjectManager::Delete()

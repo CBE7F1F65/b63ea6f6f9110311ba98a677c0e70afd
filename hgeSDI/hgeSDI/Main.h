@@ -2,6 +2,9 @@
 
 #include "MainDependency.h"
 
+#define MVINACTIVEREASON_POPUP				1
+#define MVINACTIVEREASON_FLOATINGCOMMAND	2
+
 // MFC
 #include "hgeSDIView.h"
 
@@ -27,6 +30,7 @@ private:
 public:
 	
 	bool IsMainViewActive();
+	void SetMainViewActive(bool bActive, int reason);
 
 	// From Frame
 	bool OnInit(void * parent, int w, int h);
@@ -52,8 +56,9 @@ public:
 	void DoUpdateStatusInfo();
 
 	bool DoPickPoint(int restrict=0);
-
 	bool UpdatePickPoint();
+
+	void DoCheckFloatCommand();
 
 	bool HGEThreadFunc();
 
@@ -63,6 +68,11 @@ public:
 	bool FocusGain();
 	bool Exit();
 	bool GfxRestore();
+
+	inline float GetPrecision()
+	{
+		return precision;
+	};
 
 	HGE * hge;
 	int resizewindow_w;
@@ -86,6 +96,11 @@ public:
 	float pickx;
 	float picky;
 	int pickid;
+
+	float precision;
+	bool bActive;
+	int toactivedelay;
+	int inactivereason;
 
 	// MFC
 	ChgeSDIView * parentview;

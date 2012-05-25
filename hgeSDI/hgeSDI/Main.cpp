@@ -11,6 +11,7 @@
 
 #include "Resource.h"
 
+#define MV_ACTIVEDELAY	10
 
 MainInterface::MainInterface()
 {
@@ -27,9 +28,13 @@ MainInterface::MainInterface()
 	cursorleftkeyindex = 0;
 	cursorrightkeyindex = 1;
 
+	toactivedelay = -1;
+
 	manageloop = false;
+	bActive = false;
 
 	pickstate = 0;
+	precision = 0.5f;
 }
 
 MainInterface::~MainInterface()
@@ -103,16 +108,46 @@ bool MainInterface::Frame()
 {
 	DoResizeWindow();
 
-	if (hge->Input_IsMouseOver())
+	if (toactivedelay > 0)
+	{
+		toactivedelay--;
+	}
+	else if (!toactivedelay)
+	{
+		if (!bActive)
+		{
+			bActive = true;
+			toactivedelay = -1;
+		}
+	}
+
+	if (hge->Input_GetDIKey(DIK_ESCAPE, DIKEY_UP))
+	{
+//		parentview->GetMainFrame()->m_wndUIFloatingEdit.Hide();
+	}
+
+	if (hge->Input_IsMouseOver() && bActive)
 	{
 		SetFocus(hge->System_GetState(HGE_HWND));
 	}
+
+	if (IsMainViewActive())
+	{
+		hge->System_SetState(HGE_HIDEMOUSE, true);
+	}
+	else
+	{
+		hge->System_SetState(HGE_HIDEMOUSE, false);
+	}
+
 
 	lastmousex = mousex;
 	lastmousey = mousey;
 	hge->Input_GetMousePos(&mousex, &mousey);
 	lastmousewheel = mousewheel;
 	mousewheel = hge->Input_GetMouseWheel();
+
+	DoCheckFloatCommand();
 
 	Command * pcommand = &Command::getInstance();
 
@@ -129,7 +164,7 @@ bool MainInterface::Frame()
 	{
 		pcommand->CreateCommand(COMM_PAN);
 	}
-	if (hge->Input_GetDIKey(DIK_ESCAPE, DIKEY_UP))
+	if (IsMainViewActive() && hge->Input_GetDIKey(DIK_ESCAPE, DIKEY_UP))
 	{
 		if (pcommand->ccomm.command)
 		{
@@ -224,6 +259,7 @@ bool MainInterface::OnInit(void * parent, int w, int h)
 	{
 		return false;
 	}
+	bActive = true;
 
 	// MFC
 	parentview = (ChgeSDIView *)parent;
@@ -289,6 +325,7 @@ void MainInterface::OnUpdateTimer()
 
 void MainInterface::OnMouseActivate()
 {
+//	parentview->GetMainFrame()->m_wndUIFloatingEdit.Hide();
 //	hge->System_SetState(HGE_HIDEMOUSE, true);
 }
 
@@ -399,9 +436,143 @@ bool MainInterface::UpdatePickPoint()
 
 bool MainInterface::IsMainViewActive()
 {
-	if (hge->Input_IsMouseOver())
+	if (bActive && hge->Input_IsMouseOver() && GetFocus()==hge->System_GetState(HGE_HWND))
 	{
 		return true;
 	}
 	return false;
+}
+
+void MainInterface::SetMainViewActive( bool _bActive, int reason )
+{
+	if (!_bActive)
+	{
+		bActive = _bActive;
+		toactivedelay = -1;
+		/*
+		switch (inactivereason)
+		{
+		case 0:
+			break;
+		case MVINACTIVEREASON_POPUP:
+			parentview->GetMainFrame()->m_wndUIPopupMenu.Hide(true);
+			break;
+		case MVINACTIVEREASON_FLOATINGCOMMAND:
+			parentview->GetMainFrame()->m_wndUIFloatingEdit.Hide(true);
+			break;
+		}
+		*/
+		inactivereason = reason;
+	}
+	else
+	{
+		if (!bActive)
+		{
+			toactivedelay = MV_ACTIVEDELAY;
+		}
+		inactivereason = 0;
+	}
+}
+
+void MainInterface::DoCheckFloatCommand()
+{
+	if (!IsMainViewActive())
+	{
+		return;
+	}
+
+	WPARAM vk=0;
+
+#define _SETVKBYKEY(DIK)	\
+	if (hge->Input_GetDIKey(DIK, DIKEY_DOWN))	\
+	{	\
+		vk = i;	\
+		break;	\
+	}	\
+	i++;
+
+	do
+	{
+		int i=0x41;
+		_SETVKBYKEY(DIK_A);
+		_SETVKBYKEY(DIK_B);
+		_SETVKBYKEY(DIK_C);
+		_SETVKBYKEY(DIK_D);
+		_SETVKBYKEY(DIK_E);
+		_SETVKBYKEY(DIK_F);
+		_SETVKBYKEY(DIK_G);
+		_SETVKBYKEY(DIK_H);
+		_SETVKBYKEY(DIK_I);
+		_SETVKBYKEY(DIK_J);
+		_SETVKBYKEY(DIK_K);
+		_SETVKBYKEY(DIK_L);
+		_SETVKBYKEY(DIK_M);
+		_SETVKBYKEY(DIK_N);
+		_SETVKBYKEY(DIK_O);
+		_SETVKBYKEY(DIK_P);
+		_SETVKBYKEY(DIK_Q);
+		_SETVKBYKEY(DIK_R);
+		_SETVKBYKEY(DIK_S);
+		_SETVKBYKEY(DIK_T);
+		_SETVKBYKEY(DIK_U);
+		_SETVKBYKEY(DIK_V);
+		_SETVKBYKEY(DIK_W);
+		_SETVKBYKEY(DIK_X);
+		_SETVKBYKEY(DIK_Y);
+		_SETVKBYKEY(DIK_Z);
+
+		i=0x30;
+		_SETVKBYKEY(DIK_0);
+		_SETVKBYKEY(DIK_1);
+		_SETVKBYKEY(DIK_2);
+		_SETVKBYKEY(DIK_3);
+		_SETVKBYKEY(DIK_4);
+		_SETVKBYKEY(DIK_5);
+		_SETVKBYKEY(DIK_6);
+		_SETVKBYKEY(DIK_7);
+		_SETVKBYKEY(DIK_8);
+		_SETVKBYKEY(DIK_9);
+
+		i=VK_NUMPAD0;
+		_SETVKBYKEY(DIK_NUMPAD0);
+		_SETVKBYKEY(DIK_NUMPAD1);
+		_SETVKBYKEY(DIK_NUMPAD2);
+		_SETVKBYKEY(DIK_NUMPAD3);
+		_SETVKBYKEY(DIK_NUMPAD4);
+		_SETVKBYKEY(DIK_NUMPAD5);
+		_SETVKBYKEY(DIK_NUMPAD6);
+		_SETVKBYKEY(DIK_NUMPAD7);
+		_SETVKBYKEY(DIK_NUMPAD8);
+		_SETVKBYKEY(DIK_NUMPAD9);
+
+		i=VK_MULTIPLY;
+		_SETVKBYKEY(DIK_MULTIPLY);
+		_SETVKBYKEY(DIK_ADD);
+		i=VK_SUBTRACT;
+		_SETVKBYKEY(DIK_SUBTRACT);
+		_SETVKBYKEY(DIK_DECIMAL);
+		_SETVKBYKEY(DIK_DIVIDE);
+
+		i=VK_OEM_1;
+		_SETVKBYKEY(DIK_SEMICOLON);
+		_SETVKBYKEY(DIK_EQUALS);
+		_SETVKBYKEY(DIK_COMMA);
+		_SETVKBYKEY(DIK_MINUS);
+		_SETVKBYKEY(DIK_PERIOD);
+		_SETVKBYKEY(DIK_SLASH);
+		_SETVKBYKEY(DIK_GRAVE);
+
+		i=VK_OEM_4;
+		_SETVKBYKEY(DIK_LBRACKET);
+		_SETVKBYKEY(DIK_BACKSLASH);
+		_SETVKBYKEY(DIK_RBRACKET);
+		_SETVKBYKEY(DIK_APOSTROPHE);
+	} while(false);
+
+
+
+	if (vk)
+	{
+		parentview->GetMainFrame()->CallEnableFloatCommand(vk);
+	}
 }

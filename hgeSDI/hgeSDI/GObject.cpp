@@ -148,7 +148,7 @@ void GObject::OnUpdate()
 			}
 		}
 	}
-	bModified = false;
+//	bModified = false;
 }
 
 void GObject::OnRender()
@@ -183,6 +183,21 @@ void GObject::OnModify()
 	{
 		parent->OnModify();
 	}
+}
+
+void GObject::OnClearModify()
+{
+	if (!children.empty())
+	{
+		FOREACH_GOBJ_CHILDREN_IT()
+		{
+			if ((*it))
+			{
+				(*it)->OnClearModify();
+			}
+		}
+	}
+	bModified = false;
 }
 
 void GObject::SetMotifyParent( bool bToModify )

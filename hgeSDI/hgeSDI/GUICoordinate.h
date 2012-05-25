@@ -32,14 +32,13 @@ public:
 
 	void SetCursorPosition(float x_s, float y_s);
 
-	int DoPanCommand();
+	void OnProcessPanCommand();
 	void DoPan(float xoffset_s, float yoffset_s);
 
-	int DoZoomCommand();
+	void OnProcessZoomCommand();
 	void DoZoom(float cx_s, float cy_s, float scale);
 
-	void ClientToCoordinate(float * x, float * y);
-	void CoordinateToClient(float * x, float * y);
+
 	void RenderGrid();
 	void RenderGridReDraw();
 	void RenderCoordinate();
@@ -85,4 +84,23 @@ public:
 
 	HTARGET targrid;
 	HGE * hge;
+
+	inline float StoCx(float x) 
+	{
+		CheckScale();
+		return (x-originx_s)/scale;
+	}
+	inline float StoCy(float y) 
+	{
+		CheckScale();
+		return (y-originy_s)/scale;
+	}
+	inline float CtoSx(float x)
+	{
+		return x*scale+originx_s;
+	}
+	inline float CtoSy(float y)
+	{
+		return y*scale+originy_s;
+	}
 };

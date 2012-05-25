@@ -15,6 +15,7 @@ struct RenderTargetInfo
 	HTARGET tar;
 	int w;
 	int h;
+	bool needupdate;
 };
 
 class RenderTargetManager
@@ -38,7 +39,8 @@ private:
 
 public:
 	
-	HTARGET UpdateTarget(int id, int w=0, int h=0);
+	void SetNeedUpdate();
+	HTARGET UpdateTarget(int id, bool * updated=0, int w=0, int h=0);
 
 	list<RenderTargetInfo> tars;
 	HGE * hge;

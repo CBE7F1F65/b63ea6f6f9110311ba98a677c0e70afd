@@ -15,6 +15,9 @@
 #pragma once
 
 #include "UICommandBox.h"
+#include "UIPopupMenu.h"
+#include "UIFloatingCommand.h"
+#include "UIEditBox.h"
 
 class CMainFrame : public CFrameWndEx
 {
@@ -30,8 +33,11 @@ public:
 
 	bool SetStatusBarText(int id, LPCTSTR text);
 	bool AppendCommandLogText(LPCTSTR text);
+
 // 操作
 public:
+	void CallShowContextMenu(int x, int y);
+	void CallEnableFloatCommand(int vk=0);
 
 // 重写
 public:
@@ -47,13 +53,17 @@ public:
 #endif
 
 protected:  // 控件条嵌入成员
+public:
 	CMFCRibbonBar     m_wndRibbonBar;
 	CMFCRibbonApplicationButton m_MainButton;
 	CMFCToolBarImages m_PanelImages;
 	CMFCRibbonStatusBar  m_wndStatusBar;
 	CMFCCaptionBar    m_wndCaptionBar;
 
-	UICommandBox	m_wndUICommandBox;
+	UICommandBox		m_wndUICommandBox;
+	UIPopupMenu			m_wndUIPopupMenu;
+	UIEditBox			m_wndUIFloatingEdit;
+//	UIFloatingCommand	m_wndUIFloatingCommand;
 
 // 生成的消息映射函数
 protected:

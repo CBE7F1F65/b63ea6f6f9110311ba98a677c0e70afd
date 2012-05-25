@@ -3,12 +3,13 @@
 
 #include "GUICoordinate.h"
 #include "LineCommand.h"
+#include "BezierCommand.h"
 
-int Command::ProcessCommand()
+void Command::ProcessCommand()
 {
 	if (!ccomm.command)
 	{
-		return 0;
+		return;
 	}
 
 	ProcessCommittedCommand();
@@ -16,12 +17,13 @@ int Command::ProcessCommand()
 	switch (ccomm.command)
 	{
 	case COMM_PAN:
-		return GUICoordinate::getInstance().DoPanCommand();
+		return GUICoordinate::getInstance().OnProcessPanCommand();
 		break;
 	case COMM_DOZOOM:
-		return GUICoordinate::getInstance().DoZoomCommand();
+		return GUICoordinate::getInstance().OnProcessZoomCommand();
 	case COMM_LINE:
-		return LineCommand::getInstance().Line();
+		return LineCommand::getInstance().OnProcessCommand();
+	case COMM_BEZIER:
+		return BezierCommand::getInstance().OnProcessCommand();
 	}
-	return ccomm.command;
 }

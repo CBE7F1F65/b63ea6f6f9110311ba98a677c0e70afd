@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GObject.h"
+#include "MainDependency.h"
 
 class GObjectManager
 {
@@ -33,4 +34,6 @@ public:
 
 	GObject basenode;
 	list<GObject*> nodetodelete;
+
+	HTARGET tarobjs;
 };

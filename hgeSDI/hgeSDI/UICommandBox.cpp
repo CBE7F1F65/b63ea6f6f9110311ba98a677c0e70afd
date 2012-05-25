@@ -31,6 +31,7 @@ BEGIN_MESSAGE_MAP(UICommandBox, CDockablePane)
 ON_WM_MOUSEHOVER()
 ON_WM_MOUSELEAVE()
 ON_WM_MOUSEMOVE()
+ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 
@@ -156,6 +157,10 @@ void UICommandBox::OnEnMsgFilterCommandEdit(NMHDR *pNMHDR, LRESULT *pResult)
 			CommitCommand();
 			ClearCommand();
 		}
+		else if (pMsgFilter->wParam == VK_ESCAPE)
+		{
+			ClearCommand();
+		}
 	}
 }
 //void UICommandBox::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -215,4 +220,11 @@ void UICommandBox::ClearLog()
 void UICommandBox::ClearCommand()
 {
 	m_wndCommandEdit.SetWindowText("");
+}
+
+void UICommandBox::OnClose()
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+//	CDockablePane::OnClose();
 }

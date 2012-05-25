@@ -82,12 +82,21 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndStatusBar.AddExtendedElement(new CMFCRibbonStatusBarPane(ID_STATUSBAR_PANE2, strTitlePane2, TRUE), strTitlePane2);
 	
 
-	m_wndUICommandBox.Create(_T("Output"), this, CRect (0, 0, 150, 150),
-		TRUE /* Has gripper */, 12345,
+	m_wndUICommandBox.Create(_T("Command"), this, CRect (0, 0, 0, 0),
+		TRUE /* Has gripper */, ID_UI_COMMANDBOX,
 		WS_CHILD | WS_VISIBLE | CBRS_BOTTOM | CBRS_FLOAT_MULTI);
 
 	m_wndUICommandBox.EnableDocking(CBRS_ALIGN_ANY);
 	DockPane(&m_wndUICommandBox);
+	
+	m_wndUIFloatingEdit.Create(WS_CHILD|WS_VISIBLE, CRect(0, 0, 0, 0), this, ID_UI_FLOATINGCOMMAND);
+/*	
+	m_wndUIFloatingCommand.Create(NULL,
+		WS_CHILD | WS_VISIBLE | CBRS_FLOAT_MULTI,
+		CRect(0, 0, 0, 0), this, ID_UI_FLOATINGCOMMAND);
+	*/	
+
+//	m_wndUIFloatingCommand.ShowWindow(SW_HIDE);
 
 	// 启用 Visual Studio 2005 样式停靠窗口行为
 	CDockingManager::SetDockingMode(DT_SMART);
@@ -351,4 +360,19 @@ void CMainFrame::OnUpdateStatusbarPane2(CCmdUI *pCmdUI)
 {
 	// TODO: 在此添加命令更新用户界面处理程序代码
 	pCmdUI->Enable(TRUE);
+}
+
+void CMainFrame::CallShowContextMenu( int x, int y )
+{
+	CMenu menu;
+	menu.LoadMenu(IDR_POPUP_EDIT);
+	HMENU hmenuPopup = ::GetSubMenu(menu.Detach(), 0);
+	m_wndUIPopupMenu.SetAutoDestroy(FALSE);
+	m_wndUIPopupMenu.Create(this, x, y, hmenuPopup);
+}
+
+
+void CMainFrame::CallEnableFloatCommand( int vk/*=0*/ )
+{
+	m_wndUIFloatingEdit.Show(vk);
 }

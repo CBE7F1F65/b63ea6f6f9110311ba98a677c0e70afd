@@ -18,6 +18,7 @@ void Command::InitCommandStrInfo()
 	_LSET(COMM_DOZOOM, "zoom");
 
 	_BSET(COMM_LINE, "line", "l");
+	_BSET(COMM_BEZIER, "bezier", "b");
 
 #undef _LSET
 #undef _SSET

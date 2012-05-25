@@ -2,28 +2,30 @@
 
 #include "CommandTemplate.h"
 
-class LineCommand : public CommandTemplate
+class BezierCommand : public CommandTemplate
 {
 public:
-	static LineCommand& getInstance()
+	static BezierCommand& getInstance()
 	{
-		static LineCommand instance;
+		static BezierCommand instance;
 		// Guaranteed to be destroyed. Instantiated on first use.
 		return instance;
 	}
 
 private:
-	LineCommand();
-	~LineCommand();
+	BezierCommand();
+	~BezierCommand();
 	// Don't forget to declare these two.
-	LineCommand(LineCommand const&);
+	BezierCommand(BezierCommand const&);
 	// Don't Implement
-	void operator=(LineCommand const&);
+	void operator=(BezierCommand const&);
 	// Don't implement
 
 public:
-	
+
 	virtual void OnProcessCommand();
 	virtual void DoneCommand();
 	virtual void RenderToTarget();
-};
+
+}; 
+

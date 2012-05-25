@@ -22,6 +22,7 @@ public:
 	virtual void OnInit();
 	virtual void OnEnter();
 	virtual void OnModify();
+	virtual void OnClearModify();	// Pre-Update
 	virtual void OnUpdate();
 	virtual void OnRender();
 	virtual void OnRelease();

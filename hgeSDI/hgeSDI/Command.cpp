@@ -668,7 +668,7 @@ int Command::StepBack()
 
 void Command::Render()
 {
-	RenderHelper::TargetQuadRender(tarcommand, tarx, tary, 0xffffffff);
+	RenderHelper::TargetQuadRender_S(tarcommand, tarx, tary, 0xffffffff);
 }
 
 void Command::SetRenderTarget( HTARGET tar, float x/*=0*/, float y/*=0*/ )
