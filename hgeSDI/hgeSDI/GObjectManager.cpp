@@ -22,9 +22,9 @@ void GObjectManager::Update()
 	if (tar != tarobjs || tarupdated || basenode.bModified)
 	{
 		tarobjs = tar;
-		RenderHelper::BeginRenderTar(tar);
+		RenderHelper::getInstance().BeginRenderTar(tar);
 		basenode.OnRender();
-		RenderHelper::EndRenderTar();
+		RenderHelper::getInstance().EndRenderTar();
 	}
 	basenode.OnClearModify();
 }
@@ -33,7 +33,7 @@ void GObjectManager::Render()
 {
 	if (tarobjs)
 	{
-		RenderHelper::TargetQuadRender_S(tarobjs, 0, 0, 0xffffffff);
+		RenderHelper::getInstance().TargetQuadRender_S(tarobjs, 0, 0, 0xffffffff);
 	}
 }
 

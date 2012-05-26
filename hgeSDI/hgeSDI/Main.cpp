@@ -230,7 +230,7 @@ bool MainInterface::FocusGain()
 bool MainInterface::Exit()
 {
 	GObjectManager::getInstance().Release();
-	RenderHelper::Release();
+	RenderHelper::getInstance().Release();
 	hge->System_Shutdown();
 	return false;
 }
@@ -307,7 +307,6 @@ bool MainInterface::OnInit(void * parent, int w, int h)
 	Command::getInstance().Init();
 	GUICoordinate::getInstance().SetGrid(GUICG_METRIC, 0, 0);
 	GObjectManager::getInstance().Init();
-
 	return manageloop;
 
 //	HANDLE hThread = (HANDLE)_beginthread(_HGEThreadFunc, 0, NULL);

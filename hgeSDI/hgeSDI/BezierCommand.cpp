@@ -41,7 +41,7 @@ void BezierCommand::RenderToTarget()
 {
 	HTARGET tar = RenderTargetManager::getInstance().UpdateTarget(RTID_COMMAND);
 
-	RenderHelper::BeginRenderTar(tar);
+	RenderHelper::getInstance().BeginRenderTar(tar);
 	PointF2D p1(50, 100);
 	PointF2D p2(150, 150);
 	PointF2D p4(400, 100);
@@ -52,8 +52,8 @@ void BezierCommand::RenderToTarget()
 	y4 = GUICoordinate::getInstance().StoCy(y4);
 	PointF2D p3(x4, y4);
 
-	RenderHelper::RenderBezier(p1, p2, p3, p4, ColorManager::GetLayerLineColor(), pmain->GetPrecision());
-	RenderHelper::EndRenderTar();
+	RenderHelper::getInstance().RenderBezier(p1, p2, p3, p4, ColorManager::GetLayerLineColor(), pmain->GetPrecision());
+	RenderHelper::getInstance().EndRenderTar();
 
 	Command::getInstance().SetRenderTarget(tar);
 }

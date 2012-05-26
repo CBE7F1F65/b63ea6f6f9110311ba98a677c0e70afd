@@ -14,6 +14,8 @@ public:
 	virtual void OnProcessCommand()=0;
 	virtual void DoneCommand()=0;
 
+	virtual int OnNormalProcessCommand(int cursorindex=-1);
+
 	virtual void RenderToTarget();
 	virtual void ReleaseTarget();
 

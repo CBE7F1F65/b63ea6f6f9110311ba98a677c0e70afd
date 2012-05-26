@@ -41,11 +41,12 @@ enum{
 #define COMMPARAMFLAG_G		0x0100
 
 #define COMMPARAMMAX	16
-#define CSI_INIT		0
-#define CSI_TERMINAL	-1
-#define CSI_FINISH		-2
-#define CSI_PAUSE		-3
-#define CSI_RESUME		-4
+#define CSI_INIT			0
+#define CSI_TERMINAL		-1
+#define CSI_FINISH			-2
+#define CSI_FINISHCONTINUE	-3
+#define CSI_PAUSE			-4
+#define CSI_RESUME			-5
 
 enum{
 	CSP_PAN_OFFSET_XY = 0,

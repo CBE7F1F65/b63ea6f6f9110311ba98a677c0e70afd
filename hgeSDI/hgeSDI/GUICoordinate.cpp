@@ -56,7 +56,7 @@ void GUICoordinate::RenderGridReDraw()
 				col = ColorManager::GetGridSubColor();
 				break;
 			}
-			RenderHelper::RenderLineB_S(it->scrvalue, 0, scrh_s, col);
+			RenderHelper::getInstance().RenderLineB_S(it->scrvalue, 0, scrh_s, col);
 			switch (jt->mgridID)
 			{
 			case _GUICG_MGID_AXIS:
@@ -69,7 +69,7 @@ void GUICoordinate::RenderGridReDraw()
 				col = ColorManager::GetGridSubColor();
 				break;
 			}
-			RenderHelper::RenderLineR_S(0, jt->scrvalue, scrw_s, col);
+			RenderHelper::getInstance().RenderLineR_S(0, jt->scrvalue, scrw_s, col);
 		}
 	}
 }
@@ -82,7 +82,7 @@ void GUICoordinate::RenderGrid()
 	}
 	else
 	{
-		RenderHelper::TargetQuadRender_S(targrid, 0, 0, 0xffffffff);
+		RenderHelper::getInstance().TargetQuadRender_S(targrid, 0, 0, 0xffffffff);
 		/*
 		HTEXTURE tex = hge->Target_GetTexture(targrid);
 		hgeQuad quad;
@@ -107,17 +107,17 @@ void GUICoordinate::DoRenderCoordinate( float renderatx, float renderaty )
 
 	DWORD coordcol = ColorManager::GetCoordColor();
 
-	RenderHelper::RenderLineR_S(renderatx, renderaty, _GUICC_LENGTH, coordcol);
-	RenderHelper::RenderLineB_S(renderatx, renderaty, _GUICC_LENGTH, coordcol);
+	RenderHelper::getInstance().RenderLineR_S(renderatx, renderaty, _GUICC_LENGTH, coordcol);
+	RenderHelper::getInstance().RenderLineB_S(renderatx, renderaty, _GUICC_LENGTH, coordcol);
 
-	RenderHelper::RenderSquare_S(renderatx-_GUICC_BOXSIZE, renderaty-_GUICC_BOXSIZE, _GUICC_BOXSIZE*2, coordcol);
+	RenderHelper::getInstance().RenderSquare_S(renderatx-_GUICC_BOXSIZE, renderaty-_GUICC_BOXSIZE, _GUICC_BOXSIZE*2, coordcol);
 
 	// X
-	RenderHelper::RenderLine_S(renderatx+_GUICC_LETTERBEGIN, renderaty+_GUICC_LETTERMARGIN, renderatx+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE, renderaty+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE, coordcol);
-	RenderHelper::RenderLine_S(renderatx+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE, renderaty+_GUICC_LETTERMARGIN, renderatx+_GUICC_LETTERBEGIN, renderaty+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE, coordcol);
+	RenderHelper::getInstance().RenderLine_S(renderatx+_GUICC_LETTERBEGIN, renderaty+_GUICC_LETTERMARGIN, renderatx+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE, renderaty+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE, coordcol);
+	RenderHelper::getInstance().RenderLine_S(renderatx+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE, renderaty+_GUICC_LETTERMARGIN, renderatx+_GUICC_LETTERBEGIN, renderaty+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE, coordcol);
 	// Y
-	RenderHelper::RenderArrowB_S(renderatx+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE/2, renderaty+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE/2, 0, _GUICC_LETTERSSIZE/2, coordcol);
-	RenderHelper::RenderLineB_S(renderatx+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE/2, renderaty+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE/2, _GUICC_LETTERSSIZE/2, coordcol);
+	RenderHelper::getInstance().RenderArrowB_S(renderatx+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE/2, renderaty+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE/2, 0, _GUICC_LETTERSSIZE/2, coordcol);
+	RenderHelper::getInstance().RenderLineB_S(renderatx+_GUICC_LETTERMARGIN+_GUICC_LETTERSSIZE/2, renderaty+_GUICC_LETTERBEGIN+_GUICC_LETTERSSIZE/2, _GUICC_LETTERSSIZE/2, coordcol);
 }
 
 void GUICoordinate::RenderCoordinate()
@@ -363,9 +363,9 @@ void GUICoordinate::UpdateScreenMeasure()
 	targrid = RenderTargetManager::getInstance().UpdateTarget(RTID_GRID);
 	if (targrid)
 	{
-		RenderHelper::BeginRenderTar(targrid);
+		RenderHelper::getInstance().BeginRenderTar(targrid);
 		RenderGridReDraw();
-		RenderHelper::EndRenderTar();
+		RenderHelper::getInstance().EndRenderTar();
 	}
 	RenderTargetManager::getInstance().SetNeedUpdate();
 }

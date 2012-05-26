@@ -62,9 +62,9 @@ void GUICursor::Render( float x, float y )
 			hge->Gfx_RenderLine(x, y-_GUICN_SIZE, x, y+_GUICN_SIZE, col);
 			*/
 			
-			RenderHelper::RenderSquare_S(x-_GUICN_BOXSIZE, y-_GUICN_BOXSIZE, _GUICN_BOXSIZE*2, col);
-			RenderHelper::RenderLineR_S(x-_GUICN_SIZE, y, _GUICN_SIZE*2, col);
-			RenderHelper::RenderLineB_S(x, y-_GUICN_SIZE, _GUICN_SIZE*2, col);
+			RenderHelper::getInstance().RenderSquare_S(x-_GUICN_BOXSIZE, y-_GUICN_BOXSIZE, _GUICN_BOXSIZE*2, col);
+			RenderHelper::getInstance().RenderLineR_S(x-_GUICN_SIZE, y, _GUICN_SIZE*2, col);
+			RenderHelper::getInstance().RenderLineB_S(x, y-_GUICN_SIZE, _GUICN_SIZE*2, col);
 			
 			break;
 		case GUIC_CREATEPOINT:
@@ -72,8 +72,8 @@ void GUICursor::Render( float x, float y )
 			hge->Gfx_RenderLine(x-_GUICN_SIZE, y, x+_GUICN_SIZE, y, col);
 			hge->Gfx_RenderLine(x, y-_GUICN_SIZE, x, y+_GUICN_SIZE, col);
 			*/
-			RenderHelper::RenderLineR_S(x-_GUICN_SIZE, y, _GUICN_SIZE*2, col);
-			RenderHelper::RenderLineB_S(x, y-_GUICN_SIZE, _GUICN_SIZE*2, col);
+			RenderHelper::getInstance().RenderLineR_S(x-_GUICN_SIZE, y, _GUICN_SIZE*2, col);
+			RenderHelper::getInstance().RenderLineB_S(x, y-_GUICN_SIZE, _GUICN_SIZE*2, col);
 			break;
 		case GUIC_HAND:
 			/*
@@ -91,13 +91,13 @@ void GUICursor::Render( float x, float y )
 			hge->Gfx_RenderLine(x, y+_GUICN_SMALLSIZE, x-_GUICN_ARROWSIZE, y+_GUICN_SMALLSIZE-_GUICN_ARROWSIZE, col);
 			*/
 
-			RenderHelper::RenderLineR_S(x-_GUICN_SMALLSIZE, y, _GUICN_SMALLSIZE*2, col);
-			RenderHelper::RenderLineB_S(x, y-_GUICN_SMALLSIZE, _GUICN_SMALLSIZE*2, col);
+			RenderHelper::getInstance().RenderLineR_S(x-_GUICN_SMALLSIZE, y, _GUICN_SMALLSIZE*2, col);
+			RenderHelper::getInstance().RenderLineB_S(x, y-_GUICN_SMALLSIZE, _GUICN_SMALLSIZE*2, col);
 
-			RenderHelper::RenderArrowR_S(x+_GUICN_SMALLSIZE, y, 0, _GUICN_ARROWSIZE, col);
-			RenderHelper::RenderArrowB_S(x, y+_GUICN_SMALLSIZE, 0, _GUICN_ARROWSIZE, col);
-			RenderHelper::RenderArrowL_S(x-_GUICN_SMALLSIZE, y, 0, _GUICN_ARROWSIZE, col);
-			RenderHelper::RenderArrowT_S(x, y-_GUICN_SMALLSIZE, 0, _GUICN_ARROWSIZE, col);
+			RenderHelper::getInstance().RenderArrowR_S(x+_GUICN_SMALLSIZE, y, 0, _GUICN_ARROWSIZE, col);
+			RenderHelper::getInstance().RenderArrowB_S(x, y+_GUICN_SMALLSIZE, 0, _GUICN_ARROWSIZE, col);
+			RenderHelper::getInstance().RenderArrowL_S(x-_GUICN_SMALLSIZE, y, 0, _GUICN_ARROWSIZE, col);
+			RenderHelper::getInstance().RenderArrowT_S(x, y-_GUICN_SMALLSIZE, 0, _GUICN_ARROWSIZE, col);
 			break;
 		}
 	}
