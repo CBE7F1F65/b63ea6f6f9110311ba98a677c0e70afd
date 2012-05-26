@@ -14,6 +14,7 @@
 #include <list>
 #include <vector>
 #include <stdio.h>
+#include <algorithm>
 #ifdef __WIN32
 #include <assert.h>
 #endif

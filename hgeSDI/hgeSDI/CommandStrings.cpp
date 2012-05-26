@@ -3,12 +3,14 @@
 
 void Command::InitCommandStrInfo()
 {
-	ZeroMemory(scinfo, sizeof(scinfo));
+//	ZeroMemory(scinfo, sizeof(scinfo));
 
+//	strcpy_s(scinfo[COMM].str, COMMANDSTRINGMAX, LSTR)
 #define _LSET(COMM, LSTR)	\
-	strcpy_s(scinfo[COMM].str, COMMANDSTRINGMAX, LSTR)
+	scinfo[COMM].str = LSTR
+//	strcpy_s(scinfo[COMM].shortstr, COMMANDSHORTSTRMAX, SSTR)
 #define _SSET(COMM, SSTR)	\
-	strcpy_s(scinfo[COMM].shortstr, COMMANDSHORTSTRMAX, SSTR)
+	scinfo[COMM].shortstr =  SSTR
 #define _BSET(COMM, LSTR, SSTR)	\
 	_LSET(COMM, LSTR);	\
 	_SSET(COMM, SSTR)
@@ -27,16 +29,24 @@ void Command::InitCommandStrInfo()
 
 void Command::InitWantPromptInfo()
 {
-	ZeroMemory(wpinfo, sizeof(wpinfo));
+//	ZeroMemory(wpinfo, sizeof(wpinfo));
+
+//	strcpy_s(wpinfo[INDEX].str, M_STRMAX, STR)
 #define _PSET(INDEX, STR)	\
-	strcpy_s(wpinfo[INDEX].str, M_STRMAX, STR)
+	wpinfo[INDEX].str = STR
 
 	_PSET(CWP_X, "X: ");
 	_PSET(CWP_Y, "Y: ");
-	_PSET(CWP_XY, "XY: ");
-	_PSET(CWP_XOFFSET, "X offset: ");
-	_PSET(CWP_YOFFSET, "Y offset: ");
-	_PSET(CWP_SCALE, "Scale: ");
+	_PSET(CWP_XY, "X, Y: ");
+	_PSET(CWP_X_B, "BEGIN X: ");
+	_PSET(CWP_Y_B, "BEGIN Y: ");
+	_PSET(CWP_XY_B, "BEGIN X, Y: ");
+	_PSET(CWP_X_E, "END X: ");
+	_PSET(CWP_Y_E, "END Y: ");
+	_PSET(CWP_XY_E, "END X, Y: ");
+	_PSET(CWP_XOFFSET, "X OFFSET: ");
+	_PSET(CWP_YOFFSET, "Y OFFSET: ");
+	_PSET(CWP_SCALE, "SCALE: ");
 
 #undef _PSET
 }

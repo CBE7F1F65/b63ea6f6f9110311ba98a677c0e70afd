@@ -47,7 +47,7 @@ void GUICoordinate::RenderGridReDraw()
 			switch (it->mgridID)
 			{
 			case _GUICG_MGID_AXIS:
-				col = ColorManager::GetGridXAxisColor();
+				col = ColorManager::GetGridYAxisColor();
 				break;
 			case _GUICG_MGID_MAIN:
 				col = ColorManager::GetGridMainColor();
@@ -60,7 +60,7 @@ void GUICoordinate::RenderGridReDraw()
 			switch (jt->mgridID)
 			{
 			case _GUICG_MGID_AXIS:
-				col = ColorManager::GetGridYAxisColor();
+				col = ColorManager::GetGridXAxisColor();
 				break;
 			case _GUICG_MGID_MAIN:
 				col = ColorManager::GetGridMainColor();
@@ -376,4 +376,16 @@ void GUICoordinate::SetCursorPosition( float x_s, float y_s )
 	cursory_s = y_s;
 	cursorx_c = StoCx(cursorx_s);
 	cursory_c = StoCy(cursory_s);
+}
+
+void GUICoordinate::DoScroll( bool horz, int pos, int range )
+{
+	if (horz)
+	{
+		DoPan(-pos*scrw_s/(float)range, 0);
+	}
+	else
+	{
+		DoPan(0, -pos*scrh_s/(float)range);
+	}
 }

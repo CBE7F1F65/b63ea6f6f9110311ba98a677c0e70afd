@@ -46,6 +46,9 @@ BEGIN_MESSAGE_MAP(ChgeSDIView, CView)
 	ON_WM_TIMER()
 	ON_WM_MOUSEACTIVATE()
 //	ON_WM_MOUSEMOVE()
+ON_WM_HSCROLL()
+ON_WM_VSCROLL()
+ON_WM_CREATE()
 END_MESSAGE_MAP()
 
 // ChgeSDIView 构造/析构
@@ -250,3 +253,153 @@ void ChgeSDIView::OnUpdate(CView* /*pSender*/, LPARAM /*lHint*/, CObject* /*pHin
 //	GetMainFrame()->m_wndUIFloatingCommand.SetWindowPos(NULL, point.x+20, point.y+20, 100, 100, SWP_DRAWFRAME);
 //	CView::OnMouseMove(nFlags, point);
 //}
+
+#define _UISCROLL_FAR	1000
+#define _UISCROLL_PAGE	100
+#define _UISCROLL_NPAGE	10
+#define _UISCROLL_LINE	10
+#define _UISCROLL_RANGE	1000
+
+void ChgeSDIView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	int minpos, maxpos;
+	pScrollBar->GetScrollRange(&minpos, &maxpos);
+
+	int lastpos = pScrollBar->GetScrollPos();
+	int curpos = lastpos;
+	switch (nSBCode)
+	{
+	case SB_TOP:
+		curpos = 0;
+		break;
+	case SB_BOTTOM:
+		curpos = _UISCROLL_FAR;
+		break;
+	case SB_LINEUP:
+		curpos -= _UISCROLL_LINE;
+		if (curpos < 0)
+		{
+			curpos = 0;
+		}
+		break;
+	case SB_LINEDOWN:
+		curpos += _UISCROLL_LINE;
+		if (curpos > _UISCROLL_RANGE)
+		{
+			curpos = 0;
+		}
+		break;
+	case SB_PAGEUP:
+		curpos -= _UISCROLL_PAGE;
+		if (curpos < 0)
+		{
+			curpos = 0;
+		}
+		break;
+	case SB_PAGEDOWN:
+		curpos += _UISCROLL_PAGE;
+		if (curpos > _UISCROLL_RANGE)
+		{
+			curpos = 0;
+		}
+		break;
+	case SB_THUMBPOSITION:
+	case SB_THUMBTRACK:
+		curpos = nPos;
+		break;
+	case SB_ENDSCROLL:
+		pScrollBar->SetScrollPos(_UISCROLL_RANGE/2);
+		return;
+		break;
+//		ChgeSDIView::OnHScroll(SB_THUMBPOSITION/*nSBCode*/, _UISCROLL_RANGE/2/*nPos*/, pScrollBar);
+//		return;
+	}
+
+	MainInterface::getInstance().OnDoScroll(true, curpos-lastpos, _UISCROLL_RANGE);
+	pScrollBar->SetScrollPos(curpos);
+
+	CView::OnHScroll(nSBCode, nPos, pScrollBar);
+}
+
+
+void ChgeSDIView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	int lastpos = pScrollBar->GetScrollPos();
+	int curpos = lastpos;
+	switch (nSBCode)
+	{
+	case SB_LEFT:
+		curpos = 0;
+		break;
+	case SB_RIGHT:
+		curpos = _UISCROLL_FAR;
+		break;
+	case SB_LINELEFT:
+		curpos -= _UISCROLL_LINE;
+		if (curpos < 0)
+		{
+			curpos = 0;
+		}
+		break;
+	case SB_LINERIGHT:
+		curpos += _UISCROLL_LINE;
+		if (curpos > _UISCROLL_RANGE)
+		{
+			curpos = 0;
+		}
+		break;
+	case SB_PAGELEFT:
+		curpos -= _UISCROLL_PAGE;
+		if (curpos < 0)
+		{
+			curpos = 0;
+		}
+		break;
+	case SB_PAGERIGHT:
+		curpos += _UISCROLL_PAGE;
+		if (curpos > _UISCROLL_RANGE)
+		{
+			curpos = 0;
+		}
+		break;
+	case SB_THUMBPOSITION:
+	case SB_THUMBTRACK:
+		curpos = nPos;
+		break;
+	case SB_ENDSCROLL:
+		pScrollBar->SetScrollPos(_UISCROLL_RANGE/2);
+		return;
+		break;
+//		ChgeSDIView::OnVScroll(SB_THUMBPOSITION/*nSBCode*/, _UISCROLL_RANGE/2/*nPos*/, pScrollBar);
+//		return;
+	}
+
+	MainInterface::getInstance().OnDoScroll(false, curpos-lastpos, _UISCROLL_RANGE);
+	pScrollBar->SetScrollPos(curpos);
+
+	CView::OnVScroll(nSBCode, nPos, pScrollBar);
+}
+
+
+int ChgeSDIView::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+	if (CView::OnCreate(lpCreateStruct) == -1)
+		return -1;
+
+	// TODO:  在此添加您专用的创建代码
+	SCROLLINFO scrinfo;
+	scrinfo.cbSize = sizeof(SCROLLINFO);
+	scrinfo.nMin = 0;
+	scrinfo.nMax = _UISCROLL_RANGE;
+	scrinfo.nPage = _UISCROLL_NPAGE;
+	scrinfo.nPos = _UISCROLL_RANGE/2;
+	scrinfo.nTrackPos = 0;
+	scrinfo.fMask = SIF_ALL;
+
+	SetScrollInfo(SB_VERT, &scrinfo);
+	SetScrollInfo(SB_HORZ, &scrinfo);
+
+	return 0;
+}

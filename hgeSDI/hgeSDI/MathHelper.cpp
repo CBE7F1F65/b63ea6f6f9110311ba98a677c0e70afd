@@ -174,7 +174,7 @@ bool MathHelper::CalculateBezier( PointF2D p1, PointF2D p2, PointF2D p3, PointF2
 
 float MathHelper::LineSegmentLength( PointF2D p1, PointF2D p2 )
 {
-	float l = LineSegmentLength(p1, p2);
+	float l = LineSegmentLengthPow2(p1, p2);
 	if (l == 0.0f)
 	{
 		return 0.0f;

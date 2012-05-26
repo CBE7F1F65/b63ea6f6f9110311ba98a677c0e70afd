@@ -37,6 +37,7 @@ public:
 	void OnResizeWindow(int x, int y);
 	void OnUpdateTimer();
 	void OnMouseActivate();
+	void OnDoScroll(bool horz, int pos, int range);
 
 	// From Command
 	enum{
@@ -51,6 +52,7 @@ public:
 	void CallAppendCommandLogText(const char * text);
 
 	// Do
+
 	void DoResizeWindow();
 	void DoUpdateFPS();
 	void DoUpdateStatusInfo();

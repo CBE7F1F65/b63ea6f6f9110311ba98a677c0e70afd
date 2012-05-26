@@ -166,6 +166,10 @@ bool MainInterface::Frame()
 	}
 	if (IsMainViewActive() && hge->Input_GetDIKey(DIK_ESCAPE, DIKEY_UP))
 	{
+		if (pcommand->IsInternalProcessing())
+		{
+			pcommand->TerminalInternalProcess();
+		}
 		if (pcommand->ccomm.command)
 		{
 			pcommand->StepTo(CSI_TERMINAL);
@@ -575,4 +579,9 @@ void MainInterface::DoCheckFloatCommand()
 	{
 		parentview->GetMainFrame()->CallEnableFloatCommand(vk);
 	}
+}
+
+void MainInterface::OnDoScroll( bool horz, int pos, int range )
+{
+	GUICoordinate::getInstance().DoScroll(horz, pos, range);
 }

@@ -3,30 +3,30 @@
 
 #include "stdafx.h"
 #include "hgeSDI.h"
-#include "UICommandBox.h"
+#include "UICommandDockablePane.h"
 
 #include "Main.h"
 
 
 // UICommandBox
 
-IMPLEMENT_DYNAMIC(UICommandBox, CDockablePane)
+IMPLEMENT_DYNAMIC(UICommandDockablePane, CDockablePane)
 
-UICommandBox::UICommandBox()
+UICommandDockablePane::UICommandDockablePane()
 {
 
 }
 
-UICommandBox::~UICommandBox()
+UICommandDockablePane::~UICommandDockablePane()
 {
 }
 
 
-BEGIN_MESSAGE_MAP(UICommandBox, CDockablePane)
+BEGIN_MESSAGE_MAP(UICommandDockablePane, CDockablePane)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
-	ON_EN_CHANGE(IDCB_COMMANDEDIT, &UICommandBox::OnEnChangeCommandEdit)
-	ON_NOTIFY(EN_MSGFILTER, IDCB_COMMANDEDIT, &UICommandBox::OnEnMsgFilterCommandEdit)
+//	ON_EN_CHANGE(IDCB_COMMANDEDIT, &UICommandDockablePane::OnEnChangeCommandEdit)
+//	ON_NOTIFY(EN_MSGFILTER, IDCB_COMMANDEDIT, &UICommandDockablePane::OnEnMsgFilterCommandEdit)
 //	ON_WM_CHAR()
 ON_WM_MOUSEHOVER()
 ON_WM_MOUSELEAVE()
@@ -42,21 +42,21 @@ END_MESSAGE_MAP()
 #define UICB_TABVIEWSTR				"View "
 #define UICB_COMMANDEDITPROMPTSTR	"Command: "
 
-int UICommandBox::OnCreate(LPCREATESTRUCT lpCreateStruct)
+int UICommandDockablePane::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CDockablePane::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
 	CRect rectDummy;
 	rectDummy.SetRectEmpty ();
-
+	/*
 	if (!m_wndCommandEditPrompt.Create(WS_CHILD|WS_VISIBLE|WS_BORDER|ES_READONLY, rectDummy, this, IDCB_COMMANDEDITPROMPT))
 	{
 		return -1;
 	}
 	m_wndCommandEditPrompt.SetWindowText(UICB_COMMANDEDITPROMPTSTR);
-
-	if (!m_wndCommandEdit.Create(WS_CHILD|WS_VISIBLE|WS_BORDER|ES_MULTILINE, rectDummy, this, IDCB_COMMANDEDIT))
+	*/
+	if (!m_wndCommandEdit.Create(WS_CHILD|WS_VISIBLE|WS_BORDER|ES_MULTILINE|ES_WANTRETURN|ES_AUTOHSCROLL|WS_VSCROLL, rectDummy, this, IDCB_COMMANDEDIT))
 	{
 		return -1;
 	}
@@ -91,19 +91,20 @@ int UICommandBox::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		m_wndTabs.AddTab(&(listctrl[i]), tabtitlebuffer, (UINT)-1);
 	}
 
-	m_wndCommandEdit.SetEventMask(m_wndCommandEdit.GetEventMask() | ENM_CHANGE | ENM_KEYEVENTS);
+//	m_wndCommandEdit.SetEventMask(m_wndCommandEdit.GetEventMask() | ENM_CHANGE | ENM_KEYEVENTS);
 
 	return 0;
 }
 
 
-void UICommandBox::OnSize(UINT nType, int cx, int cy)
+void UICommandDockablePane::OnSize(UINT nType, int cx, int cy)
 {
 	CDockablePane::OnSize(nType, cx, cy);
 
 	// TODO: 在此处添加消息处理程序代码
 	m_wndTabs.SetWindowPos (NULL, -1, -1, cx, cy,
 		SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
+	/*
 	CHARFORMAT cf;
 	m_wndCommandEdit.GetDefaultCharFormat(cf);
 	HDC hdc = ::GetDC(NULL);
@@ -114,11 +115,9 @@ void UICommandBox::OnSize(UINT nType, int cx, int cy)
 	}
 	int commandheight = cf.yHeight*dpi/1440*2;
 	int commandlogheight = cy-m_wndTabs.GetTabsHeight()-commandheight;
-
 	m_wndCommandLogEdit.SetWindowPos(NULL, 0, 0, cx, commandlogheight,
 		SWP_NOACTIVATE | SWP_DRAWFRAME);
 	m_wndCommandLogEdit.PostMessage(WM_VSCROLL, SB_BOTTOM,0);
-
 	int commandpromptwidth = m_wndCommandEditPrompt.GetWindowTextLength();
 	m_wndCommandEditPrompt.GetDefaultCharFormat(cf);
 	if (hdc)
@@ -129,50 +128,27 @@ void UICommandBox::OnSize(UINT nType, int cx, int cy)
 
 	m_wndCommandEditPrompt.SetWindowPos(NULL, 0, commandlogheight, commandpromptwidth, commandheight,
 		SWP_NOACTIVATE | SWP_DRAWFRAME);
-	m_wndCommandEdit.SetWindowPos(NULL, commandpromptwidth, commandlogheight, cx-commandpromptwidth, commandheight,
+	m_wndCommandEdit.SetWindowPos(NULL, 0, commandlogheight, cx, commandheight,
 		SWP_NOACTIVATE | SWP_DRAWFRAME);
+	*/
+#define _UICDP_EDITLBEGIN	15
+	cy -= m_wndTabs.GetTabsHeight();
+	cx -= _UICDP_EDITLBEGIN;
+	CString strw = "w";
+	CDC * cdc = m_wndCommandEdit.GetDC();
+	CSize sizew = cdc->GetTextExtent(strw);
+	float commandeditheight = sizew.cy*2;
+	m_wndCommandLogEdit.SetWindowPos(NULL, _UICDP_EDITLBEGIN, 0, cx, cy-commandeditheight, SWP_NOACTIVATE|SWP_DRAWFRAME);
+	m_wndCommandLogEdit.PostMessage(WM_VSCROLL, SB_BOTTOM, 0);
+	m_wndCommandEdit.SetWindowPos(NULL, _UICDP_EDITLBEGIN, cy-commandeditheight, cx, commandeditheight, SWP_DRAWFRAME);
 }
 
-void UICommandBox::AppendCommandLogText( LPCTSTR text )
+void UICommandDockablePane::AppendCommandLogText( LPCTSTR text )
 {
-	CString str;
-	m_wndCommandLogEdit.GetWindowText(str);
-	str += text;
-	str += "\n";
-	m_wndCommandLogEdit.SetWindowText(str);
-	m_wndCommandLogEdit.PostMessage(WM_VSCROLL, SB_BOTTOM,0);
+	m_wndCommandLogEdit.AppendCommandLogText(text);
 }
 
-void UICommandBox::OnEnChangeCommandEdit()
-{
-}
-
-void UICommandBox::OnEnMsgFilterCommandEdit(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	MSGFILTER *pMsgFilter = reinterpret_cast<MSGFILTER *>(pNMHDR);
-	if (pMsgFilter->msg == WM_CHAR)
-	{
-		if (pMsgFilter->wParam == VK_RETURN)
-		{
-			CommitCommand();
-			ClearCommand();
-		}
-		else if (pMsgFilter->wParam == VK_ESCAPE)
-		{
-			ClearCommand();
-		}
-	}
-}
-//void UICommandBox::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
-//{
-//	// TODO: 在此添加消息处理程序代码和/或调用默认值
-//	m_wndCommandEdit.SetFocus();
-//
-//	CDockablePane::OnChar(nChar, nRepCnt, nFlags);
-//}
-
-
-void UICommandBox::OnMouseHover(UINT nFlags, CPoint point)
+void UICommandDockablePane::OnMouseHover(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	m_wndCommandEdit.SetFocus();
@@ -180,7 +156,7 @@ void UICommandBox::OnMouseHover(UINT nFlags, CPoint point)
 }
 
 
-void UICommandBox::OnMouseLeave()
+void UICommandDockablePane::OnMouseLeave()
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 
@@ -188,7 +164,7 @@ void UICommandBox::OnMouseLeave()
 }
 
 
-void UICommandBox::OnMouseMove(UINT nFlags, CPoint point)
+void UICommandDockablePane::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	TRACKMOUSEEVENT tme;
@@ -200,29 +176,12 @@ void UICommandBox::OnMouseMove(UINT nFlags, CPoint point)
 	CDockablePane::OnMouseMove(nFlags, point);
 }
 
-void UICommandBox::CommitCommand()
-{
-	int nlength = m_wndCommandEdit.GetWindowTextLength();
-	if (!nlength)
-	{
-		return;
-	}
-	CString str;
-	m_wndCommandEdit.GetWindowText(str);
-	MainInterface::getInstance().OnCommitCommand(str.GetBuffer());
-}
 
-void UICommandBox::ClearLog()
+void UICommandDockablePane::ClearLog()
 {
-	m_wndCommandLogEdit.SetWindowText("");
+	m_wndCommandLogEdit.ClearLog();
 }
-
-void UICommandBox::ClearCommand()
-{
-	m_wndCommandEdit.SetWindowText("");
-}
-
-void UICommandBox::OnClose()
+void UICommandDockablePane::OnClose()
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 

@@ -40,12 +40,15 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_UPDATE_COMMAND_UI(ID_EDITCOMMANDLOG, &CMainFrame::OnUpdateEditcommandlog)
 	ON_UPDATE_COMMAND_UI(ID_STATUSBAR_PANE1, &CMainFrame::OnUpdateStatusbarPane1)
 	ON_UPDATE_COMMAND_UI(ID_STATUSBAR_PANE2, &CMainFrame::OnUpdateStatusbarPane2)
+	ON_COMMAND(ID_VIEW_COMMAND_PANE, &CMainFrame::OnViewCommandPane)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_COMMAND_PANE, &CMainFrame::OnUpdateViewCommandPane)
 END_MESSAGE_MAP()
 
 // CMainFrame 构造/析构
 
 CMainFrame::CMainFrame()
 {
+//	_CrtSetBreakAlloc(26907);
 	// TODO: 在此添加成员初始化代码
 	theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_OFF_2007_BLACK);
 }
@@ -82,12 +85,12 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndStatusBar.AddExtendedElement(new CMFCRibbonStatusBarPane(ID_STATUSBAR_PANE2, strTitlePane2, TRUE), strTitlePane2);
 	
 
-	m_wndUICommandBox.Create(_T("Command"), this, CRect (0, 0, 0, 0),
+	m_wndUICommandPane.Create(_T("Command"), this, CRect (0, 0, 0, 0),
 		TRUE /* Has gripper */, ID_UI_COMMANDBOX,
 		WS_CHILD | WS_VISIBLE | CBRS_BOTTOM | CBRS_FLOAT_MULTI);
 
-	m_wndUICommandBox.EnableDocking(CBRS_ALIGN_ANY);
-	DockPane(&m_wndUICommandBox);
+	m_wndUICommandPane.EnableDocking(CBRS_ALIGN_ANY);
+	DockPane(&m_wndUICommandPane);
 	
 	m_wndUIFloatingEdit.Create(WS_CHILD|WS_VISIBLE, CRect(0, 0, 0, 0), this, ID_UI_FLOATINGCOMMAND);
 /*	
@@ -275,6 +278,22 @@ void CMainFrame::OnUpdateViewCaptionBar(CCmdUI* pCmdUI)
 	pCmdUI->SetCheck(m_wndCaptionBar.IsVisible());
 }
 
+void CMainFrame::OnViewCommandPane()
+{
+	// TODO: 在此添加命令处理程序代码
+	BOOL visible = m_wndUICommandPane.IsPaneVisible();
+	m_wndUICommandPane.ShowPane(visible?FALSE:TRUE, TRUE, FALSE);
+//	m_wndUICommandPane.ShowWindow(m_wndUICommandPane.IsVisible() ? SW_HIDE : SW_SHOW);
+	RecalcLayout(FALSE);
+}
+
+void CMainFrame::OnUpdateViewCommandPane(CCmdUI *pCmdUI)
+{
+	// TODO: 在此添加命令更新用户界面处理程序代码
+	pCmdUI->SetCheck(m_wndUICommandPane.IsPaneVisible());
+}
+
+
 void CMainFrame::OnOptions()
 {
 	CMFCRibbonCustomizeDialog *pOptionsDlg = new CMFCRibbonCustomizeDialog(this, &m_wndRibbonBar);
@@ -331,7 +350,7 @@ bool CMainFrame::SetStatusBarText( int id, LPCTSTR text )
 
 bool CMainFrame::AppendCommandLogText( LPCTSTR text )
 {
-	m_wndUICommandBox.AppendCommandLogText(text);
+	m_wndUICommandPane.AppendCommandLogText(text);
 	return true;
 }
 

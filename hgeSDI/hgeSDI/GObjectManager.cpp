@@ -62,7 +62,7 @@ void GObjectManager::AddNotToDelete( GObject * node )
 
 void GObjectManager::Init()
 {
-
+	Release();
 }
 
 void GObjectManager::Release()

@@ -81,9 +81,16 @@ enum{
 // CWP
 
 enum{
-	CWP_X=0,
+	CWP_NULL=0,
+	CWP_X,
 	CWP_Y,
 	CWP_XY,
+	CWP_X_B,
+	CWP_Y_B,
+	CWP_XY_B,
+	CWP_X_E,
+	CWP_Y_E,
+	CWP_XY_E,
 	CWP_XOFFSET,
 	CWP_YOFFSET,
 	CWP_SCALE,

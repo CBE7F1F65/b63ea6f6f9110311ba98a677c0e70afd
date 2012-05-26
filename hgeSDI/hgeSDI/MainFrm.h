@@ -14,10 +14,10 @@
 
 #pragma once
 
-#include "UICommandBox.h"
+#include "UICommandDockablePane.h"
 #include "UIPopupMenu.h"
-#include "UIFloatingCommand.h"
-#include "UIEditBox.h"
+#include "UIFloatingEditBox.h"
+#include "UISplitterWnd.h"
 
 class CMainFrame : public CFrameWndEx
 {
@@ -28,7 +28,7 @@ protected: // 仅从序列化创建
 
 // 特性
 protected:
-	CSplitterWnd m_wndSplitter;
+	UISplitterWnd m_wndSplitter;
 public:
 
 	bool SetStatusBarText(int id, LPCTSTR text);
@@ -60,10 +60,9 @@ public:
 	CMFCRibbonStatusBar  m_wndStatusBar;
 	CMFCCaptionBar    m_wndCaptionBar;
 
-	UICommandBox		m_wndUICommandBox;
+	UICommandDockablePane		m_wndUICommandPane;
 	UIPopupMenu			m_wndUIPopupMenu;
-	UIEditBox			m_wndUIFloatingEdit;
-//	UIFloatingCommand	m_wndUIFloatingCommand;
+	UIFloatingEditBox			m_wndUIFloatingEdit;
 
 // 生成的消息映射函数
 protected:
@@ -85,6 +84,8 @@ public:
 	afx_msg void OnUpdateStatusbarPane1(CCmdUI *pCmdUI);
 	afx_msg void OnUpdateStatusbarPane2(CCmdUI *pCmdUI);
 
+	afx_msg void OnViewCommandPane();
+	afx_msg void OnUpdateViewCommandPane(CCmdUI *pCmdUI);
 };
 
 

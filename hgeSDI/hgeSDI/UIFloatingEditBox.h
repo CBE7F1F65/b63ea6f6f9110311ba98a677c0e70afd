@@ -3,13 +3,13 @@
 
 // UIEditBox
 
-class UIEditBox : public CEdit
+class UIFloatingEditBox : public CEdit
 {
-	DECLARE_DYNAMIC(UIEditBox)
+	DECLARE_DYNAMIC(UIFloatingEditBox)
 
 public:
-	UIEditBox();
-	virtual ~UIEditBox();
+	UIFloatingEditBox();
+	virtual ~UIFloatingEditBox();
 
 	void ClearCommand();
 	void CommitCommand();
@@ -24,6 +24,7 @@ public:
 	afx_msg void OnSetFocus(CWnd* pOldWnd);
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnEnChange();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };
 
 

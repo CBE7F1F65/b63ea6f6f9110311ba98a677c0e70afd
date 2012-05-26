@@ -15,7 +15,8 @@
 
 Command::Command()
 {
-	ZeroMemory(&ccomm, sizeof(ccomm));
+//	ZeroMemory(&ccomm, sizeof(ccomm));
+	ccomm.ClearSet();
 	tarcommand = 0;
 	Init();
 }
@@ -29,6 +30,9 @@ void Command::Init()
 {
 	InitCommandStrInfo();
 	InitWantPromptInfo();
+	TerminalInternalProcess();
+	ClearCurrentCommand();
+	SetRenderTarget(0);
 }
 
 void Command::LogCreate()
@@ -61,7 +65,7 @@ void Command::LogTerminal()
 	}
 }
 
-void Command::LogParam( int index, int useflag )
+void Command::_LogParam( int index, int useflag, int cwp/*=-1 */ )
 {
 	if (ccomm.command < _COMM_NOLOGCOMMANDBEGIN || ccomm.command > _COMM_NOLOGCOMMANDEND)
 	{
@@ -70,33 +74,34 @@ void Command::LogParam( int index, int useflag )
 		switch (useflag)
 		{
 		case COMMPARAMFLAG_X:
-			sprintf_s(paramstr, M_STRMAX, "%f", ccomm.param[index].x);
+			sprintf_s(paramstr, M_STRMAX, "%f", ccomm.params[index].x);
 			break;
 		case COMMPARAMFLAG_Y:
-			sprintf_s(paramstr, M_STRMAX, "%f", ccomm.param[index].y);
+			sprintf_s(paramstr, M_STRMAX, "%f", ccomm.params[index].y);
 			break;
 		case COMMPARAMFLAG_F:
-			sprintf_s(paramstr, M_STRMAX, "%f", ccomm.param[index].fval);
+			sprintf_s(paramstr, M_STRMAX, "%f", ccomm.params[index].fval);
 			break;
 		case COMMPARAMFLAG_I:
-			sprintf_s(paramstr, M_STRMAX, "%d", ccomm.param[index].ival);
+			sprintf_s(paramstr, M_STRMAX, "%d", ccomm.params[index].ival);
 			break;
 		case COMMPARAMFLAG_G:
-			sprintf_s(paramstr, M_STRMAX, "%f", ccomm.param[index].flag);
+			sprintf_s(paramstr, M_STRMAX, "%f", ccomm.params[index].flag);
 			break;
 		case COMMPARAMFLAG_S:
-			strcpy_s(paramstr, M_STRMAX, ccomm.param[index].sval);
+			ccomm.params[index].sval = paramstr;
+//			strcpy_s(paramstr, M_STRMAX, ccomm.params[index].sval);
 			break;
 			
 		}
-		sprintf_s(strlog, M_STRMAX*4, "(%s) %s%s%s", GetCommandStr(), COMMANDLOGSTR_PARAM, GetWantPromptStr(), paramstr);
+		sprintf_s(strlog, M_STRMAX*4, "(%s) %s%s%s", GetCommandStr(), COMMANDLOGSTR_PARAM, GetWantPromptStr(cwp), paramstr);
 		MainInterface::getInstance().CallAppendCommandLogText(strlog);
 	}
 }
 
 void Command::LogWantNext()
 {
-	if (!ccomm.wantnext || IsInternalProcessing())
+	if (!ccomm.wantprompt || IsInternalProcessing())
 	{
 		return;
 	}
@@ -222,14 +227,16 @@ int Command::PullCommand()
 
 int Command::ClearCurrentCommand(bool callterminal /*=false*/)
 {
-	inputcommandlist.clear();
+//	inputcommandlist.clear();
+	pendingparam.ClearSet();
 	if (ccomm.command && callterminal)
 	{
 		StepTo(CSI_TERMINAL);
 		ProcessCommand();
 		StepBack();
 	}
-	ZeroMemory(&ccomm, sizeof(ccomm));
+	ccomm.ClearSet();
+//	ZeroMemory(&ccomm, sizeof(ccomm));
 	return 0;
 }
 
@@ -239,7 +246,8 @@ int Command::SetCurrentCommand( CommandStepInfo * info )
 	{
 		return -1;
 	}
-	memcpy(&ccomm, info, sizeof(ccomm));
+	ccomm = *info;
+//	memcpy(&ccomm, info, sizeof(ccomm));
 	return 0;
 }
 /*
@@ -249,223 +257,172 @@ int Command::SetParamXY( int index, float x, float y )
 	{
 		return -1;
 	}
-	ccomm.param[index].x = x;
-	ccomm.param[index].y = y;
-	ccomm.param[index].useflag |= COMMPARAMFLAG_XY;
+	ccomm.params[index].x = x;
+	ccomm.params[index].y = y;
+	ccomm.params[index].useflag |= COMMPARAMFLAG_XY;
 	LogParam(index, COMMPARAMFLAG_XY);
 	return ccomm.command;
 }
 */
-int Command::SetParamX( int index, float x )
+int Command::SetParamX( int index, float x, int cwp/*=-1*/ )
 {
-	if (index < 0 || index >= COMMPARAMMAX)
+	if (index < 0)
 	{
 		return -1;
 	}
-	ccomm.param[index].x = x;
-	ccomm.param[index].useflag |= COMMPARAMFLAG_X;
-	LogParam(index, COMMPARAMFLAG_X);
+	GrowParam(index);
+	ccomm.params[index].x = x;
+	ccomm.params[index].useflag |= COMMPARAMFLAG_X;
+	_LogParam(index, COMMPARAMFLAG_X, cwp);
 	return ccomm.command;
 }
 
-int Command::SetParamY( int index, float y )
+int Command::SetParamY( int index, float y, int cwp/*=-1*/ )
 {
-	if (index < 0 || index >= COMMPARAMMAX)
+	if (index < 0)
 	{
 		return -1;
 	}
-	ccomm.param[index].y = y;
-	ccomm.param[index].useflag |= COMMPARAMFLAG_Y;
-	LogParam(index, COMMPARAMFLAG_Y);
+	GrowParam(index);
+	ccomm.params[index].y = y;
+	ccomm.params[index].useflag |= COMMPARAMFLAG_Y;
+	_LogParam(index, COMMPARAMFLAG_Y, cwp);
 	return ccomm.command;
 }
 
-int Command::SetParamF( int index, float fval )
+int Command::SetParamF( int index, float fval, int cwp/*=-1*/ )
 {
-	if (index < 0 || index >= COMMPARAMMAX)
+	if (index < 0)
 	{
 		return -1;
 	}
-	ccomm.param[index].fval = fval;
-	ccomm.param[index].useflag |= COMMPARAMFLAG_F;
-	LogParam(index, COMMPARAMFLAG_F);
+	GrowParam(index);
+	ccomm.params[index].fval = fval;
+	ccomm.params[index].useflag |= COMMPARAMFLAG_F;
+	_LogParam(index, COMMPARAMFLAG_F, cwp);
 	return ccomm.command;
 }
 
-int Command::SetParamI( int index, int ival )
+int Command::SetParamI( int index, int ival, int cwp/*=-1*/ )
 {
-	if (index < 0 || index >= COMMPARAMMAX)
+	if (index < 0)
 	{
 		return -1;
 	}
-	ccomm.param[index].ival = ival;
-	ccomm.param[index].useflag |= COMMPARAMFLAG_I;
-	LogParam(index, COMMPARAMFLAG_I);
+	GrowParam(index);
+	ccomm.params[index].ival = ival;
+	ccomm.params[index].useflag |= COMMPARAMFLAG_I;
+	_LogParam(index, COMMPARAMFLAG_I, cwp);
 	return ccomm.command;
 }
 
-int Command::SetParamS( int index, const char * sval )
+int Command::SetParamS( int index, const char * sval, int cwp/*=-1*/ )
 {
-	if (index < 0 || index >= COMMPARAMMAX)
+	if (index < 0)
 	{
 		return -1;
 	}
-	strcpy_s(ccomm.param[index].sval, M_STRMAX, sval);
-	ccomm.param[index].useflag |= COMMPARAMFLAG_S;
-	LogParam(index, COMMPARAMFLAG_S);
+	GrowParam(index);
+	ccomm.params[index].sval = sval;
+//	strcpy_s(ccomm.params[index].sval, M_STRMAX, sval);
+	ccomm.params[index].useflag |= COMMPARAMFLAG_S;
+	_LogParam(index, COMMPARAMFLAG_S, cwp);
 	return ccomm.command;
 }
 
-int Command::SetParamG( int index, int flag )
+int Command::SetParamG( int index, int flag, int cwp/*=-1*/ )
 {
-	if (index < 0 || index >= COMMPARAMMAX)
+	if (index < 0)
 	{
 		return -1;
 	}
-	ccomm.param[index].flag = flag;
-	ccomm.param[index].useflag |= COMMPARAMFLAG_G;
-	LogParam(index, COMMPARAMFLAG_G);
+	GrowParam(index);
+	ccomm.params[index].flag = flag;
+	ccomm.params[index].useflag |= COMMPARAMFLAG_G;
+	_LogParam(index, COMMPARAMFLAG_G, cwp);
 	return ccomm.command;
 }
 
 bool Command::GetParamXY( int index, float * x, float * y )
 {
-	if (index < 0 || index >= COMMPARAMMAX)
+	if (index < 0)
 	{
 		return false;
 	}
+	GrowParam(index);
 	if (x)
 	{
-		*x = ccomm.param[index].x;
+		*x = ccomm.params[index].x;
 	}
 	if (y)
 	{
-		*y = ccomm.param[index].y;
+		*y = ccomm.params[index].y;
 	}
 	return true;
 }
 
 float Command::GetParamF( int index )
 {
-	if (index < 0 || index >= COMMPARAMMAX)
+	if (index < 0)
 	{
-		return 0;
+		return -1;
 	}
-	return ccomm.param[index].fval;
+	GrowParam(index);
+	return ccomm.params[index].fval;
 }
 
 int Command::GetParamI( int index )
 {
-	if (index < 0 || index >= COMMPARAMMAX)
+	if (index < 0)
 	{
-		return 0;
+		return -1;
 	}
-	return ccomm.param[index].ival;
+	GrowParam(index);
+	return ccomm.params[index].ival;
 }
 
-char * Command::GetParamS( int index )
+const char * Command::GetParamS( int index )
 {
-	if (index < 0 || index >= COMMPARAMMAX)
+	if (index < 0)
 	{
-		return NULL;
+		return "";
 	}
-	return ccomm.param[index].sval;
+	GrowParam(index);
+	return ccomm.params[index].sval.c_str();
 }
 
 int Command::GetParamG( int index )
 {
-	if (index < 0 || index >= COMMPARAMMAX)
+	if (index < 0)
 	{
-		return 0;
+		return -1;
 	}
-	return ccomm.param[index].flag;
+	GrowParam(index);
+	return ccomm.params[index].flag;
 }
 
 bool Command::CheckParamSet( int index, int useflag )
 {
-	if (index < 0 || index >= COMMPARAMMAX)
+	if (index < 0)
 	{
 		return false;
 	}
-	return (ccomm.param[index].useflag & useflag);
+	GrowParam(index);
+	return (ccomm.params[index].useflag & useflag);
 
-}
-
-int Command::ProcessCommittedCommand()
-{
-	if (inputcommandlist.empty())
-	{
-		return ccomm.command;
-	}
-
-	list<CommittedCommand>::iterator it = inputcommandlist.begin();
-	if (!ccomm.command)
-	{
-		CommitCommand(it->substr);
-	}
-	if (ccomm.step == CSI_INIT)
-	{
-		return ccomm.command;
-	}
-
-	float fval = 0;
-	float ival = 0;
-	switch (ccomm.wantnext)
-	{
-	case COMMPARAMFLAG_X:
-	case COMMPARAMFLAG_Y:
-	case COMMPARAMFLAG_F:
-		sscanf_s(it->substr, "%f", &fval);
-		break;
-
-	case COMMPARAMFLAG_I:
-	case COMMPARAMFLAG_G:
-		sscanf_s(it->substr, "%d", &ival);
-		break;
-
-	case COMMPARAMFLAG_S:
-		break;
-	}
-	switch (ccomm.wantnext)
-	{
-	case COMMPARAMFLAG_X:
-		SetParamX(ccomm.wantnextindex, fval);
-		break;
-	case COMMPARAMFLAG_Y:
-		SetParamY(ccomm.wantnextindex, fval);
-		break;
-	case COMMPARAMFLAG_F:
-		SetParamF(ccomm.wantnextindex, fval);
-		break;
-	case COMMPARAMFLAG_I:
-		SetParamI(ccomm.wantnextindex, ival);
-		break;
-	case COMMPARAMFLAG_G:
-		SetParamG(ccomm.wantnextindex, ival);
-		break;
-	case COMMPARAMFLAG_S:
-		SetParamS(ccomm.wantnextindex, it->substr);
-		break;
-	default:
-		LogError(it->substr);
-		break;
-	}
-
-	inputcommandlist.pop_front();
-	return ccomm.command;
 }
 
 int Command::CommitCommand( const char * str )
 {
 	bool notfinished = false;
-	CommittedCommand _ic;
-	int inext = _FindNextSubStr(str, _ic.substr, M_STRMAX);
-
+	CommittedCommand _cc;
+	int inext = 0;//_FindNextSubStr(str, &_ic, M_STRMAX);
+	/*
 	if (!ccomm.command)
 	{
-		if (!CreateCommand(FindCommandByStr(_ic.substr)))
+		if (!CreateCommand(FindCommandByStr(_ic.substr.c_str())))
 		{
-			LogError(_ic.substr);
+			LogError(_ic.substr.c_str());
 			return ccomm.command;
 		}
 		
@@ -477,73 +434,27 @@ int Command::CommitCommand( const char * str )
 		{
 			return ccomm.command;
 		}
-		
-	}
-	/*
-	if (!ccomm.wantnext)
-	{
-		return ccomm.command;
 	}
 	*/
 	while (true)
 	{
-		/*
-		float fval = 0;
-		float ival = 0;
-		switch (ccomm.wantnext)
+		inext = _FindNextSubStr(str, &_cc, M_STRMAX, inext);
+		if (!_cc.type)
 		{
-		case COMMPARAMFLAG_X:
-		case COMMPARAMFLAG_Y:
-		case COMMPARAMFLAG_F:
-			sscanf_s(commandsubstr, "%f", &fval);
-			break;
-
-		case COMMPARAMFLAG_I:
-		case COMMPARAMFLAG_G:
-			sscanf_s(commandsubstr, "%d", &ival);
-			break;
-
-		case COMMPARAMFLAG_S:
 			break;
 		}
-		switch (ccomm.wantnext)
-		{
-		case COMMPARAMFLAG_X:
-			SetParamX(ccomm.wantnextindex, fval);
-			break;
-		case COMMPARAMFLAG_Y:
-			SetParamY(ccomm.wantnextindex, fval);
-			break;
-		case COMMPARAMFLAG_F:
-			SetParamF(ccomm.wantnextindex, fval);
-			break;
-		case COMMPARAMFLAG_I:
-			SetParamI(ccomm.wantnextindex, ival);
-			break;
-		case COMMPARAMFLAG_G:
-			SetParamG(ccomm.wantnextindex, ival);
-			break;
-		case COMMPARAMFLAG_S:
-			SetParamS(ccomm.wantnextindex, commandsubstr);
-			break;
-		default:
-			LogError(commandsubstr);
-			break;
-		}
-		*/
-		inputcommandlist.push_back(_ic);
+		inputcommandlist.push_back(_cc);
 		if (!inext)
 		{
 			break;
 		}
-		inext = _FindNextSubStr(str, _ic.substr, M_STRMAX, inext);
 	}
 	return ccomm.command;
 }
 
 bool _CheckCharToBreak(char ch)
 {
-	if (ch >= 'a' && ch <= 'z' || ch == '_' || ch >= 'A' && ch <= 'Z' || ch >= '0' && ch <= '9' || ch >= 0x80)
+	if (ch >= 'a' && ch <= 'z' || ch == '_' || ch >= 'A' && ch <= 'Z' || ch >= '0' && ch <= '9' || ch == '-' || ch == '+' || ch == '.' || ch >= 0x80)
 	{
 		return false;
 	}
@@ -559,13 +470,22 @@ bool _CheckCharQuote(char ch)
 	return false;
 }
 
-int Command::_FindNextSubStr( const char * str, char * substr, int maxnsubstr, int ibegin/*=0*/ )
+int Command::_FindNextSubStr( const char * str, CommittedCommand * cc, int maxnsubstr, int ibegin/*=0*/ )
 {
+	/*
 	if (!substr)
 	{
 		return 0;
 	}
-	strcpy_s(substr, maxnsubstr, "");
+	*/
+//	strcpy_s(substr, maxnsubstr, "");
+	if (!cc)
+	{
+		return 0;
+	}
+	cc->ClearSet();
+
+	string substr = "";
 	int nchars = 0;
 	int i=ibegin;
 	for (; i<strlen(str); i++)
@@ -600,35 +520,94 @@ int Command::_FindNextSubStr( const char * str, char * substr, int maxnsubstr, i
 	{
 		nchars--;
 	}
-	strncpy_s(substr, maxnsubstr, &str[ibegin], nchars);
-	int nnowsubstrlen = strlen(substr);
-	if (nnowsubstrlen < maxnsubstr)
-	{
-		substr[nchars] = 0;
-	}
-	substr[maxnsubstr-1] = 0;
+	substr = str;
+	substr = substr.substr(ibegin, nchars);
 
-	for (int j=0; j<strlen(substr); j++)
+	if (!substr.length())
 	{
-		substr[j] = tolower(substr[j]);
+		return 0;
+	}
+	cc->sval = substr;
+
+	char ch[3];
+	for (int i=0; i<3; i++)
+	{
+		if (substr.length() > i)
+		{
+			ch[i] = substr.c_str()[i];
+		}
+		else
+		{
+			ch[i] = 0;
+		}
+	}
+	if (isdigit(ch[0]) || 
+		(ch[0]=='.' || ch[0]=='+' || ch[0]=='-') && isdigit(ch[1]) ||
+		(ch[0]=='+' || ch[0]=='-') && ch[1]=='.' && isdigit(ch[2]))
+	{
+		for (int i=0; i<substr.length(); i++)
+		{
+			if (substr.c_str()[i] == '.')
+			{
+				cc->type = COMMITTEDCOMMANDTYPE_FLOAT;
+				break;
+			}
+		}
+		if (!cc->type)
+		{
+			cc->type = COMMITTEDCOMMANDTYPE_INT;
+		}
+	}
+	if (!cc->type)
+	{
+		if (_CheckCharQuote(ch[0]))
+		{
+			cc->type = COMMITTEDCOMMANDTYPE_STRING;
+		}
+	}
+	if (!cc->type)
+	{
+		cc->ival = FindCommandByStr(substr.c_str());
+		if (cc->ival)
+		{
+			cc->type = COMMITTEDCOMMANDTYPE_COMMAND;
+		}
+	}
+	if (!cc->type)
+	{
+		cc->type = COMMITTEDCOMMANDTYPE_STRING;
 	}
 
-	if (i == strlen(str))
+	switch (cc->type)
+	{
+	case COMMITTEDCOMMANDTYPE_ERROR:
+	case COMMITTEDCOMMANDTYPE_COMMAND:
+		break;
+	case COMMITTEDCOMMANDTYPE_FLOAT:
+		sscanf_s(substr.c_str(), "%f", &(cc->fval));
+		cc->ival = cc->fval;
+		break;
+	case COMMITTEDCOMMANDTYPE_INT:
+		sscanf_s(substr.c_str(), "%d", &(cc->ival));
+		cc->fval = cc->ival;
+		break;
+	}
+
+
+	if (i >= strlen(str))
 	{
 		return 0;
 	}
 	return i;
 }
 
-int Command::StepTo( int step, int wantnextindex/*=0*/, int wantnext/*=0*/, int wantnextprompt/*=0*/, bool pushback/*=true*/ )
+int Command::StepTo( int step, int wantnextprompt/*=0*/, bool pushback/*=true*/ )
 {
 	if (pushback)
 	{
 		histcomm.push_back(ccomm);
 	}
 	ccomm.step=step;
-	ccomm.wantnextindex = wantnextindex;
-	ccomm.wantnext = wantnext;
 	ccomm.wantprompt = wantnextprompt;
 	if (pushback)
 	{
@@ -639,9 +618,13 @@ int Command::StepTo( int step, int wantnextindex/*=0*/, int wantnext/*=0*/, int 
 
 int Command::FindCommandByStr( const char * str )
 {
+	string lowerstr = str;
+	transform(lowerstr.begin(), lowerstr.end(), lowerstr.begin(), tolower);
+
 	for (int i=0; i<COMMANDINDEXMAX; i++)
 	{
-		if (!strcmp(str, scinfo[i].str) || !strcmp(str, scinfo[i].shortstr))
+//		if (!strcmp(str, scinfo[i].str) || !strcmp(str, scinfo[i].shortstr))
+		if (!scinfo[i].str.compare(lowerstr) || !(scinfo[i].shortstr.compare(lowerstr)))
 		{
 			return i;
 		}
@@ -657,7 +640,7 @@ int Command::StepBack()
 		{
 			if (it->command == ccomm.command)
 			{
-				StepTo(it->step, it->wantnextindex, it->wantnext, it->wantprompt, false);
+				StepTo(it->step, it->wantprompt, false);
 				histcomm.erase(--(it.base()));
 				break;
 			}
@@ -676,4 +659,63 @@ void Command::SetRenderTarget( HTARGET tar, float x/*=0*/, float y/*=0*/ )
 	tarcommand = tar;
 	tarx = x;
 	tary = y;
+}
+
+void Command::GrowParam( int index )
+{
+	int size = ccomm.params.size();
+	if (size < index+1)
+	{
+		for (int i=size; i<index+1; i++)
+		{
+			CommandParam _cp;
+			ccomm.params.push_back(_cp);
+		}
+	}
+}
+
+void Command::_CommitFrontCommand( CommittedCommand &cc )
+{
+	inputcommandlist.push_front(cc);
+}
+
+void Command::CommitFrontCommandF( float fval )
+{
+	CommittedCommand cc;
+	cc.type = COMMITTEDCOMMANDTYPE_FLOAT;
+	cc.fval = fval;
+	cc.ival = fval;
+	_CommitFrontCommand(cc);
+}
+
+void Command::CommitFrontCommandI( int ival )
+{
+	CommittedCommand cc;
+	cc.type = COMMITTEDCOMMANDTYPE_INT;
+	cc.fval = ival;
+	cc.ival = ival;
+	_CommitFrontCommand(cc);
+
+}
+
+void Command::CommitFrontCommandS( const char * sval )
+{
+	CommittedCommand cc;
+	cc.type = COMMITTEDCOMMANDTYPE_STRING;
+	cc.sval = sval;
+	_CommitFrontCommand(cc);
+}
+
+void Command::CommitFrontCommandC( int command )
+{
+	CommittedCommand cc;
+	cc.type = COMMITTEDCOMMANDTYPE_COMMAND;
+	cc.ival = command;
+	cc.sval = GetCommandStr(command);
+	_CommitFrontCommand(cc);
+}
+
+void Command::TerminalInternalProcess()
+{
+	inputcommandlist.clear();
 }

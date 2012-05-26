@@ -13,40 +13,40 @@ ColorManager::~ColorManager(void)
 
 DWORD ColorManager::GetBGColor()
 {
-	return 0xfff0f0f0;
+	return 0xff212830;
 }
 
 DWORD ColorManager::GetGridMainColor()
 {
-	return 0xffa0a0a0;
+	return 0xff333949;
 }
 
 DWORD ColorManager::GetGridSubColor()
 {
-	return 0xffd0d0d0;
+	return 0xff272d38;
 }
 
 DWORD ColorManager::GetGridXAxisColor()
 {
-	return 0xffff0000;
+	return 0xff6d2426;
 }
 
 DWORD ColorManager::GetGridYAxisColor()
 {
-	return 0xff00ff00;
+	return 0xff236e26;
 }
 
 DWORD ColorManager::GetCoordColor()
 {
-	return 0xff000000;
+	return 0xffffffff;
 }
 
 DWORD ColorManager::GetCursorColor()
 {
-	return 0xff000000;
+	return 0xffffffff;
 }
 
 DWORD ColorManager::GetLayerLineColor( int layer/*=-1*/ )
 {
-	return 0xff000000;
+	return 0xffffffff;
 }

@@ -29,22 +29,17 @@ void LineCommand::OnProcessCommand()
 		GUICursor::getInstance().ChangeCursor(GUIC_CREATEPOINT);
 		pcommand->StepTo(
 			CSI_LINE_WANTX1, 
-			CSP_LINE_B_XY, 
-			COMMPARAMFLAG_X, 
-			CWP_XY);
+			CWP_XY_B);
 		break;
 
 	case CSI_LINE_WANTX1:
 
-		if (pcommand->CheckParamSet(
-			CSP_LINE_B_XY, 
-			COMMPARAMFLAG_X))
+		if (pcommand->ProcessPending(
+			CSP_LINE_B_XY, COMMPARAMFLAG_X, CWP_X_B,	// Fill in Param
+			CSI_LINE_WANTY1, CWP_Y_B					// Step to with want
+			))
 		{
-			pcommand->StepTo(
-				CSI_LINE_WANTY1, 
-				CSP_LINE_B_XY, 
-				COMMPARAMFLAG_Y, 
-				CWP_XY);
+
 		}
 		else if (pmain->DoPickPoint())
 		{
@@ -53,25 +48,20 @@ void LineCommand::OnProcessCommand()
 				pcommand->SetParamX(CSP_LINE_B_XY, pguic->StoCx(pmain->pickx));
 				pcommand->SetParamY(CSP_LINE_B_XY, pguic->StoCy(pmain->picky));
 				pcommand->StepTo(
-					CSI_LINE_WANTX2, 
-					CSP_LINE_E_XY, 
-					COMMPARAMFLAG_X, 
-					CWP_XY);
+					CSI_LINE_WANTX2, CWP_XY_B
+					);
 			}
 		}
 		break;
 
 	case CSI_LINE_WANTY1:
 
-		if (pcommand->CheckParamSet(
-			CSP_LINE_B_XY, 
-			COMMPARAMFLAG_Y))
+		if (pcommand->ProcessPending(
+			CSP_LINE_B_XY, COMMPARAMFLAG_Y, CWP_Y_B,	// Fill in Param
+			CSI_LINE_WANTX2, CWP_XY_E					// Step to with want
+			))
 		{
-			pcommand->StepTo(
-				CSI_LINE_WANTX2, 
-				CSP_LINE_E_XY, 
-				COMMPARAMFLAG_X, 
-				CWP_XY);
+
 		}
 		else if (pmain->DoPickPoint())
 		{
@@ -81,24 +71,19 @@ void LineCommand::OnProcessCommand()
 				pcommand->SetParamY(CSP_LINE_B_XY,  pguic->StoCy(pmain->picky));
 				pcommand->StepTo(
 					CSI_LINE_WANTX2, 
-					CSP_LINE_E_XY, 
-					COMMPARAMFLAG_X, 
-					CWP_XY);
+					CWP_XY_B);
 			}
 		}
 		break;
 
 	case CSI_LINE_WANTX2:
 
-		if (pcommand->CheckParamSet(
-			CSP_LINE_E_XY, 
-			COMMPARAMFLAG_X))
+		if (pcommand->ProcessPending(
+			CSP_LINE_E_XY, COMMPARAMFLAG_X, CWP_X_E,	// Fill in Param
+			CSI_LINE_WANTY2, CWP_Y_E					// Step to with want
+			))
 		{
-			pcommand->StepTo(
-				CSI_LINE_WANTY2, 
-				CSP_LINE_E_XY, 
-				COMMPARAMFLAG_Y, 
-				CWP_XY);
+
 		}
 		else if (pmain->DoPickPoint())
 		{
@@ -113,11 +98,12 @@ void LineCommand::OnProcessCommand()
 
 	case CSI_LINE_WANTY2:
 
-		if (pcommand->CheckParamSet(
-			CSP_LINE_E_XY, 
-			COMMPARAMFLAG_Y))
+		if (pcommand->ProcessPending(
+			CSP_LINE_E_XY, COMMPARAMFLAG_Y, CWP_Y_E,	// Fill in Param
+			CSI_FINISH								// Step to with want
+			))
 		{
-			pcommand->StepTo(CSI_FINISH);
+
 		}
 		if (pmain->DoPickPoint())
 		{
@@ -130,7 +116,7 @@ void LineCommand::OnProcessCommand()
 		}
 		break;
 	case CSI_PAUSE:
-		GUICursor::getInstance().ChangeCursor();
+//		GUICursor::getInstance().ChangeCursor();
 		ReleaseTarget();
 		break;
 	case CSI_RESUME:
@@ -148,16 +134,29 @@ void LineCommand::OnProcessCommand()
 
 			pcommand->FinishCommand();
 
+			pcommand->CommitFrontCommandF(ny1);
+			pcommand->CommitFrontCommandF(nx1);
+			pcommand->CommitFrontCommandC(COMM_LINE);
+			/*
 			pcommand->CreateCommand(COMM_LINE);
+			pcommand->StepTo(
+				CSI_LINE_WANTX1,
+				CWP_XY_B);
 			pcommand->SetParamX(CSP_LINE_B_XY, nx1);
+			pcommand->StepTo(
+				CSI_LINE_WANTY1,
+				CWP_Y_B);
 			pcommand->SetParamY(CSP_LINE_B_XY, ny1);
-			pcommand->StepTo(CSI_LINE_WANTX2);
+			pcommand->StepTo(
+				CSI_LINE_WANTX2,
+				CWP_XY_E);
+				*/
 		}
 
 		break;
 
 	case CSI_TERMINAL:
-		GUICursor::getInstance().ChangeCursor();
+		GUICursor::getInstance().ChangeCursor(GUIC_NORMAL);
 		ReleaseTarget();
 		pcommand->TerminalCommand();
 		break;

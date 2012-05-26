@@ -34,6 +34,7 @@ public:
 
 	void OnProcessPanCommand();
 	void DoPan(float xoffset_s, float yoffset_s);
+	void DoScroll(bool horz, int pos, int range);
 
 	void OnProcessZoomCommand();
 	void DoZoom(float cx_s, float cy_s, float scale);

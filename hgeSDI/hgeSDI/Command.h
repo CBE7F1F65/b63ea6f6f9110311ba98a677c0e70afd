@@ -3,8 +3,26 @@
 #include "MainDependency.h"
 #include "CommandDefines.h"
 
-struct CommandParam
+class CommandParam
 {
+public:
+	CommandParam()
+	{
+		ClearSet();
+	};
+	~CommandParam(){};
+
+	void ClearSet()
+	{
+		useflag = 0;
+		x = 0;
+		y = 0;
+		ival = 0;
+		fval = 0;
+		flag = 0;
+		sval = "";
+	};
+
 	DWORD useflag;
 
 	float x;
@@ -12,33 +30,102 @@ struct CommandParam
 	float fval;
 	int ival;
 	int flag;
-	char sval[M_STRMAX];
+	string sval;
+//	char sval[M_STRMAX];
 };
 
-struct CommandStepInfo
+class CommandStepInfo
 {
+public:
+	CommandStepInfo()
+	{
+		ClearSet();
+	};
+	~CommandStepInfo(){};
+
+	void ClearSet()
+	{
+		command = 0;
+		step = 0;
+		wantprompt = 0;
+		params.clear();
+	};
+
 	int command;
 	int step;
-	int wantnext;
-	int wantnextindex;
 	int wantprompt;
-	CommandParam param[COMMPARAMMAX];
+	vector<CommandParam> params;
+//	CommandParam param[COMMPARAMMAX];
 };
 
-struct CommandStrInfo
+class CommandStrInfo
 {
-	char str[COMMANDSTRINGMAX];
-	char shortstr[COMMANDSHORTSTRMAX];
+public:
+	CommandStrInfo()
+	{
+		ClearSet();
+	};
+	~CommandStrInfo(){};
+
+	void ClearSet()
+	{
+		str = "";
+		shortstr = "";
+	};
+
+	string str;
+	string shortstr;
+//	char str[COMMANDSTRINGMAX];
+//	char shortstr[COMMANDSHORTSTRMAX];
 };
 
-struct WantPromptInfo
+class WantPromptInfo
 {
-	char str[M_STRMAX];
+public:
+	WantPromptInfo()
+	{
+		ClearSet();
+	};
+	~WantPromptInfo(){};
+
+	void ClearSet()
+	{
+		str = "";
+	};
+
+	string str;
+//	char str[M_STRMAX];
 };
 
-struct CommittedCommand
+enum{
+	COMMITTEDCOMMANDTYPE_ERROR = 0,
+	COMMITTEDCOMMANDTYPE_COMMAND,
+	COMMITTEDCOMMANDTYPE_FLOAT,
+	COMMITTEDCOMMANDTYPE_INT,
+	COMMITTEDCOMMANDTYPE_STRING,
+};
+
+class CommittedCommand
 {
-	char substr[M_STRMAX];
+public:
+	CommittedCommand()
+	{
+		ClearSet();
+	};
+	~CommittedCommand(){};
+
+	void ClearSet()
+	{
+		type = 0;
+		fval = 0;
+		ival = 0;
+		sval = "";
+	};
+
+	int type;
+	float fval;
+	int ival;
+	string sval;
 };
 
 class Command
@@ -70,17 +157,24 @@ public:
 	int CreateCommand(int comm);
 	void ProcessCommand();
 	int ProcessCommittedCommand();
+	bool ProcessPending(int index, int useflag, int fillprompt, int step, int wantprompt=0, bool pushback=true);
+	void _CommitFrontCommand(CommittedCommand &cc);
+	void CommitFrontCommandF(float fval);
+	void CommitFrontCommandI(int ival);
+	void CommitFrontCommandS(const char * sval);
+	void CommitFrontCommandC(int command);
+
 	int FinishCommand();
 	int TerminalCommand();
 
 	int CommitCommand(const char * str);
-	int _FindNextSubStr(const char * str, char * substr, int maxnsubstr, int ibegin=0);
+	int _FindNextSubStr(const char * str, CommittedCommand * substr, int maxnsubstr, int ibegin=0);
 	int FindCommandByStr(const char * str);
 
 	void LogCreate();
 	void LogFinish();
 	void LogTerminal();
-	void LogParam(int index, int useflag);
+	void _LogParam(int index, int useflag, int cwp=-1);
 	void LogWantNext();
 	void LogError(const char * str);
 
@@ -99,32 +193,37 @@ public:
 	WantPromptInfo wpinfo[COMMANDWANTPROMPTMAX];
 
 //	int SetParamXY(int index, float x, float y);
-	int SetParamX(int index, float x);
-	int SetParamY(int index, float y);
-	int SetParamF(int index, float fval);
-	int SetParamI(int index, int ival);
-	int SetParamS(int index, const char * sval);
-	int SetParamG(int index, int flag);
+
+	void GrowParam(int index);
+
+	int SetParamX(int index, float x, int cwp=-1);
+	int SetParamY(int index, float y, int cwp=-1);
+	int SetParamF(int index, float fval, int cwp=-1);
+	int SetParamI(int index, int ival, int cwp=-1);
+	int SetParamS(int index, const char * sval, int cwp=-1);
+	int SetParamG(int index, int flag, int cwp=-1);
 
 	bool GetParamXY(int index, float * x, float * y);
 	float GetParamF(int index);
 	int GetParamI(int index);
-	char * GetParamS(int index);
+	const char * GetParamS(int index);
 	int GetParamG(int index);
 	bool CheckParamSet(int index, int useflag);
 
 	list<CommittedCommand> inputcommandlist;
+	CommittedCommand pendingparam;
 	inline bool IsInternalProcessing()
 	{
 		return !inputcommandlist.empty();
 	};
+	void TerminalInternalProcess();
 
 	inline int GetStep() 
 	{
 		return ccomm.step;
 	};
 
-	int StepTo(int step, int wantnextindex=0, int wantnext=0, int wantnextprompt=0, bool pushback=true);
+	int StepTo(int step, int wantnextprompt=0, bool pushback=true);
 	int StepBack();
 
 	inline const char * GetWantPromptStr(int wantprompt=-1)
@@ -133,7 +232,7 @@ public:
 		{
 			wantprompt = ccomm.wantprompt;
 		}
-		return wpinfo[wantprompt].str;
+		return wpinfo[wantprompt].str.c_str();
 	}
 	inline const char * GetCommandStr(int command=-1)
 	{
@@ -141,7 +240,7 @@ public:
 		{
 			command = ccomm.command;
 		}
-		return scinfo[command].str;
+		return scinfo[command].str.c_str();
 	};
 	inline const char * GetCommandShortStr(int command = -1)
 	{
@@ -150,7 +249,7 @@ public:
 		{
 			command = ccomm.command;
 		}
-		return scinfo[command].shortstr;
+		return scinfo[command].shortstr.c_str();
 	};
 
 	HTARGET tarcommand;

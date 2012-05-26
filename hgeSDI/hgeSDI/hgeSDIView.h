@@ -67,6 +67,9 @@ public:
 	afx_msg int OnMouseActivate(CWnd* pDesktopWnd, UINT nHitTest, UINT message);
 	virtual void OnUpdate(CView* /*pSender*/, LPARAM /*lHint*/, CObject* /*pHint*/);
 //	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 };
 
 #ifndef _DEBUG  // hgeSDIView.cpp 中的调试版本

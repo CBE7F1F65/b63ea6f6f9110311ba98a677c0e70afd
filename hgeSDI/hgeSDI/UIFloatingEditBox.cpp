@@ -3,30 +3,30 @@
 
 #include "stdafx.h"
 #include "hgeSDI.h"
-#include "UIEditBox.h"
+#include "UIFloatingEditBox.h"
 
 #include "Main.h"
 
 // UIEditBox
 
-IMPLEMENT_DYNAMIC(UIEditBox, CWnd)
+IMPLEMENT_DYNAMIC(UIFloatingEditBox, CEdit)
 
-UIEditBox::UIEditBox()
+UIFloatingEditBox::UIFloatingEditBox()
 {
 
 }
 
-UIEditBox::~UIEditBox()
+UIFloatingEditBox::~UIFloatingEditBox()
 {
 }
 
 
-BEGIN_MESSAGE_MAP(UIEditBox, CEdit)
+BEGIN_MESSAGE_MAP(UIFloatingEditBox, CEdit)
 	ON_WM_CHAR()
 	ON_WM_KILLFOCUS()
 	ON_WM_SETFOCUS()
 	ON_WM_CREATE()
-	ON_CONTROL_REFLECT(EN_CHANGE, &UIEditBox::OnEnChange)
+	ON_CONTROL_REFLECT(EN_CHANGE, &UIFloatingEditBox::OnEnChange)
 END_MESSAGE_MAP()
 
 
@@ -36,7 +36,7 @@ END_MESSAGE_MAP()
 
 
 
-void UIEditBox::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
+void UIFloatingEditBox::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	if (nChar == VK_ESCAPE)
@@ -59,7 +59,7 @@ void UIEditBox::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 }
 
 
-void UIEditBox::OnKillFocus(CWnd* pNewWnd)
+void UIFloatingEditBox::OnKillFocus(CWnd* pNewWnd)
 {
 	CWnd::OnKillFocus(pNewWnd);
 
@@ -68,7 +68,7 @@ void UIEditBox::OnKillFocus(CWnd* pNewWnd)
 }
 
 
-void UIEditBox::OnSetFocus(CWnd* pOldWnd)
+void UIFloatingEditBox::OnSetFocus(CWnd* pOldWnd)
 {
 	CWnd::OnSetFocus(pOldWnd);
 
@@ -76,12 +76,12 @@ void UIEditBox::OnSetFocus(CWnd* pOldWnd)
 	// TODO: 在此处添加消息处理程序代码
 }
 
-void UIEditBox::ClearCommand()
+void UIFloatingEditBox::ClearCommand()
 {
 	SetWindowText("");
 }
 
-void UIEditBox::CommitCommand()
+void UIFloatingEditBox::CommitCommand()
 {
 	int nlength = GetWindowTextLength();
 	if (!nlength)
@@ -93,7 +93,7 @@ void UIEditBox::CommitCommand()
 	MainInterface::getInstance().OnCommitCommand(str.GetBuffer());
 }
 
-int UIEditBox::OnCreate(LPCREATESTRUCT lpCreateStruct)
+int UIFloatingEditBox::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
@@ -104,7 +104,7 @@ int UIEditBox::OnCreate(LPCREATESTRUCT lpCreateStruct)
 }
 
 
-void UIEditBox::OnEnChange()
+void UIFloatingEditBox::OnEnChange()
 {
 	// TODO:  如果该控件是 RICHEDIT 控件，它将不
 	// 发送此通知，除非重写 CEdit::OnInitDialog()
@@ -129,7 +129,7 @@ void UIEditBox::OnEnChange()
 	}
 }
 
-void UIEditBox::Show( int vk/*=0*/ )
+void UIFloatingEditBox::Show( int vk/*=0*/ )
 {
 	POINT pt;
 	GetCursorPos(&pt);
@@ -157,7 +157,7 @@ void UIEditBox::Show( int vk/*=0*/ )
 	}
 }
 
-void UIEditBox::Hide(bool bForce)
+void UIFloatingEditBox::Hide(bool bForce)
 {
 	//	ClearCommand();
 	ShowWindow(SW_HIDE);
@@ -165,4 +165,36 @@ void UIEditBox::Hide(bool bForce)
 	{
 		MainInterface::getInstance().SetMainViewActive(true, MVINACTIVEREASON_FLOATINGCOMMAND);
 	}
+}
+
+BOOL UIFloatingEditBox::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+
+	if (pMsg->message == WM_KEYDOWN && ::GetKeyState(VK_CONTROL))
+	{
+		switch (pMsg->wParam)
+		{
+		case 'Z':
+			if (CanUndo())
+			{
+				Undo();
+			}
+			return TRUE;
+		case 'X':
+			Cut();
+			return TRUE;
+		case 'C':
+			Copy();
+			return TRUE;
+		case 'V':
+			Paste();
+			return TRUE;
+		case 'A':
+			SetSel(0, -1);
+			return TRUE;
+		}
+	}
+
+	return CEdit::PreTranslateMessage(pMsg);
 }
