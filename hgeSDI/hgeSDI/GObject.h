@@ -13,10 +13,17 @@ public:
 
 	virtual void SortChildren();
 
+	virtual int RemoveAllChildren();
+
 	virtual int RemoveChild(int ID);
 	virtual int RemoveChild(GObject * child);
-	virtual int RemoveAllChildren();
 	virtual int RemoveFromParent();
+protected:
+	virtual int _RemoveChild(int ID, bool bRelease=true);
+	virtual int _RemoveChild(GObject * child, bool bRelease=true);
+	virtual int _RemoveFromParent(bool bRelease=true);
+public:
+	virtual int Reparent(GObject * newparent);
 
 	virtual void SetID(int ID=-1);
 	virtual void OnInit();

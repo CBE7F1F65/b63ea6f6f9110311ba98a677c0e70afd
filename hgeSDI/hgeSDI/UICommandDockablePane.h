@@ -42,7 +42,7 @@ public:
 //	afx_msg void OnEnMsgFilterCommandEdit(NMHDR *pNMHDR, LRESULT *pResult);
 //	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 
-	void AppendCommandLogText(LPCTSTR text);
+	void AppendCommandLogText(LPCTSTR text, bool bNewLine=true);
 	void ClearLog();
 
 	afx_msg void OnMouseHover(UINT nFlags, CPoint point);

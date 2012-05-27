@@ -3,6 +3,8 @@
 #include "MainDependency.h"
 #include "CommandDefines.h"
 
+#include "GObject.h"
+
 class CommandParam
 {
 public:
@@ -31,7 +33,6 @@ public:
 	int ival;
 	int flag;
 	string sval;
-//	char sval[M_STRMAX];
 };
 
 class CommandStepInfo
@@ -49,13 +50,22 @@ public:
 		step = 0;
 		wantprompt = 0;
 		params.clear();
+		enabledsubcommand.clear();
+	};
+	void EnableSubCommand(int subcommand)
+	{
+		enabledsubcommand.push_back(subcommand);
+	};
+	void ClearEnabledSubCommand()
+	{
+		enabledsubcommand.clear();
 	};
 
 	int command;
 	int step;
 	int wantprompt;
 	vector<CommandParam> params;
-//	CommandParam param[COMMPARAMMAX];
+	list<int>enabledsubcommand;
 };
 
 class CommandStrInfo
@@ -75,8 +85,25 @@ public:
 
 	string str;
 	string shortstr;
-//	char str[COMMANDSTRINGMAX];
-//	char shortstr[COMMANDSHORTSTRMAX];
+};
+
+class SubCommandStrInfo{
+
+public:
+	SubCommandStrInfo()
+	{
+		ClearSet();
+	};
+	~SubCommandStrInfo(){};
+
+	void ClearSet()
+	{
+		promptstr = "";
+		str = "";
+	};
+
+	string promptstr;
+	string str;
 };
 
 class WantPromptInfo
@@ -94,16 +121,23 @@ public:
 	};
 
 	string str;
-//	char str[M_STRMAX];
 };
 
-enum{
-	COMMITTEDCOMMANDTYPE_ERROR = 0,
-	COMMITTEDCOMMANDTYPE_COMMAND,
-	COMMITTEDCOMMANDTYPE_FLOAT,
-	COMMITTEDCOMMANDTYPE_INT,
-	COMMITTEDCOMMANDTYPE_STRING,
-};
+
+#define	COMMITTEDCOMMANDTYPE_ERROR			0x00
+
+#define COMMITTEDCOMMANDTYPE_SUBCOMMAND		0x01
+#define COMMITTEDCOMMANDTYPE_COMMAND		0x02
+#define COMMITTEDCOMMANDTYPE_COMMANDSHORT	0x04
+#define F_COMMITTEDCOMMANDTYPE_COMMAND			(COMMITTEDCOMMANDTYPE_SUBCOMMAND|COMMITTEDCOMMANDTYPE_COMMAND|COMMITTEDCOMMANDTYPE_COMMANDSHORT)
+
+#define COMMITTEDCOMMANDTYPE_FLOAT			0x10
+#define COMMITTEDCOMMANDTYPE_INT			0x20
+#define F_COMMITTEDCOMMANDTYPE_NUMBER			(COMMITTEDCOMMANDTYPE_FLOAT|COMMITTEDCOMMANDTYPE_INT)
+
+#define COMMITTEDCOMMANDTYPE_STRING			0x40
+#define F_COMMITTEDCOMMANDTYPE_STRING			0xff
+
 
 class CommittedCommand
 {
@@ -119,14 +153,37 @@ public:
 		type = 0;
 		fval = 0;
 		ival = 0;
+		csub = 0;
 		sval = "";
 	};
 
 	int type;
 	float fval;
 	int ival;
+	int csub;
 	string sval;
 };
+
+class RevertableCommand
+{
+public:
+	RevertableCommand(){};
+	~RevertableCommand(){};
+
+	void PushCommand(CommittedCommand * cc)
+	{
+		if (cc)
+		{
+			commandlist.push_back(*cc);
+		}
+	};
+
+	list<CommittedCommand> commandlist;
+};
+
+#define CUNDOREDO_NULL		0x00
+#define CUNDOREDO_UNDOING	0x01
+#define CUNDOREDO_REDOING	0x02
 
 class Command
 {
@@ -152,24 +209,28 @@ public:
 	void Init();
 	void InitCommandStrInfo();
 	void InitWantPromptInfo();
+	void InitSubCommandStrInfo();
 	void Render();
 
 	int CreateCommand(int comm);
 	void ProcessCommand();
+	void ProcessUnDoCommand(RevertableCommand * rc);
 	int ProcessCommittedCommand();
-	bool ProcessPending(int index, int useflag, int fillprompt, int step, int wantprompt=0, bool pushback=true);
-	void _CommitFrontCommand(CommittedCommand &cc);
-	void CommitFrontCommandF(float fval);
-	void CommitFrontCommandI(int ival);
-	void CommitFrontCommandS(const char * sval);
-	void CommitFrontCommandC(int command);
+	int ProcessPending(int index, int useflag, int fillprompt, int step, int wantprompt=0, bool pushback=true);
+	void CommitFrontCommand(CommittedCommand &cc);
+
+	void FinishPendingSubCommand();
 
 	int FinishCommand();
 	int TerminalCommand();
 
 	int CommitCommand(const char * str);
 	int _FindNextSubStr(const char * str, CommittedCommand * substr, int maxnsubstr, int ibegin=0);
-	int FindCommandByStr(const char * str);
+	int FindCommandByStr(const char * str, bool * isshort=0);
+	int FindSubCommandByStr(const char * str);
+
+	void EnableSubCommand(int first, ...);
+	void ClearEnabledSubCommand();
 
 	void LogCreate();
 	void LogFinish();
@@ -177,9 +238,33 @@ public:
 	void _LogParam(int index, int useflag, int cwp=-1);
 	void LogWantNext();
 	void LogError(const char * str);
+	void LogDisplaySubCommandBegin();
+	void LogDisplaySubCommand(int subcommand);
+	void LogDisplaySubCommandEnd();
+	void LogFinishSubCommand(int subcommand);
+
+	bool DoUnDo(int undostep=1);
+	bool DoReDo(int redostep=1);
+
+	bool DoUnDoCommandSingle(RevertableCommand * rc);
+	bool DoReDoCommandSingle(RevertableCommand * rc);
+
+	bool DoUnDoAddNode(GObject * obj, GObject * parent);
+	bool DoReDoAddNode(GObject * obj, GObject * parent);
+	bool DoUnDoDeleteNode(GObject * obj, GObject * parent);
+	bool DoReDoDeleteNode(GObject * obj, GObject * parent);
+	bool DoUnDoReparentNode(GObject * obj, GObject * oparent, GObject * aparent);
+	bool DoReDoReparentNode(GObject * obj, GObject * oparent, GObject * aparent);
+
+	bool IsUnDoReDoing(){return undoredoflag!=0;};
+	int undoredoflag;
 
 	int PushCommand();
 	int PullCommand();
+
+	void PushRevertable(RevertableCommand * rc);
+	list<RevertableCommand> undolist;
+	list<RevertableCommand> redolist;
 
 protected:
 	int SetCurrentCommand(CommandStepInfo * info);
@@ -191,6 +276,7 @@ public:
 	list<CommandStepInfo> pushedcomm;
 	CommandStrInfo scinfo[COMMANDINDEXMAX];
 	WantPromptInfo wpinfo[COMMANDWANTPROMPTMAX];
+	SubCommandStrInfo subcinfo[COMMANDSUBINDEXMAX];
 
 //	int SetParamXY(int index, float x, float y);
 
@@ -236,20 +322,43 @@ public:
 	}
 	inline const char * GetCommandStr(int command=-1)
 	{
-		if (command < 0 || command >= COMMANDINDEXMAX)
+		if (command < 0)
 		{
 			command = ccomm.command;
+		}
+		if (command >= COMMANDINDEXMAX)
+		{
+			command = COMM_NULL;
 		}
 		return scinfo[command].str.c_str();
 	};
 	inline const char * GetCommandShortStr(int command = -1)
 	{
-
-		if (command < 0 || command >= COMMANDINDEXMAX)
+		if (command < 0)
 		{
 			command = ccomm.command;
 		}
+		if (command >= COMMANDINDEXMAX)
+		{
+			command = COMM_NULL;
+		}
 		return scinfo[command].shortstr.c_str();
+	};
+	inline const char * GetSubCommandStr(int subcommand)
+	{
+		if (subcommand < 0 || subcommand >= COMMANDSUBINDEXMAX)
+		{
+			subcommand = 0;
+		}
+		return subcinfo[subcommand].str.c_str();
+	};
+	inline const char * GetSubCommandPromptStr(int subcommand)
+	{
+		if (subcommand < 0 || subcommand >= COMMANDSUBINDEXMAX)
+		{
+			subcommand = 0;
+		}
+		return subcinfo[subcommand].promptstr.c_str();
 	};
 
 	HTARGET tarcommand;

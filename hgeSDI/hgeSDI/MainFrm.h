@@ -32,7 +32,7 @@ protected:
 public:
 
 	bool SetStatusBarText(int id, LPCTSTR text);
-	bool AppendCommandLogText(LPCTSTR text);
+	bool AppendCommandLogText(LPCTSTR text, bool bNewLine=true);
 
 // ²Ù×÷
 public:

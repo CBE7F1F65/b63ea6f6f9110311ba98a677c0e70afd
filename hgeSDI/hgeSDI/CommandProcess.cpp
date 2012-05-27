@@ -6,42 +6,73 @@
 #include "BezierCommand.h"
 
 
-bool Command::ProcessPending( int index, int useflag, int fillprompt, int step, int wantprompt/*=0*/, bool pushback/*=true*/ )
+int Command::ProcessPending( int index, int useflag, int fillprompt, int step, int wantprompt/*=0*/, bool pushback/*=true*/ )
 {
 	if (!pendingparam.type)
 	{
-		return false;
+		return -1;
 	}
 
+	if (pendingparam.type & COMMITTEDCOMMANDTYPE_SUBCOMMAND)
+	{
+		assert(pendingparam.csub != 0);
+		return pendingparam.csub;
+	}
+
+	bool bok = false;
 	switch (useflag)
 	{
 	case COMMPARAMFLAG_X:
-		SetParamX(index, pendingparam.fval, fillprompt);
+		if (pendingparam.type & F_COMMITTEDCOMMANDTYPE_NUMBER)
+		{
+			SetParamX(index, pendingparam.fval, fillprompt);
+			bok = true;
+		}
 		break;
 	case COMMPARAMFLAG_Y:
-		SetParamY(index, pendingparam.fval, fillprompt);
+		if (pendingparam.type & F_COMMITTEDCOMMANDTYPE_NUMBER)
+		{
+			SetParamY(index, pendingparam.fval, fillprompt);
+			bok = true;
+		}
 		break;
 	case COMMPARAMFLAG_F:
-		SetParamF(index, pendingparam.fval, fillprompt);
+		if (pendingparam.type & F_COMMITTEDCOMMANDTYPE_NUMBER)
+		{
+			SetParamF(index, pendingparam.fval, fillprompt);
+			bok = true;
+		}
 		break;
 	case COMMPARAMFLAG_I:
-		SetParamI(index, pendingparam.ival, fillprompt);
+		if (pendingparam.type & F_COMMITTEDCOMMANDTYPE_NUMBER)
+		{
+			SetParamI(index, pendingparam.ival, fillprompt);
+			bok = true;
+		}
 		break;
 	case COMMPARAMFLAG_S:
 		SetParamS(index, pendingparam.sval.c_str(), fillprompt);
+		bok = true;
 		break;
 	case COMMPARAMFLAG_G:
-		SetParamG(index, pendingparam.ival, fillprompt);
+		if (pendingparam.type & F_COMMITTEDCOMMANDTYPE_NUMBER)
+		{
+			SetParamG(index, pendingparam.ival, fillprompt);
+			bok = true;
+		}
 		break;
-	default:
+	}
+
+	if (!bok)
+	{
 		LogError(pendingparam.sval.c_str());
 		pendingparam.ClearSet();
-		return false;
+		return -1;
 	}
 
 	StepTo(step, wantprompt, pushback);
 	pendingparam.ClearSet();
-	return true;
+	return 0;
 }
 
 int Command::ProcessCommittedCommand()
@@ -50,58 +81,35 @@ int Command::ProcessCommittedCommand()
 	{
 		return ccomm.command;
 	}
-	/*
-	if (ccomm.command && ccomm.step <= CSI_INIT)
-	{
-		return ccomm.command;
-	}
-	*/
 
 	list<CommittedCommand>::iterator it = inputcommandlist.begin();
 
 	if (it->type == COMMITTEDCOMMANDTYPE_ERROR)
 	{
 		LogError(it->sval.c_str());
-//		return ccomm.command;
 	}
-	else if (it->type == COMMITTEDCOMMANDTYPE_COMMAND)
+	else if (((it->type) & COMMITTEDCOMMANDTYPE_COMMAND))
 	{
-		if (ccomm.command)
+		if (!ccomm.command)
 		{
-			TerminalCommand();
+			CreateCommand(it->ival);
 		}
-		CreateCommand(it->ival);
-//		return ccomm.command;
+		else if (!((it->type) & COMMITTEDCOMMANDTYPE_COMMANDSHORT))
+		{
+			if (ccomm.command)
+			{
+				TerminalCommand();
+			}
+			CreateCommand(it->ival);
+		}
+		else if (ccomm.command && ((it->type) & COMMITTEDCOMMANDTYPE_SUBCOMMAND))
+		{
+			pendingparam = (*it);
+		}
 	}
-	else// if (it->type == COMMITTEDCOMMANDTYPE_FLOAT)
+	else
 	{
 		pendingparam = (*it);
-		/*
-		switch (ccomm.wantnext)
-		{
-		case COMMPARAMFLAG_X:
-			SetParamX(ccomm.wantnextindex, it->fval);
-			break;
-		case COMMPARAMFLAG_Y:
-			SetParamY(ccomm.wantnextindex, it->fval);
-			break;
-		case COMMPARAMFLAG_F:
-			SetParamF(ccomm.wantnextindex, it->fval);
-			break;
-		case COMMPARAMFLAG_I:
-			SetParamI(ccomm.wantnextindex, it->ival);
-			break;
-		case COMMPARAMFLAG_G:
-			SetParamG(ccomm.wantnextindex, it->ival);
-			break;
-		case COMMPARAMFLAG_S:
-			SetParamS(ccomm.wantnextindex, it->sval.c_str());
-			break;
-		default:
-			LogError(it->sval.c_str());
-			break;
-		}
-		*/
 	}
 
 
@@ -121,7 +129,6 @@ void Command::ProcessCommand()
 	{
 	case COMM_PAN:
 		return GUICoordinate::getInstance().OnProcessPanCommand();
-		break;
 	case COMM_DOZOOM:
 		return GUICoordinate::getInstance().OnProcessZoomCommand();
 	case COMM_LINE:
@@ -129,4 +136,10 @@ void Command::ProcessCommand()
 	case COMM_BEZIER:
 		return BezierCommand::getInstance().OnProcessCommand();
 	}
+}
+
+
+void Command::ProcessUnDoCommand( RevertableCommand * rc )
+{
+
 }

@@ -52,7 +52,7 @@ void GObjectManager::Delete()
 	}
 }
 
-void GObjectManager::AddNotToDelete( GObject * node )
+void GObjectManager::AddNodeToDelete( GObject * node )
 {
 	if (node)
 	{
@@ -68,5 +68,14 @@ void GObjectManager::Init()
 void GObjectManager::Release()
 {
 	basenode.RemoveAllChildren();
+	undobasenode.RemoveAllChildren();
 	Delete();
+}
+
+void GObjectManager::MoveToUnDoList( GObject * node )
+{
+	if (node)
+	{
+		node->Reparent(&undobasenode);
+	}
 }

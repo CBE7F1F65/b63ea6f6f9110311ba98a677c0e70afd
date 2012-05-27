@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #ifdef __WIN32
+#pragma warning(disable:4073)
 #pragma init_seg(lib)
 
 static class InitDllLoader {

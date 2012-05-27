@@ -143,9 +143,9 @@ void UICommandDockablePane::OnSize(UINT nType, int cx, int cy)
 	m_wndCommandEdit.SetWindowPos(NULL, _UICDP_EDITLBEGIN, cy-commandeditheight, cx, commandeditheight, SWP_DRAWFRAME);
 }
 
-void UICommandDockablePane::AppendCommandLogText( LPCTSTR text )
+void UICommandDockablePane::AppendCommandLogText( LPCTSTR text, bool bNewLine/*=true*/ )
 {
-	m_wndCommandLogEdit.AppendCommandLogText(text);
+	m_wndCommandLogEdit.AppendCommandLogText(text, bNewLine);
 }
 
 void UICommandDockablePane::OnMouseHover(UINT nFlags, CPoint point)

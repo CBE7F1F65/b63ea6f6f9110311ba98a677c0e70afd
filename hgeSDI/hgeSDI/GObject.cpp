@@ -33,6 +33,7 @@ int GObject::AddChild( GObject * child )
 	{
 		child->SetParent(this);
 		child->OnEnter();
+
 		if (child->ID < 0)
 		{
 			child->SetID();
@@ -46,6 +47,9 @@ int GObject::AddChild( GObject * child )
 			}
 			child->SetID(maxid+1);
 		}
+
+		child->OnModify();
+
 		children.push_back(child);
 		return child->ID;
 	}
@@ -61,6 +65,16 @@ void GObject::SetParent( GObject * _parent )
 
 int GObject::RemoveChild( int _ID )
 {
+	return _RemoveChild(_ID);
+}
+
+int GObject::RemoveChild( GObject * child )
+{
+	return _RemoveChild(child);
+}
+
+int GObject::_RemoveChild( int _ID, bool bRelease/*=true*/ )
+{
 	// Do not use FOREACH
 	if (!children.empty())
 	{
@@ -68,7 +82,10 @@ int GObject::RemoveChild( int _ID )
 		{
 			if ((*it)->ID == _ID)
 			{
-				(*it)->OnRelease();
+				if (bRelease)
+				{
+					(*it)->OnRelease();
+				}
 				it = children.erase(it);
 			}
 			else
@@ -77,10 +94,11 @@ int GObject::RemoveChild( int _ID )
 			}
 		}
 	}
+	OnModify();
 	return children.size();
 }
 
-int GObject::RemoveChild( GObject * child )
+int GObject::_RemoveChild( GObject * child, bool bRelease/*=true*/ )
 {
 	if (!child)
 	{
@@ -92,19 +110,28 @@ int GObject::RemoveChild( GObject * child )
 		{
 			if ((*it) == child)
 			{
-				child->OnRelease();
+				if (bRelease)
+				{
+					child->OnRelease();
+				}
 				it = children.erase(it);
 				break;
 			}
 		}
 	}
+	OnModify();
 	return children.size();
 }
 int GObject::RemoveFromParent()
 {
+	return _RemoveFromParent();
+}
+
+int GObject::_RemoveFromParent( bool bRelease/*=true*/ )
+{
 	if (parent)
 	{
-		return parent->RemoveChild(this);
+		return parent->_RemoveChild(this, bRelease);
 	}
 	return -1;
 }
@@ -123,6 +150,7 @@ int GObject::RemoveAllChildren()
 			}
 		}
 	}
+	OnModify();
 	return 0;
 }
 
@@ -168,7 +196,7 @@ void GObject::OnRender()
 void GObject::OnRelease()
 {
 	RemoveAllChildren();
-	GObjectManager::getInstance().AddNotToDelete(this);
+	GObjectManager::getInstance().AddNodeToDelete(this);
 }
 
 void GObject::SortChildren()
@@ -203,4 +231,11 @@ void GObject::OnClearModify()
 void GObject::SetMotifyParent( bool bToModify )
 {
 	bModifyParent = bToModify;
+}
+
+int GObject::Reparent( GObject * newparent )
+{
+	assert(newparent != NULL);
+	_RemoveFromParent(false);
+	return newparent->AddChild(this);
 }

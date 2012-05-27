@@ -4,13 +4,14 @@
 #include "Main.h"
 #include "RenderHelper.h"
 
-#define COMMANDLOGSTR_CREATECOMMAND		"OnCommand: "
+#define COMMANDLOGSTR_CREATECOMMAND		"Command: "
 #define COMMANDLOGSTR_PROCESSCOMMAND	"Processing: "
 #define COMMANDLOGSTR_FINISHCOMMAND		"DoneCommand: "
 #define COMMANDLOGSTR_TERMINALCOMMAND	"TerminalCommand: "
 #define COMMANDLOGSTR_ERROR				"Error: "
 #define COMMANDLOGSTR_PARAM				"SetParam: "
 #define COMMANDLOGSTR_WANTNEXT			"Please Input: "
+#define COMMANDLOGSTR_FINISHSUBCOMMAND	"Done: "
 
 
 Command::Command()
@@ -18,6 +19,7 @@ Command::Command()
 //	ZeroMemory(&ccomm, sizeof(ccomm));
 	ccomm.ClearSet();
 	tarcommand = 0;
+	undoredoflag = 0;
 	Init();
 }
 
@@ -30,6 +32,7 @@ void Command::Init()
 {
 	InitCommandStrInfo();
 	InitWantPromptInfo();
+	InitSubCommandStrInfo();
 	TerminalInternalProcess();
 	ClearCurrentCommand();
 	SetRenderTarget(0);
@@ -110,7 +113,41 @@ void Command::LogWantNext()
 		char strlog[M_STRMAX];
 		sprintf_s(strlog, M_STRMAX, "%s: %s%s", GetCommandStr(), COMMANDLOGSTR_WANTNEXT, GetWantPromptStr());
 		MainInterface::getInstance().CallAppendCommandLogText(strlog);
+
+		if (!ccomm.enabledsubcommand.empty())
+		{
+			LogDisplaySubCommandBegin();
+			for (list<int>::iterator it=ccomm.enabledsubcommand.begin(); it!=ccomm.enabledsubcommand.end(); ++it)
+			{
+				LogDisplaySubCommand(*it);
+			}
+			LogDisplaySubCommandEnd();
+		}
 	}
+}
+
+void Command::LogDisplaySubCommandBegin()
+{
+	MainInterface::getInstance().CallAppendCommandLogText(" [/", false);
+}
+
+void Command::LogDisplaySubCommand( int subcommand )
+{
+	char strlog[M_STRMAX];
+	sprintf_s(strlog, M_STRMAX, "%s/", GetSubCommandPromptStr(subcommand));
+	MainInterface::getInstance().CallAppendCommandLogText(strlog, false);
+}
+
+void Command::LogDisplaySubCommandEnd()
+{
+	MainInterface::getInstance().CallAppendCommandLogText("]", false);
+}
+
+void Command::LogFinishSubCommand( int subcommand )
+{
+	char strlog[M_STRMAX];
+	sprintf_s(strlog, M_STRMAX, "%s%s", COMMANDLOGSTR_FINISHSUBCOMMAND, GetSubCommandPromptStr(subcommand));
+	MainInterface::getInstance().CallAppendCommandLogText(strlog);
 }
 
 void Command::LogError( const char * str )
@@ -488,7 +525,7 @@ int Command::_FindNextSubStr( const char * str, CommittedCommand * cc, int maxns
 	string substr = "";
 	int nchars = 0;
 	int i=ibegin;
-	for (; i<strlen(str); i++)
+	for (; i<(int)strlen(str); i++)
 	{
 		if (!_CheckCharToBreak(str[i]))
 		{
@@ -507,7 +544,7 @@ int Command::_FindNextSubStr( const char * str, CommittedCommand * cc, int maxns
 		i++;
 	}
 	ibegin = i;
-	for (; i<strlen(str); i++)
+	for (; i<(int)strlen(str); i++)
 	{
 		nchars++;
 		if (checkquote?_CheckCharQuote(str[i]):_CheckCharToBreak(str[i]))
@@ -532,7 +569,7 @@ int Command::_FindNextSubStr( const char * str, CommittedCommand * cc, int maxns
 	char ch[3];
 	for (int i=0; i<3; i++)
 	{
-		if (substr.length() > i)
+		if ((int)substr.length() > i)
 		{
 			ch[i] = substr.c_str()[i];
 		}
@@ -545,7 +582,7 @@ int Command::_FindNextSubStr( const char * str, CommittedCommand * cc, int maxns
 		(ch[0]=='.' || ch[0]=='+' || ch[0]=='-') && isdigit(ch[1]) ||
 		(ch[0]=='+' || ch[0]=='-') && ch[1]=='.' && isdigit(ch[2]))
 	{
-		for (int i=0; i<substr.length(); i++)
+		for (int i=0; i<(int)substr.length(); i++)
 		{
 			if (substr.c_str()[i] == '.')
 			{
@@ -567,10 +604,20 @@ int Command::_FindNextSubStr( const char * str, CommittedCommand * cc, int maxns
 	}
 	if (!cc->type)
 	{
-		cc->ival = FindCommandByStr(substr.c_str());
+		bool isshort;
+		cc->ival = FindCommandByStr(substr.c_str(), &isshort);
 		if (cc->ival)
 		{
-			cc->type = COMMITTEDCOMMANDTYPE_COMMAND;
+			cc->type |= COMMITTEDCOMMANDTYPE_COMMAND;
+			if (isshort)
+			{
+				cc->type |= COMMITTEDCOMMANDTYPE_COMMANDSHORT;
+			}
+		}
+		cc->csub = FindSubCommandByStr(substr.c_str());
+		if (cc->csub)
+		{
+			cc->type |= COMMITTEDCOMMANDTYPE_SUBCOMMAND;
 		}
 	}
 	if (!cc->type)
@@ -581,7 +628,11 @@ int Command::_FindNextSubStr( const char * str, CommittedCommand * cc, int maxns
 	switch (cc->type)
 	{
 	case COMMITTEDCOMMANDTYPE_ERROR:
+	/*
 	case COMMITTEDCOMMANDTYPE_COMMAND:
+	case COMMITTEDCOMMANDTYPE_SUBCOMMAND:
+	case COMMITTEDCOMMANDTYPE_COMMAND|COMMITTEDCOMMANDTYPE_SUBCOMMAND:
+	*/
 		break;
 	case COMMITTEDCOMMANDTYPE_FLOAT:
 		sscanf_s(substr.c_str(), "%f", &(cc->fval));
@@ -594,7 +645,7 @@ int Command::_FindNextSubStr( const char * str, CommittedCommand * cc, int maxns
 	}
 
 
-	if (i >= strlen(str))
+	if (i >= (int)strlen(str))
 	{
 		return 0;
 	}
@@ -609,6 +660,7 @@ int Command::StepTo( int step, int wantnextprompt/*=0*/, bool pushback/*=true*/ 
 	}
 	ccomm.step=step;
 	ccomm.wantprompt = wantnextprompt;
+	ccomm.enabledsubcommand.clear();
 	if (pushback)
 	{
 		LogWantNext();
@@ -616,19 +668,51 @@ int Command::StepTo( int step, int wantnextprompt/*=0*/, bool pushback/*=true*/ 
 	return ccomm.step;
 }
 
-int Command::FindCommandByStr( const char * str )
+int Command::FindCommandByStr( const char * str, bool * isshort/*=0*/ )
 {
-	string lowerstr = str;
-	transform(lowerstr.begin(), lowerstr.end(), lowerstr.begin(), tolower);
+	string upperstr = str;
+	transform(upperstr.begin(), upperstr.end(), upperstr.begin(), toupper);
 
 	for (int i=0; i<COMMANDINDEXMAX; i++)
 	{
-//		if (!strcmp(str, scinfo[i].str) || !strcmp(str, scinfo[i].shortstr))
-		if (!scinfo[i].str.compare(lowerstr) || !(scinfo[i].shortstr.compare(lowerstr)))
+		if (!scinfo[i].str.compare(upperstr))
 		{
+			if (isshort)
+			{
+				*isshort = false;
+			}
+			return i;
+		}
+		if (!scinfo[i].shortstr.compare(upperstr))
+		{
+			if (isshort)
+			{
+				*isshort = true;
+			}
 			return i;
 		}
 	}
+	return 0;
+}
+
+int Command::FindSubCommandByStr( const char * str )
+{
+	if (!ccomm.command || ccomm.enabledsubcommand.empty())
+	{
+		return 0;
+	}
+
+	string upperstr = str;
+	transform(upperstr.begin(), upperstr.end(), upperstr.begin(), toupper);
+
+	for (list<int>::iterator it=ccomm.enabledsubcommand.begin(); it!=ccomm.enabledsubcommand.end(); ++it)
+	{
+		if (!subcinfo[(*it)].str.compare(upperstr))
+		{
+			return *it;
+		}
+	}
+
 	return 0;
 }
 
@@ -674,48 +758,82 @@ void Command::GrowParam( int index )
 	}
 }
 
-void Command::_CommitFrontCommand( CommittedCommand &cc )
+void Command::CommitFrontCommand( CommittedCommand &cc )
 {
 	inputcommandlist.push_front(cc);
-}
-
-void Command::CommitFrontCommandF( float fval )
-{
-	CommittedCommand cc;
-	cc.type = COMMITTEDCOMMANDTYPE_FLOAT;
-	cc.fval = fval;
-	cc.ival = fval;
-	_CommitFrontCommand(cc);
-}
-
-void Command::CommitFrontCommandI( int ival )
-{
-	CommittedCommand cc;
-	cc.type = COMMITTEDCOMMANDTYPE_INT;
-	cc.fval = ival;
-	cc.ival = ival;
-	_CommitFrontCommand(cc);
-
-}
-
-void Command::CommitFrontCommandS( const char * sval )
-{
-	CommittedCommand cc;
-	cc.type = COMMITTEDCOMMANDTYPE_STRING;
-	cc.sval = sval;
-	_CommitFrontCommand(cc);
-}
-
-void Command::CommitFrontCommandC( int command )
-{
-	CommittedCommand cc;
-	cc.type = COMMITTEDCOMMANDTYPE_COMMAND;
-	cc.ival = command;
-	cc.sval = GetCommandStr(command);
-	_CommitFrontCommand(cc);
 }
 
 void Command::TerminalInternalProcess()
 {
 	inputcommandlist.clear();
+}
+
+void Command::EnableSubCommand( int first, ... )
+{
+	if (!ccomm.command)
+	{
+		return;
+	}
+
+	va_list ap;
+	va_start(ap, first);
+	int vai = first;
+	if (!vai)
+	{
+		return;
+	}
+
+	bool bdisplay = true;
+	if (pendingparam.type)
+	{
+		bdisplay = false;
+	}
+	if (ccomm.enabledsubcommand.empty())
+	{
+		if (bdisplay)
+		{
+			LogDisplaySubCommandBegin();
+		}
+	}
+	while (vai)
+	{
+		ccomm.EnableSubCommand(vai);
+		if (bdisplay)
+		{
+			LogDisplaySubCommand(vai);
+		}
+		vai = (int)va_arg(ap, int);
+	}
+	if (bdisplay)
+	{
+		LogDisplaySubCommandEnd();
+	}
+//	enabledsubcommand.push_back(subcommand);
+}
+
+void Command::ClearEnabledSubCommand()
+{
+	if (ccomm.command)
+	{
+		ccomm.ClearEnabledSubCommand();
+	}
+//	enabledsubcommand.clear();
+}
+
+void Command::FinishPendingSubCommand()
+{
+	if (pendingparam.type)
+	{
+		LogFinishSubCommand(pendingparam.csub);
+		pendingparam.ClearSet();
+		LogWantNext();
+	}
+}
+
+void Command::PushRevertable( RevertableCommand * rc )
+{
+	if (rc)
+	{
+		undolist.push_back(*rc);
+	}
 }

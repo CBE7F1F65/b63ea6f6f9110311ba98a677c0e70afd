@@ -49,7 +49,7 @@ public:
 	// To Frame
 	void CallContextMenu(float x, float y);
 	void CallUpdateStatusBarText(int id, const char * text);
-	void CallAppendCommandLogText(const char * text);
+	void CallAppendCommandLogText(const char * text, bool bNewLine=true);
 
 	// Do
 
@@ -70,6 +70,8 @@ public:
 	bool FocusGain();
 	bool Exit();
 	bool GfxRestore();
+
+	void MBeep(int id=-1);
 
 	inline float GetPrecision()
 	{

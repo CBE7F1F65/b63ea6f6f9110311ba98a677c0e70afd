@@ -348,9 +348,9 @@ bool CMainFrame::SetStatusBarText( int id, LPCTSTR text )
 	return false;
 }
 
-bool CMainFrame::AppendCommandLogText( LPCTSTR text )
+bool CMainFrame::AppendCommandLogText( LPCTSTR text, bool bNewLine/*=true*/ )
 {
-	m_wndUICommandPane.AppendCommandLogText(text);
+	m_wndUICommandPane.AppendCommandLogText(text, bNewLine);
 	return true;
 }
 

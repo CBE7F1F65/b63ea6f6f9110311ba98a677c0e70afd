@@ -23,12 +23,15 @@ UICommandLogEdit::~UICommandLogEdit()
 BEGIN_MESSAGE_MAP(UICommandLogEdit, CEdit)
 END_MESSAGE_MAP()
 
-void UICommandLogEdit::AppendCommandLogText( LPCTSTR text )
+void UICommandLogEdit::AppendCommandLogText( LPCTSTR text, bool bNewLine/*=true*/ )
 {
 	CString str;
 	GetWindowText(str);
+	if (str.GetLength() && bNewLine)
+	{
+		str += "\r\n";
+	}
 	str += text;
-	str += "\r\n";
 	SetWindowText(str);
 	KeepLogLength();
 	PostMessage(WM_VSCROLL, SB_BOTTOM,0);

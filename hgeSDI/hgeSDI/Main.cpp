@@ -352,9 +352,9 @@ void MainInterface::CallUpdateStatusBarText( int id, const char * text )
 	parentview->GetMainFrame()->SetStatusBarText(id, text);
 }
 
-void MainInterface::CallAppendCommandLogText( const char * text )
+void MainInterface::CallAppendCommandLogText( const char * text, bool bNewLine/*=true*/ )
 {
-	parentview->GetMainFrame()->AppendCommandLogText(text);
+	parentview->GetMainFrame()->AppendCommandLogText(text, bNewLine);
 }
 
 int MainInterface::OnCommand( DWORD comm )
@@ -583,4 +583,9 @@ void MainInterface::DoCheckFloatCommand()
 void MainInterface::OnDoScroll( bool horz, int pos, int range )
 {
 	GUICoordinate::getInstance().DoScroll(horz, pos, range);
+}
+
+void MainInterface::MBeep( int id/*=-1*/ )
+{
+	MessageBeep(id);
 }

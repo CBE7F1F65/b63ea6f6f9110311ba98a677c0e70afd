@@ -30,10 +30,14 @@ public:
 	void Render();
 	void Delete();
 
-	void AddNotToDelete(GObject * node);
+	void AddNodeToDelete(GObject * node);
+
+	void MoveToUnDoList(GObject * node);
 
 	GObject basenode;
 	list<GObject*> nodetodelete;
+
+	GObject undobasenode;
 
 	HTARGET tarobjs;
 };

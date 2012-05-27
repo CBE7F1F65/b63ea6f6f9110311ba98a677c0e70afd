@@ -5,6 +5,7 @@
 #define COMMANDSHORTSTRMAX	0x10
 
 #define COMMANDWANTPROMPTMAX	0x100
+#define COMMANDSUBINDEXMAX		0x100
 
 enum{
 	COMM_NULL = 0,
@@ -28,7 +29,14 @@ enum{
 	COMM_LINE,
 	COMM_BEZIER,
 
-	COMM_FORCEDWORD = 0x7fffffff,
+	_COMM_INTERNALBEGIN=COMMANDINDEXMAX,
+
+	COMM_I_COMMAND,
+	COMM_I_ADDNODE,
+	COMM_I_DELETENODE,
+	COMM_I_REPARENTNODE,
+
+	_COMM_INTERNALEND,
 };
 
 
@@ -47,6 +55,9 @@ enum{
 #define CSI_FINISHCONTINUE	-3
 #define CSI_PAUSE			-4
 #define CSI_RESUME			-5
+
+// CSP Param
+// CSI Step
 
 enum{
 	CSP_PAN_OFFSET_XY = 0,
@@ -76,10 +87,10 @@ enum{
 
 enum{
 	CSP_LINE_B_XY = 0,
-	CSP_LINE_E_XY,
+	CSP_LINE_N_XY,
 };
 
-// CWP
+// CWP Prompt
 
 enum{
 	CWP_NULL=0,
@@ -92,7 +103,20 @@ enum{
 	CWP_X_E,
 	CWP_Y_E,
 	CWP_XY_E,
+	CWP_X_N,
+	CWP_Y_N,
+	CWP_XY_N,
 	CWP_XOFFSET,
 	CWP_YOFFSET,
 	CWP_SCALE,
+};
+
+// SSC Sub
+
+enum{
+	SSC_NULL=0,
+	SSC_UNDO,
+	SSC_REDO,
+	SSC_FINISH,
+	SSC_TERMINAL,
 };
