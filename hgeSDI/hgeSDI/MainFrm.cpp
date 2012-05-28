@@ -16,6 +16,7 @@
 #include "hgeSDI.h"
 
 #include "MainFrm.h"
+#include "StringManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -62,7 +63,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CFrameWndEx::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	BOOL bNameValid;
+//	BOOL bNameValid;
 	// 基于持久值设置视觉管理器和样式
 	OnApplicationLook(theApp.m_nAppLook);
 
@@ -71,21 +72,22 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	if (!m_wndStatusBar.Create(this))
 	{
-		TRACE0("未能创建状态栏\n");
+//		TRACE0("未能创建状态栏\n");
 		return -1;      // 未能创建
 	}
-
+	/*
 	CString strTitlePane1;
 	CString strTitlePane2;
 	bNameValid = strTitlePane1.LoadString(IDS_STATUS_PANE1);
 	ASSERT(bNameValid);
 	bNameValid = strTitlePane2.LoadString(IDS_STATUS_PANE2);
 	ASSERT(bNameValid);
-	m_wndStatusBar.AddElement(new CMFCRibbonStatusBarPane(ID_STATUSBAR_PANE1, strTitlePane1, TRUE), strTitlePane1);
-	m_wndStatusBar.AddExtendedElement(new CMFCRibbonStatusBarPane(ID_STATUSBAR_PANE2, strTitlePane2, TRUE), strTitlePane2);
+	*/
+	m_wndStatusBar.AddElement(new CMFCRibbonStatusBarPane(ID_STATUSBAR_PANE1, StringManager::getInstance().GetStatusPaneLeftName()/*strTitlePane1*/, TRUE), StringManager::getInstance().GetStatusPaneLeftName()/*strTitlePane1*/);
+	m_wndStatusBar.AddExtendedElement(new CMFCRibbonStatusBarPane(ID_STATUSBAR_PANE2, StringManager::getInstance().GetStatusPaneRightName()/*strTitlePane2*/, TRUE), /*strTitlePane2*/StringManager::getInstance().GetStatusPaneRightName());
 	
 
-	m_wndUICommandPane.Create(_T("Command"), this, CRect (0, 0, 0, 0),
+	m_wndUICommandPane.Create(StringManager::getInstance().GetCommandPanelName(), this, CRect (0, 0, 0, 0),
 		TRUE /* Has gripper */, ID_UI_COMMANDBOX,
 		WS_CHILD | WS_VISIBLE | CBRS_BOTTOM | CBRS_FLOAT_MULTI);
 
@@ -109,7 +111,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// 创建标题栏:
 	if (!CreateCaptionBar())
 	{
-		TRACE0("未能创建标题栏\n");
+//		TRACE0("未能创建标题栏\n");
 		return -1;      // 未能创建
 	}
 
@@ -139,10 +141,10 @@ BOOL CMainFrame::CreateCaptionBar()
 {
 	if (!m_wndCaptionBar.Create(WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS, this, ID_VIEW_CAPTION_BAR, -1, TRUE))
 	{
-		TRACE0("未能创建标题栏\n");
+//		TRACE0("未能创建标题栏\n");
 		return FALSE;
 	}
-	
+	/*
 	BOOL bNameValid;
 
 	CString strTemp, strTemp2;
@@ -163,7 +165,7 @@ BOOL CMainFrame::CreateCaptionBar()
 	bNameValid = strTemp2.LoadString(IDS_CAPTION_IMAGE_TEXT);
 	ASSERT(bNameValid);
 	m_wndCaptionBar.SetImageToolTip(strTemp, strTemp2);
-	
+	*/
 	return TRUE;
 }
 

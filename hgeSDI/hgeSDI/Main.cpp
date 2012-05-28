@@ -8,6 +8,7 @@
 #include "GObjectManager.h"
 #include "RenderHelper.h"
 #include "RenderTargetManager.h"
+#include "StringManager.h"
 
 #include "Resource.h"
 
@@ -78,7 +79,7 @@ bool GfxRestoreFunc()
 bool MainInterface::Render()
 {
 	hge->Gfx_BeginScene();
-	hge->Gfx_Clear(ColorManager::GetBGColor());
+	hge->Gfx_Clear(ColorManager::getInstance().GetBGColor());
 
 	float scrw=hge->System_GetState(HGE_SCREENWIDTH);
 	float scrh=hge->System_GetState(HGE_SCREENWIDTH);
@@ -277,7 +278,8 @@ bool MainInterface::OnInit(void * parent, int w, int h)
 	hge->System_SetState(HGE_GFXRESTOREFUNC, GfxRestoreFunc);
 
 	hge->System_SetState(HGE_WINDOWED, true);
-	hge->System_SetState(HGE_LOGFILE, "log.log");
+	hge->System_SetState(HGE_LOGFILE, StringManager::getInstance().GetLogFileName());
+	hge->System_SetState(HGE_INIFILE, StringManager::getInstance().GetIniFileName());
 	hge->System_SetState(HGE_USESOUND, false);
 	//	hge->System_SetState(HGE_USEDINPUT, false);
 	//	hge->System_SetState(HGE_HIDEMOUSE, false);
@@ -304,6 +306,7 @@ bool MainInterface::OnInit(void * parent, int w, int h)
 	hge->Input_GetMousePos(&mousex, &mousey);
 
 	//
+	StringManager::getInstance().Init();
 	Command::getInstance().Init();
 	GUICoordinate::getInstance().SetGrid(GUICG_METRIC, 0, 0);
 	GObjectManager::getInstance().Init();

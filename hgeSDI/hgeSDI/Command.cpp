@@ -4,16 +4,6 @@
 #include "Main.h"
 #include "RenderHelper.h"
 
-#define COMMANDLOGSTR_CREATECOMMAND		"Command: "
-#define COMMANDLOGSTR_PROCESSCOMMAND	"Processing: "
-#define COMMANDLOGSTR_FINISHCOMMAND		"DoneCommand: "
-#define COMMANDLOGSTR_TERMINALCOMMAND	"TerminalCommand: "
-#define COMMANDLOGSTR_ERROR				"Error: "
-#define COMMANDLOGSTR_PARAM				"SetParam: "
-#define COMMANDLOGSTR_WANTNEXT			"Please Input: "
-#define COMMANDLOGSTR_FINISHSUBCOMMAND	"Done: "
-
-
 Command::Command()
 {
 //	ZeroMemory(&ccomm, sizeof(ccomm));
@@ -30,9 +20,6 @@ Command::~Command()
 
 void Command::Init()
 {
-	InitCommandStrInfo();
-	InitWantPromptInfo();
-	InitSubCommandStrInfo();
 	TerminalInternalProcess();
 	ClearCurrentCommand();
 	SetRenderTarget(0);
@@ -43,7 +30,7 @@ void Command::LogCreate()
 	if (ccomm.command < _COMM_NOLOGCOMMANDBEGIN || ccomm.command > _COMM_NOLOGCOMMANDEND)
 	{
 		char strlog[M_STRMAX];
-		sprintf_s(strlog, M_STRMAX, "%s%s", COMMANDLOGSTR_CREATECOMMAND, GetCommandStr());
+		sprintf_s(strlog, M_STRMAX, "%s: %s", StringManager::getInstance().GetCLCreateCommandName(), GetCommandStr());
 		MainInterface::getInstance().CallAppendCommandLogText(strlog);
 	}
 }
@@ -53,7 +40,7 @@ void Command::LogFinish()
 	if (ccomm.command < _COMM_NOLOGCOMMANDBEGIN || ccomm.command > _COMM_NOLOGCOMMANDEND)
 	{
 		char strlog[M_STRMAX];
-		sprintf_s(strlog, M_STRMAX, "%s%s", COMMANDLOGSTR_FINISHCOMMAND, GetCommandStr());
+		sprintf_s(strlog, M_STRMAX, "%s: %s", StringManager::getInstance().GetCLFinishCommandName(), GetCommandStr());
 		MainInterface::getInstance().CallAppendCommandLogText(strlog);
 	}
 }
@@ -63,7 +50,7 @@ void Command::LogTerminal()
 	if (ccomm.command < _COMM_NOLOGCOMMANDBEGIN || ccomm.command > _COMM_NOLOGCOMMANDEND)
 	{
 		char strlog[M_STRMAX];
-		sprintf_s(strlog, M_STRMAX, "%s%s", COMMANDLOGSTR_TERMINALCOMMAND, GetCommandStr());
+		sprintf_s(strlog, M_STRMAX, "%s: %s", StringManager::getInstance().GetCLTerminalCommandName(), GetCommandStr());
 		MainInterface::getInstance().CallAppendCommandLogText(strlog);
 	}
 }
@@ -97,7 +84,7 @@ void Command::_LogParam( int index, int useflag, int cwp/*=-1 */ )
 			break;
 			
 		}
-		sprintf_s(strlog, M_STRMAX*4, "(%s) %s%s%s", GetCommandStr(), COMMANDLOGSTR_PARAM, GetWantPromptStr(cwp), paramstr);
+		sprintf_s(strlog, M_STRMAX*4, "(%s) %s: %s: %s", GetCommandStr(), StringManager::getInstance().GetCLSetParameterName(), GetWantPromptStr(cwp), paramstr);
 		MainInterface::getInstance().CallAppendCommandLogText(strlog);
 	}
 }
@@ -111,7 +98,7 @@ void Command::LogWantNext()
 	if (ccomm.command < _COMM_NOLOGCOMMANDBEGIN || ccomm.command > _COMM_NOLOGCOMMANDEND)
 	{
 		char strlog[M_STRMAX];
-		sprintf_s(strlog, M_STRMAX, "%s: %s%s", GetCommandStr(), COMMANDLOGSTR_WANTNEXT, GetWantPromptStr());
+		sprintf_s(strlog, M_STRMAX, "%s: %s: %s: ", GetCommandStr(), StringManager::getInstance().GetCLNextPromptName(), GetWantPromptStr());
 		MainInterface::getInstance().CallAppendCommandLogText(strlog);
 
 		if (!ccomm.enabledsubcommand.empty())
@@ -146,7 +133,7 @@ void Command::LogDisplaySubCommandEnd()
 void Command::LogFinishSubCommand( int subcommand )
 {
 	char strlog[M_STRMAX];
-	sprintf_s(strlog, M_STRMAX, "%s%s", COMMANDLOGSTR_FINISHSUBCOMMAND, GetSubCommandPromptStr(subcommand));
+	sprintf_s(strlog, M_STRMAX, "%s: %s", StringManager::getInstance().GetCLFinishSubCommandName(), GetSubCommandPromptStr(subcommand));
 	MainInterface::getInstance().CallAppendCommandLogText(strlog);
 }
 
@@ -155,11 +142,11 @@ void Command::LogError( const char * str )
 	char strlog[M_STRMAX*4];
 	if (ccomm.command && ccomm.wantprompt)
 	{
-		sprintf_s(strlog, M_STRMAX*4, "(%s) %s%s%s", GetCommandStr(), COMMANDLOGSTR_ERROR, GetWantPromptStr(), str);
+		sprintf_s(strlog, M_STRMAX*4, "(%s) %s: %s: %s", GetCommandStr(), StringManager::getInstance().GetCLErrorName(), GetWantPromptStr(), str);
 	}
 	else
 	{
-		sprintf_s(strlog, M_STRMAX*4, "%s%s", COMMANDLOGSTR_ERROR, str);
+		sprintf_s(strlog, M_STRMAX*4, "%s: %s", StringManager::getInstance().GetCLErrorName(), str);
 	}
 	MainInterface::getInstance().CallAppendCommandLogText(strlog);
 }
@@ -491,7 +478,7 @@ int Command::CommitCommand( const char * str )
 
 bool _CheckCharToBreak(char ch)
 {
-	if (ch >= 'a' && ch <= 'z' || ch == '_' || ch >= 'A' && ch <= 'Z' || ch >= '0' && ch <= '9' || ch == '-' || ch == '+' || ch == '.' || ch >= 0x80)
+	if (ch >= 'a' && ch <= 'z' || ch == '_' || ch >= 'A' && ch <= 'Z' || ch >= '0' && ch <= '9' || ch == '-' || ch == '+' || ch == '.' || ch < 0)
 	{
 		return false;
 	}
@@ -673,9 +660,11 @@ int Command::FindCommandByStr( const char * str, bool * isshort/*=0*/ )
 	string upperstr = str;
 	transform(upperstr.begin(), upperstr.end(), upperstr.begin(), toupper);
 
-	for (int i=0; i<COMMANDINDEXMAX; i++)
+	StringManager * psm = &StringManager::getInstance();
+
+	for (int i=0; i<_COMM_ENDINDEX; i++)
 	{
-		if (!scinfo[i].str.compare(upperstr))
+		if (!upperstr.compare(psm->GetCommandStrName(i))/*!scinfo[i].str.compare(upperstr)*/)
 		{
 			if (isshort)
 			{
@@ -683,7 +672,7 @@ int Command::FindCommandByStr( const char * str, bool * isshort/*=0*/ )
 			}
 			return i;
 		}
-		if (!scinfo[i].shortstr.compare(upperstr))
+		if (!upperstr.compare(psm->GetCommandShortStrName(i))/*!scinfo[i].shortstr.compare(upperstr)*/)
 		{
 			if (isshort)
 			{
@@ -702,12 +691,14 @@ int Command::FindSubCommandByStr( const char * str )
 		return 0;
 	}
 
+	StringManager * psm = &StringManager::getInstance();
+
 	string upperstr = str;
 	transform(upperstr.begin(), upperstr.end(), upperstr.begin(), toupper);
 
 	for (list<int>::iterator it=ccomm.enabledsubcommand.begin(); it!=ccomm.enabledsubcommand.end(); ++it)
 	{
-		if (!subcinfo[(*it)].str.compare(upperstr))
+		if (!upperstr.compare(psm->GetSubCommandStrName((*it)))/*!subcinfo[(*it)].str.compare(upperstr)*/)
 		{
 			return *it;
 		}

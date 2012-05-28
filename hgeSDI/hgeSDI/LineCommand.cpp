@@ -183,7 +183,7 @@ void LineCommand::RenderToTarget()
 		HTARGET tar = RenderTargetManager::getInstance().UpdateTarget(RTID_COMMAND);
 
 		RenderHelper::getInstance().BeginRenderTar(tar);
-		RenderHelper::getInstance().RenderLine(x1, y1, x2, y2, ColorManager::GetLayerLineColor());
+		RenderHelper::getInstance().RenderLine(x1, y1, x2, y2, ColorManager::getInstance().GetLayerLineColor());
 		RenderHelper::getInstance().EndRenderTar();
 
 		Command::getInstance().SetRenderTarget(tar);

@@ -132,6 +132,7 @@
     <ClInclude Include="GLine.h" />
     <ClInclude Include="GObject.h" />
     <ClInclude Include="GObjectManager.h" />
+    <ClInclude Include="GObjectPicker.h" />
     <ClInclude Include="GPiece.h" />
     <ClInclude Include="GPoint.h" />
     <ClInclude Include="GShape.h" />
@@ -151,6 +152,7 @@
     <ClInclude Include="RenderTargetManager.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StringManager.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="UICommandDockablePane.h" />
     <ClInclude Include="UICommandEdit.h" />
@@ -163,11 +165,11 @@
     <ClCompile Include="ColorManager.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="CommandProcess.cpp" />
-    <ClCompile Include="CommandStrings.cpp" />
     <ClCompile Include="CommandTemplate.cpp" />
     <ClCompile Include="GLine.cpp" />
     <ClCompile Include="GObject.cpp" />
     <ClCompile Include="GObjectManager.cpp" />
+    <ClCompile Include="GObjectPicker.cpp" />
     <ClCompile Include="GPiece.cpp" />
     <ClCompile Include="GPoint.cpp" />
     <ClCompile Include="GShape.cpp" />
@@ -188,6 +190,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="StringManager.cpp" />
     <ClCompile Include="UICommandDockablePane.cpp" />
     <ClCompile Include="UICommandEdit.cpp" />
     <ClCompile Include="UICommandLogEdit.cpp" />

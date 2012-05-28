@@ -4,6 +4,7 @@
 #include "CommandDefines.h"
 
 #include "GObject.h"
+#include "StringManager.h"
 
 class CommandParam
 {
@@ -66,61 +67,6 @@ public:
 	int wantprompt;
 	vector<CommandParam> params;
 	list<int>enabledsubcommand;
-};
-
-class CommandStrInfo
-{
-public:
-	CommandStrInfo()
-	{
-		ClearSet();
-	};
-	~CommandStrInfo(){};
-
-	void ClearSet()
-	{
-		str = "";
-		shortstr = "";
-	};
-
-	string str;
-	string shortstr;
-};
-
-class SubCommandStrInfo{
-
-public:
-	SubCommandStrInfo()
-	{
-		ClearSet();
-	};
-	~SubCommandStrInfo(){};
-
-	void ClearSet()
-	{
-		promptstr = "";
-		str = "";
-	};
-
-	string promptstr;
-	string str;
-};
-
-class WantPromptInfo
-{
-public:
-	WantPromptInfo()
-	{
-		ClearSet();
-	};
-	~WantPromptInfo(){};
-
-	void ClearSet()
-	{
-		str = "";
-	};
-
-	string str;
 };
 
 
@@ -207,9 +153,6 @@ private:
 public:
 	
 	void Init();
-	void InitCommandStrInfo();
-	void InitWantPromptInfo();
-	void InitSubCommandStrInfo();
 	void Render();
 
 	int CreateCommand(int comm);
@@ -275,9 +218,6 @@ public:
 	CommandStepInfo ccomm;
 	list<CommandStepInfo> histcomm;
 	list<CommandStepInfo> pushedcomm;
-	CommandStrInfo scinfo[COMMANDINDEXMAX];
-	WantPromptInfo wpinfo[COMMANDWANTPROMPTMAX];
-	SubCommandStrInfo subcinfo[COMMANDSUBINDEXMAX];
 
 //	int SetParamXY(int index, float x, float y);
 
@@ -313,14 +253,6 @@ public:
 	int StepTo(int step, int wantnextprompt=0, bool pushback=true);
 	int StepBack();
 
-	inline const char * GetWantPromptStr(int wantprompt=-1)
-	{
-		if (wantprompt < 0 || wantprompt >= COMMANDWANTPROMPTMAX)
-		{
-			wantprompt = ccomm.wantprompt;
-		}
-		return wpinfo[wantprompt].str.c_str();
-	}
 	inline const char * GetCommandStr(int command=-1)
 	{
 		if (command < 0)
@@ -331,7 +263,7 @@ public:
 		{
 			command = COMM_NULL;
 		}
-		return scinfo[command].str.c_str();
+		return StringManager::getInstance().GetCommandStrName(command);//scinfo[command].str.c_str();
 	};
 	inline const char * GetCommandShortStr(int command = -1)
 	{
@@ -343,23 +275,31 @@ public:
 		{
 			command = COMM_NULL;
 		}
-		return scinfo[command].shortstr.c_str();
+		return StringManager::getInstance().GetCommandShortStrName(command);//scinfo[command].shortstr.c_str();
 	};
-	inline const char * GetSubCommandStr(int subcommand)
+	inline const char * GetWantPromptStr(int cwp=-1)
 	{
-		if (subcommand < 0 || subcommand >= COMMANDSUBINDEXMAX)
+		if (cwp < 0 || cwp >= COMMANDWANTPROMPTMAX)
 		{
-			subcommand = 0;
+			cwp = ccomm.wantprompt;
 		}
-		return subcinfo[subcommand].str.c_str();
+		return StringManager::getInstance().GetWantPromptName(cwp);//wpinfo[wantprompt].str.c_str();
+	}
+	inline const char * GetSubCommandStr(int ssc)
+	{
+		if (ssc < 0 || ssc >= COMMANDSUBINDEXMAX)
+		{
+			ssc = 0;
+		}
+		return StringManager::getInstance().GetSubCommandStrName(ssc);//subcinfo[ssc].str.c_str();
 	};
-	inline const char * GetSubCommandPromptStr(int subcommand)
+	inline const char * GetSubCommandPromptStr(int ssc)
 	{
-		if (subcommand < 0 || subcommand >= COMMANDSUBINDEXMAX)
+		if (ssc < 0 || ssc >= COMMANDSUBINDEXMAX)
 		{
-			subcommand = 0;
+			ssc = 0;
 		}
-		return subcinfo[subcommand].promptstr.c_str();
+		return StringManager::getInstance().GetSubCommandPromptStrName(ssc);//subcinfo[ssc].promptstr.c_str();
 	};
 
 	HTARGET tarcommand;

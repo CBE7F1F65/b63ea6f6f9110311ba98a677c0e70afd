@@ -22,6 +22,7 @@
 #include "hgeSDIView.h"
 
 #include "Main.h"
+#include "StringManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -55,7 +56,7 @@ ChgeSDIApp::ChgeSDIApp()
 
 	// TODO: 将以下应用程序 ID 字符串替换为唯一的 ID 字符串；建议的字符串格式
 	//为 CompanyName.ProductName.SubProduct.VersionInformation
-	SetAppID(_T("hgeSDI.AppID.NoVersion"));
+	SetAppID(StringManager::getInstance().GetAppIDName()/*_T("hgeSDI.AppID.NoVersion")*/);
 
 	// TODO: 在此处添加构造代码，
 	// 将所有重要的初始化放置在 InitInstance 中
@@ -104,7 +105,7 @@ BOOL ChgeSDIApp::InitInstance()
 	// 更改用于存储设置的注册表项
 	// TODO: 应适当修改该字符串，
 	// 例如修改为公司或组织名
-	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
+	SetRegistryKey(StringManager::getInstance().GetRegistryKeyName()/*_T("应用程序向导生成的本地应用程序")*/);
 	LoadStdProfileSettings(4);  // 加载标准 INI 文件选项(包括 MRU)
 
 
@@ -202,10 +203,12 @@ void ChgeSDIApp::OnAppAbout()
 
 void ChgeSDIApp::PreLoadState()
 {
+	/*
 	BOOL bNameValid;
 	CString strName;
 	bNameValid = strName.LoadString(IDS_EDIT_MENU);
 	ASSERT(bNameValid);
+	*/
 //	GetContextMenuManager()->AddMenu(strName, IDR_POPUP_EDIT);
 }
 

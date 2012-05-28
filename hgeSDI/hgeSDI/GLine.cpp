@@ -90,7 +90,7 @@ void GStraightLine::OnRender()
 {
 	if (plbegin && plend)
 	{
-		RenderHelper::getInstance().RenderLine(plbegin->x, plbegin->y, plend->x, plend->y, ColorManager::GetLayerLineColor());
+		RenderHelper::getInstance().RenderLine(plbegin->x, plbegin->y, plend->x, plend->y, ColorManager::getInstance().GetLayerLineColor());
 	}
 	GObject::OnRender();
 }

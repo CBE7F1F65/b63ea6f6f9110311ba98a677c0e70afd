@@ -32,7 +32,7 @@ void GUICursor::Render( float x, float y )
 	HGE * hge = MainInterface::getInstance().hge;
 	if (hge)
 	{
-		DWORD col = ColorManager::GetCursorColor();
+		DWORD col = ColorManager::getInstance().GetCursorColor();
 #define _GUICN_SIZE		48
 #define _GUICN_BOXSIZE	3
 #define _GUICN_SMALLSIZE		16

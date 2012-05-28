@@ -47,26 +47,26 @@ void GUICoordinate::RenderGridReDraw()
 			switch (it->mgridID)
 			{
 			case _GUICG_MGID_AXIS:
-				col = ColorManager::GetGridYAxisColor();
+				col = ColorManager::getInstance().GetGridYAxisColor();
 				break;
 			case _GUICG_MGID_MAIN:
-				col = ColorManager::GetGridMainColor();
+				col = ColorManager::getInstance().GetGridMainColor();
 				break;
 			case _GUICG_MGID_SUB:
-				col = ColorManager::GetGridSubColor();
+				col = ColorManager::getInstance().GetGridSubColor();
 				break;
 			}
 			RenderHelper::getInstance().RenderLineB_S(it->scrvalue, 0, scrh_s, col);
 			switch (jt->mgridID)
 			{
 			case _GUICG_MGID_AXIS:
-				col = ColorManager::GetGridXAxisColor();
+				col = ColorManager::getInstance().GetGridXAxisColor();
 				break;
 			case _GUICG_MGID_MAIN:
-				col = ColorManager::GetGridMainColor();
+				col = ColorManager::getInstance().GetGridMainColor();
 				break;
 			case _GUICG_MGID_SUB:
-				col = ColorManager::GetGridSubColor();
+				col = ColorManager::getInstance().GetGridSubColor();
 				break;
 			}
 			RenderHelper::getInstance().RenderLineR_S(0, jt->scrvalue, scrw_s, col);
@@ -105,7 +105,7 @@ void GUICoordinate::DoRenderCoordinate( float renderatx, float renderaty )
 #define _GUICC_LETTERMARGIN		2
 #define _GUICC_LETTERBEGIN		(_GUICC_LETTERMARGIN+_GUICC_LENGTH)
 
-	DWORD coordcol = ColorManager::GetCoordColor();
+	DWORD coordcol = ColorManager::getInstance().GetCoordColor();
 
 	RenderHelper::getInstance().RenderLineR_S(renderatx, renderaty, _GUICC_LENGTH, coordcol);
 	RenderHelper::getInstance().RenderLineB_S(renderatx, renderaty, _GUICC_LENGTH, coordcol);

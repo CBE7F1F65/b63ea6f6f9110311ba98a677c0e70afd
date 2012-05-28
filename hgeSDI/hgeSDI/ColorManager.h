@@ -5,17 +5,32 @@
 class ColorManager
 {
 public:
-	ColorManager(void);
-	~ColorManager(void);
+	static ColorManager& getInstance()
+	{
+		static ColorManager instance;
+		// Guaranteed to be destroyed. Instantiated on first use.
+		return instance;
+	}
 
-	static DWORD GetBGColor();
-	static DWORD GetGridMainColor();
-	static DWORD GetGridSubColor();
-	static DWORD GetGridXAxisColor();
-	static DWORD GetGridYAxisColor();
-	static DWORD GetCoordColor();
-	static DWORD GetCursorColor();
+private:
+	ColorManager();
+	~ColorManager();
+	// Don't forget to declare these two.
+	ColorManager(ColorManager const&);
+	// Don't Implement
+	void operator=(ColorManager const&);
+	// Don't implement
 
-	static DWORD GetLayerLineColor(int layer=-1);
+public:
+	
+	DWORD GetBGColor();
+	DWORD GetGridMainColor();
+	DWORD GetGridSubColor();
+	DWORD GetGridXAxisColor();
+	DWORD GetGridYAxisColor();
+	DWORD GetCoordColor();
+	DWORD GetCursorColor();
+
+	DWORD GetLayerLineColor(int layer=-1);
 };
 
