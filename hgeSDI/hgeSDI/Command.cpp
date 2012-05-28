@@ -768,7 +768,7 @@ void Command::TerminalInternalProcess()
 	inputcommandlist.clear();
 }
 
-void Command::EnableSubCommand( int first, ... )
+void Command::EnableSubCommand( bool bdisplay, int first, ... )
 {
 	if (!ccomm.command)
 	{
@@ -783,7 +783,6 @@ void Command::EnableSubCommand( int first, ... )
 		return;
 	}
 
-	bool bdisplay = true;
 	if (pendingparam.type)
 	{
 		bdisplay = false;
@@ -836,4 +835,17 @@ void Command::PushRevertable( RevertableCommand * rc )
 	{
 		undolist.push_back(*rc);
 	}
+	if (!IsUnDoReDoing())
+	{
+		ClearReDo();
+	}
+	if (undoredoflag == CUNDOREDO_REDOING)
+	{
+		undoredoflag = CUNDOREDO_NULL;
+	}
+}
+
+void Command::ClearReDo()
+{
+	redolist.clear();
 }

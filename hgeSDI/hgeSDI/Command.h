@@ -214,10 +214,11 @@ public:
 
 	int CreateCommand(int comm);
 	void ProcessCommand();
-	void ProcessUnDoCommand(RevertableCommand * rc);
+	void ProcessUnDoCommand(RevertableCommand * rc, int ucount);
 	int ProcessCommittedCommand();
 	int ProcessPending(int index, int useflag, int fillprompt, int step, int wantprompt=0, bool pushback=true);
 	void CommitFrontCommand(CommittedCommand &cc);
+	void ClearReDo();
 
 	void FinishPendingSubCommand();
 
@@ -229,7 +230,7 @@ public:
 	int FindCommandByStr(const char * str, bool * isshort=0);
 	int FindSubCommandByStr(const char * str);
 
-	void EnableSubCommand(int first, ...);
+	void EnableSubCommand(bool bdisplay, int first, ...);
 	void ClearEnabledSubCommand();
 
 	void LogCreate();
@@ -246,7 +247,7 @@ public:
 	bool DoUnDo(int undostep=1);
 	bool DoReDo(int redostep=1);
 
-	bool DoUnDoCommandSingle(RevertableCommand * rc);
+	bool DoUnDoCommandSingle(RevertableCommand * rc, int ucount);
 	bool DoReDoCommandSingle(RevertableCommand * rc);
 
 	bool DoUnDoAddNode(GObject * obj, GObject * parent);

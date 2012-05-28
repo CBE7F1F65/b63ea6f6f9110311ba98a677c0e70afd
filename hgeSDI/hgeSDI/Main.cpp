@@ -485,11 +485,13 @@ void MainInterface::DoCheckFloatCommand()
 	}
 
 	WPARAM vk=0;
+	int dik=-1;
 
 #define _SETVKBYKEY(DIK)	\
 	if (hge->Input_GetDIKey(DIK, DIKEY_DOWN))	\
 	{	\
 		vk = i;	\
+		dik = DIK;	\
 		break;	\
 	}	\
 	i++;
@@ -572,9 +574,49 @@ void MainInterface::DoCheckFloatCommand()
 		_SETVKBYKEY(DIK_APOSTROPHE);
 	} while(false);
 
+	bool bctrl=false;
+	bool bshift=false;
+	bool balt=false;
 
+	if (hge->Input_GetDIKey(DIK_LCONTROL) || hge->Input_GetDIKey(DIK_RCONTROL))
+	{
+		bctrl = true;
+	}
+	if (hge->Input_GetDIKey(DIK_LSHIFT) || hge->Input_GetDIKey(DIK_RSHIFT))
+	{
+		bshift = true;
+	}
+	if (hge->Input_GetDIKey(DIK_LMENU) || hge->Input_GetDIKey(DIK_RMENU))
+	{
+		balt = true;
+	}
 
-	if (vk)
+	if (bctrl)
+	{
+		if (dik == DIK_Z)
+		{
+			if (!balt)
+			{
+				if (!bshift)
+				{
+					Command::getInstance().DoUnDo();
+				}
+				else
+				{
+					Command::getInstance().DoReDo();
+				}
+			}
+		}
+		else if (dik == DIK_Y)
+		{
+			if (!balt && !bshift)
+			{
+				Command::getInstance().DoReDo();
+			}
+		}
+	}
+
+	if (vk && !bctrl && !balt)
 	{
 		parentview->GetMainFrame()->CallEnableFloatCommand(vk);
 	}

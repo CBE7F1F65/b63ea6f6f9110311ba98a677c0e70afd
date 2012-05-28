@@ -30,6 +30,7 @@ void LineCommand::OnProcessCommand()
 		if (nowstep > CSI_INIT)
 		{
 			pcommand->EnableSubCommand(
+				(laststep.step==CSI_RESUME)?false:true,
 				SSC_UNDO,
 				SSC_REDO, 
 				SSC_TERMINAL,
@@ -201,7 +202,7 @@ void LineCommand::DoneCommand()
 		CCMake_C(COMM_I_ADDNODE, 2),
 		CCMake_D((int)line),
 		CCMake_D((int)(line->parent)),
-		CCMake_C(COMM_I_COMMAND, 5),
+		CCMake_C(COMM_I_COMMAND, 5, 3),
 		CCMake_C(COMM_LINE),
 		CCMake_F(xb),
 		CCMake_F(yb),

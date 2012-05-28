@@ -119,27 +119,58 @@ int Command::ProcessCommittedCommand()
 
 void Command::ProcessCommand()
 {
-	ProcessCommittedCommand();
-	if (!ccomm.command)
+	while (true)
 	{
-		return;
-	}
+		ProcessCommittedCommand();
 
-	switch (ccomm.command)
-	{
-	case COMM_PAN:
-		return GUICoordinate::getInstance().OnProcessPanCommand();
-	case COMM_DOZOOM:
-		return GUICoordinate::getInstance().OnProcessZoomCommand();
-	case COMM_LINE:
-		return LineCommand::getInstance().OnProcessCommand();
-	case COMM_BEZIER:
-		return BezierCommand::getInstance().OnProcessCommand();
+		if (!ccomm.command)
+		{
+			return;
+		}
+
+
+		switch (ccomm.command)
+		{
+		case COMM_PAN:
+			GUICoordinate::getInstance().OnProcessPanCommand();
+			break;
+		case COMM_DOZOOM:
+			GUICoordinate::getInstance().OnProcessZoomCommand();
+			break;
+		case COMM_LINE:
+			LineCommand::getInstance().OnProcessCommand();
+			break;
+		case COMM_BEZIER:
+			BezierCommand::getInstance().OnProcessCommand();
+			break;
+		}
+
+		if (inputcommandlist.empty())
+		{
+			break;
+		}
+
 	}
 }
 
 
-void Command::ProcessUnDoCommand( RevertableCommand * rc )
+void Command::ProcessUnDoCommand( RevertableCommand * rc, int ucount )
 {
+	int nsize = rc->commandlist.size();
+	assert(ucount <= nsize);
 
+	list<CommittedCommand>::reverse_iterator it=rc->commandlist.rbegin();
+	for (int i=nsize; i>ucount; i--)
+	{
+		++it;
+	}
+	for (; it!=rc->commandlist.rend(); ++it)
+	{
+		CommitFrontCommand(*it);
+	}
+	//
+	CommittedCommand tp = pendingparam;
+	pendingparam.ClearSet();
+	ProcessCommand();
+	pendingparam = tp;
 }

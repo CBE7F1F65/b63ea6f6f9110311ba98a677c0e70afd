@@ -28,22 +28,23 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 		assert(it->ival > _COMM_INTERNALBEGIN);
 		int command = it->ival;
 
-		int csub = it->csub;
+		int pcount = CI_GETPCOUNT(it->csub);
+		int ucount = CI_GETUCOUNT(it->csub);
 		if (command == COMM_I_COMMAND)
 		{
-			assert(csub != 0);
+			assert(pcount != 0);
 			RevertableCommand rct;
-			for (int i=0; i<csub; i++)
+			for (int i=0; i<pcount; i++)
 			{
 				++it;
 				assert(it!=rc.commandlist.end());
 				rct.PushCommand(&(*it));
 			}
-			DoUnDoCommandSingle(&rct);
+			DoUnDoCommandSingle(&rct, ucount);
 		}
 		else if (command == COMM_I_ADDNODE)
 		{
-			assert(csub == 2);
+			assert(pcount == 2);
 			++it;
 			GObject * obj = (GObject *)((it)->ival);
 			++it;
@@ -52,7 +53,7 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 		}
 		else if (command == COMM_I_DELETENODE)
 		{
-			assert(csub == 2);
+			assert(pcount == 2);
 			++it;
 			GObject * obj = (GObject *)((it)->ival);
 			++it;
@@ -61,7 +62,7 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 		}
 		else if (command == COMM_I_REPARENTNODE)
 		{
-			assert(csub == 3);
+			assert(pcount == 3);
 			++it;
 			GObject * obj = (GObject *)((it)->ival);
 			++it;
@@ -103,12 +104,13 @@ bool Command::DoReDo( int redostep/*=1*/ )
 		assert(it->ival > _COMM_INTERNALBEGIN);
 		int command = it->ival;
 
-		int csub = it->csub;
+		int pcount = CI_GETPCOUNT(it->csub);
+		int ucount = CI_GETUCOUNT(it->csub);
 		if (command == COMM_I_COMMAND)
 		{
-			assert(csub != 0);
+			assert(pcount != 0);
 			RevertableCommand rct;
-			for (int i=0; i<csub; i++)
+			for (int i=0; i<pcount; i++)
 			{
 				++it;
 				assert(it!=rc.commandlist.end());
@@ -118,7 +120,7 @@ bool Command::DoReDo( int redostep/*=1*/ )
 		}
 		else if (command == COMM_I_ADDNODE)
 		{
-			assert(csub == 2);
+			assert(pcount == 2);
 			++it;
 			GObject * obj = (GObject *)((it)->ival);
 			++it;
@@ -127,7 +129,7 @@ bool Command::DoReDo( int redostep/*=1*/ )
 		}
 		else if (command == COMM_I_DELETENODE)
 		{
-			assert(csub == 2);
+			assert(pcount == 2);
 			++it;
 			GObject * obj = (GObject *)((it)->ival);
 			++it;
@@ -136,7 +138,7 @@ bool Command::DoReDo( int redostep/*=1*/ )
 		}
 		else if (command == COMM_I_REPARENTNODE)
 		{
-			assert(csub == 3);
+			assert(pcount == 3);
 			++it;
 			GObject * obj = (GObject *)((it)->ival);
 			++it;
@@ -146,7 +148,9 @@ bool Command::DoReDo( int redostep/*=1*/ )
 			DoReDoReparentNode(obj, oparent, aparent);
 		}
 	}
-	undoredoflag = CUNDOREDO_NULL;
+	// Clear redoflag when push revertable
+//	undoredoflag = CUNDOREDO_NULL;
+
 	redolist.pop_back();
 	// No need to push back undolist
 	// All ReDo should done by command
@@ -155,9 +159,9 @@ bool Command::DoReDo( int redostep/*=1*/ )
 	return true;
 }
 
-bool Command::DoUnDoCommandSingle( RevertableCommand * rc )
+bool Command::DoUnDoCommandSingle( RevertableCommand * rc, int ucount )
 {
-	ProcessUnDoCommand(rc);
+	ProcessUnDoCommand(rc, ucount);
 	return true;
 }
 
@@ -173,6 +177,11 @@ bool Command::DoReDoCommandSingle( RevertableCommand * rc )
 	{
 		CommitFrontCommand(*it);
 	}
+	//
+	CommittedCommand tp = pendingparam;
+	pendingparam.ClearSet();
+	ProcessCommand();
+	pendingparam = tp;
 	return true;
 }
 

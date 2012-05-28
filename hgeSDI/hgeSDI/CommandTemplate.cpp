@@ -107,14 +107,14 @@ bool CommandTemplate::IsStepped()
 	return (laststep.command && laststep.step != pcommand->GetStep());
 }
 
-CommittedCommand * CommandTemplate::CCMake_C( int command, int setsub/*=0*/ )
+CommittedCommand * CommandTemplate::CCMake_C( int command, int paramcount/*=0*/, int undocount/*=0*/ )
 {
 	CommittedCommand * cc = new CommittedCommand();
 	cc->type = COMMITTEDCOMMANDTYPE_COMMAND;
 	cc->ival = command;
 	if (command > _COMM_INTERNALBEGIN)
 	{
-		cc->csub = setsub;
+		cc->csub = CI_MAKESUBEX(paramcount, undocount);
 	}
 	cc->sval = pcommand->GetCommandStr(command);
 	madecctodelete.push_back(cc);
