@@ -64,6 +64,8 @@ public:
 	string str;
 };
 
+
+#define INIS_NODENAME		"NodeName"
 #define INIS_COMMANDLOG		"CommandLog"
 
 #define INIS_CWP			"WPrompt"
@@ -80,6 +82,8 @@ public:
 #define INIS_PERFORMANCE	"Performance"
 #define ININ_UNDOMAX	"UnDoMax"
 #define INID_UNDOMAX	100
+
+#define INIS_COLOR	"Color"
 
 class StringManager
 {
@@ -169,8 +173,12 @@ public:
 			strNName = hge->Ini_GetString(Sec, N, Def);
 		}
 		return strNName.c_str();
+	};
+	void RestoreNName(bool bWrite)
+	{
+		strNName = Def;
+		hge->Ini_SetString(Sec, N, "");
 	}
-
 	************************************************************************/
 
 #define _FDEF(STRNAME, SEC, DEF)	\
@@ -182,6 +190,11 @@ public:
 			str##STRNAME##Name = hge->Ini_GetString(SEC, #STRNAME, DEF);	\
 		}	\
 		return str##STRNAME##Name.c_str();	\
+	};	\
+	void Restore##STRNAME##Name(bool bWrite)	\
+	{	\
+		str##STRNAME##Name = DEF;	\
+		hge->Ini_SetString(SEC, #STRNAME, "");	\
 	}
 
 #define _CLFDEF(STRNAME, DEF)	\
@@ -198,5 +211,20 @@ public:
 	_CLFDEF(	ReDo,	"Processing ReDo"	);
 	
 #undef _CLFDEF
+
+#define _NNFDEF(STRNAME, DEF)	\
+	_FDEF(NN##STRNAME, INIS_NODENAME, DEF)
+
+	_NNFDEF(	Object,	"Object"	);
+	_NNFDEF(	Layer,	"Layer"	);
+	_NNFDEF(	Shape,	"Shape"	);
+	_NNFDEF(	Piece,	"Piece"	);
+	_NNFDEF(	Line,	"Line"	);
+	_NNFDEF(	Point,	"Point"	);
+	_NNFDEF(	EndPoint,	"End Point"	);
+	_NNFDEF(	MidPoint,	"Mid Point"	);
+
+#undef _NNFDEF
+
 #undef _FDEF
 };

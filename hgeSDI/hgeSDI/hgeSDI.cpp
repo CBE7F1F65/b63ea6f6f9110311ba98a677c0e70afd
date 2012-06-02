@@ -155,7 +155,6 @@ int ChgeSDIApp::ExitInstance()
 {
 	//TODO: 处理可能已添加的附加资源
 	AfxOleTerm(FALSE);
-	MainInterface::getInstance().Exit();
 	return CWinAppEx::ExitInstance();
 }
 

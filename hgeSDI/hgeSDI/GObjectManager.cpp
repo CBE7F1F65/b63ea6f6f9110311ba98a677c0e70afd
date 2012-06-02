@@ -3,6 +3,7 @@
 
 #include "RenderTargetManager.h"
 #include "RenderHelper.h"
+#include "Main.h"
 
 GObjectManager::GObjectManager()
 {
@@ -78,4 +79,9 @@ void GObjectManager::MoveToUnDoList( GObject * node )
 	{
 		node->Reparent(&undobasenode);
 	}
+}
+
+void GObjectManager::OnTreeChanged( GObject * changingbase )
+{
+	MainInterface::getInstance().OnRebuildLayerTree(changingbase);
 }

@@ -44,6 +44,8 @@ public:
 	bool ClearLaterHistory(int ndelete);
 	bool ClearPreviousHistory(int ndelete);
 
+	bool RebuildLayerTree(GObject * changebase);
+
 // ²Ù×÷
 public:
 	void CallShowContextMenu(int x, int y);
@@ -100,6 +102,7 @@ public:
 
 	afx_msg void OnViewCommandPane();
 	afx_msg void OnUpdateViewCommandPane(CCmdUI *pCmdUI);
+	afx_msg void OnClose();
 };
 
 

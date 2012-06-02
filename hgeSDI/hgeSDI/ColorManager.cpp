@@ -4,46 +4,16 @@
 
 ColorManager::ColorManager(void)
 {
+	hge = hgeCreate(HGE_VERSION);
 }
 
 
 ColorManager::~ColorManager(void)
 {
-}
-
-DWORD ColorManager::GetBGColor()
-{
-	return 0xff212830;
-}
-
-DWORD ColorManager::GetGridMainColor()
-{
-	return 0xff333949;
-}
-
-DWORD ColorManager::GetGridSubColor()
-{
-	return 0xff272d38;
-}
-
-DWORD ColorManager::GetGridXAxisColor()
-{
-	return 0xff6d2426;
-}
-
-DWORD ColorManager::GetGridYAxisColor()
-{
-	return 0xff236e26;
-}
-
-DWORD ColorManager::GetCoordColor()
-{
-	return 0xffffffff;
-}
-
-DWORD ColorManager::GetCursorColor()
-{
-	return 0xffffffff;
+	if (hge)
+	{
+		hge->Release();
+	}
 }
 
 DWORD ColorManager::GetLayerLineColor( int layer/*=-1*/ )
@@ -58,8 +28,8 @@ DWORD ColorManager::GetTextColor( int type, int state )
 		switch (state)
 		{
 		case COLORMS_ACTIVE:
-			return 0xffffffff;
 		case COLORMS_NONACTIVE:
+		case COLORMS_EDITABLE:
 			return 0xffffffff;
 		case COLORMS_DISABLED:
 			return 0xff717171;
@@ -77,7 +47,9 @@ DWORD ColorManager::GetTextBkColor( int type, int state )
 		case COLORMS_ACTIVE:
 			return 0xff596678;
 		case COLORMS_NONACTIVE:
-			return 0xff535353;
+			return 0xff494949;
+		case COLORMS_EDITABLE:
+			return 0xff595959;
 		case COLORMS_DISABLED:
 			return 0xff535353;
 		}
@@ -88,4 +60,9 @@ DWORD ColorManager::GetTextBkColor( int type, int state )
 DWORD ColorManager::ARGBToABGR( DWORD col )
 {
 	return ARGB(GETA(col), GETB(col), GETG(col), GETR(col));
+}
+
+void ColorManager::Init()
+{
+
 }

@@ -2,6 +2,9 @@
 
 
 // UILayerDockablePane
+#include "UILayerTree.h"
+
+#define IDLB_TREECTRL	0
 
 class UILayerDockablePane : public CDockablePane
 {
@@ -11,8 +14,16 @@ public:
 	UILayerDockablePane();
 	virtual ~UILayerDockablePane();
 
+	void RebuildTree(GObject * changebase);
+
+	UILayerTree m_wndTreeCtrl;
+
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg void OnClose();
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };
 
 

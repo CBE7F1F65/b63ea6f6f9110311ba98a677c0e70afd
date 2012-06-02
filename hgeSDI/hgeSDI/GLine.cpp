@@ -34,6 +34,12 @@ void GLine::SetBeginEnd( float xb, float yb, float xe, float ye )
 		plend->SetPosition(xe, ye);
 	}
 }
+
+const char * GLine::GetTypeName()
+{
+	return StringManager::getInstance().GetNNLineName();
+}
+
 GStraightLine::GStraightLine()
 {
 }

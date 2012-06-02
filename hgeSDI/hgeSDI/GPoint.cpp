@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "GPoint.h"
+#include "StringManager.h"
 
 
 
@@ -23,6 +24,11 @@ void GPoint::SetPosition( float _x, float _y )
 	OnModify();
 }
 
+const char * GPoint::GetTypeName()
+{
+	return StringManager::getInstance().GetNNPointName();
+}
+
 GEndPoint::GEndPoint()
 {
 
@@ -37,4 +43,9 @@ GEndPoint::GEndPoint( float _x, float _y )
 GEndPoint::~GEndPoint()
 {
 
+}
+
+const char * GEndPoint::GetTypeName()
+{
+	return StringManager::getInstance().GetNNEndPointName();
 }

@@ -6,5 +6,7 @@ class GShape :
 public:
 	GShape(void);
 	~GShape(void);
+
+	virtual const char * GetTypeName();
 };
 

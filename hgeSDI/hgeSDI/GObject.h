@@ -24,8 +24,9 @@ protected:
 	virtual int _RemoveFromParent(bool bRelease=true);
 public:
 	virtual int Reparent(GObject * newparent);
-
+protected:
 	virtual void SetID(int ID=-1);
+public:
 	virtual void OnInit();
 	virtual void OnEnter();
 	virtual void OnModify();
@@ -33,6 +34,8 @@ public:
 	virtual void OnUpdate();
 	virtual void OnRender();
 	virtual void OnRelease();
+
+	virtual const char * GetTypeName();
 
 	virtual void SetMotifyParent(bool bToModify);
 

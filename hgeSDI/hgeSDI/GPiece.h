@@ -6,5 +6,7 @@ class GPiece :
 public:
 	GPiece(void);
 	~GPiece(void);
+
+	virtual const char * GetTypeName();
 };
 

@@ -17,6 +17,7 @@
 
 #include "MainFrm.h"
 #include "StringManager.h"
+#include "Main.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -43,6 +44,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_UPDATE_COMMAND_UI(ID_STATUSBAR_PANE2, &CMainFrame::OnUpdateStatusbarPane2)
 	ON_COMMAND(ID_VIEW_COMMAND_PANE, &CMainFrame::OnViewCommandPane)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_COMMAND_PANE, &CMainFrame::OnUpdateViewCommandPane)
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 // CMainFrame 构造/析构
@@ -440,4 +442,18 @@ bool CMainFrame::ClearLaterHistory( int ndelete )
 bool CMainFrame::ClearPreviousHistory( int ndelete )
 {
 	return m_wndUIHistoryPane.ClearPreviousHistory(ndelete);
+}
+
+bool CMainFrame::RebuildLayerTree( GObject * changebase )
+{
+	m_wndUILayerPane.RebuildTree(changebase);
+	return true;
+}
+
+void CMainFrame::OnClose()
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	MainInterface::getInstance().Exit();
+
+	CFrameWndEx::OnClose();
 }

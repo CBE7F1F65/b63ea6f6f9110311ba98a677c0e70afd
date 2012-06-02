@@ -30,6 +30,8 @@ public:
 	void Render();
 	void Delete();
 
+	void OnTreeChanged(GObject * changingbase);
+
 	void AddNodeToDelete(GObject * node);
 
 	void MoveToUnDoList(GObject * node);

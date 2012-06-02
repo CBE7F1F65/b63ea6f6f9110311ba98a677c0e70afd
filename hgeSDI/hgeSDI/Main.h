@@ -52,6 +52,7 @@ public:
 	void OnReDo(int step=1);
 	void OnClearReDo(int ndelete);
 	void OnClearPreviousHistory(int ndelete=1);
+	void OnRebuildLayerTree(GObject * changebase);
 
 	// To Frame
 	void CallContextMenu(float x, float y);

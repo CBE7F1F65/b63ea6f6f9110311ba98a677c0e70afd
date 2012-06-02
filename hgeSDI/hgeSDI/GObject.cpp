@@ -2,6 +2,7 @@
 #include "GObject.h"
 
 #include "GObjectManager.h"
+#include "StringManager.h"
 
 GObject::GObject(void)
 {
@@ -51,6 +52,9 @@ int GObject::AddChild( GObject * child )
 		child->OnModify();
 
 		children.push_back(child);
+
+		GObjectManager::getInstance().OnTreeChanged(this);
+
 		return child->ID;
 	}
 	return -1;
@@ -95,6 +99,7 @@ int GObject::_RemoveChild( int _ID, bool bRelease/*=true*/ )
 		}
 	}
 	OnModify();
+	GObjectManager::getInstance().OnTreeChanged(this);
 	return children.size();
 }
 
@@ -120,6 +125,7 @@ int GObject::_RemoveChild( GObject * child, bool bRelease/*=true*/ )
 		}
 	}
 	OnModify();
+	GObjectManager::getInstance().OnTreeChanged(this);
 	return children.size();
 }
 int GObject::RemoveFromParent()
@@ -151,6 +157,7 @@ int GObject::RemoveAllChildren()
 		}
 	}
 	OnModify();
+	GObjectManager::getInstance().OnTreeChanged(this);
 	return 0;
 }
 
@@ -238,4 +245,9 @@ int GObject::Reparent( GObject * newparent )
 	assert(newparent != NULL);
 	_RemoveFromParent(false);
 	return newparent->AddChild(this);
+}
+
+const char * GObject::GetTypeName()
+{
+	return StringManager::getInstance().GetNNObjectName();
 }

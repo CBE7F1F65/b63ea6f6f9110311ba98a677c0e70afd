@@ -29,12 +29,10 @@ GUICoordinate::GUICoordinate()
 
 GUICoordinate::~GUICoordinate()
 {
-	/*
 	if (hge)
 	{
 		hge->Release();
 	}
-	*/
 }
 
 void GUICoordinate::RenderGridReDraw()

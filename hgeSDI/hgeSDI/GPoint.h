@@ -11,6 +11,8 @@ public:
 
 	void SetPosition(float x, float y);
 
+	virtual const char * GetTypeName();
+
 	float x;
 	float y;
 };
@@ -21,4 +23,6 @@ public:
 	GEndPoint();
 	GEndPoint(float x, float y);
 	~GEndPoint();
+
+	virtual const char * GetTypeName();
 };

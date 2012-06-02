@@ -162,6 +162,7 @@
     <ClInclude Include="UIHistoryDockablePane.h" />
     <ClInclude Include="UIHistoryListCtrl.h" />
     <ClInclude Include="UILayerDockablePane.h" />
+    <ClInclude Include="UILayerTree.h" />
     <ClInclude Include="UIPopupMenu.h" />
     <ClInclude Include="UISplitterWnd.h" />
   </ItemGroup>
@@ -203,6 +204,7 @@
     <ClCompile Include="UIHistoryDockablePane.cpp" />
     <ClCompile Include="UIHistoryListCtrl.cpp" />
     <ClCompile Include="UILayerDockablePane.cpp" />
+    <ClCompile Include="UILayerTree.cpp" />
     <ClCompile Include="UIPopupMenu.cpp" />
     <ClCompile Include="UISplitterWnd.cpp" />
     <ClCompile Include="UnDoReDoCommand.cpp" />
