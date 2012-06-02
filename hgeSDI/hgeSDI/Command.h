@@ -155,6 +155,8 @@ public:
 	void Init();
 	void Render();
 
+	void OnInit();
+
 	int CreateCommand(int comm);
 	void ProcessCommand();
 	void ProcessUnDoCommand(RevertableCommand * rc, int ucount);
@@ -186,6 +188,8 @@ public:
 	void LogDisplaySubCommand(int subcommand);
 	void LogDisplaySubCommandEnd();
 	void LogFinishSubCommand(int subcommand);
+	void LogUnDo();
+	void LogReDo();
 
 	bool DoUnDo(int undostep=1);
 	bool DoReDo(int redostep=1);
@@ -202,6 +206,7 @@ public:
 
 	bool IsUnDoReDoing(){return undoredoflag!=0;};
 	int undoredoflag;
+	int undostepmax;
 
 	int PushCommand();
 	int PullCommand();
@@ -277,6 +282,30 @@ public:
 		}
 		return StringManager::getInstance().GetCommandShortStrName(command);//scinfo[command].shortstr.c_str();
 	};
+	inline const char * GetCommandDescriptionStr(int command = -1)
+	{
+		if (command < 0)
+		{
+			command = ccomm.command;
+		}
+		if (command >= COMMANDINDEXMAX)
+		{
+			command = COMM_NULL;
+		}
+		return StringManager::getInstance().GetCommandDescriptionName(command);
+	}
+	inline const char * GetCommandCommentStr(int command = -1)
+	{
+		if (command < 0)
+		{
+			command = ccomm.command;
+		}
+		if (command >= COMMANDINDEXMAX)
+		{
+			command = COMM_NULL;
+		}
+		return StringManager::getInstance().GetCommandCommentName(command);
+	}
 	inline const char * GetWantPromptStr(int cwp=-1)
 	{
 		if (cwp < 0 || cwp >= COMMANDWANTPROMPTMAX)

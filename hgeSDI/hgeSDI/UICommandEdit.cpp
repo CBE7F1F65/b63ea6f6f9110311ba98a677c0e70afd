@@ -44,6 +44,20 @@ void UICommandEdit::ClearCommand()
 {
 	SetWindowText("");
 }
+void UICommandEdit::SetCommandText( LPCTSTR text, bool bActivate/*=true*/ )
+{
+	CString str;
+	GetWindowText(str);
+	str += " ";
+	str += text;
+	SetWindowText(str.GetBuffer());
+	SetSel(0, -1);
+	SetSel(-1);
+	if (bActivate)
+	{
+		SetFocus();
+	}
+}
 
 // UICommandEdit 消息处理程序
 

@@ -153,7 +153,7 @@ void LineCommand::OnProcessCommand()
 			float nx1, ny1;
 			pcommand->GetParamXY(CSP_LINE_N_XY, &nx1, &ny1);
 
-			pcommand->FinishCommand();
+			ProtectPendingFinishCommand();
 
 			CommitFrontCommand(
 				CCMake_C(COMM_LINE),

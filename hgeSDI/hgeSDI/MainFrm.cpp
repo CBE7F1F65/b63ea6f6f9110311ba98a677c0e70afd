@@ -86,14 +86,32 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndStatusBar.AddElement(new CMFCRibbonStatusBarPane(ID_STATUSBAR_PANE1, StringManager::getInstance().GetStatusPaneLeftName()/*strTitlePane1*/, TRUE), StringManager::getInstance().GetStatusPaneLeftName()/*strTitlePane1*/);
 	m_wndStatusBar.AddExtendedElement(new CMFCRibbonStatusBarPane(ID_STATUSBAR_PANE2, StringManager::getInstance().GetStatusPaneRightName()/*strTitlePane2*/, TRUE), /*strTitlePane2*/StringManager::getInstance().GetStatusPaneRightName());
 	
+	RECT rect;
+	GetClientRect(&rect);
 
-	m_wndUICommandPane.Create(StringManager::getInstance().GetCommandPanelName(), this, CRect (0, 0, 0, 0),
-		TRUE /* Has gripper */, ID_UI_COMMANDBOX,
+
+	int cwidth = rect.right-rect.left;
+	int cheight = rect.bottom-rect.top;
+
+	m_wndUICommandPane.Create(StringManager::getInstance().GetCommandPanelName(), this, CRect (0, 0, cwidth, cheight/4),
+		TRUE /* Has gripper */, ID_UI_COMMANDPANE,
 		WS_CHILD | WS_VISIBLE | CBRS_BOTTOM | CBRS_FLOAT_MULTI);
 
 	m_wndUICommandPane.EnableDocking(CBRS_ALIGN_ANY);
 	DockPane(&m_wndUICommandPane);
-	
+
+	m_wndUIHistoryPane.Create(StringManager::getInstance().GetHistoryPanelName(), this, CRect (0, 0, cwidth/6, cheight/2),
+		TRUE /* Has gripper */, ID_UI_HISTORYPANE,
+		WS_CHILD | WS_VISIBLE | CBRS_RIGHT | CBRS_FLOAT_MULTI);
+	m_wndUIHistoryPane.EnableDocking(CBRS_ALIGN_ANY);
+	DockPane(&m_wndUIHistoryPane);
+
+	m_wndUILayerPane.Create(StringManager::getInstance().GetLayerPanelName(), this, CRect (0, cheight/2, cwidth/6, cheight/2),
+		TRUE /* Has gripper */, ID_UI_LAYERPANE,
+		WS_CHILD | WS_VISIBLE | CBRS_BOTTOM | CBRS_FLOAT_MULTI);
+	m_wndUILayerPane.EnableDocking(CBRS_ALIGN_ANY);
+	m_wndUILayerPane.DockToWindow(&m_wndUIHistoryPane, CBRS_ALIGN_BOTTOM);
+
 	m_wndUIFloatingEdit.Create(WS_CHILD|WS_VISIBLE, CRect(0, 0, 0, 0), this, ID_UI_FLOATINGCOMMAND);
 /*	
 	m_wndUIFloatingCommand.Create(NULL,
@@ -356,6 +374,12 @@ bool CMainFrame::AppendCommandLogText( LPCTSTR text, bool bNewLine/*=true*/ )
 	return true;
 }
 
+bool CMainFrame::SetCommandText( LPCTSTR text, bool bActivate/*=true*/ )
+{
+	m_wndUICommandPane.SetCommandText(text, bActivate);
+	return true;
+}
+
 void CMainFrame::OnUpdateEditcommand(CCmdUI *pCmdUI)
 {
 	// TODO: 在此添加命令更新用户界面处理程序代码
@@ -396,4 +420,24 @@ void CMainFrame::CallShowContextMenu( int x, int y )
 void CMainFrame::CallEnableFloatCommand( int vk/*=0*/ )
 {
 	m_wndUIFloatingEdit.Show(vk);
+}
+
+bool CMainFrame::AddHistory( const char * desc, const char * commandstr )
+{
+	return m_wndUIHistoryPane.AddHistory(desc, commandstr);
+}
+
+bool CMainFrame::ChangeCurrentHistory( int step )
+{
+	return m_wndUIHistoryPane.ChangeCurrentHistory(step);
+}
+
+bool CMainFrame::ClearLaterHistory( int ndelete )
+{
+	return m_wndUIHistoryPane.ClearLaterHistory(ndelete);
+}
+
+bool CMainFrame::ClearPreviousHistory( int ndelete )
+{
+	return m_wndUIHistoryPane.ClearPreviousHistory(ndelete);
 }

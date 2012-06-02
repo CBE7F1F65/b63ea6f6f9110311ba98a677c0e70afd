@@ -76,6 +76,11 @@ public:
 #define ININ_PROMPT		"Prompt"
 #define ININ_COMMENT	"Comment"
 
+
+#define INIS_PERFORMANCE	"Performance"
+#define ININ_UNDOMAX	"UnDoMax"
+#define INID_UNDOMAX	100
+
 class StringManager
 {
 public:
@@ -101,6 +106,8 @@ public:
 
 	const char * GetCommandPanelTabName(int ntab);
 	const char * GetCommandPanelName();
+	const char * GetHistoryPanelName();
+	const char * GetLayerPanelName();
 	const char * GetStatusPaneLeftName();
 	const char * GetStatusPaneRightName();
 	const char * GetAppIDName();
@@ -187,6 +194,8 @@ public:
 	_CLFDEF(	SetParameter,	"Set Parameter"	);
 	_CLFDEF(	NextPrompt,	"Please Input"	);
 	_CLFDEF(	FinishSubCommand,	"Done"	);
+	_CLFDEF(	UnDo,	"Processing UnDo"	);
+	_CLFDEF(	ReDo,	"Processing ReDo"	);
 	
 #undef _CLFDEF
 #undef _FDEF

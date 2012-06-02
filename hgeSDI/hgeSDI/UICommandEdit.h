@@ -13,6 +13,7 @@ public:
 
 	void CommitCommand();
 	void ClearCommand();
+	void SetCommandText(LPCTSTR text, bool bActivate=true);
 
 protected:
 	DECLARE_MESSAGE_MAP()

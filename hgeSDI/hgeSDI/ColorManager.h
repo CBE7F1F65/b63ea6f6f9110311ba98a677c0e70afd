@@ -2,6 +2,16 @@
 
 #include "MainDependency.h"
 
+enum{
+	COLORMT_LIST,
+};
+
+enum{
+	COLORMS_ACTIVE,
+	COLORMS_NONACTIVE,
+	COLORMS_DISABLED,
+};
+
 class ColorManager
 {
 public:
@@ -30,6 +40,10 @@ public:
 	DWORD GetGridYAxisColor();
 	DWORD GetCoordColor();
 	DWORD GetCursorColor();
+
+	DWORD GetTextColor(int type, int state);
+	DWORD GetTextBkColor(int type, int state);
+	DWORD ARGBToABGR(DWORD col);
 
 	DWORD GetLayerLineColor(int layer=-1);
 };

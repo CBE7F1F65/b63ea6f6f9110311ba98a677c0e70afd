@@ -18,6 +18,10 @@
 #include "UIPopupMenu.h"
 #include "UIFloatingEditBox.h"
 #include "UISplitterWnd.h"
+#include "UIHistoryDockablePane.h"
+#include "UILayerDockablePane.h"
+
+#include "Command.h"
 
 class CMainFrame : public CFrameWndEx
 {
@@ -33,6 +37,12 @@ public:
 
 	bool SetStatusBarText(int id, LPCTSTR text);
 	bool AppendCommandLogText(LPCTSTR text, bool bNewLine=true);
+	bool SetCommandText(LPCTSTR text, bool bActivate=true);
+
+	bool AddHistory(const char * desc, const char * commandstr);
+	bool ChangeCurrentHistory(int step);
+	bool ClearLaterHistory(int ndelete);
+	bool ClearPreviousHistory(int ndelete);
 
 // 操作
 public:
@@ -63,6 +73,10 @@ public:
 	UICommandDockablePane		m_wndUICommandPane;
 	UIPopupMenu			m_wndUIPopupMenu;
 	UIFloatingEditBox			m_wndUIFloatingEdit;
+
+	UIHistoryDockablePane		m_wndUIHistoryPane;
+
+	UILayerDockablePane			m_wndUILayerPane;
 
 // 生成的消息映射函数
 protected:

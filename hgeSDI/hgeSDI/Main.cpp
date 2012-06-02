@@ -308,6 +308,7 @@ bool MainInterface::OnInit(void * parent, int w, int h)
 	//
 	StringManager::getInstance().Init();
 	Command::getInstance().Init();
+	Command::getInstance().OnInit();
 	GUICoordinate::getInstance().SetGrid(GUICG_METRIC, 0, 0);
 	GObjectManager::getInstance().Init();
 	return manageloop;
@@ -360,7 +361,7 @@ void MainInterface::CallAppendCommandLogText( const char * text, bool bNewLine/*
 	parentview->GetMainFrame()->AppendCommandLogText(text, bNewLine);
 }
 
-int MainInterface::OnCommand( DWORD comm )
+int MainInterface::OnCommand( int comm )
 {
 	return Command::getInstance().CreateCommand(comm);
 }
@@ -633,4 +634,41 @@ void MainInterface::OnDoScroll( bool horz, int pos, int range )
 void MainInterface::MBeep( int id/*=-1*/ )
 {
 	MessageBeep(id);
+}
+
+void MainInterface::OnPushRevertable( const char * desc, const char * commandstr )
+{
+	parentview->GetMainFrame()->AddHistory(desc, commandstr);
+}
+
+void MainInterface::OnUnDo( int step/*=1*/ )
+{
+	parentview->GetMainFrame()->ChangeCurrentHistory(-step);
+}
+
+void MainInterface::OnReDo( int step/*=1*/ )
+{
+	parentview->GetMainFrame()->ChangeCurrentHistory(step);
+}
+
+void MainInterface::OnClearReDo(int ndelete)
+{
+	parentview->GetMainFrame()->ClearLaterHistory(ndelete);
+}
+
+void MainInterface::OnClearPreviousHistory( int ndelete/*=1*/ )
+{
+	parentview->GetMainFrame()->ClearPreviousHistory(ndelete);
+}
+
+void MainInterface::CallUnDoReDo( int step )
+{
+	if (step < 0)
+	{
+		Command::getInstance().DoUnDo(-step);
+	}
+	else if (step > 0)
+	{
+		Command::getInstance().DoReDo(step);
+	}
 }

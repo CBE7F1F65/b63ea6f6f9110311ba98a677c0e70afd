@@ -7,6 +7,7 @@
 
 // MFC
 #include "hgeSDIView.h"
+#include "Command.h"
 
 class MainInterface
 {
@@ -43,13 +44,22 @@ public:
 	enum{
 		COMM_LINE,
 	};
-	int OnCommand(DWORD comm);
+	int OnCommand(int comm);
 	int OnCommitCommand(const char * str);
+
+	void OnPushRevertable(const char * desc, const char * commandstr);
+	void OnUnDo(int step=1);
+	void OnReDo(int step=1);
+	void OnClearReDo(int ndelete);
+	void OnClearPreviousHistory(int ndelete=1);
 
 	// To Frame
 	void CallContextMenu(float x, float y);
 	void CallUpdateStatusBarText(int id, const char * text);
 	void CallAppendCommandLogText(const char * text, bool bNewLine=true);
+
+	// To Command
+	void CallUnDoReDo(int step);
 
 	// Do
 

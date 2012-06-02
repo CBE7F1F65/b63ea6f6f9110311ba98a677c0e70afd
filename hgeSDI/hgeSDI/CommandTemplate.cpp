@@ -2,6 +2,8 @@
 #include "CommandTemplate.h"
 
 #include "GUICursor.h"
+#include <sstream>
+#include <iomanip>
 
 
 CommandTemplate::CommandTemplate(void)
@@ -127,6 +129,9 @@ CommittedCommand * CommandTemplate::CCMake_F( float fval )
 	cc->type = COMMITTEDCOMMANDTYPE_FLOAT;
 	cc->fval = fval;
 	cc->ival = fval;
+	stringstream ss;
+	ss << fixed << fval;
+	cc->sval = ss.str();
 	madecctodelete.push_back(cc);
 	return cc;
 }
@@ -137,6 +142,9 @@ CommittedCommand * CommandTemplate::CCMake_I( int ival )
 	cc->type = COMMITTEDCOMMANDTYPE_INT;
 	cc->fval = ival;
 	cc->ival = ival;
+	stringstream ss;
+	ss << ival;
+	cc->sval = ss.str();
 	madecctodelete.push_back(cc);
 	return cc;
 }
@@ -229,4 +237,15 @@ bool CommandTemplate::DoUnDo( int undostep/*=1*/ )
 bool CommandTemplate::DoReDo( int redostep/*=1*/ )
 {
 	return pcommand->DoReDo(redostep);
+}
+
+void CommandTemplate::ProtectPendingFinishCommand()
+{
+	CommittedCommand ccp = pcommand->pendingparam;
+	pcommand->FinishCommand();
+
+	if (ccp.type)
+	{
+		CommitFrontCommand(&ccp, NULL);
+	}
 }

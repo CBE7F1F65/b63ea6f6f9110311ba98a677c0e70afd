@@ -139,6 +139,7 @@
     <ClInclude Include="GUICoordinate.h" />
     <ClInclude Include="GUICursor.h" />
     <ClInclude Include="BezierCommand.h" />
+    <ClInclude Include="InitialCommand.h" />
     <ClInclude Include="LineCommand.h" />
     <ClInclude Include="Const.h" />
     <ClInclude Include="hgeSDI.h" />
@@ -158,6 +159,9 @@
     <ClInclude Include="UICommandEdit.h" />
     <ClInclude Include="UICommandLogEdit.h" />
     <ClInclude Include="UIFloatingEditBox.h" />
+    <ClInclude Include="UIHistoryDockablePane.h" />
+    <ClInclude Include="UIHistoryListCtrl.h" />
+    <ClInclude Include="UILayerDockablePane.h" />
     <ClInclude Include="UIPopupMenu.h" />
     <ClInclude Include="UISplitterWnd.h" />
   </ItemGroup>
@@ -176,6 +180,7 @@
     <ClCompile Include="GUICoordinate.cpp" />
     <ClCompile Include="GUICursor.cpp" />
     <ClCompile Include="BezierCommand.cpp" />
+    <ClCompile Include="InitialCommand.cpp" />
     <ClCompile Include="LineCommand.cpp" />
     <ClCompile Include="hgeSDI.cpp" />
     <ClCompile Include="hgeSDIDoc.cpp" />
@@ -195,6 +200,9 @@
     <ClCompile Include="UICommandEdit.cpp" />
     <ClCompile Include="UICommandLogEdit.cpp" />
     <ClCompile Include="UIFloatingEditBox.cpp" />
+    <ClCompile Include="UIHistoryDockablePane.cpp" />
+    <ClCompile Include="UIHistoryListCtrl.cpp" />
+    <ClCompile Include="UILayerDockablePane.cpp" />
     <ClCompile Include="UIPopupMenu.cpp" />
     <ClCompile Include="UISplitterWnd.cpp" />
     <ClCompile Include="UnDoReDoCommand.cpp" />

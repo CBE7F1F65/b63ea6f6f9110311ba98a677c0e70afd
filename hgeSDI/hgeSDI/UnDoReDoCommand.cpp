@@ -13,9 +13,10 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 		MainInterface::getInstance().MBeep();
 		return false;
 	}
+	LogUnDo();
 	if (undostep > 1)
 	{
-		return DoUnDo(undostep-1);
+		DoUnDo(undostep-1);
 	}
 
 	RevertableCommand rc = undolist.back();
@@ -89,6 +90,7 @@ bool Command::DoReDo( int redostep/*=1*/ )
 		MainInterface::getInstance().MBeep();
 		return false;
 	}
+	LogReDo();
 	if (redostep > 1)
 	{
 		DoReDo(redostep-1);
@@ -162,6 +164,7 @@ bool Command::DoReDo( int redostep/*=1*/ )
 bool Command::DoUnDoCommandSingle( RevertableCommand * rc, int ucount )
 {
 	ProcessUnDoCommand(rc, ucount);
+	MainInterface::getInstance().OnUnDo();
 	return true;
 }
 
@@ -181,7 +184,10 @@ bool Command::DoReDoCommandSingle( RevertableCommand * rc )
 	CommittedCommand tp = pendingparam;
 	pendingparam.ClearSet();
 	ProcessCommand();
+	// To Finish last step
+	ProcessCommand();
 	pendingparam = tp;
+	MainInterface::getInstance().OnReDo();
 	return true;
 }
 

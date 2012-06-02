@@ -4,6 +4,7 @@
 #include "GUICoordinate.h"
 #include "LineCommand.h"
 #include "BezierCommand.h"
+#include "InitialCommand.h"
 
 
 int Command::ProcessPending( int index, int useflag, int fillprompt, int step, int wantprompt/*=0*/, bool pushback/*=true*/ )
@@ -131,6 +132,9 @@ void Command::ProcessCommand()
 
 		switch (ccomm.command)
 		{
+		case COMM_INITIAL:
+			InitialCommand::getInstance().OnProcessCommand();
+			break;
 		case COMM_PAN:
 			GUICoordinate::getInstance().OnProcessPanCommand();
 			break;

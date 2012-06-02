@@ -35,6 +35,16 @@ const char * StringManager::GetCommandPanelName()
 	return "Command";
 }
 
+const char * StringManager::GetHistoryPanelName()
+{
+	return "History";
+}
+
+const char * StringManager::GetLayerPanelName()
+{
+	return "Layer";
+}
+
 const char * StringManager::GetStatusPaneLeftName()
 {
 	return "Status";
@@ -68,7 +78,7 @@ const char * StringManager::GetIniFileName()
 void StringManager::FillSCInfo()
 {
 #define _LSET(COMM, LSTR, DES, CMT)	\
-	scinfo[COMM].str = hge->Ini_GetString(INIS_COMMAND_PREFIX LSTR, ININ_STR, LSTR);	\
+	scinfo[COMM].str = LSTR;	\
 	scinfo[COMM].description = hge->Ini_GetString(INIS_COMMAND_PREFIX LSTR, ININ_DES, DES);	\
 	scinfo[COMM].comment = hge->Ini_GetString(INIS_COMMAND_PREFIX LSTR, ININ_COMMENT, CMT)	
 #define _SSET(COMM, SSTR)	\
@@ -82,6 +92,8 @@ void StringManager::FillSCInfo()
 	_LSET(	COMM_PAN,	"PAN",	"Pan",	""	);
 	_LSET(	COMM_ZOOMIN,	"ZOOMIN",	"Zone Zoom",	""	);
 	_LSET(	COMM_DOZOOM,	"ZOOM",	"Instant Zoom",	""	);
+
+	_LSET(	COMM_INITIAL,	"INITIAL",	"Initialization",	"");
 
 	_BSET(	COMM_LINE,	"LINE",	"L",	"Draw Line",	""	);
 	_BSET(	COMM_BEZIER,	"BEZIER",	"B",	"Draw Bezier Curve",	""	);
@@ -121,7 +133,7 @@ void StringManager::FillSubSCInfo()
 {
 	string tstr;
 #define _SUBSET(INDEX, PROMPTSTR, STR, DES)	\
-	subcinfo[INDEX].str = hge->Ini_GetString(INIS_SSC_PREFIX PROMPTSTR, ININ_STR, STR);	\
+	subcinfo[INDEX].str = STR;	\
 	subcinfo[INDEX].description = hge->Ini_GetString(INIS_SSC_PREFIX PROMPTSTR, ININ_DES, DES);	\
 	tstr = hge->Ini_GetString(INIS_SSC_PREFIX PROMPTSTR, ININ_PROMPT, PROMPTSTR);	\
 	tstr += " (";	\

@@ -43,6 +43,7 @@ public:
 //	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 
 	void AppendCommandLogText(LPCTSTR text, bool bNewLine=true);
+	void SetCommandText(LPCTSTR text, bool bActivate=true);
 	void ClearLog();
 
 	afx_msg void OnMouseHover(UINT nFlags, CPoint point);

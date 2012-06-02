@@ -22,6 +22,8 @@ public:
 	virtual void PushRevertable(CommittedCommand * first, ...);
 	virtual void CommitFrontCommand(CommittedCommand * first, ...);
 
+	virtual void ProtectPendingFinishCommand();
+
 	virtual void RenderToTarget();
 	virtual void ReleaseTarget();
 
