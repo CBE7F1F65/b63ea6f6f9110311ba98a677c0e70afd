@@ -6,10 +6,8 @@
 ** hgeColor*** helper classes implementation
 */
 
-
 #include "../../include/hgecolor.h"
 #include <math.h>
-
 
 void hgeColorHSV::SetHWColor(DWORD col)
 {
@@ -43,7 +41,7 @@ void hgeColorHSV::SetHWColor(DWORD col)
 		if      (r == maxv) {h = del_B - del_G;}
 		else if (g == maxv) {h = (1.0f / 3.0f) + del_R - del_B;}
 		else if (b == maxv) {h = (2.0f / 3.0f) + del_G - del_R;}
-		
+
 		if (h < 0) h += 1;
 		if (h > 1) h -= 1;
 	}
@@ -79,4 +77,3 @@ DWORD hgeColorHSV::GetHWColor() const
 
 	return (DWORD(a*255.0f)<<24) + (DWORD(r*255.0f)<<16) + (DWORD(g*255.0f)<<8) + DWORD(b*255.0f);
 }
-

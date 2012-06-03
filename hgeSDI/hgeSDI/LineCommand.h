@@ -22,7 +22,7 @@ private:
 	// Don't implement
 
 public:
-	
+
 	virtual void OnProcessCommand();
 	virtual void DoneCommand();
 	virtual void RenderToTarget();

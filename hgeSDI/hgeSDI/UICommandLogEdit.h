@@ -1,6 +1,5 @@
 #pragma once
 
-
 // UICommandLogEdit
 
 class UICommandLogEdit : public CEdit
@@ -20,5 +19,3 @@ protected:
 public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };
-
-

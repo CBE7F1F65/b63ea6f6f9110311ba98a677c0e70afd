@@ -12,7 +12,6 @@ BezierCommand::BezierCommand(void)
 {
 }
 
-
 BezierCommand::~BezierCommand(void)
 {
 }
@@ -34,7 +33,6 @@ void BezierCommand::OnProcessCommand()
 
 void BezierCommand::DoneCommand()
 {
-
 }
 
 void BezierCommand::RenderToTarget()

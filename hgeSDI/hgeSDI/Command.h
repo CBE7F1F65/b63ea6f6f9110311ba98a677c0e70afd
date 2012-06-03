@@ -69,7 +69,6 @@ public:
 	list<int>enabledsubcommand;
 };
 
-
 #define	COMMITTEDCOMMANDTYPE_ERROR			0x00
 
 #define COMMITTEDCOMMANDTYPE_SUBCOMMAND		0x01
@@ -83,7 +82,6 @@ public:
 
 #define COMMITTEDCOMMANDTYPE_STRING			0x40
 #define F_COMMITTEDCOMMANDTYPE_STRING			0xff
-
 
 class CommittedCommand
 {
@@ -151,7 +149,7 @@ private:
 	// Don't implement
 
 public:
-	
+
 	void Init();
 	void Render();
 
@@ -250,7 +248,7 @@ public:
 	};
 	void TerminalInternalProcess();
 
-	inline int GetStep() 
+	inline int GetStep()
 	{
 		return ccomm.step;
 	};

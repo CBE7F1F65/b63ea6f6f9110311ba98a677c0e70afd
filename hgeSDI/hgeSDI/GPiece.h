@@ -9,4 +9,3 @@ public:
 
 	virtual const char * GetTypeName();
 };
-

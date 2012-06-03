@@ -5,20 +5,17 @@
 #include "hgeSDI.h"
 #include "UIHistoryDockablePane.h"
 
-
 // UIHistoryDockablePane
 
 IMPLEMENT_DYNAMIC(UIHistoryDockablePane, CDockablePane)
 
 UIHistoryDockablePane::UIHistoryDockablePane()
 {
-
 }
 
 UIHistoryDockablePane::~UIHistoryDockablePane()
 {
 }
-
 
 BEGIN_MESSAGE_MAP(UIHistoryDockablePane, CDockablePane)
 	ON_WM_CREATE()
@@ -26,12 +23,7 @@ BEGIN_MESSAGE_MAP(UIHistoryDockablePane, CDockablePane)
 	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
-
-
 // UIHistoryDockablePane 消息处理程序
-
-
-
 
 int UIHistoryDockablePane::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
@@ -40,12 +32,11 @@ int UIHistoryDockablePane::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// TODO:  在此添加您专用的创建代码
 
-
 	CRect rectDummy;
 	rectDummy.SetRectEmpty ();
 
 	if (!m_wndListCtrl.Create(
-		WS_CHILD|WS_VISIBLE|WS_BORDER|LVS_ALIGNLEFT|LVS_SINGLESEL|LVS_REPORT|LVS_SHOWSELALWAYS|LVS_NOCOLUMNHEADER, 
+		WS_CHILD|WS_VISIBLE|WS_BORDER|WS_HSCROLL|WS_VSCROLL|LVS_ALIGNLEFT|LVS_SINGLESEL|LVS_REPORT|LVS_SHOWSELALWAYS|LVS_NOCOLUMNHEADER|LVS_ICON,
 		rectDummy, this, IDHB_LISTCTRL))
 	{
 		return -1;
@@ -54,14 +45,12 @@ int UIHistoryDockablePane::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	return 0;
 }
 
-
 void UIHistoryDockablePane::OnClose()
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 
 //	CDockablePane::OnClose();
 }
-
 
 void UIHistoryDockablePane::OnSize(UINT nType, int cx, int cy)
 {
@@ -72,9 +61,9 @@ void UIHistoryDockablePane::OnSize(UINT nType, int cx, int cy)
 	// TODO: 在此处添加消息处理程序代码
 }
 
-bool UIHistoryDockablePane::AddHistory( const char * desc, const char * commandstr )
+bool UIHistoryDockablePane::AddHistory( const char * desc, const char * commandstr, int command )
 {
-	return m_wndListCtrl.AddHistory(desc, commandstr);
+	return m_wndListCtrl.AddHistory(desc, commandstr, command);
 }
 
 bool UIHistoryDockablePane::ChangeCurrentHistory( int step )

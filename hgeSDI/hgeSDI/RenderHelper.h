@@ -30,7 +30,7 @@ private:
 	// Don't implement
 
 public:
-	
+
 	GUICoordinate * pguic;
 
 	void Release();
@@ -93,4 +93,3 @@ public:
 
 	HGE * hge;
 };
-

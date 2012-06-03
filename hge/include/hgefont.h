@@ -6,14 +6,11 @@
 ** hgeFont helper class header
 */
 
-
 #ifndef HGEFONT_H
 #define HGEFONT_H
 
-
 #include "hge.h"
 #include "hgesprite.h"
-
 
 #define HGETEXT_LEFT		0
 #define HGETEXT_RIGHT		1
@@ -139,6 +136,4 @@ private:
 	bool		bWide;
 };
 
-
 #endif
-

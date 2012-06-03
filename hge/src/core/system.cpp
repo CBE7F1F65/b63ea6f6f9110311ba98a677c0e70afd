@@ -14,7 +14,7 @@
 #include <pspdisplay.h>
 #include <pspsdk.h>
 #include <pspthreadman.h>
-#include <pspaudiocodec.h> 
+#include <pspaudiocodec.h>
 #include <pspmpeg.h>
 #include <unistd.h>
 #endif // __PSP
@@ -32,10 +32,8 @@ const char *WINDOW_CLASS_NAME = "HGE__WNDCLASS";
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 #endif
 
-
 int			nRef=0;
 HGE_Impl*	pHGE=0;
-
 
 #ifdef __WIN32
 BOOL APIENTRY DllMain(HANDLE, DWORD, LPVOID)
@@ -43,7 +41,6 @@ BOOL APIENTRY DllMain(HANDLE, DWORD, LPVOID)
 	return TRUE;
 }
 #endif
-
 
 HGE* CALL hgeCreate(int ver)
 {
@@ -53,7 +50,6 @@ HGE* CALL hgeCreate(int ver)
 		return 0;
 }
 
-
 HGE_Impl* HGE_Impl::_Interface_Get()
 {
 	if(!pHGE) pHGE=new HGE_Impl();
@@ -62,7 +58,6 @@ HGE_Impl* HGE_Impl::_Interface_Get()
 
 	return pHGE;
 }
-
 
 void CALL HGE_Impl::Release()
 {
@@ -110,13 +105,12 @@ int CallbackThread(SceSize args, void *argp) {
 }
 #endif // __PSP
 
-
 bool CALL HGE_Impl::System_Initiate()
 {
 	System_Log("HGE Started..\n");
-	
+
 	System_Log("HGE version: %X.%X", HGE_VERSION>>8, HGE_VERSION & 0xFF);
-	
+
 #ifdef __WIN32
 	OSVERSIONINFO	os_ver;
 	SYSTEMTIME		tm;
@@ -136,10 +130,9 @@ bool CALL HGE_Impl::System_Initiate()
 
 	GlobalMemoryStatus(&mem_st);
 	System_Log("Memory: %ldK total, %ldK free\n",mem_st.dwTotalPhys/1024L,mem_st.dwAvailPhys/1024L);
-	
 
 	// Register window class
-	
+
 	winclass.style = CS_DBLCLKS | CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
 	winclass.lpfnWndProc	= WindowProc;
 	winclass.cbClsExtra		= 0;
@@ -147,11 +140,11 @@ bool CALL HGE_Impl::System_Initiate()
 	winclass.hInstance		= hInstance;
 	winclass.hCursor		= LoadCursor(NULL, IDC_ARROW);
 	winclass.hbrBackground	= (HBRUSH)GetStockObject(BLACK_BRUSH);
-	winclass.lpszMenuName	= NULL; 
+	winclass.lpszMenuName	= NULL;
 	winclass.lpszClassName	= WINDOW_CLASS_NAME;
 	if(szIcon) winclass.hIcon = LoadIcon(hInstance, szIcon);
 	else winclass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-	
+
 	if (!RegisterClass(&winclass)) {
 		_PostError("Can't register window class");
 		return false;
@@ -161,7 +154,6 @@ bool CALL HGE_Impl::System_Initiate()
 
 	width=nScreenWidth + GetSystemMetrics(SM_CXFIXEDFRAME)*2;
 	height=nScreenHeight + GetSystemMetrics(SM_CYFIXEDFRAME)*2 + GetSystemMetrics(SM_CYCAPTION);
-
 
 	/************************************************************************/
 	/* These parameters are changed by h5nc (h5nc@yahoo.com.cn)             */
@@ -184,7 +176,7 @@ bool CALL HGE_Impl::System_Initiate()
 		rectW.top=0;
 		rectW.right=nScreenWidth;
 		rectW.bottom=nScreenHeight;
-		styleW=WS_CHILD|WS_VISIBLE; 
+		styleW=WS_CHILD|WS_VISIBLE;
 		bWindowed=true;
 	}
 
@@ -201,7 +193,6 @@ bool CALL HGE_Impl::System_Initiate()
 		_PostError("Can't create window");
 		return false;
 	}
-
 
 	ShowWindow(hwnd, SW_SHOW);
 
@@ -235,7 +226,7 @@ bool CALL HGE_Impl::System_Initiate()
 	{
 		haveJoy[i] = true;
 	}
-	
+
 	ZeroMemory(joyState, sizeof(DIJOYSTATE)*DIJOY_MAXDEVICE);
 	ZeroMemory(lastJoyState, sizeof(DIJOYSTATE)*DIJOY_MAXDEVICE);
 #endif
@@ -267,7 +258,7 @@ void CALL HGE_Impl::System_Shutdown()
 	if (bManageLoop) {
 		_System_StartPost();
 	}
-	
+
 	System_Log("\nFinishing..");
 #ifdef __WIN32
 	timeEndPeriod(1);
@@ -319,7 +310,7 @@ bool CALL HGE_Impl::System_Start()
 		{
 			return false;
 		}
-		for (; ; ) 
+		for (; ; )
 		{
 			if (!_System_StartLoop())
 			{
@@ -381,9 +372,9 @@ void CALL HGE_Impl::System_SetStateBool(hgeBoolState state, bool value)
 								bWindowed = value;
 #endif
 								break;
-		case HGE_ZBUFFER:	
+		case HGE_ZBUFFER:
 #ifdef __WIN32
-								if(!pD3DDevice)	
+								if(!pD3DDevice)
 #endif
 									bZBuffer=value;
 								break;
@@ -422,8 +413,8 @@ void CALL HGE_Impl::System_SetStateBool(hgeBoolState state, bool value)
 		case HGE_HIDEMOUSE:		bHideMouse=value; break;
 
 		case HGE_DONTSUSPEND:	bDontSuspend=value; break;
-			
-		case HGE_2DMODE:		
+
+		case HGE_2DMODE:
 								if (VertArray && b2DMode != value)
 								{
 									_render_batch();
@@ -467,21 +458,21 @@ void CALL HGE_Impl::System_SetStateInt(hgeIntState state, int value)
 {
 	switch(state)
 	{
-		case HGE_SCREENWIDTH:	
+		case HGE_SCREENWIDTH:
 #ifdef __WIN32
-								if(!pD3DDevice) 
+								if(!pD3DDevice)
 #endif
 									nScreenWidth=value; break;
 
-		case HGE_SCREENHEIGHT:	
+		case HGE_SCREENHEIGHT:
 #ifdef __WIN32
-								if(!pD3DDevice) 
+								if(!pD3DDevice)
 #endif
 									nScreenHeight=value; break;
 
-		case HGE_SCREENBPP:		
+		case HGE_SCREENBPP:
 #ifdef __WIN32
-								if(!pD3DDevice) 
+								if(!pD3DDevice)
 #endif
 									nScreenBPP=value; break;
 
@@ -499,7 +490,6 @@ void CALL HGE_Impl::System_SetStateInt(hgeIntState state, int value)
 								_SetStreamVolume(nStreamVolume);
 								break;
 
-
 		case HGE_FPS:			if(VertArray) break;
 
 #ifdef __WIN32
@@ -507,7 +497,6 @@ void CALL HGE_Impl::System_SetStateInt(hgeIntState state, int value)
 								{
 									if((nHGEFPS>=0 && value <0) || (nHGEFPS<0 && value>=0))
 									{
-
 										/************************************************************************/
 										/* These blocks are added by h5nc (h5nc@yahoo.com.cn)                   */
 										/************************************************************************/
@@ -548,7 +537,7 @@ void CALL HGE_Impl::System_SetStateInt(hgeIntState state, int value)
 void CALL HGE_Impl::System_SetStateString(hgeStringState state, const char *value)
 {
 	FILE *hf;
-	
+
 	switch(state)
 	{
 		case HGE_ICON:			szIcon=value;
@@ -680,7 +669,7 @@ void CALL HGE_Impl::System_Log(const char *szFormat, ...)
 {
 	FILE *hf = NULL;
 	va_list ap;
-	
+
 	if(!szLogFile[0]) return;
 	hf = fopen(szLogFile, "a");
 	if(!hf) return;
@@ -692,14 +681,13 @@ void CALL HGE_Impl::System_Log(const char *szFormat, ...)
 	vsprintf(buffer, szFormat, ap);
 #endif
 	va_end(ap);
-	
+
 	fprintf(hf, "\n");
 	fclose(hf);
 #if defined __IPHONE
 	printf(buffer);
 	printf("\n");
 #endif
-
 }
 
 bool CALL HGE_Impl::System_Launch(const char *url)
@@ -755,7 +743,6 @@ int CALL HGE_Impl::System_MessageBox(const char * text, const char * title, DWOR
 }
 
 //////// Implementation ////////
-
 
 HGE_Impl::HGE_Impl()
 {
@@ -817,14 +804,14 @@ HGE_Impl::HGE_Impl()
 	bManageLoop = true;
 	bUseDInput = true;
 	bNoWMPaint = false;
-	
+
 	procFrameFunc=NULL;
 	procRenderFunc=NULL;
 	procFocusLostFunc=NULL;
 	procFocusGainFunc=NULL;
 	procGfxRestoreFunc=NULL;
 	procExitFunc=NULL;
-	
+
 	procLoadTextureFunc=NULL;
 	textoload = NULL;
 
@@ -857,7 +844,7 @@ HGE_Impl::HGE_Impl()
 #else
 	strcpy(szAppPath, "");
 #endif
-	
+
 	int i;
 	for(i=strlen(szAppPath)-1; i>0; i--) if(szAppPath[i]==M_FOLDER_SLASH) break;
 	szAppPath[i+1]=0;
@@ -871,7 +858,6 @@ HGE_Impl::HGE_Impl()
 	/************************************************************************/
 	/* add by Yuki */
 	fontList = 0;
-	
 }
 
 void HGE_Impl::_PostError(char *error)
@@ -906,14 +892,14 @@ bool HGE_Impl::_System_StartPre()
 		_PostError("System_Start: System_Initiate wasn't called");
 		return false;
 	}
-	
+
 	if(!procFrameFunc) {
 		_PostError("System_Start: No frame function defined");
 		return false;
 	}
-	
+
 	bActive=true;
-	
+
 	return true;
 }
 
@@ -921,38 +907,37 @@ bool HGE_Impl::_System_StartLoop()
 {
 	// Process window messages if not in "child mode"
 	// (if in "child mode" the parent application will do this for us)
-	
+
 #ifdef __WIN32
 	MSG		msg;
 	if(!hwndParent)
 	{
 		if (PeekMessage(&msg,NULL,0,0,PM_REMOVE))
-		{ 
+		{
 			if (msg.message == WM_QUIT)	return false;
 			// TranslateMessage(&msg);
 			DispatchMessage(&msg);
 			return true;
 		}
 	}
-	
+
 	if(IsIconic(hwnd))
 		return true;
 #endif
-	
+
 	// Check if mouse is over HGE window for Input_IsMouseOver
-	
+
 	_UpdateMouse();
 	_TouchUpdate();
-	
+
 	// If HGE window is focused or we have the "don't suspend" state - process the main loop
-	
-	
+
 	/************************************************************************/
 	/* These lines are changed by h5nc (h5nc@yahoo.com.cn)                  */
 	/* The core algorithm is based on LOVEHINA-AVC's code                   */
 	/* h5nc copied his codes with his permission                            */
 	/************************************************************************/
-	
+
 	if(bActive || bDontSuspend) {
 		int DI_retv = 0;
 		if(nFrameSkip < 0)
@@ -989,7 +974,7 @@ bool HGE_Impl::_System_StartLoop()
 		{
 			if(procRenderFunc) procRenderFunc();
 		}
-		
+
 		// Clean up input events that were generated by
 		// WindowProc and weren't handled by user's code
 		/*
@@ -998,12 +983,12 @@ bool HGE_Impl::_System_StartLoop()
 			return true;
 		}
 		*/
-		
+
 		int bPriorityRaised = 0;
 		LONGLONG TimeInterval, TimePrecision, NowTime;
 		static LONGLONG lastTime = Timer_GetCurrentSystemTime();
 		TimePrecision = Timer_GetPerformanceFrequency();
-		
+
 		if (nHGEFPS > 0)
 		{
 			TimeInterval = TimePrecision / nHGEFPS;
@@ -1012,7 +997,7 @@ bool HGE_Impl::_System_StartLoop()
 		{
 			TimeInterval = 0;
 		}
-		
+
 		if (bManageLoop)
 		{
 #if defined __PSP
@@ -1065,9 +1050,9 @@ bool HGE_Impl::_System_StartLoop()
 				}
 			}
 		}
-		
+
 		NowTime = Timer_GetCurrentSystemTime();
-		
+
 		if (lastTime <= (NowTime - TimeInterval) && lastTime >= (NowTime - (TimeInterval * 2)))
 		{
 			fDeltaTime = (float)((double)(TimeInterval) / (double)(TimePrecision));
@@ -1078,17 +1063,16 @@ bool HGE_Impl::_System_StartLoop()
 			fDeltaTime = (float)((double)(NowTime - lastTime) / (double)(TimePrecision));
 			lastTime = NowTime;
 		}
-		
+
 		nFrameCounter++;
 		fTime += fDeltaTime;
 		fFPS = 1.0f / fDeltaTime;
 	}
-	
-	
+
 	// If main loop is suspended - just sleep a bit
 	// (though not too much to allow instant window
 	// redraw if requested by OS)
-	
+
 	else
 	{
 #if defined __WIN32
@@ -1096,7 +1080,7 @@ bool HGE_Impl::_System_StartLoop()
 #elif defined __PSP
 		sceKernelDelayThread(1000);
 #elif defined __IPHONE
-		mach_wait_until(mach_absolute_time()+1000);		
+		mach_wait_until(mach_absolute_time()+1000);
 #endif
 	}
 
@@ -1113,9 +1097,9 @@ bool HGE_Impl::_System_StartLoop()
 bool HGE_Impl::_System_StartPost()
 {
 	_ClearQueue();
-	
+
 	bActive=false;
-	
+
 	return true;
 }
 
@@ -1125,10 +1109,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	bool bActivating;
 
 	switch(msg)
-	{	
-		case WM_CREATE: 
+	{
+		case WM_CREATE:
 			return FALSE;
-		
+
 		case WM_PAINT:
 			if(pHGE->pD3D && pHGE->procRenderFunc && pHGE->bWindowed && !pHGE->bNoWMPaint) pHGE->procRenderFunc();
 			break;

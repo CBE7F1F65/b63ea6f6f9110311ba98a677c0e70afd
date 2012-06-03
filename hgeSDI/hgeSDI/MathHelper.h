@@ -76,7 +76,7 @@ private:
 	// Don't implement
 
 public:
-	
+
 	int AngleRestrict(int angle);
 
 	float LineSegmentLength(PointF2D p1, PointF2D p2);

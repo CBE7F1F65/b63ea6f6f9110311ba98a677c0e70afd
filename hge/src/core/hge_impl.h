@@ -6,7 +6,6 @@
 ** Common core implementation header
 */
 
-
 #ifndef HGE_IMPL_H
 #define HGE_IMPL_H
 
@@ -15,7 +14,6 @@
 
 #define D3DFVF_HGEVERTEX (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1)
 #define VERTEX_BUFFER_SIZE 4000
-
 
 struct CRenderTargetList
 {
@@ -73,13 +71,11 @@ void DInit();
 void DDone();
 bool DFrame();
 
-
 /*
 ** HGE Interface implementation
 */
 class HGE_Impl : public HGE
 {
-
 	/************************************************************************/
 	/* These functions are modified by h5nc (h5nc@yahoo.com.cn)             */
 	/* Details are marked in hge.h                                          */
@@ -255,7 +251,7 @@ public:
 	virtual hgeVertex*	CALL	Gfx_StartBatch(int prim_type, HTEXTURE tex, int blend, int *max_prim);
 	virtual void		CALL	Gfx_FinishBatch(int nprim);
 	virtual void		CALL	Gfx_SetClipping(int x=0, int y=0, int w=0, int h=0);
-	virtual void		CALL	Gfx_SetTransform(float x=0, float y=0, float dx=0, float dy=0, float rot=0, float hscale=0, float vscale=0); 
+	virtual void		CALL	Gfx_SetTransform(float x=0, float y=0, float dx=0, float dy=0, float rot=0, float hscale=0, float vscale=0);
 	virtual void		CALL	Gfx_SetTransform(D3DTRANSFORMSTATETYPE State, const D3DMATRIX * pMatrix);
 	virtual D3DMATRIX	CALL	Gfx_GetTransform(D3DTRANSFORMSTATETYPE State);
 	virtual void		CALL	Gfx_SetTextureInfo(int nTexInfo, hgeTextureInfo * texinfo=NULL);
@@ -278,8 +274,8 @@ public:
 	virtual bool		CALL	Texture_LoadTextureWhenNeeded(HTEXTURE * tex);
 	virtual void		CALL	Texture_SetTextureToLoad(HTEXTURE * tex);
 	virtual HTEXTURE *	CALL	Texture_GetTextureToLoad();
-	
-	/* font support 
+
+	/* font support
 	add by Yuki */
 	//edit by Thor/h5nc
 	// begin
@@ -293,7 +289,7 @@ public:
 	static HGE_Impl*	_Interface_Get();
 	void				_FocusChange(bool bAct);
 	void				_PostError(char *error);
-	
+
 	bool				_System_StartPre();
 	bool				_System_StartLoop();
 	bool				_System_StartPost();
@@ -306,7 +302,6 @@ public:
 	/************************************************************************/
 	char				szResourcePath[_MAX_PATH];
 	char				szIniString[256];
-
 
 	// end
 
@@ -409,7 +404,6 @@ public:
 #endif
 	void				_SetBlendMode(int blend);
 	void				_SetProjectionMatrix(int width, int height);
-	
 
 	// Audio
 	HINSTANCE			hBass;
@@ -423,7 +417,6 @@ public:
 
 	DWORD				_IniGetPrivateProfileString(const char * appname, const char * keyname, const char * defval, char * retstr, DWORD size, const char * filename);
 	bool				_IniWritePrivateProfileString(const char * appname, const char * keyname, const char * val, const char * filename);
-
 
 	// Input
 	int					VKey;
@@ -498,7 +491,6 @@ public:
 	void	_TouchUpdate();
 	// end
 
-
 	// Resources
 	char				szTmpFilename[_MAX_PATH];
 	/************************************************************************/
@@ -510,7 +502,6 @@ public:
 	HANDLE				hSearch;
 	WIN32_FIND_DATA		SearchData;
 #endif
-
 
 	// Timer
 	float				fTime;
@@ -529,7 +520,6 @@ public:
 	int					cfps;
 	*/
 
-
 	/************************************************************************/
 	/* These members are added by h5nc (h5nc@yahoo.com.cn)                  */
 	/************************************************************************/
@@ -537,11 +527,10 @@ public:
 	int					nFrameSkip;
 	int					nRenderSkip;
 
-
 	/************************************************************************/
 	/* These lines are added by Yuki                                        */
 	/************************************************************************/
-	/* font 
+	/* font
 	add by Yuki */
 	void				_FontDone();
 	CFontList *			fontList;
@@ -552,4 +541,3 @@ private:
 extern HGE_Impl*		pHGE;
 
 #endif
-

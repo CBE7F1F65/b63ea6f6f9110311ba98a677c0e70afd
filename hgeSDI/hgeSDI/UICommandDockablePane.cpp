@@ -7,20 +7,17 @@
 
 #include "Main.h"
 
-
 // UICommandBox
 
 IMPLEMENT_DYNAMIC(UICommandDockablePane, CDockablePane)
 
 UICommandDockablePane::UICommandDockablePane()
 {
-
 }
 
 UICommandDockablePane::~UICommandDockablePane()
 {
 }
-
 
 BEGIN_MESSAGE_MAP(UICommandDockablePane, CDockablePane)
 	ON_WM_CREATE()
@@ -33,8 +30,6 @@ ON_WM_MOUSELEAVE()
 ON_WM_MOUSEMOVE()
 ON_WM_CLOSE()
 END_MESSAGE_MAP()
-
-
 
 // UICommandBox 消息处理程序
 
@@ -77,7 +72,7 @@ int UICommandDockablePane::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// Create list windows.
 	// TODO: create your own window here:
-	const DWORD dwViewStyle =	
+	const DWORD dwViewStyle =
 		LBS_NOINTEGRALHEIGHT | WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL;
 
 	char tabtitlebuffer[M_STRMAX];
@@ -95,7 +90,6 @@ int UICommandDockablePane::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	return 0;
 }
-
 
 void UICommandDockablePane::OnSize(UINT nType, int cx, int cy)
 {
@@ -160,14 +154,12 @@ void UICommandDockablePane::OnMouseHover(UINT nFlags, CPoint point)
 	CDockablePane::OnMouseHover(nFlags, point);
 }
 
-
 void UICommandDockablePane::OnMouseLeave()
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 
 	CDockablePane::OnMouseLeave();
 }
-
 
 void UICommandDockablePane::OnMouseMove(UINT nFlags, CPoint point)
 {
@@ -180,7 +172,6 @@ void UICommandDockablePane::OnMouseMove(UINT nFlags, CPoint point)
 	TrackMouseEvent(&tme);
 	CDockablePane::OnMouseMove(nFlags, point);
 }
-
 
 void UICommandDockablePane::ClearLog()
 {

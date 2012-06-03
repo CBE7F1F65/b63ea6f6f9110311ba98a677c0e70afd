@@ -1,11 +1,9 @@
 #include "StdAfx.h"
 #include "InitialCommand.h"
 
-
 InitialCommand::InitialCommand(void)
 {
 }
-
 
 InitialCommand::~InitialCommand(void)
 {
@@ -23,7 +21,6 @@ void InitialCommand::OnProcessCommand()
 			CSI_FINISH
 			);
 	}
-
 }
 
 void InitialCommand::DoneCommand()
@@ -33,10 +30,8 @@ void InitialCommand::DoneCommand()
 		CCMake_C(COMM_INITIAL),
 		NULL
 		);
-
 }
 
 void InitialCommand::RenderToTarget()
 {
-
 }

@@ -7,7 +7,6 @@ MathHelper::MathHelper(void)
 {
 }
 
-
 MathHelper::~MathHelper(void)
 {
 }
@@ -46,7 +45,7 @@ bool MathHelper::LineSegmentIntersect( float x1, float y1, float x2, float y2, f
 		{
 			*inty = (y1 + y2) / 2;
 		}
-		
+
 		return true;
 	}
 

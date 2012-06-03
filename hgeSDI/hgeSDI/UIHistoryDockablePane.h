@@ -14,13 +14,12 @@ public:
 	UIHistoryDockablePane();
 	virtual ~UIHistoryDockablePane();
 
-	bool AddHistory(const char * desc, const char * commandstr);
+	bool AddHistory(const char * desc, const char * commandstr, int command);
 	bool ChangeCurrentHistory(int step);
 	bool ClearLaterHistory(int ndelete);
 	bool ClearPreviousHistory(int ndelete);
 
 	UIHistoryListCtrl m_wndListCtrl;
-
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
@@ -28,5 +27,3 @@ public:
 	afx_msg void OnClose();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 };
-
-

@@ -113,7 +113,6 @@ voidpf ZCALLBACK win32_open_file_func (opaque, filename, mode)
     return ret;
 }
 
-
 uLong ZCALLBACK win32_read_file_func (opaque, stream, buf, size)
    voidpf opaque;
    voidpf stream;
@@ -135,7 +134,6 @@ uLong ZCALLBACK win32_read_file_func (opaque, stream, buf, size)
 
     return ret;
 }
-
 
 uLong ZCALLBACK win32_write_file_func (opaque, stream, buf, size)
    voidpf opaque;

@@ -12,6 +12,8 @@ enum{
 enum{
 	COLORMS_ACTIVE=0,
 	COLORMS_NONACTIVE,
+	COLORMS_BACKGROUND,
+	COLORMS_FRAME,
 	COLORMS_EDITABLE,
 	COLORMS_DISABLED,
 
@@ -60,7 +62,7 @@ private:
 	// Don't implement
 
 public:
-	
+
 	void Init();
 	HGE * hge;
 	/************************************************************************
@@ -92,7 +94,7 @@ public:
 		}
 	}
 	************************************************************************/
-	
+
 #define _FDEF(COLNAME, DEF)	\
 	UIColor col##COLNAME;	\
 	DWORD Get##COLNAME##Color()	\
@@ -151,6 +153,4 @@ public:
 #undef _FDEF
 
 	DWORD ARGBToABGR(DWORD col);
-
 };
-

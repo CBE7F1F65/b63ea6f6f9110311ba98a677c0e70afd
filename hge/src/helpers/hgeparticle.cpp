@@ -6,12 +6,9 @@
 ** hgeParticleSystem helper class implementation
 */
 
-
 #include "../../include/hgeparticle.h"
 
-
 HGE	*hgeParticleSystem::hge=0;
-
 
 hgeParticleSystem::hgeParticleSystem(const char *filename, hgeSprite *sprite)
 {
@@ -179,7 +176,7 @@ void hgeParticleSystem::MoveTo(float x, float y, bool bMoveParticles)
 {
 	int i;
 	float dx,dy;
-	
+
 	if(bMoveParticles)
 	{
 		dx=x-vecLocation.x;
@@ -220,7 +217,7 @@ void hgeParticleSystem::Fire()
 void hgeParticleSystem::Stop(bool bKillParticles)
 {
 	fAge=-2.0f;
-	if(bKillParticles) 
+	if(bKillParticles)
 	{
 		nParticlesAlive=0;
 		rectBoundingBox.Clear();
@@ -247,7 +244,6 @@ void hgeParticleSystem::Render()
 
 	info.sprite->SetColor(col);
 }
-
 
 hgeRect *hgeParticleSystem::GetBoundingBox(hgeRect *rect) const
 {

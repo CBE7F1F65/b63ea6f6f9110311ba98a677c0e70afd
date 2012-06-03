@@ -2,11 +2,9 @@
 #include "GShape.h"
 #include "StringManager.h"
 
-
 GShape::GShape(void)
 {
 }
-
 
 GShape::~GShape(void)
 {

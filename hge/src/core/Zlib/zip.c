@@ -9,7 +9,6 @@
    Read zip.h for more info
 */
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,7 +26,6 @@
 #else
 #   include <errno.h>
 #endif
-
 
 #ifndef local
 #  define local static
@@ -82,7 +80,6 @@
 const char zip_copyright[] =
    " zip 1.01 Copyright 1998-2004 Gilles Vollant - http://www.winimage.com/zLibDll";
 
-
 #define SIZEDATA_INDATABLOCK (4096-(4*4))
 
 #define LOCALHEADERMAGIC    (0x04034b50)
@@ -108,7 +105,6 @@ typedef struct linkedlist_data_s
     linkedlist_datablock_internal* first_block;
     linkedlist_datablock_internal* last_block;
 } linkedlist_data;
-
 
 typedef struct
 {
@@ -150,8 +146,6 @@ typedef struct
     char *globalcomment;
 #endif
 } zip_internal;
-
-
 
 #ifndef NOCRYPT
 #define INCLUDECRYPTINGCODE_IFCRYPTALLOWED
@@ -195,7 +189,6 @@ local void free_linkedlist(ll)
     free_datablock(ll->first_block);
     ll->first_block = ll->last_block = NULL;
 }
-
 
 local int add_data_in_datablock(ll,buf,len)
     linkedlist_data* ll;
@@ -250,8 +243,6 @@ local int add_data_in_datablock(ll,buf,len)
     }
     return ZIP_OK;
 }
-
-
 
 /****************************************************************************/
 
@@ -314,7 +305,6 @@ local void ziplocal_putValue_inmemory (dest, x, nbByte)
 
 /****************************************************************************/
 
-
 local uLong ziplocal_TmzDateToDosDate(ptm,dosDate)
     const tm_zip* ptm;
     uLong dosDate;
@@ -328,7 +318,6 @@ local uLong ziplocal_TmzDateToDosDate(ptm,dosDate)
       (uLong) (((ptm->tm_mday) + (32 * (ptm->tm_mon+1)) + (512 * year)) << 16) |
         ((ptm->tm_sec/2) + (32* ptm->tm_min) + (2048 * (uLong)ptm->tm_hour));
 }
-
 
 /****************************************************************************/
 
@@ -357,7 +346,6 @@ local int ziplocal_getByte(pzlib_filefunc_def,filestream,pi)
             return ZIP_EOF;
     }
 }
-
 
 /* ===========================================================================
    Reads a long in LSB order from the given gz_stream. Sets
@@ -450,7 +438,6 @@ local uLong ziplocal_SearchCentralDir(pzlib_filefunc_def,filestream)
     if (ZSEEK(*pzlib_filefunc_def,filestream,0,ZLIB_FILEFUNC_SEEK_END) != 0)
         return 0;
 
-
     uSizeFile = ZTELL(*pzlib_filefunc_def,filestream);
 
     if (uMaxBack>uSizeFile)
@@ -506,7 +493,6 @@ extern zipFile ZEXPORT zipOpen2 (pathname, append, globalcomment, pzlib_filefunc
     zip_internal* zi;
     int err=ZIP_OK;
 
-
     if (pzlib_filefunc_def==NULL)
         fill_fopen_filefunc(&ziinit.z_filefunc);
     else
@@ -527,7 +513,6 @@ extern zipFile ZEXPORT zipOpen2 (pathname, append, globalcomment, pzlib_filefunc
     ziinit.number_entry = 0;
     ziinit.add_position_when_writting_offset = 0;
     init_linkedlist(&(ziinit.central_dir));
-
 
     zi = (zip_internal*)ALLOC(sizeof(zip_internal));
     if (zi==NULL)
@@ -734,7 +719,6 @@ extern int ZEXPORT zipOpenNewFileInZip3 (file, filename, zipfi,
         if (err != ZIP_OK)
             return err;
     }
-
 
     if (filename==NULL)
         filename="-";
@@ -992,7 +976,6 @@ extern int ZEXPORT zipWriteInFileInZip (file, buf, len)
             zi->ci.stream.next_out = zi->ci.buffered_data;
         }
 
-
         if(err != ZIP_OK)
             break;
 
@@ -1001,7 +984,6 @@ extern int ZEXPORT zipWriteInFileInZip (file, buf, len)
             uLong uTotalOutBefore = zi->ci.stream.total_out;
             err=deflate(&zi->ci.stream,  Z_NO_FLUSH);
             zi->ci.pos_in_buffered_data += (uInt)(zi->ci.stream.total_out - uTotalOutBefore) ;
-
         }
         else
         {

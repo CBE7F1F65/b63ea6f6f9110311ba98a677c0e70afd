@@ -6,7 +6,6 @@
 ** hgeRect helper class implementation
 */
 
-
 #include "../../include/hgerect.h"
 
 /************************************************************************/
@@ -20,7 +19,6 @@
 #endif
 
 #include <math.h>
-
 
 void hgeRect::Encapsulate(float x, float y)
 {

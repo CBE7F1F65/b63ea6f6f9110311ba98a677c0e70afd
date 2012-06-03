@@ -6,10 +6,8 @@
 ** hgeRect helper class
 */
 
-
 #ifndef HGERECT_H
 #define HGERECT_H
-
 
 class hgeRect
 {
@@ -30,6 +28,5 @@ public:
 private:
 	bool	bClean;
 };
-
 
 #endif

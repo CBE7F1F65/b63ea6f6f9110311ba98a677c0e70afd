@@ -6,18 +6,14 @@
 ** hgeColor*** helper classes
 */
 
-
 #ifndef HGECOLOR_H
 #define HGECOLOR_H
 
-
 #include "hge.h"
-
 
 #define hgeColor hgeColorRGB
 
 inline void ColorClamp(float &x) { if(x<0.0f) x=0.0f; if(x>1.0f) x=1.0f; }
-
 
 class hgeColorRGB
 {
@@ -47,7 +43,6 @@ public:
 
 inline hgeColorRGB operator* (const float sc, const hgeColorRGB &c) { return c*sc; }
 
-
 class hgeColorHSV
 {
 public:
@@ -75,6 +70,5 @@ public:
 };
 
 inline hgeColorHSV operator* (const float sc, const hgeColorHSV &c) { return c*sc; }
-
 
 #endif

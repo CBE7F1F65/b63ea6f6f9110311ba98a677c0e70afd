@@ -6,9 +6,7 @@
 ** hgeAnimation helper class implementation
 */
 
-
 #include "../../include/hgeanim.h"
-
 
 hgeAnimation::hgeAnimation(HTEXTURE tex, int nframes, float FPS, float x, float y, float w, float h)
 	: hgeSprite(tex, x, y, w, h)
@@ -27,11 +25,11 @@ hgeAnimation::hgeAnimation(HTEXTURE tex, int nframes, float FPS, float x, float 
 
 hgeAnimation::hgeAnimation(const hgeAnimation & anim)
 : hgeSprite(anim)
-{ 
-	// Copy hgeAnimation parameters: 
+{
+	// Copy hgeAnimation parameters:
 	this->orig_width	  = anim.orig_width;
-	this->bPlaying        = anim.bPlaying; 
-	this->fSpeed          = anim.fSpeed; 
+	this->bPlaying        = anim.bPlaying;
+	this->fSpeed          = anim.fSpeed;
 	this->fSinceLastFrame = anim.fSinceLastFrame;
 	this->Mode            = anim.Mode;
 	this->nDelta          = anim.nDelta;
@@ -55,7 +53,6 @@ void hgeAnimation::SetMode(int mode)
 	}
 }
 
-
 void hgeAnimation::Play()
 {
 	bPlaying=true;
@@ -71,7 +68,6 @@ void hgeAnimation::Play()
 		SetFrame(0);
 	}
 }
-
 
 void hgeAnimation::Update(float fDeltaTime)
 {
@@ -129,7 +125,6 @@ void hgeAnimation::SetFrame(int n)
 	bool bX, bY, bHS;
 	int ncols = int(orig_width) / int(width);
 
-
 	n = n % nFrames;
 	if(n < 0) n = nFrames + n;
 	nCurFrame = n;
@@ -162,4 +157,3 @@ void hgeAnimation::SetFrame(int n)
 	bXFlip=false; bYFlip=false;
 	SetFlip(bX,bY,bHS);
 }
-

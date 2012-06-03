@@ -6,7 +6,6 @@
 #include <sstream>
 #include <iomanip>
 
-
 Command::Command()
 {
 //	ZeroMemory(&ccomm, sizeof(ccomm));
@@ -19,7 +18,6 @@ Command::Command()
 
 Command::~Command()
 {
-
 }
 
 void Command::Init()
@@ -76,7 +74,7 @@ void Command::_LogParam( int index, int useflag, int cwp/*=-1 */ )
 //		char paramstr[M_STRMAX];
 		string strlog;
 		stringstream ss;
-		
+
 		switch (useflag)
 		{
 		case COMMPARAMFLAG_X:
@@ -103,7 +101,6 @@ void Command::_LogParam( int index, int useflag, int cwp/*=-1 */ )
 			ss << ccomm.params[index].sval;
 			break;
 		}
-		
 
 //		sprintf_s(strlog, M_STRMAX*4, "(%s) %s: %s: %s",
 		strlog = "(";
@@ -127,7 +124,7 @@ void Command::LogWantNext()
 	if (ccomm.command < _COMM_NOLOGCOMMANDBEGIN || ccomm.command > _COMM_NOLOGCOMMANDEND)
 	{
 		string strlog;
-//		sprintf_s(strlog, M_STRMAX, "%s: %s: %s: ", 
+//		sprintf_s(strlog, M_STRMAX, "%s: %s: %s: ",
 		strlog = GetCommandStr();
 		strlog += ": ";
 		strlog += StringManager::getInstance().GetCLNextPromptName();
@@ -502,7 +499,6 @@ bool Command::CheckParamSet( int index, int useflag )
 	}
 	GrowParam(index);
 	return (ccomm.params[index].useflag & useflag);
-
 }
 
 int Command::CommitCommand( const char * str )
@@ -518,7 +514,7 @@ int Command::CommitCommand( const char * str )
 			LogError(_ic.substr.c_str());
 			return ccomm.command;
 		}
-		
+
 		if (inext)
 		{
 			inext = _FindNextSubStr(str, _ic.substr, M_STRMAX, inext);
@@ -634,7 +630,7 @@ int Command::_FindNextSubStr( const char * str, CommittedCommand * cc, int maxns
 			ch[i] = 0;
 		}
 	}
-	if (isdigit(ch[0]) || 
+	if (isdigit(ch[0]) ||
 		(ch[0]=='.' || ch[0]=='+' || ch[0]=='-') && isdigit(ch[1]) ||
 		(ch[0]=='+' || ch[0]=='-') && ch[1]=='.' && isdigit(ch[2]))
 	{
@@ -699,7 +695,6 @@ int Command::_FindNextSubStr( const char * str, CommittedCommand * cc, int maxns
 		cc->fval = cc->ival;
 		break;
 	}
-
 
 	if (i >= (int)strlen(str))
 	{
@@ -927,7 +922,7 @@ void Command::PushRevertable( RevertableCommand * rc )
 						}
 					}
 					strcomm += ");";
-					MainInterface::getInstance().OnPushRevertable(GetCommandDescriptionStr(comm), strcomm.c_str());
+					MainInterface::getInstance().OnPushRevertable(GetCommandDescriptionStr(comm), strcomm.c_str(), comm);
 				}
 			}
 		}
@@ -937,8 +932,6 @@ void Command::PushRevertable( RevertableCommand * rc )
 	{
 		undoredoflag = CUNDOREDO_NULL;
 	}
-
-
 }
 
 void Command::ClearReDo()

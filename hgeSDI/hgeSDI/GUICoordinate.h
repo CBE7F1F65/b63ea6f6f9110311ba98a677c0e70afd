@@ -39,7 +39,6 @@ public:
 	void OnProcessZoomCommand();
 	void DoZoom(float cx_s, float cy_s, float scale);
 
-
 	void RenderGrid();
 	void RenderGridReDraw();
 	void RenderCoordinate();
@@ -73,7 +72,7 @@ public:
 	float cursorx_c;
 	float cursory_c;
 
-	struct GridInfo 
+	struct GridInfo
 	{
 		float scrvalue;
 		int mgridID;
@@ -86,12 +85,12 @@ public:
 	HTARGET targrid;
 	HGE * hge;
 
-	inline float StoCx(float x) 
+	inline float StoCx(float x)
 	{
 		CheckScale();
 		return (x-originx_s)/scale;
 	}
-	inline float StoCy(float y) 
+	inline float StoCy(float y)
 	{
 		CheckScale();
 		return (y-originy_s)/scale;

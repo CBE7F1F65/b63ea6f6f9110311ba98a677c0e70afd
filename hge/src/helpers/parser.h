@@ -9,18 +9,16 @@
 #ifndef HGEPARSER_H
 #define HGEPARSER_H
 
-
 #include "../../include/hge.h"
 #include <string.h>
 #include <stdlib.h>
-
 
 enum
 {
  TTNONE, TTEND, TTNUMBER, TTSTRING,
 
  TTBOOL, TTEQUALS, TTBASED, TTSEPARATOR, TTOPENBLOCK, TTCLOSEBLOCK,
- 
+
  TTRES__FIRST,
  TTRES_INCLUDE, TTRES_RESOURCE, TTRES_TEXTURE, TTRES_SOUND, TTRES_MUSIC,
  TTRES_STREAM, TTRES_TARGET, TTRES_SPRITE, TTRES_ANIMATION, TTRES_FONT,
@@ -40,7 +38,6 @@ enum
  TTCON_LOOP, TTCON_NOLOOP, TTCON_CIRCLE, TTCON_RECT, TTCON_ALPHA,
  TTCON__LAST
 };
-
 
 class RScriptParser
 {
@@ -72,6 +69,5 @@ private:
 
 	static HGE *hge;
 };
-
 
 #endif

@@ -6,13 +6,10 @@
 ** hgeDistortionMesh helper class header
 */
 
-
 #ifndef HGEDISTORT_H
 #define HGEDISTORT_H
 
-
 #include "hge.h"
-
 
 #define HGEDISP_NODE		0
 #define HGEDISP_TOPLEFT		1
@@ -61,6 +58,5 @@ private:
 	float		tx,ty,width,height;
 	hgeQuad		quad;
 };
-
 
 #endif

@@ -1,6 +1,5 @@
 #pragma once
 
-
 // UIEditBox
 
 class UIFloatingEditBox : public CEdit
@@ -26,5 +25,3 @@ public:
 	afx_msg void OnEnChange();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };
-
-

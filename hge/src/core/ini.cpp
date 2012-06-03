@@ -6,7 +6,6 @@
 ** Core functions implementation: ini file
 */
 
-
 #include "hge_impl.h"
 
 void CALL HGE_Impl::Ini_SetInt(const char *section, const char *name, int value, char * inifilename/* =NULL */)
@@ -28,7 +27,6 @@ void CALL HGE_Impl::Ini_SetInt(const char *section, const char *name, int value,
 		_IniWritePrivateProfileString(section, name, buf, filename);
 	}
 }
-
 
 int CALL HGE_Impl::Ini_GetInt(const char *section, const char *name, int def_val, char * inifilename/* =NULL */)
 {
@@ -52,7 +50,6 @@ int CALL HGE_Impl::Ini_GetInt(const char *section, const char *name, int def_val
 	return def_val;
 }
 
-
 void CALL HGE_Impl::Ini_SetFloat(const char *section, const char *name, float value, char * inifilename/* =NULL */)
 {
 	char buf[256];
@@ -72,7 +69,6 @@ void CALL HGE_Impl::Ini_SetFloat(const char *section, const char *name, float va
 		_IniWritePrivateProfileString(section, name, buf, filename);
 	}
 }
-
 
 float CALL HGE_Impl::Ini_GetFloat(const char *section, const char *name, float def_val, char * inifilename/* =NULL */)
 {
@@ -96,7 +92,6 @@ float CALL HGE_Impl::Ini_GetFloat(const char *section, const char *name, float d
 	return def_val;
 }
 
-
 void CALL HGE_Impl::Ini_SetString(const char *section, const char *name, const char *value, char * inifilename/* =NULL */)
 {
 	char * filename = inifilename;
@@ -110,7 +105,6 @@ void CALL HGE_Impl::Ini_SetString(const char *section, const char *name, const c
 	}
 	if(filename[0]) _IniWritePrivateProfileString(section, name, value, filename);
 }
-
 
 char* CALL HGE_Impl::Ini_GetString(const char *section, const char *name, const char *def_val, char * inifilename/* =NULL */)
 {

@@ -7,12 +7,14 @@
 #include "Command.h"
 #include "Main.h"
 #include "ColorManager.h"
-
+#include "IconManager.h"
 
 // UIHistoryListCtrl
 
-#define IDHBC_MAIN	0
-#define IDHBC_COMMANDSTR	1
+enum{
+	IDHBC_MAIN=0,
+	IDHBC_COMMANDSTR,
+};
 
 IMPLEMENT_DYNAMIC(UIHistoryListCtrl, CListCtrl)
 
@@ -26,28 +28,17 @@ UIHistoryListCtrl::~UIHistoryListCtrl()
 {
 }
 
-
 BEGIN_MESSAGE_MAP(UIHistoryListCtrl, CListCtrl)
 	ON_WM_CREATE()
-	ON_NOTIFY_REFLECT(LVN_DELETEITEM, &UIHistoryListCtrl::OnLvnDeleteitem)
-	ON_NOTIFY_REFLECT(LVN_INSERTITEM, &UIHistoryListCtrl::OnLvnInsertitem)
-	ON_NOTIFY(HDN_ITEMCLICKA, 0, &UIHistoryListCtrl::OnHdnItemclick)
-	ON_NOTIFY(HDN_ITEMCLICKW, 0, &UIHistoryListCtrl::OnHdnItemclick)
 	ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, &UIHistoryListCtrl::OnNMCustomdraw)
 	ON_NOTIFY_REFLECT(LVN_ITEMCHANGED, &UIHistoryListCtrl::OnLvnItemchanged)
-	ON_NOTIFY_REFLECT(LVN_COLUMNCLICK, &UIHistoryListCtrl::OnLvnColumnclick)
 	ON_NOTIFY_REFLECT(NM_CLICK, &UIHistoryListCtrl::OnNMClick)
-	ON_NOTIFY_REFLECT(LVN_KEYDOWN, &UIHistoryListCtrl::OnLvnKeydown)
-	ON_WM_KEYDOWN()
-	ON_WM_KEYUP()
+	ON_WM_SIZE()
+//	ON_NOTIFY_REFLECT(LVN_GETDISPINFO, &UIHistoryListCtrl::OnLvnGetdispinfo)
+ON_WM_NCCALCSIZE()
 END_MESSAGE_MAP()
 
-
-
 // UIHistoryListCtrl 消息处理程序
-
-
-
 
 int UIHistoryListCtrl::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
@@ -55,59 +46,33 @@ int UIHistoryListCtrl::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	ColorManager * pcm = &ColorManager::getInstance();
-	// TODO:  在此添加您专用的创建代码
-	SetBkColor(pcm->ARGBToABGR(pcm->GetTextBkColor(COLORMT_LIST, COLORMS_NONACTIVE)) & 0xffffff);
-//	SetTextBkColor(0x909090);
-
+	SetBkColor(pcm->ARGBToABGR(pcm->GetTextBkColor(COLORMT_LIST, COLORMS_BACKGROUND)) & 0xffffff);
+	/*
 	LOGFONT lf;
 	GetFont()->GetLogFont(&lf);
-	lf.lfHeight *= 1.5f;
+	lf.lfHeight *= 1.25f;
 	m_cfont.CreateFontIndirect(&lf);
 	SetFont(&m_cfont);
-
+	*/
 	SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
 	InsertColumn(IDHBC_MAIN, "", LVCFMT_LEFT);
 	InsertColumn(IDHBC_COMMANDSTR, "", LVCFMT_LEFT);
 
+	IconManager * picm = &IconManager::getInstance();
+	SetImageList(picm->GetImageList(ICMSIZE_SMALL), picm->GetImageListType(ICMSIZE_SMALL));
 
 	return 0;
 }
 
-
-void UIHistoryListCtrl::OnLvnDeleteitem(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
-	// TODO: 在此添加控件通知处理程序代码
-	*pResult = 0;
-}
-
-
-void UIHistoryListCtrl::OnLvnInsertitem(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
-	// TODO: 在此添加控件通知处理程序代码
-	*pResult = 0;
-}
-
-
-void UIHistoryListCtrl::OnHdnItemclick(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	LPNMHEADER phdr = reinterpret_cast<LPNMHEADER>(pNMHDR);
-	// TODO: 在此添加控件通知处理程序代码
-	*pResult = 0;
-}
-
-
 void UIHistoryListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
+//	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
-
 
 	NMLVCUSTOMDRAW *pCD = (NMLVCUSTOMDRAW*)pNMHDR;
 	// By default set the return value to do the default behavior.
-	*pResult = CDRF_DODEFAULT;     
+	*pResult = CDRF_DODEFAULT;
 
 	//obtain row and column of item
 	int nowDrawing = pCD->nmcd.dwItemSpec;
@@ -122,23 +87,18 @@ void UIHistoryListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 	{
 	case  CDDS_PREPAINT:  // First stage (for the whole control)
 		{
-
 			*pResult = CDRF_NOTIFYITEMDRAW;
-
 		}
 		break;
 
 	case CDDS_ITEMPREPAINT:
 		{
-
 			*pResult = CDRF_NOTIFYSUBITEMDRAW;
-
 		}
 		break;
 
-	case  CDDS_ITEMPREPAINT | CDDS_SUBITEM : // Stage three 
+	case  CDDS_ITEMPREPAINT | CDDS_SUBITEM : // Stage three
 		{
-
 			//if (sub)item was the one clicked, set custom text/background color
 			//Un-comment the code segment to allow single cell highlight
 			if( (nSelected == nowDrawing ) )
@@ -158,27 +118,42 @@ void UIHistoryListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 			}
 			*pResult =  CDRF_NOTIFYPOSTPAINT;
 
+			//
 		}
 		break;
 
 	case CDDS_ITEMPOSTPAINT | CDDS_SUBITEM: // Stage four (called for each subitem of the focused item)
 		{
+			RECT rect;
+			GetItemRect(nowDrawing, &rect, LVIR_BOUNDS);
+			int height = rect.bottom-rect.top;
+			int width = rect.right-rect.left;
+			CClientDC dc(this);
 
+			DWORD col = pcm->ARGBToABGR(pcm->GetTextBkColor(COLORMT_LIST, COLORMS_FRAME))&0xffffff;
+
+//			HPEN hpen = CreatePen(PS_SOLID, 2, col);
+//			SelectObject(dc.m_hDC, hpen);
+//			dc.DrawEdge(&rect, BDR_RAISEDINNER, BF_RECT);
+			dc.Draw3dRect(rect.left, rect.top, width, height, col, col);
+			/*
+			dc.MoveTo(rect.left, rect.top);
+			dc.LineTo(rect.right, rect.top);
+			dc.MoveTo(rect.left, rect.bottom);
+			dc.LineTo(rect.right, rect.bottom);
+			*/
 		}
 		break;
 
 	default:// it wasn't a notification that was interesting to us.
 		{
-
 			*pResult = CDRF_DODEFAULT;
-
 		}
 		break;
 	}
 
 //	*pResult = 0;
 }
-
 
 void UIHistoryListCtrl::OnLvnItemchanged(NMHDR *pNMHDR, LRESULT *pResult)
 {
@@ -193,17 +168,24 @@ void UIHistoryListCtrl::OnLvnItemchanged(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 }
 
-bool UIHistoryListCtrl::AddHistory( const char * desc, const char * commandstr )
+bool UIHistoryListCtrl::AddHistory( const char * desc, const char * commandstr, int command )
 {
-	InsertItem(LVIF_TEXT | LVIF_STATE, topIndex, desc,
-		0, LVIS_SELECTED, 0, 0);
+	/*
+	InsertItem(LVIF_TEXT | LVIF_STATE | LVIF_IMAGE, topIndex, desc,
+		0, LVIS_SELECTED, I_IMAGECALLBACK, 0);
+		*/
+	InsertItem(topIndex, desc, IconManager::getInstance().GetCommandIconIndex(command));
 	SetItemText(topIndex, IDHBC_COMMANDSTR, commandstr);
 	SetItemState(topIndex, LVIS_SELECTED, LVIS_SELECTED);
 	SetSelectionMark(topIndex);
 	nSelected++;
 	topIndex++;
+
 	SetColumnWidth(IDHBC_MAIN, LVSCW_AUTOSIZE);
-	SetColumnWidth(IDHBC_COMMANDSTR, LVSCW_AUTOSIZE);
+	RECT rect;
+	GetWindowRect(&rect);
+	SetColumnWidth(IDHBC_COMMANDSTR, rect.right-rect.left-GetColumnWidth(IDHBC_MAIN));
+
 	return true;
 }
 
@@ -219,7 +201,6 @@ bool UIHistoryListCtrl::ChangeCurrentHistory( int step )
 
 bool UIHistoryListCtrl::ClearLaterHistory( int ndelete )
 {
-	
 	for (int i=0; i<ndelete; i++)
 	{
 		DeleteItem(topIndex-i-1);
@@ -227,7 +208,7 @@ bool UIHistoryListCtrl::ClearLaterHistory( int ndelete )
 	topIndex -= ndelete;
 	SetItemState(nSelected, LVIS_SELECTED, LVIS_SELECTED);
 	SetSelectionMark(nSelected);
-	
+
 	return true;
 }
 
@@ -247,14 +228,6 @@ bool UIHistoryListCtrl::ClearPreviousHistory( int ndelete )
 
 	return true;
 }
-
-void UIHistoryListCtrl::OnLvnColumnclick(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
-	// TODO: 在此添加控件通知处理程序代码
-	*pResult = 0;
-}
-
 
 void UIHistoryListCtrl::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
 {
@@ -280,32 +253,6 @@ void UIHistoryListCtrl::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 }
 
-
-void UIHistoryListCtrl::OnLvnKeydown(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	LPNMLVKEYDOWN pLVKeyDow = reinterpret_cast<LPNMLVKEYDOWN>(pNMHDR);
-	// TODO: 在此添加控件通知处理程序代码
-
-	*pResult = 0;
-}
-
-
-void UIHistoryListCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
-{
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
-
-//	CListCtrl::OnKeyDown(nChar, nRepCnt, nFlags);
-}
-
-
-void UIHistoryListCtrl::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
-{
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
-
-//	CListCtrl::OnKeyUp(nChar, nRepCnt, nFlags);
-}
-
-
 BOOL UIHistoryListCtrl::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
@@ -330,9 +277,44 @@ BOOL UIHistoryListCtrl::PreTranslateMessage(MSG* pMsg)
 				}
 				::CloseClipboard();
 			}
-
 		}
 	}
 
 	return CListCtrl::PreTranslateMessage(pMsg);
+}
+
+void UIHistoryListCtrl::OnSize(UINT nType, int cx, int cy)
+{
+	CListCtrl::OnSize(nType, cx, cy);
+
+
+	SetColumnWidth(IDHBC_MAIN, LVSCW_AUTOSIZE);
+	SetColumnWidth(IDHBC_COMMANDSTR, cx-GetColumnWidth(IDHBC_MAIN));
+	EnsureVisible(nSelected, FALSE);
+	// TODO: 在此处添加消息处理程序代码
+}
+
+/*
+void UIHistoryListCtrl::OnLvnGetdispinfo(NMHDR *pNMHDR, LRESULT *pResult)
+{
+//	NMLVDISPINFO *pDispInfo = reinterpret_cast<NMLVDISPINFO*>(pNMHDR);
+	// TODO: 在此添加控件通知处理程序代码
+	LV_DISPINFO* pdi = (LV_DISPINFO *) pNMHDR;
+	if (LVIS_SELECTED == GetItemState (pdi->item.iItem,
+		LVIS_SELECTED))
+		pdi->item.iImage = 0;
+	else
+		pdi->item.iImage = pdi->item.iItem;
+
+
+	*pResult = 0;
+}
+*/
+
+void UIHistoryListCtrl::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS* lpncsp)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+	ModifyStyle( WS_HSCROLL, 0 );
+	CListCtrl::OnNcCalcSize(bCalcValidRects, lpncsp);
 }

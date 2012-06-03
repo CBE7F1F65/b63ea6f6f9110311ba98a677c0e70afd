@@ -45,4 +45,3 @@ public:
 
 	CommandStepInfo laststep;
 };
-

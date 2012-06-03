@@ -6,7 +6,6 @@
 ** hgeFont helper class implementation
 */
 
-
 #include "../../include/hgefont.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -24,9 +23,7 @@ const char FNTWCHARTAG[]="WChar";
 #define _FNTCOMMAND_CHAR		0x10
 #define _FNTCOMMAND_WCHAR		0x20
 
-
 HGE *hgeFont::hge=0;
-
 
 /************************************************************************/
 /* This function is added by h5nc (h5nc@yahoo.com.cn)                   */
@@ -64,7 +61,6 @@ void hgeFont::_FontInit(int _size)
 	ZeroMemory( &letters, sizeof(letters) );
 	ZeroMemory( &pre, sizeof(letters) );
 	ZeroMemory( &post, sizeof(letters) );*/
-
 }
 
 void hgeFont::_FontResize(int _size/* =256 */)
@@ -180,7 +176,7 @@ void hgeFont::NewFont(const char *szFont, bool bMipmap/* =false */)
 	int		nowtexnum = 0;
 
 	// Setup variables
-	
+
 	// Load font description
 
 	data=hge->Resource_Load(szFont, &datasize);
@@ -195,7 +191,7 @@ void hgeFont::NewFont(const char *szFont, bool bMipmap/* =false */)
 	if(strcmp(linebuf, FNTHEADERTAG))
 	{
 		hge->System_Log("Font %s has incorrect format.", szFont);
-		delete[] desc;	
+		delete[] desc;
 		return;
 	}
 
@@ -254,7 +250,7 @@ void hgeFont::NewFont(const char *szFont, bool bMipmap/* =false */)
 				hTexture[nowtexnum]=hge->Texture_Load(buf, 0, bMipmap);
 				if(!hTexture[nowtexnum].tex)
 				{
-					delete[] desc;	
+					delete[] desc;
 					return;
 				}
 				nowtexnum++;
@@ -324,7 +320,7 @@ void hgeFont::NewFont(const char *szFont, bool bMipmap/* =false */)
 		}
 	}
 
-	delete[] desc;	
+	delete[] desc;
 }
 
 /************************************************************************/
@@ -557,7 +553,6 @@ void hgeFont::printf(float x, float y, int align, const char *buffer)
 	buffer[sizeof(buffer)-1]=0;
 	//vsprintf(buffer, format, pArg);*/
 
-
 	Render(x,y,align,buffer);
 }
 
@@ -580,7 +575,6 @@ void hgeFont::printfb(float x, float y, float w, float h, int align, const char 
 	_vsnprintf(buffer, sizeof(buffer)-1, format, pArg);
 	buffer[sizeof(buffer)-1]=0;
 	//vsprintf(buffer, format, pArg);*/
-
 
 	linestart=(char *)buffer;
 	pbuf=(char *)buffer;
@@ -630,7 +624,7 @@ void hgeFont::printfb(float x, float y, float w, float h, int align, const char 
 		prevword=&pbuf[i];
 		pbuf=&pbuf[i+1];
 	}
-	
+
 	tx=x;
 	ty=y;
 	hh=fHeight*fSpacing*fScale*lines;
@@ -685,7 +679,6 @@ float hgeFont::GetStringWidth(const char *string, bool bMultiline) const
 	return w*fScale*fProportion;
 }
 
-
 /************************************************************************/
 /* This function is added by h5nc (h5nc@yahoo.com.cn)                   */
 /************************************************************************/
@@ -723,8 +716,8 @@ void hgeFont::SetColor(DWORD col0, DWORD col1, DWORD col2, DWORD col3)
 	col[2] = col2;
 	col[3] = col3;
 	/*
-	for(int i=0;i<256;i++) 
-		if(letters[i]) 
+	for(int i=0;i<256;i++)
+		if(letters[i])
 		{
 			letters[i]->SetColor(col0, 0);
 			letters[i]->SetColor(col1, 1);

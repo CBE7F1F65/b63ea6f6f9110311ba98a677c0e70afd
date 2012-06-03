@@ -9,6 +9,7 @@
 #include "RenderHelper.h"
 #include "RenderTargetManager.h"
 #include "StringManager.h"
+#include "IconManager.h"
 
 #include "Resource.h"
 
@@ -84,8 +85,6 @@ bool MainInterface::Render()
 	float scrw=hge->System_GetState(HGE_SCREENWIDTH);
 	float scrh=hge->System_GetState(HGE_SCREENWIDTH);
 
-
-
 	hge->Input_GetMousePos(&mousex, &mousey);
 
 	// Render Grids
@@ -140,7 +139,6 @@ bool MainInterface::Frame()
 	{
 		hge->System_SetState(HGE_HIDEMOUSE, false);
 	}
-
 
 	lastmousex = mousex;
 	lastmousey = mousey;
@@ -258,18 +256,9 @@ bool MainInterface::HGEThreadFunc()
 	return false;
 }
 
-bool MainInterface::OnInit(void * parent, int w, int h)
+
+bool MainInterface::OnPreInit()
 {
-	if (!parent)
-	{
-		return false;
-	}
-	bActive = true;
-
-	// MFC
-	parentview = (ChgeSDIView *)parent;
-	hge->System_SetState(HGE_HWNDPARENT, (HWND)(parentview->m_hWnd));
-
 	hge->System_SetState(HGE_FRAMEFUNC, FrameFunc);
 	hge->System_SetState(HGE_RENDERFUNC, RenderFunc);
 	hge->System_SetState(HGE_FOCUSLOSTFUNC, FocusLostFunc);
@@ -285,16 +274,7 @@ bool MainInterface::OnInit(void * parent, int w, int h)
 	//	hge->System_SetState(HGE_HIDEMOUSE, false);
 	hge->System_SetState(HGE_NOWMPAINT, true);
 	hge->System_SetState(HGE_FPS, 60);
-	
-	hge->System_SetState(HGE_SCREENWIDTH, w);
-	hge->System_SetState(HGE_SCREENHEIGHT, h);
 
-	if (!manageloop)
-	{
-		hge->System_SetState(HGE_MANAGELOOP, false);
-	}
-	
-	hge->System_Initiate();
 
 #ifdef __WIN32
 	if (GetSystemMetrics(SM_SWAPBUTTON))
@@ -303,11 +283,37 @@ bool MainInterface::OnInit(void * parent, int w, int h)
 		cursorrightkeyindex = 0;
 	}
 #endif
+	StringManager::getInstance().Init();
+	IconManager::getInstance().Init();
+	Command::getInstance().Init();
+
+	return true;
+}
+
+bool MainInterface::OnInit(void * parent, int w, int h)
+{
+	if (!parent)
+	{
+		return false;
+	}
+	bActive = true;
+
+	// MFC
+	parentview = (ChgeSDIView *)parent;
+	hge->System_SetState(HGE_HWNDPARENT, (HWND)(parentview->m_hWnd));
+	hge->System_SetState(HGE_SCREENWIDTH, w);
+	hge->System_SetState(HGE_SCREENHEIGHT, h);
+
+	if (!manageloop)
+	{
+		hge->System_SetState(HGE_MANAGELOOP, false);
+	}
+
+	hge->System_Initiate();
+
 	hge->Input_GetMousePos(&mousex, &mousey);
 
 	//
-	StringManager::getInstance().Init();
-	Command::getInstance().Init();
 	Command::getInstance().OnInit();
 	GUICoordinate::getInstance().SetGrid(GUICG_METRIC, 0, 0);
 	GObjectManager::getInstance().Init();
@@ -348,7 +354,6 @@ void MainInterface::CallContextMenu(float x, float y)
 //	PostMessage(parentview->m_hWnd, WM_RBUTTONUP, (WPARAM)parentview->m_hWnd, MAKELONG(px, py));
 	PostMessage(parentview->m_hWnd, WM_CONTEXTMENU, (WPARAM)parentview->m_hWnd, MAKELONG(point.x, point.y));
 //	parentview->CallContextMenu(x, y);
-
 }
 
 void MainInterface::CallUpdateStatusBarText( int id, const char * text )
@@ -641,9 +646,9 @@ void MainInterface::MBeep( int id/*=-1*/ )
 	MessageBeep(id);
 }
 
-void MainInterface::OnPushRevertable( const char * desc, const char * commandstr )
+void MainInterface::OnPushRevertable( const char * desc, const char * commandstr, int command )
 {
-	parentview->GetMainFrame()->AddHistory(desc, commandstr);
+	parentview->GetMainFrame()->AddHistory(desc, commandstr, command);
 }
 
 void MainInterface::OnUnDo( int step/*=1*/ )

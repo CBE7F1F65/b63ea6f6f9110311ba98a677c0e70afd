@@ -6,13 +6,10 @@
 ** hgeAnimation helper class header
 */
 
-
 #ifndef HGEANIM_H
 #define HGEANIM_H
 
-
 #include "hgesprite.h"
-
 
 #define HGEANIM_FWD			0
 #define HGEANIM_REV			1
@@ -20,7 +17,6 @@
 #define HGEANIM_NOPINGPONG	0
 #define HGEANIM_LOOP		4
 #define HGEANIM_NOLOOP		0
-
 
 /*
 ** HGE Animation class
@@ -30,7 +26,7 @@ class hgeAnimation : public hgeSprite
 public:
 	hgeAnimation(HTEXTURE tex, int nframes, float FPS, float x, float y, float w, float h);
 	hgeAnimation(const hgeAnimation &anim);
-	
+
 	void		Play();
 	void		Stop() { bPlaying=false; }
 	void		Resume() { bPlaying=true; }
@@ -64,6 +60,5 @@ private:
 	int			nFrames;
 	int			nCurFrame;
 };
-
 
 #endif

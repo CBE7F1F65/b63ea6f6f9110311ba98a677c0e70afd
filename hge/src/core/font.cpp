@@ -4,8 +4,8 @@
 /* Some changes are made by h5nc                                        */
 /************************************************************************/
 
-/* 
-Font implemention 
+/*
+Font implemention
 Yuki Izayoi 2007.2.16
 */
 
@@ -52,7 +52,6 @@ HD3DFONT CALL HGE_Impl::Font_Load(const char * fontStyle,int height)
 #else
 	return NULL;
 #endif
-
 }
 void CALL HGE_Impl::Font_Free(HD3DFONT font)
 {
@@ -205,7 +204,7 @@ void CALL HGE_Impl::Font_Print(HD3DFONT font, float x, float y, unsigned short a
 		}
 		else
 			break;
-	}	
+	}
 }
 
 void CALL HGE_Impl::Font_Print(HD3DFONT font, float x, float y, float w, float h, unsigned short align, DWORD color, unsigned short shadow, char *format, ...)
@@ -252,7 +251,7 @@ void CALL HGE_Impl::Font_Print(HD3DFONT font, float x, float y, float w, float h
 	rect.left = (LONG)x;
 	rect.top = (LONG)y;
 	pFont->DrawText(linebuffer, -1, &rect, DT_WORDBREAK, color);
-	
+
 	while(1)
 	{
 		linebuffer = strtok(NULL, "\n");

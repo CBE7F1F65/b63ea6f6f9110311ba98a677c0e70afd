@@ -1,9 +1,9 @@
-// 这段 MFC 示例源代码演示如何使用 MFC Microsoft Office Fluent 用户界面 
+// 这段 MFC 示例源代码演示如何使用 MFC Microsoft Office Fluent 用户界面
 // (“Fluent UI”)。该示例仅供参考，
-// 用以补充《Microsoft 基础类参考》和 
+// 用以补充《Microsoft 基础类参考》和
 // MFC C++ 库软件随附的相关电子文档。
 // 复制、使用或分发 Fluent UI 的许可条款是单独提供的。
-// 若要了解有关 Fluent UI 许可计划的详细信息，请访问  
+// 若要了解有关 Fluent UI 许可计划的详细信息，请访问
 // http://msdn.microsoft.com/officeui。
 //
 // 版权所有(C) Microsoft Corporation
@@ -25,7 +25,6 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
 
 // ChgeSDIView
 
@@ -56,7 +55,6 @@ END_MESSAGE_MAP()
 ChgeSDIView::ChgeSDIView()
 {
 	// TODO: 在此处添加构造代码
-
 }
 
 ChgeSDIView::~ChgeSDIView()
@@ -83,9 +81,7 @@ void ChgeSDIView::OnDraw(CDC* /*pDC*/)
 	// TODO: 在此处为本机数据添加绘制代码
 }
 
-
 // ChgeSDIView 打印
-
 
 void ChgeSDIView::OnFilePrintPreview()
 {
@@ -124,18 +120,17 @@ void ChgeSDIView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 	/*
 #ifndef SHARED_HANDLERS
 	MainInterface::getInstance().SetMainViewActive(false);
-	
+
 	CMenu menu;
 	menu.LoadMenu(IDR_POPUP_EDIT);
 	HMENU hmenuPopup = ::GetSubMenu(menu.Detach(), 0);
 	theApp.GetContextMenuManager()->TrackPopupMenu(hmenuPopup, point.x, point.y, this);
-	
+
 //	theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EDIT, point.x, point.y, this, TRUE);
 	MainInterface::getInstance().SetMainViewActive(true);
 #endif
 	*/
 }
-
 
 // ChgeSDIView 诊断
 
@@ -186,13 +181,11 @@ void ChgeSDIView::OnSize(UINT nType, int cx, int cy)
 
 // ChgeSDIView 消息处理程序
 
-
 void ChgeSDIView::OnLine()
 {
 	// TODO: 在此添加命令处理程序代码
 	MainInterface::getInstance().OnCommand(COMM_LINE);
 }
-
 
 void ChgeSDIView::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 {
@@ -203,16 +196,13 @@ void ChgeSDIView::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 	*/
 }
 
-
 void ChgeSDIView::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 
 	CView::OnTimer(nIDEvent);
 	MainInterface::getInstance().OnUpdateTimer();
-	
 }
-
 
 void ChgeSDIView::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView)
 {
@@ -231,7 +221,6 @@ void ChgeSDIView::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pD
 	*/
 }
 
-
 int ChgeSDIView::OnMouseActivate(CWnd* pDesktopWnd, UINT nHitTest, UINT message)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
@@ -240,12 +229,10 @@ int ChgeSDIView::OnMouseActivate(CWnd* pDesktopWnd, UINT nHitTest, UINT message)
 	return CView::OnMouseActivate(pDesktopWnd, nHitTest, message);
 }
 
-
 void ChgeSDIView::OnUpdate(CView* /*pSender*/, LPARAM /*lHint*/, CObject* /*pHint*/)
 {
 	// TODO: 在此添加专用代码和/或调用基类
 }
-
 
 //void ChgeSDIView::OnMouseMove(UINT nFlags, CPoint point)
 //{
@@ -322,7 +309,6 @@ void ChgeSDIView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	CView::OnHScroll(nSBCode, nPos, pScrollBar);
 }
 
-
 void ChgeSDIView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
@@ -381,7 +367,6 @@ void ChgeSDIView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 	CView::OnVScroll(nSBCode, nPos, pScrollBar);
 }
-
 
 int ChgeSDIView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {

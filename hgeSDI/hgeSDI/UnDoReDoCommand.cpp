@@ -5,7 +5,6 @@
 #include "GObjectManager.h"
 #include "Main.h"
 
-
 bool Command::DoUnDo( int undostep/*=1*/ )
 {
 	if (undolist.empty() || undostep < 1)
@@ -80,8 +79,6 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 
 	return true;
 }
-
-
 
 bool Command::DoReDo( int redostep/*=1*/ )
 {

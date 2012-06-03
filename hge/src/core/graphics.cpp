@@ -45,7 +45,6 @@ DWORD _ARGBtoABGR(DWORD color)
 
 #endif
 
-
 void CALL HGE_Impl::Gfx_Clear(DWORD color)
 {
 	/************************************************************************/
@@ -74,7 +73,7 @@ void CALL HGE_Impl::Gfx_Clear(DWORD color)
 		sceGuEnable(GU_SCISSOR_TEST);
 
 #elif defined __IPHONE
-		
+
 		glDisable(GL_SCISSOR_TEST);
 		glClearColor( (float)GETR(color), (float)GETG(color), (float)GETB(color), (float)GETA(color) );
 		glClear( GL_COLOR_BUFFER_BIT );
@@ -227,7 +226,7 @@ bool CALL HGE_Impl::Gfx_BeginScene(HTARGET targ)
 	{
 		if(bWindowed)
 		{
-			if(FAILED(pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &Mode)) || Mode.Format==D3DFMT_UNKNOWN) 
+			if(FAILED(pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &Mode)) || Mode.Format==D3DFMT_UNKNOWN)
 			{
 				_PostError("Can't determine desktop video mode");
 				return false;
@@ -237,15 +236,15 @@ bool CALL HGE_Impl::Gfx_BeginScene(HTARGET targ)
 			if(_format_id(Mode.Format) < 4) nScreenBPP=16;
 			else nScreenBPP=32;
 		}
-	    if(!_GfxRestore()) return false; 
+	    if(!_GfxRestore()) return false;
 	}
-    
+
 	if(VertArray)
 	{
 		_PostError("Gfx_BeginScene: Scene is already being rendered");
 		return false;
 	}
-     
+
 	if(target != pCurTarget)
 	{
 		if(target)
@@ -268,10 +267,10 @@ bool CALL HGE_Impl::Gfx_BeginScene(HTARGET targ)
 		if(target)
 		{
 			pSurf->Release();
-			if(target->pDepth) 
-				pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE ); 
-			else 
-				pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE ); 
+			if(target->pDepth)
+				pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
+			else
+				pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
 
 			/************************************************************************/
 			/* This line is deleted by h5nc (h5nc@yahoo.com.cn)                     */
@@ -280,10 +279,9 @@ bool CALL HGE_Impl::Gfx_BeginScene(HTARGET targ)
 		}
 		else
 		{
-			if(bZBuffer) pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE ); 
+			if(bZBuffer) pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
 			else pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
 			_SetProjectionMatrix(nScreenWidth, nScreenHeight);
-
 		}
 
 		/************************************************************************/
@@ -297,7 +295,7 @@ bool CALL HGE_Impl::Gfx_BeginScene(HTARGET targ)
 	}
 	pD3DDevice->BeginScene();
 	pVB->Lock( 0, 0, (void**)&VertArray, 0 );
-	
+
 #elif defined __PSP
 	sceGuStart(GU_DIRECT, gulist);
 	matProj.m[0][0] = SCREEN_HEIGHT/SCREEN_WIDTH;
@@ -325,7 +323,7 @@ bool CALL HGE_Impl::Gfx_BeginScene(HTARGET targ)
 	sceGumLoadIdentity();
 
 #elif defined __IPHONE
-	
+
 	matProj.m[0][0] = SCREEN_HEIGHT/SCREEN_WIDTH;
 	matProj.m[0][1] = 0.0f;
 	matProj.m[0][2] = 0.0f;
@@ -342,39 +340,39 @@ bool CALL HGE_Impl::Gfx_BeginScene(HTARGET targ)
 	matProj.m[3][1] = SCREEN_HEIGHT/2;
 	matProj.m[3][2] = SCREEN_HEIGHT/2;
 	matProj.m[3][3] = SCREEN_HEIGHT/2;
-	
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 //	glOrthof(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, SCREEN_HEIGHT/2, 0);
 	glMultMatrixf((GLfloat*)&matProj);
-	
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	
+
 #endif //__WIN32
 	return true;
 }
 
 #ifdef __PSP
-#include <malloc.h> 
-int __freemem() 
-{ 
-	void *ptrs[480]; 
-	int mem, x, i; 
+#include <malloc.h>
+int __freemem()
+{
+	void *ptrs[480];
+	int mem, x, i;
 	void *ptr;
 
-	for (x = 0; x < 480; x++) 
-	{ 
-		ptr = malloc(51200); 
-		if (!ptr) break; 
+	for (x = 0; x < 480; x++)
+	{
+		ptr = malloc(51200);
+		if (!ptr) break;
 
-		ptrs[x] = ptr; 
-	} 
-	mem = x * 51200; 
-	for (i = 0; i < x; i++) 
-		free(ptrs[i]); 
+		ptrs[x] = ptr;
+	}
+	mem = x * 51200;
+	for (i = 0; i < x; i++)
+		free(ptrs[i]);
 
-	return mem; 
+	return mem;
 }
 #endif // __PSP
 
@@ -441,8 +439,8 @@ void CALL HGE_Impl::Gfx_RenderPoint(float x, float y, float z, DWORD color)
 		return;
 	}
 	vertices[0].color = color;
-	vertices[0].x = x; 
-	vertices[0].y = y; 
+	vertices[0].x = x;
+	vertices[0].y = y;
 
 	sceGuDisable(GU_TEXTURE_2D);
 	sceGuShadeModel(GU_FLAT);
@@ -486,13 +484,13 @@ void CALL HGE_Impl::Gfx_RenderLine2(float x1, float y1, float x2, float y2, DWOR
 		return;
 	}
 	vertices[0].color = color1;
-	vertices[0].x = x1; 
-	vertices[0].y = y1; 
+	vertices[0].x = x1;
+	vertices[0].y = y1;
 	vertices[0].z = z1;
 
 	vertices[1].color = color2;
-	vertices[1].x = x2; 
-	vertices[1].y = y2; 
+	vertices[1].x = x2;
+	vertices[1].y = y2;
 	vertices[1].z = z2;
 
 	sceGuDisable(GU_TEXTURE_2D);
@@ -507,7 +505,7 @@ void CALL HGE_Impl::Gfx_RenderLine2(float x1, float y1, float x2, float y2, DWOR
 	{
 		_SetBlendMode(BLEND_DEFAULT);
 	}
-	glDisable(GL_TEXTURE_2D);	
+	glDisable(GL_TEXTURE_2D);
 
 	hgeVertex vertices[HGEPRIM_LINES];
 
@@ -547,20 +545,20 @@ void CALL HGE_Impl::Gfx_3DRenderStart()
 	{
 		_render_batch();
 	}
-	
-	pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE); 
+
+	pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 
 	if (!(CurBlendMode & BLEND_ZWRITE))
 	{
 		pD3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
-	} 
+	}
 }
 
 void CALL HGE_Impl::Gfx_3DRenderEnd()
 {
 	pD3DDevice->SetStreamSource( 0, pVB, 0, sizeof(hgeVertex));
 	pD3DDevice->SetIndices( pIB );
-	
+
 	if (!(CurBlendMode & BLEND_ZWRITE))
 	{
 		pD3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
@@ -581,7 +579,7 @@ void CALL HGE_Impl::Gfx_RenderTriple(const hgeTriple *triple)
 		if(CurPrimType!=HGEPRIM_TRIPLES || nPrim>=VERTEX_BUFFER_SIZE/HGEPRIM_TRIPLES || CurTexture!=ttex || CurBlendMode!=triple->blend)
 		{
 			_render_batch();
-	
+
 			CurPrimType=HGEPRIM_TRIPLES;
 			if(CurBlendMode != triple->blend) _SetBlendMode(triple->blend);
 
@@ -611,7 +609,7 @@ void CALL HGE_Impl::Gfx_RenderQuad(const hgeQuad *quad)
 		if(CurPrimType!=HGEPRIM_QUADS || nPrim>=VERTEX_BUFFER_SIZE/HGEPRIM_QUADS || CurTexture!=ttex || CurBlendMode!=quad->blend)
 		{
 			_render_batch();
-	
+
 			CurPrimType=HGEPRIM_QUADS;
 			if(CurBlendMode != quad->blend) _SetBlendMode(quad->blend);
 /*
@@ -675,7 +673,7 @@ void CALL HGE_Impl::Gfx_RenderQuad(const hgeQuad *quad)
 	}
 	sceGumDrawArray(GU_TRIANGLE_STRIP,GU_TEXTURE_32BITF|GU_COLOR_8888|GU_VERTEX_32BITF|GU_TRANSFORM_3D, HGEPRIM_QUADS, 0, vertices);
 #elif defined __IPHONE
-	
+
 	HTEXTURE tex = quad->tex;
 	Texture_LoadTextureWhenNeeded(&tex);
 	Image * pTex = (Image *)Texture_GetTexture(tex);
@@ -683,7 +681,7 @@ void CALL HGE_Impl::Gfx_RenderQuad(const hgeQuad *quad)
 	{
 		return;
 	}
-	
+
 	glEnable(GL_TEXTURE_2D);
 	if((DWORD)pTex != CurTexture)
 	{
@@ -694,9 +692,9 @@ void CALL HGE_Impl::Gfx_RenderQuad(const hgeQuad *quad)
 	{
 		_SetBlendMode(quad->blend);
 	}
-	
+
 	hgeVertex vertices[HGEPRIM_QUADS];
-		
+
 	for (int i=0; i<HGEPRIM_QUADS; i++) {
 		int j=i;
 		if (i > 1)
@@ -708,19 +706,19 @@ void CALL HGE_Impl::Gfx_RenderQuad(const hgeQuad *quad)
 		vertices[i].x = quad->v[j].x;
 		vertices[i].y = quad->v[j].y;
 		vertices[i].z = quad->v[j].z;
-		vertices[i].col = _ARGBtoABGR(quad->v[j].col);		
+		vertices[i].col = _ARGBtoABGR(quad->v[j].col);
 	}
-	
+
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(HGEPRIM_QUADS, GL_UNSIGNED_BYTE, sizeof(hgeVertex), &(vertices[0].col));
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2, GL_FLOAT, sizeof(hgeVertex), &(vertices[0].tx));
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3, GL_FLOAT, sizeof(hgeVertex), &(vertices[0].x));
-	
+
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, HGEPRIM_QUADS);
 	glDisable(GL_TEXTURE_2D);
-	
+
 #endif
 }
 
@@ -765,7 +763,6 @@ HTARGET CALL HGE_Impl::Target_Create(int width, int height, bool zbuffer)
 	pTarget->pTex=0;
 	pTarget->pDepth=0;
 
-
 	/************************************************************************/
 	/* This parameter in comment is changed by h5nc (h5nc@yahoo.com.cn)     */
 	/************************************************************************/
@@ -786,7 +783,7 @@ HTARGET CALL HGE_Impl::Target_Create(int width, int height, bool zbuffer)
 		//+5th +6th
 		if(FAILED(pD3DDevice->CreateDepthStencilSurface(pTarget->width, pTarget->height,
 						D3DFMT_D16, D3DMULTISAMPLE_NONE, 0, TRUE, &pTarget->pDepth, NULL)))
-		{   
+		{
 			pTarget->pTex->Release();
 			_PostError("Can't create render target depth buffer");
 			delete pTarget;
@@ -852,7 +849,7 @@ HTEXTURE CALL HGE_Impl::Texture_Create(int width, int height)
 										D3DFMT_A8R8G8B8,	// Format
 										D3DPOOL_MANAGED,	// Memory pool
 										&pTex ) ) )
-	{	
+	{
 		_PostError("Can't create texture");
 		return NULL;
 	}
@@ -866,18 +863,17 @@ HTEXTURE CALL HGE_Impl::Texture_Create(int width, int height)
 #endif
 }
 
-
 HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, DWORD size, bool bMipmap)
 {
 	void *data;
 	DWORD _size;
-	
+
 #if defined __WIN32
 	D3DFORMAT fmt1, fmt2;
 	LPDIRECT3DTEXTURE9 pTex;
 	D3DXIMAGE_INFO info;
 #endif
-	
+
 	CTextureList *texItem;
 
 	if(size) { data=(void *)filename; _size=size; }
@@ -886,7 +882,7 @@ HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, DWORD size, bool bMip
 		data=pHGE->Resource_Load(filename, &_size);
 		if(!data) return NULL;
 	}
-	
+
 #if defined __WIN32
 	if(*(DWORD*)data == 0x20534444) // Compressed DDS format magic number
 	{
@@ -924,14 +920,14 @@ HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, DWORD size, bool bMip
 										&info, NULL,
 										&pTex ) ) )
 
-	{	
+	{
 		_PostError("Can't create texture");
 		if(!size) Resource_Free(data);
 		return NULL;
 	}
 #elif defined __PSP || defined __IPHONE
 	Image * pTex = loadImageFromMemory((BYTE *)data, _size);
-	
+
 #if defined __IPHONE
 	glGenTextures(1, &pTex->texid);
 	if (pTex->texid) {
@@ -943,7 +939,7 @@ HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, DWORD size, bool bMip
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pTex->textureWidth, pTex->textureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pTex->data);
 	}
 #endif
-	
+
 #endif
 
 	if(!size) Resource_Free(data);
@@ -951,7 +947,7 @@ HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, DWORD size, bool bMip
 	{
 		return NULL;
 	}
-	
+
 	texItem=new CTextureList;
 	texItem->tex=(HTEXTURE)((DWORD)pTex);
 #if defined __WIN32
@@ -1045,7 +1041,6 @@ int CALL HGE_Impl::Texture_GetWidth(HTEXTURE tex, bool bOriginal)
 #endif
 }
 
-
 int CALL HGE_Impl::Texture_GetHeight(HTEXTURE tex, bool bOriginal)
 {
 	DWORD ttex = Texture_GetTexture(tex);
@@ -1082,7 +1077,6 @@ int CALL HGE_Impl::Texture_GetHeight(HTEXTURE tex, bool bOriginal)
 //	return pTex->texh;
 #endif
 }
-
 
 DWORD * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, int top, int width, int height)
 {
@@ -1122,7 +1116,6 @@ DWORD * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, int 
 	return NULL;
 #endif
 }
-
 
 void CALL HGE_Impl::Texture_Unlock(HTEXTURE tex)
 {
@@ -1190,7 +1183,7 @@ void HGE_Impl::_render_batch(bool bEndScene)
 					//+2nd
 					pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, nPrim<<2, 0, nPrim<<1);
 					break;
-	
+
 				case HGEPRIM_TRIPLES:
 					pD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, 0, nPrim);
 					break;
@@ -1203,7 +1196,7 @@ void HGE_Impl::_render_batch(bool bEndScene)
 					pD3DDevice->DrawPrimitive(D3DPT_POINTLIST, 0, nPrim);
 					break;
 			}
-	
+
 			nPrim=0;
 		}
 
@@ -1226,8 +1219,8 @@ void HGE_Impl::_SetBlendMode(int blend)
 	{
 		if(blend & BLEND_ZWRITE) pD3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 		else pD3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
-	}			
-	
+	}
+
 	if((blend & BLEND_COLORADD) != (CurBlendMode & BLEND_COLORADD))
 	{
 		if(blend & BLEND_COLORADD) pD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_ADD);
@@ -1243,23 +1236,22 @@ void HGE_Impl::_SetBlendMode(int blend)
 	default:
 		toblend = GU_TFX_MODULATE;
 		break;
-	}	
-	sceGuTexFunc(toblend, GU_TCC_RGBA); 
+	}
+	sceGuTexFunc(toblend, GU_TCC_RGBA);
 
 #elif defined __IPHONE
-	
+
 	glDisable(GL_ALPHA_TEST);
 	glEnable(GL_BLEND); // Enable Blending
-	
-	
+
 	if((blend & BLEND_ALPHABLEND) != (CurBlendMode & BLEND_ALPHABLEND))
 	{
-		if(blend & BLEND_ALPHABLEND) 
+		if(blend & BLEND_ALPHABLEND)
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	//Alpha blending
-		else 
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE); //Addictive	
+		else
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE); //Addictive
 	}
-	
+
     if((blend & BLEND_ZWRITE) != (CurBlendMode & BLEND_ZWRITE))
 	{
 		if(blend & BLEND_ZWRITE)
@@ -1272,14 +1264,14 @@ void HGE_Impl::_SetBlendMode(int blend)
 			glDisable(GL_DEPTH_TEST);
 			glDepthMask(GL_FALSE);
 		}
-	}	
-	
+	}
+
 	if((blend & BLEND_COLORADD) != (CurBlendMode & BLEND_COLORADD))
 	{
-		if(blend & BLEND_COLORADD) glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_ADD); 
-		else glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE); 
+		if(blend & BLEND_COLORADD) glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_ADD);
+		else glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	}
-		
+
 #endif
 
 	CurBlendMode = blend;
@@ -1336,7 +1328,6 @@ void* getStaticVramTexture(unsigned int width, unsigned int height, unsigned int
 	return (void*)(((unsigned int)result) + ((unsigned int)sceGeEdramGetAddr()));
 }
 
-
 #endif // __PSP
 
 bool HGE_Impl::_GfxInit()
@@ -1347,7 +1338,7 @@ bool HGE_Impl::_GfxInit()
 	D3DDISPLAYMODE Mode;
 	D3DFORMAT Format=D3DFMT_UNKNOWN;
 	UINT nModes, i;
-	
+
 // Init D3D
 
 	/************************************************************************/
@@ -1373,13 +1364,13 @@ bool HGE_Impl::_GfxInit()
 			LOWORD(AdID.DriverVersion.LowPart));
 
 // Set up Windowed presentation parameters
-	
-	if(FAILED(pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &Mode)) || Mode.Format==D3DFMT_UNKNOWN) 
+
+	if(FAILED(pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &Mode)) || Mode.Format==D3DFMT_UNKNOWN)
 	{
 		_PostError("Can't determine desktop video mode");
 		if(bWindowed) return false;
 	}
-	
+
 	ZeroMemory(&d3dppW, sizeof(d3dppW));
 
 	d3dppW.BackBufferWidth  = nScreenWidth;
@@ -1391,7 +1382,6 @@ bool HGE_Impl::_GfxInit()
 	d3dppW.hDeviceWindow    = hwnd;
 	d3dppW.Windowed         = TRUE;
 
-
 	/************************************************************************/
 	/* This parameter is changed by h5nc (h5nc@yahoo.com.cn)                */
 	/************************************************************************/
@@ -1402,7 +1392,6 @@ bool HGE_Impl::_GfxInit()
 		d3dppW.EnableAutoDepthStencil = TRUE;
 		d3dppW.AutoDepthStencilFormat = D3DFMT_D16;
 	}
-
 
 	/************************************************************************/
 	/* The following blocks are modified by h5nc (h5nc@yahoo.com.cn)        */
@@ -1444,7 +1433,6 @@ bool HGE_Impl::_GfxInit()
 	d3dppFS.hDeviceWindow    = hwnd;
 	d3dppFS.Windowed         = FALSE;
 
-
 	/************************************************************************/
 	/* This parameter is changed by h5nc (h5nc@yahoo.com.cn)                */
 	/************************************************************************/
@@ -1465,7 +1453,6 @@ bool HGE_Impl::_GfxInit()
 	if(_format_id(d3dpp->BackBufferFormat) < 4) nScreenBPP=16;
 	else nScreenBPP=32;
 
-
 	/************************************************************************/
 	/* These blocks are added by h5nc (h5nc@yahoo.com.cn)                   */
 	/************************************************************************/
@@ -1482,7 +1469,7 @@ bool HGE_Impl::_GfxInit()
 	{
 		d3dvp = D3DCREATE_SOFTWARE_VERTEXPROCESSING;
 	}
-	
+
 // Create D3D Device
 
 		/************************************************************************/
@@ -1544,7 +1531,7 @@ bool HGE_Impl::_GfxInit()
 	sceGuTexFunc(GU_TFX_MODULATE,GU_TCC_RGBA);
 	sceGuTexFilter(GU_LINEAR,GU_LINEAR);
 	sceGuDisable(GU_DITHER);
-	
+
 	// Projection
 
 	matProj.m[0][0] = SCREEN_HEIGHT/SCREEN_WIDTH;
@@ -1570,10 +1557,10 @@ bool HGE_Impl::_GfxInit()
 
 	sceGumMatrixMode(GU_VIEW);
 	sceGumLoadIdentity();
-	
+
 	sceGumMatrixMode(GU_MODEL);
 	sceGumLoadIdentity();
-	
+
 	sceGuClearColor( 0x0 );
 	sceGuClear(GU_COLOR_BUFFER_BIT|GU_FAST_CLEAR_BIT);
 	sceGuFinish();
@@ -1582,7 +1569,7 @@ bool HGE_Impl::_GfxInit()
 	sceDisplayWaitVblankStart();
 	sceGuDisplay(1);
 #elif defined __IPHONE
-	
+
 	glViewport(2048, 2048, SCREEN_WIDTH, SCREEN_HEIGHT);
 	// Scissoring
 	glEnable(GL_SCISSOR_TEST);
@@ -1606,9 +1593,9 @@ bool HGE_Impl::_GfxInit()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_DITHER);
-	
+
 	// Projection
-	
+
 	matProj.m[0][0] = SCREEN_HEIGHT/SCREEN_WIDTH;
 	matProj.m[0][1] = 0.0f;
 	matProj.m[0][2] = 0.0f;
@@ -1625,14 +1612,14 @@ bool HGE_Impl::_GfxInit()
 	matProj.m[3][1] = SCREEN_HEIGHT/2;
 	matProj.m[3][2] = SCREEN_HEIGHT/2;
 	matProj.m[3][3] = SCREEN_HEIGHT/2;
-	
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glMultMatrixf((GLfloat*)&matProj);
-	
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	/*
@@ -1655,7 +1642,7 @@ bool HGE_Impl::_GfxInit()
 
 	_SetProjectionMatrix(nScreenWidth, nScreenHeight);
 	Math_MatrixIdentity(&matView);
-	
+
 	if(!_init_lost()) return false;
 
 	Gfx_Clear(0);
@@ -1723,7 +1710,7 @@ void CALL HGE_Impl::Gfx_Resize(int width, int height)
 void HGE_Impl::_GfxDone()
 {
 	CRenderTargetList *target=pTargets, *next_target;
-	
+
 	while(textures)	Texture_Free(textures->tex);
 #if defined __WIN32
 	if(pScreenSurf) { pScreenSurf->Release(); pScreenSurf=0; }
@@ -1766,7 +1753,6 @@ void HGE_Impl::_GfxDone()
 #endif
 }
 
-
 bool HGE_Impl::_GfxRestore()
 {
 #if defined __WIN32
@@ -1790,7 +1776,7 @@ bool HGE_Impl::_GfxRestore()
 	/* h5nc (h5nc@yahoo.com.cn) copied these codes under her permission     */
 	/************************************************************************/
 	/* add by Yuki */
-	// begin 
+	// begin
 	CFontList * listIterator = fontList;
 	while (listIterator)
 	{
@@ -1836,7 +1822,6 @@ bool HGE_Impl::_GfxRestore()
 	return true;
 }
 
-
 bool HGE_Impl::_init_lost()
 {
 #if defined __WIN32
@@ -1849,7 +1834,7 @@ bool HGE_Impl::_init_lost()
 
 	pD3DDevice->GetRenderTarget(0, &pScreenSurf);
 	pD3DDevice->GetDepthStencilSurface(&pScreenDepth);
-	
+
 	while(target)
 	{
 		if(target->pTex)
@@ -1862,7 +1847,7 @@ bool HGE_Impl::_init_lost()
 	}
 
 // Create Vertex buffer
-	
+
 	if( FAILED (pD3DDevice->CreateVertexBuffer(VERTEX_BUFFER_SIZE*sizeof(hgeVertex),
                                               D3DUSAGE_WRITEONLY,
 											  D3DFVF_HGEVERTEX,
@@ -1912,7 +1897,7 @@ bool HGE_Impl::_init_lost()
 	//pD3DDevice->SetRenderState( D3DRS_LASTPIXEL, FALSE );
 	pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
 	pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
-	
+
 	pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE,   TRUE );
 	pD3DDevice->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA );
 	pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
@@ -1961,6 +1946,3 @@ bool HGE_Impl::_init_lost()
 	/************************************************************************/
 	return true;
 }
-
-
-

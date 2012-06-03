@@ -5,12 +5,12 @@
 
 static class InitDllLoader {
 public:
-	InitDllLoader() 
+	InitDllLoader()
 	{
 		module = LoadLibraryA(DEFAULT_HGEDLLPATH);
 	}
 
-	~InitDllLoader() 
+	~InitDllLoader()
 	{
 		FreeLibrary(module);
 	}
@@ -18,7 +18,6 @@ public:
 private:
 
 	HMODULE module;
-
 } _initDllLoader;
 
 #endif

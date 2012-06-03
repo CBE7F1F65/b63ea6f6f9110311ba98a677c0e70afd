@@ -6,17 +6,14 @@
 ** hgeParticleSystem helper class header
 */
 
-
 #ifndef HGEPARTICLE_H
 #define HGEPARTICLE_H
-
 
 #include "hge.h"
 #include "hgesprite.h"
 #include "hgevector.h"
 #include "hgecolor.h"
 #include "hgerect.h"
-
 
 #define MAX_PARTICLES	500
 #define MAX_PSYSTEMS	100
@@ -86,14 +83,13 @@ class hgeParticleSystem
 {
 public:
 	hgeParticleSystemInfo info;
-	
+
 	hgeParticleSystem(const char *filename, hgeSprite *sprite);
 	hgeParticleSystem(hgeParticleSystemInfo *psi);
 	hgeParticleSystem(const hgeParticleSystem &ps);
 	~hgeParticleSystem() { hge->Release(); }
 
 	hgeParticleSystem&	operator= (const hgeParticleSystem &ps);
-
 
 	void				Render();
 	void				FireAt(float x, float y);
@@ -157,6 +153,5 @@ private:
 	float				tY;
 	hgeParticleSystem*	psList[MAX_PSYSTEMS];
 };
-
 
 #endif

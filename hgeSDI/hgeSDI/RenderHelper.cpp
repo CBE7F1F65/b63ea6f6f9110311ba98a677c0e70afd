@@ -10,7 +10,6 @@ RenderHelper::RenderHelper(void)
 	style = 0;
 }
 
-
 RenderHelper::~RenderHelper(void)
 {
 }

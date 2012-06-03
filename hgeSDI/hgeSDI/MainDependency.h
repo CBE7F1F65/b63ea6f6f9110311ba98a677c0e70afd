@@ -23,7 +23,6 @@
 
 using namespace std;
 
-
 #pragma warning(disable:4244)
 #pragma warning(disable:4800)
 #ifdef __WIN32

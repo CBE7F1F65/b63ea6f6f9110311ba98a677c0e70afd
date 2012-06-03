@@ -2,11 +2,9 @@
 #include "GPiece.h"
 #include "StringManager.h"
 
-
 GPiece::GPiece(void)
 {
 }
-
 
 GPiece::~GPiece(void)
 {

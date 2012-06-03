@@ -1,7 +1,6 @@
 #include "StdAfx.h"
 #include "RenderTargetManager.h"
 
-
 RenderTargetManager::RenderTargetManager()
 {
 	hge = hgeCreate(HGE_VERSION);

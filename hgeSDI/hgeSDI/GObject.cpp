@@ -12,7 +12,6 @@ GObject::GObject(void)
 	OnInit();
 }
 
-
 GObject::~GObject(void)
 {
 }
@@ -21,7 +20,6 @@ GObject::~GObject(void)
 	for (list<T>::iterator IT=L.begin(); IT!=L.end(); ++IT)
 #define FOREACH_GOBJ_CHILDREN_IT()	\
 	_FOREACH_L(GObject*, it, children)
-
 
 void GObject::SetID( int _ID/*=-1*/ )
 {
@@ -147,7 +145,7 @@ int GObject::RemoveAllChildren()
 	// Do not use FOREACH
 	if (!children.empty())
 	{
-		for (list<GObject*>::iterator it=children.begin(); it!=children.end();)	
+		for (list<GObject*>::iterator it=children.begin(); it!=children.end();)
 		{
 			if ((*it))
 			{
@@ -163,12 +161,10 @@ int GObject::RemoveAllChildren()
 
 void GObject::OnInit()
 {
-
 }
 
 void GObject::OnEnter()
 {
-
 }
 
 void GObject::OnUpdate()

@@ -20,6 +20,4 @@ private:
 	// Don't implement
 
 public:
-	
-
 };

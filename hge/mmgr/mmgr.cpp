@@ -37,7 +37,7 @@
 // 4. With MFC applications, you will need to comment out any occurance of "#define new DEBUG_NEW" from all source files.
 //
 // 5. Include file dependencies are _very_important_ for getting the MMGR to integrate nicely into your application. Be careful if
-//    you're including standard includes from within your own project inclues; that will break this very specific dependency order. 
+//    you're including standard includes from within your own project inclues; that will break this very specific dependency order.
 //    It should look like this:
 //
 //		#include <stdio.h>   // Standard includes MUST come first
@@ -77,7 +77,7 @@
 //
 // Whether this software causes your application to crash, or if it reports errors, you need to be able to TRUST this software. To
 // this end, you are given some very simple debugging tools.
-// 
+//
 // The quickest way to locate problems is to enable the STRESS_TEST macro (below.) This should catch 95% of the crashes before they
 // occur by validating every allocation each time this memory manager performs an allocation function. If that doesn't work, keep
 // reading...
@@ -164,7 +164,6 @@ static	const	unsigned int	paddingSize            = 4;	// alignment of memory mus
 	#define	m_assert(x) if ((x) == false) return 0; //assert
 #endif
 
-
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Defaults for the constants & statics in the MemoryManager class
 // ---------------------------------------------------------------------------------------------------------------------------------
@@ -175,7 +174,6 @@ const		unsigned int	m_alloc_calloc         = 2;
 const		unsigned int	m_alloc_realloc        = 3;
 const		unsigned int	m_alloc_free           = 4;
 const		unsigned int	m_alloc_memalign       = 5;
-
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // -DOC- Get to know these values. They represent the values that will be used to fill unused and deallocated RAM.
@@ -531,7 +529,6 @@ static	void	dumpLeakReport()
 	fclose(fp);
 }
 
-
 // ---------------------------------------------------------------------------------------------------------------------------------
 // We use a static class to let us know when we're in the midst of static deinitialization
 // ---------------------------------------------------------------------------------------------------------------------------------
@@ -642,7 +639,6 @@ void	m_setOwner(const char *file, const unsigned int line, const char *func)
 	sourceFunc = func;
 }
 
-
 // Raphael
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Helper for missing try... catch
@@ -687,7 +683,6 @@ void	*m_allocator(const char *sourceFile, const unsigned int sourceLine, const c
 			// Allocate 256 reservoir elements
 
 			reservoir = (sAllocUnit *) malloc(sizeof(sAllocUnit) * 256);
-
 
 			// Danger Will Robinson!
 
@@ -752,7 +747,6 @@ void	*m_allocator(const char *sourceFile, const unsigned int sourceLine, const c
 		else		strcpy (au->sourceFile, "??");
 		if (sourceFunc) strncpy(au->sourceFunc, sourceFunc, sizeof(au->sourceFunc) - 1);
 		else		strcpy (au->sourceFunc, "??");
-
 
 		if (au->actualAddress == NULL)
 		{
@@ -876,7 +870,6 @@ void	*m_reallocator(const char *sourceFile, const unsigned int sourceLine, const
 			 au->allocationType == m_alloc_calloc ||
 			 au->allocationType == m_alloc_realloc ||
 			 au->allocationType == m_alloc_memalign);
-
 
 		// Keep track of the original size
 
@@ -1281,11 +1274,10 @@ void	m_dumpMemoryReport()
 	// Open the report file
 
 	FILE	*fp = NULL;
-	
-	
+
 	char filename[260];
 	sprintf(filename, "%s%s", szlogfilepath, _MMGR_REPORTFILENAME);
-	
+
 	fp = fopen(filename, "w+b");
 
 	if (!fp) { m_log( "Error opening file for Memory Report." ); return; }
@@ -1340,7 +1332,7 @@ void	m_dumpMemoryReport()
 	dumpAllocations(fp);
 
 	fclose(fp);
-	
+
 	dumpLeakReport();
 }
 

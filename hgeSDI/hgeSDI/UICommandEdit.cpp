@@ -5,26 +5,22 @@
 #include "hgeSDI.h"
 #include "UICommandEdit.h"
 
-
 // UICommandEdit
 
 IMPLEMENT_DYNAMIC(UICommandEdit, CEdit)
 
 UICommandEdit::UICommandEdit()
 {
-
 }
 
 UICommandEdit::~UICommandEdit()
 {
 }
 
-
 BEGIN_MESSAGE_MAP(UICommandEdit, CEdit)
 	ON_CONTROL_REFLECT(EN_CHANGE, &UICommandEdit::OnEnChange)
 	ON_WM_CHAR()
 END_MESSAGE_MAP()
-
 
 #include "Main.h"
 
@@ -61,9 +57,6 @@ void UICommandEdit::SetCommandText( LPCTSTR text, bool bActivate/*=true*/ )
 
 // UICommandEdit 消息处理程序
 
-
-
-
 void UICommandEdit::OnEnChange()
 {
 	// TODO:  如果该控件是 RICHEDIT 控件，它将不
@@ -73,7 +66,6 @@ void UICommandEdit::OnEnChange()
 
 	// TODO:  在此添加控件通知处理程序代码
 }
-
 
 void UICommandEdit::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
@@ -92,7 +84,6 @@ void UICommandEdit::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 		return;
 	}
 }
-
 
 BOOL UICommandEdit::PreTranslateMessage(MSG* pMsg)
 {

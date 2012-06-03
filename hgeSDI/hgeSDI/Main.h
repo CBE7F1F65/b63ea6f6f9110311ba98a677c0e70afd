@@ -29,11 +29,12 @@ private:
 	// Don't implement
 
 public:
-	
+
 	bool IsMainViewActive();
 	void SetMainViewActive(bool bActive, int reason);
 
 	// From Frame
+	bool OnPreInit();
 	bool OnInit(void * parent, int w, int h);
 	void OnResizeWindow(int x, int y);
 	void OnUpdateTimer();
@@ -47,7 +48,7 @@ public:
 	int OnCommand(int comm);
 	int OnCommitCommand(const char * str);
 
-	void OnPushRevertable(const char * desc, const char * commandstr);
+	void OnPushRevertable(const char * desc, const char * commandstr, int command);
 	void OnUnDo(int step=1);
 	void OnReDo(int step=1);
 	void OnClearReDo(int ndelete);
@@ -103,7 +104,7 @@ public:
 
 	int cursorleftkeyindex;
 	int cursorrightkeyindex;
-	
+
 	bool manageloop;
 
 	int pickstate;

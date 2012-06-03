@@ -6,7 +6,6 @@
 #include "BezierCommand.h"
 #include "InitialCommand.h"
 
-
 int Command::ProcessPending( int index, int useflag, int fillprompt, int step, int wantprompt/*=0*/, bool pushback/*=true*/ )
 {
 	if (!pendingparam.type)
@@ -113,7 +112,6 @@ int Command::ProcessCommittedCommand()
 		pendingparam = (*it);
 	}
 
-
 	inputcommandlist.pop_front();
 	return ccomm.command;
 }
@@ -128,7 +126,6 @@ void Command::ProcessCommand()
 		{
 			return;
 		}
-
 
 		switch (ccomm.command)
 		{
@@ -153,10 +150,8 @@ void Command::ProcessCommand()
 		{
 			break;
 		}
-
 	}
 }
-
 
 void Command::ProcessUnDoCommand( RevertableCommand * rc, int ucount )
 {

@@ -6,16 +6,12 @@
 ** hgeStringTable helper class header
 */
 
-
 #ifndef HGESTRINGS_H
 #define HGESTRINGS_H
 
-
 #include "hge.h"
 
-
 #define MAXSTRNAMELENGTH 64
-
 
 struct NamedString
 {
@@ -43,6 +39,5 @@ private:
 
 	static HGE		*hge;
 };
-
 
 #endif

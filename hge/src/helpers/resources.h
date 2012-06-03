@@ -9,10 +9,8 @@
 #ifndef HGERESOURCES_H
 #define HGERESOURCES_H
 
-
 #include "../../include/hgeresource.h"
 #include "parser.h"
-
 
 #define RES_SCRIPT		0
 
@@ -33,10 +31,8 @@
 #define RES_DISTORT		11
 #define RES_STRTABLE	12
 
-
 void		AddRes(hgeResourceManager *rm, int type, ResDesc *resource);
 ResDesc*	FindRes(hgeResourceManager *rm, int type, const char *name);
-
 
 struct RScript : public ResDesc
 {
@@ -178,7 +174,6 @@ struct RDistort : public ResDesc
 	virtual DWORD Get(hgeResourceManager *rm);
 	virtual void  Free();
 };
-
 
 struct RStringTable : public ResDesc
 {

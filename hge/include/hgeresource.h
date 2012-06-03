@@ -6,10 +6,8 @@
 ** hgeResourceManager helper class header
 */
 
-
 #ifndef HGERESOURCE_H
 #define HGERESOURCE_H
-
 
 #include "hge.h"
 #include "hgesprite.h"
@@ -19,10 +17,8 @@
 #include "hgedistort.h"
 #include "hgestrings.h"
 
-
 #define RESTYPES 13
 #define MAXRESCHARS 128
-
 
 class hgeResourceManager;
 
@@ -84,6 +80,5 @@ private:
 
 	static HGE			*hge;
 };
-
 
 #endif

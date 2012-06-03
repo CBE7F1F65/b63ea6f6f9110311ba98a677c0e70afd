@@ -109,6 +109,7 @@
   <ItemGroup>
     <None Include="ReadMe.txt" />
     <None Include="res\bar1.bin" />
+    <None Include="res\bitmap1.bmp" />
     <None Include="res\buttons.bmp" />
     <None Include="res\filelarge.bmp" />
     <None Include="res\filesmall.bmp" />
@@ -121,6 +122,15 @@
     <None Include="res\ribbon1.mfcribbon-ms" />
     <None Include="res\Toolbar.bmp" />
     <None Include="res\Toolbar256.bmp" />
+    <None Include="res\UICommandIcons_16_0 .bmp" />
+    <None Include="res\UICommandIcons_16_1.bmp" />
+    <None Include="res\UICommandIcons_24_0.bmp" />
+    <None Include="res\UICommandIcons_24_1.bmp" />
+    <None Include="res\UICommandIcons_32_0.bmp" />
+    <None Include="res\UICommandIcons_32_1.bmp" />
+    <None Include="res\UICommandIcons_64.bmp" />
+    <None Include="res\UICommandIcons_64_0.bmp" />
+    <None Include="res\UICommandIcons_64_1.bmp" />
     <None Include="res\writelarge.bmp" />
     <None Include="res\writesmall.bmp" />
   </ItemGroup>
@@ -139,6 +149,7 @@
     <ClInclude Include="GUICoordinate.h" />
     <ClInclude Include="GUICursor.h" />
     <ClInclude Include="BezierCommand.h" />
+    <ClInclude Include="IconManager.h" />
     <ClInclude Include="InitialCommand.h" />
     <ClInclude Include="LineCommand.h" />
     <ClInclude Include="Const.h" />
@@ -162,7 +173,7 @@
     <ClInclude Include="UIHistoryDockablePane.h" />
     <ClInclude Include="UIHistoryListCtrl.h" />
     <ClInclude Include="UILayerDockablePane.h" />
-    <ClInclude Include="UILayerTree.h" />
+    <ClInclude Include="UILayerListCtrl.h" />
     <ClInclude Include="UIPopupMenu.h" />
     <ClInclude Include="UISplitterWnd.h" />
   </ItemGroup>
@@ -181,6 +192,7 @@
     <ClCompile Include="GUICoordinate.cpp" />
     <ClCompile Include="GUICursor.cpp" />
     <ClCompile Include="BezierCommand.cpp" />
+    <ClCompile Include="IconManager.cpp" />
     <ClCompile Include="InitialCommand.cpp" />
     <ClCompile Include="LineCommand.cpp" />
     <ClCompile Include="hgeSDI.cpp" />
@@ -204,7 +216,7 @@
     <ClCompile Include="UIHistoryDockablePane.cpp" />
     <ClCompile Include="UIHistoryListCtrl.cpp" />
     <ClCompile Include="UILayerDockablePane.cpp" />
-    <ClCompile Include="UILayerTree.cpp" />
+    <ClCompile Include="UILayerListCtrl.cpp" />
     <ClCompile Include="UIPopupMenu.cpp" />
     <ClCompile Include="UISplitterWnd.cpp" />
     <ClCompile Include="UnDoReDoCommand.cpp" />

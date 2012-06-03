@@ -6,15 +6,12 @@
 ** hgeGUI helper classes header
 */
 
-
 #ifndef HGEGUI_H
 #define HGEGUI_H
-
 
 #include "hge.h"
 #include "hgesprite.h"
 #include "hgerect.h"
-
 
 #define HGEGUI_NONAVKEYS		0
 #define HGEGUI_LEFTRIGHT		1
@@ -49,7 +46,7 @@ public:
 	virtual bool	KeyClick(int key, int chr) { return false; }
 
 	virtual void	SetColor(DWORD _color) { color=_color; }
-	
+
 	int				id;
 	bool			bStatic;
 	bool			bVisible;
@@ -67,7 +64,6 @@ protected:
 
 	static HGE		*hge;
 };
-
 
 /*
 ** hgeGUI
@@ -91,7 +87,7 @@ public:
 	void			SetColor(DWORD color);
 	void			SetFocus(int id);
 	int				GetFocus() const;
-	
+
 	void			Enter();
 	void			Leave();
 	void			Reset();
@@ -121,6 +117,5 @@ private:
 	bool			bLPressed, bLReleased;
 	bool			bRPressed, bRReleased;
 };
-
 
 #endif

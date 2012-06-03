@@ -13,8 +13,6 @@
 #include "zlib.h"
 #include "ioapi.h"
 
-
-
 /* I've found an old Unix (a SunOS 4.1.3_U1) without all SEEK_* defined.... */
 
 #ifndef SEEK_CUR
@@ -64,7 +62,6 @@ int ZCALLBACK ferror_file_func OF((
    voidpf opaque,
    voidpf stream));
 
-
 voidpf ZCALLBACK fopen_file_func (opaque, filename, mode)
    voidpf opaque;
    const char* filename;
@@ -86,7 +83,6 @@ voidpf ZCALLBACK fopen_file_func (opaque, filename, mode)
     return file;
 }
 
-
 uLong ZCALLBACK fread_file_func (opaque, stream, buf, size)
    voidpf opaque;
    voidpf stream;
@@ -97,7 +93,6 @@ uLong ZCALLBACK fread_file_func (opaque, stream, buf, size)
     ret = (uLong)fread(buf, 1, (size_t)size, (FILE *)stream);
     return ret;
 }
-
 
 uLong ZCALLBACK fwrite_file_func (opaque, stream, buf, size)
    voidpf opaque;

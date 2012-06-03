@@ -15,7 +15,6 @@
 #define _GUICG_MGID_MAIN	1
 #define _GUICG_MGID_AXIS	2
 
-
 #define _GUIC_SCALEMAX	40.0f
 #define _GUIC_SCALEMIN	1.0f
 #define _GUIC_DEFAULTSCALE	4.0f
@@ -120,7 +119,6 @@ void GUICoordinate::DoRenderCoordinate( float renderatx, float renderaty )
 
 void GUICoordinate::RenderCoordinate()
 {
-
 #define _GUICC_RENDERAT	15
 
 	if (originx_s < 0 || originx_s > scrw_s || originy_s < 0 || originy_s > scrh_s)
@@ -131,7 +129,6 @@ void GUICoordinate::RenderCoordinate()
 		DoRenderCoordinate(originx_s, originy_s);
 	}
 	DoRenderCoordinate(_GUICC_RENDERAT, _GUICC_RENDERAT);
-
 }
 
 void GUICoordinate::SetGrid( int _measuretype, float _originxpos, float _originypos, float _scale/*=1.0f*/ )
@@ -247,17 +244,15 @@ void GUICoordinate::UpdateScreenMeasure()
 
 	lboundary_c = StoCx(0);
 	tboundary_c = StoCy(0);
-	
+
 	scrw_s = hge->System_GetState(HGE_SCREENWIDTH);
 	scrh_s = hge->System_GetState(HGE_SCREENHEIGHT);
 	rboundary_c = StoCx(scrw_s);
 	bboundary_c = StoCy(scrh_s);
 
-
 #define _SCALEB_L1T 8.0f
 #define _SCALESPACE	2.0f
 #define _SCALESUBSCRMIN	12.0f
-
 
 	if (scale > _SCALEB_L1T)
 	{
@@ -284,7 +279,6 @@ void GUICoordinate::UpdateScreenMeasure()
 	int nybegin = (int)(coordscrt/subgridspace_c+0.5f);
 	float nearestxbegin = nxbegin*subgridspace_c;
 	float nearestybegin = nybegin*subgridspace_c;
-
 
 	nearestxbegin = CtoSx(nearestxbegin);
 	nearestybegin = CtoSy(nearestybegin);

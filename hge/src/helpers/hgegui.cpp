@@ -6,13 +6,10 @@
 ** hgeGUI helper class implementation
 */
 
-
 #include "../../include/hgegui.h"
-
 
 HGE *hgeGUI::hge=0;
 HGE *hgeGUIObject::hge=0;
-
 
 hgeGUI::hgeGUI()
 {
@@ -126,7 +123,6 @@ void hgeGUI::SetCursor(hgeSprite *spr)
 	sprCursor=spr;
 }
 
-
 void hgeGUI::SetColor(DWORD color)
 {
 	hgeGUIObject *ctrl=ctrls;
@@ -137,7 +133,6 @@ void hgeGUI::SetColor(DWORD color)
 		ctrl=ctrl->next;
 	}
 }
-
 
 void hgeGUI::Reset()
 {
@@ -154,7 +149,6 @@ void hgeGUI::Reset()
 	ctrlFocus=0;
 }
 
-
 void hgeGUI::Move(float dx, float dy)
 {
 	hgeGUIObject *ctrl=ctrls;
@@ -169,7 +163,6 @@ void hgeGUI::Move(float dx, float dy)
 		ctrl=ctrl->next;
 	}
 }
-
 
 void hgeGUI::SetFocus(int id)
 {
@@ -279,7 +272,7 @@ int hgeGUI::Update(float dt)
 		}
 	}
 
-// Handle keys	
+// Handle keys
 
 	key=hge->Input_GetKey();
 	if(((navmode & HGEGUI_LEFTRIGHT) && key==HGEK_LEFT) ||
@@ -373,7 +366,6 @@ int hgeGUI::Update(float dt)
 		}
 
 		if(ctrlOver) {ctrlOver->MouseOver(false); ctrlOver=0;}
-
 	}
 
 	return 0;
@@ -392,6 +384,3 @@ bool hgeGUI::ProcessCtrl(hgeGUIObject *ctrl)
 
 	return bResult;
 }
-
-
-

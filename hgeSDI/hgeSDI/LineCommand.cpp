@@ -12,13 +12,11 @@
 #include "GLine.h"
 #include "GObjectManager.h"
 
-
 LineCommand::LineCommand()
 {
 }
 LineCommand::~LineCommand()
 {
-
 }
 void LineCommand::OnProcessCommand()
 {
@@ -32,19 +30,19 @@ void LineCommand::OnProcessCommand()
 			pcommand->EnableSubCommand(
 				(laststep.step==CSI_RESUME)?false:true,
 				SSC_UNDO,
-				SSC_REDO, 
+				SSC_REDO,
 				SSC_TERMINAL,
 				SSC_NULL);
 		}
 	}
 	UpdateLastStep();
-	
+
 	int ret = -1;
 
 	if (step == CSI_INIT)
 	{
 		pcommand->StepTo(
-			CSI_LINE_WANTX1, 
+			CSI_LINE_WANTX1,
 			CWP_XY_B);
 	}
 	else if (step == CSI_LINE_WANTX1)

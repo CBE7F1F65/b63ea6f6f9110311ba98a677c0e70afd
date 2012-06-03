@@ -1,6 +1,5 @@
 #pragma once
 
-
 // UICommandEdit
 
 class UICommandEdit : public CEdit
@@ -22,5 +21,3 @@ public:
 	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };
-
-

@@ -51,4 +51,3 @@ public:
 
 	list<GObject*> children;
 };
-

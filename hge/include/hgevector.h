@@ -6,10 +6,8 @@
 ** hgeVector helper class
 */
 
-
 #ifndef HGEVECTOR_H
 #define HGEVECTOR_H
-
 
 #include "hge.h"
 /************************************************************************/
@@ -45,7 +43,7 @@ public:
 	float		Dot(const hgeVector *v) const { return x*v->x + y*v->y + z*v->z; }
 	float		Length() const { return sqrtf(Dot(this)); }
 	float		Angle(const hgeVector *v = 0) const;
-	
+
 	void		Clamp(const float max) { if(Length() > max)	{ Normalize(); x *= max; y *= max; z *= max; } }
 	hgeVector*	Normalize() { float rc=InvSqrt(Dot(this)); x*=rc; y*=rc; z*=rc; return this; }
 	hgeVector	Cross(const hgeVector * v) const
@@ -57,7 +55,4 @@ inline hgeVector operator* (const float s, const hgeVector &v)		{ return v*s; }
 inline float operator^ (const hgeVector &v, const hgeVector &u) { return v.Angle(&u); }
 inline float operator% (const hgeVector &v, const hgeVector &u) { return v.Dot(&u); }
 
-
 #endif
-
-

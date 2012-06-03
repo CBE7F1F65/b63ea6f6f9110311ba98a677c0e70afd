@@ -27,7 +27,6 @@ public:
 };
 
 class SubCommandStrInfo{
-
 public:
 	SubCommandStrInfo()
 	{
@@ -64,7 +63,6 @@ public:
 	string str;
 };
 
-
 #define INIS_NODENAME		"NodeName"
 #define INIS_COMMANDLOG		"CommandLog"
 
@@ -77,7 +75,6 @@ public:
 #define ININ_DES		"Description"
 #define ININ_PROMPT		"Prompt"
 #define ININ_COMMENT	"Comment"
-
 
 #define INIS_PERFORMANCE	"Performance"
 #define ININ_UNDOMAX	"UnDoMax"
@@ -162,7 +159,6 @@ public:
 		return subcinfo[ssc].description.c_str();
 	};
 
-
 	/************************************************************************
 
 	string strNName;
@@ -209,7 +205,7 @@ public:
 	_CLFDEF(	FinishSubCommand,	"Done"	);
 	_CLFDEF(	UnDo,	"Processing UnDo"	);
 	_CLFDEF(	ReDo,	"Processing ReDo"	);
-	
+
 #undef _CLFDEF
 
 #define _NNFDEF(STRNAME, DEF)	\

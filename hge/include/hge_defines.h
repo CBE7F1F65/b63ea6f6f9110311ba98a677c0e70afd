@@ -410,7 +410,6 @@ typedef enum _D3DTRANSFORMSTATETYPE {
 #endif
 }D3DTRANSFORMSTATETYPE;
 
-
 #ifndef D3DMATRIX_DEFINED
 typedef struct _D3DMATRIX {
 	union {
@@ -419,7 +418,6 @@ typedef struct _D3DMATRIX {
 			float        _21, _22, _23, _24;
 			float        _31, _32, _33, _34;
 			float        _41, _42, _43, _44;
-
 		};
 		float m[4][4];
 	};

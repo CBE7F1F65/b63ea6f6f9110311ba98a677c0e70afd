@@ -119,7 +119,7 @@ int hgeEffectSystem::Load(const char * filename, HTEXTURE tex /* = 0 */, HTEXTUR
 		memcpy(&_ID, _content + _offset, sizeof(WORD));
 		_offset += sizeof(WORD);
 		if((_ID & 0xff) == 0)
-		{			
+		{
 			hgeEffectEmitterInfo emitterInfo;
 			memcpy(&emitterInfo, (hgeEffectEmitterInfo *)(_content + _offset), sizeof(hgeEffectEmitterInfo));
 
@@ -130,7 +130,7 @@ int hgeEffectSystem::Load(const char * filename, HTEXTURE tex /* = 0 */, HTEXTUR
 		{
 			hgeEffectAffectorInfo affectorInfo;
 			memcpy(&affectorInfo, (hgeEffectAffectorInfo *)(_content + _offset), sizeof(hgeEffectAffectorInfo));
-			
+
 			AddAffector(_ID>>8, _ID & 0xff, &affectorInfo);
 			_offset += sizeof(hgeEffectAffectorInfo);
 		}
@@ -606,7 +606,7 @@ void hgeEffectSystem::UpdateColorValue(DWORD * value, DWORD * bufferValue, hgeEf
 			_bufferr = hge->Random_Int(GETR(ecolmin), GETR(ecolmax), true);
 			_bufferg = hge->Random_Int(GETG(ecolmin), GETG(ecolmax), true);
 			_bufferb = hge->Random_Int(GETB(ecolmin), GETB(ecolmax), true);
-		}		
+		}
 		if(eai->nAffectorEndTime > nAge)
 		{
 			int divisor = eai->nAffectorEndTime - nAge;
@@ -641,7 +641,6 @@ void hgeEffectSystem::UpdateColorValue(DWORD * value, DWORD * bufferValue, hgeEf
 		_r += (int)((eai->fIncrementScale) * _bufferr + GETR(*accelcol) * _age);
 		_g += (int)((eai->fIncrementScale) * _bufferg + GETG(*accelcol) * _age);
 		_b += (int)((eai->fIncrementScale) * _bufferb + GETB(*accelcol) * _age);
-
 	}
 	if(_a > 0xff)
 		_a = 0xff;

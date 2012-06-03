@@ -75,12 +75,10 @@ extern	const	unsigned int	m_alloc_realloc;
 extern	const	unsigned int	m_alloc_free;
 extern	const	unsigned int	m_alloc_memalign;
 
-
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Used by the macros
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-	
 void		m_setOwner(const char *file, const unsigned int line, const char *func);
 
 // ---------------------------------------------------------------------------------------------------------------------------------
@@ -124,7 +122,6 @@ unsigned int	m_calcAllUnused();
 void		m_dumpAllocUnit(const sAllocUnit *allocUnit, const char *prefix);
 void		m_dumpMemoryReport();
 sMStats		m_getMemoryStatistics();
-
 
 #endif // _H_MMGR
 

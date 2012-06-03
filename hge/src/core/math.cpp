@@ -69,7 +69,7 @@ D3DXMATRIX * CALL HGE_Impl::Math_MatrixRotationX( D3DXMATRIX *pOut, float angle 
 #ifdef __WIN32
 	D3DXMatrixRotationX(pOut, angle);
 #else
-	
+
 	float sinval=sinf(angle);
 	float cosval=cosf(angle);
 

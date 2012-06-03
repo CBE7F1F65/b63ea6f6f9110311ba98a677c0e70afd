@@ -13,13 +13,11 @@ IMPLEMENT_DYNAMIC(UIPopupMenu, CMFCPopupMenu)
 
 UIPopupMenu::UIPopupMenu()
 {
-
 }
 
 UIPopupMenu::~UIPopupMenu()
 {
 }
-
 
 BEGIN_MESSAGE_MAP(UIPopupMenu, CMFCPopupMenu)
 	ON_WM_CREATE()
@@ -27,12 +25,7 @@ BEGIN_MESSAGE_MAP(UIPopupMenu, CMFCPopupMenu)
 //	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
-
-
 // UIPopupMenu 消息处理程序
-
-
-
 
 void UIPopupMenu::PostNcDestroy()
 {
@@ -52,7 +45,6 @@ void UIPopupMenu::PostNcDestroy()
 //	CMFCPopupMenu::PostNcDestroy();
 }
 
-
 int UIPopupMenu::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CMFCPopupMenu::OnCreate(lpCreateStruct) == -1)
@@ -69,7 +61,6 @@ int UIPopupMenu::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	return 0;
 }
 
-
 void UIPopupMenu::OnClose()
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
@@ -83,7 +74,6 @@ void UIPopupMenu::OnClose()
 
 void UIPopupMenu::Hide( bool bForce/*=false*/ )
 {
-
 }
 
 //void UIPopupMenu::OnMouseMove(UINT nFlags, CPoint point)

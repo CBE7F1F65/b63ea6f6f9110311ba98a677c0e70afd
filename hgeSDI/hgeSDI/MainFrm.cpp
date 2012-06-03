@@ -1,9 +1,9 @@
-// 这段 MFC 示例源代码演示如何使用 MFC Microsoft Office Fluent 用户界面 
+// 这段 MFC 示例源代码演示如何使用 MFC Microsoft Office Fluent 用户界面
 // (“Fluent UI”)。该示例仅供参考，
-// 用以补充《Microsoft 基础类参考》和 
+// 用以补充《Microsoft 基础类参考》和
 // MFC C++ 库软件随附的相关电子文档。
 // 复制、使用或分发 Fluent UI 的许可条款是单独提供的。
-// 若要了解有关 Fluent UI 许可计划的详细信息，请访问  
+// 若要了解有关 Fluent UI 许可计划的详细信息，请访问
 // http://msdn.microsoft.com/officeui。
 //
 // 版权所有(C) Microsoft Corporation
@@ -65,6 +65,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CFrameWndEx::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
+	MainInterface::getInstance().OnPreInit();
+
 //	BOOL bNameValid;
 	// 基于持久值设置视觉管理器和样式
 	OnApplicationLook(theApp.m_nAppLook);
@@ -87,10 +89,9 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	*/
 	m_wndStatusBar.AddElement(new CMFCRibbonStatusBarPane(ID_STATUSBAR_PANE1, StringManager::getInstance().GetStatusPaneLeftName()/*strTitlePane1*/, TRUE), StringManager::getInstance().GetStatusPaneLeftName()/*strTitlePane1*/);
 	m_wndStatusBar.AddExtendedElement(new CMFCRibbonStatusBarPane(ID_STATUSBAR_PANE2, StringManager::getInstance().GetStatusPaneRightName()/*strTitlePane2*/, TRUE), /*strTitlePane2*/StringManager::getInstance().GetStatusPaneRightName());
-	
+
 	RECT rect;
 	GetClientRect(&rect);
-
 
 	int cwidth = rect.right-rect.left;
 	int cheight = rect.bottom-rect.top;
@@ -115,11 +116,11 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndUILayerPane.DockToWindow(&m_wndUIHistoryPane, CBRS_ALIGN_BOTTOM);
 
 	m_wndUIFloatingEdit.Create(WS_CHILD|WS_VISIBLE, CRect(0, 0, 0, 0), this, ID_UI_FLOATINGCOMMAND);
-/*	
+/*
 	m_wndUIFloatingCommand.Create(NULL,
 		WS_CHILD | WS_VISIBLE | CBRS_FLOAT_MULTI,
 		CRect(0, 0, 0, 0), this, ID_UI_FLOATINGCOMMAND);
-	*/	
+	*/
 
 //	m_wndUIFloatingCommand.ShowWindow(SW_HIDE);
 
@@ -202,7 +203,6 @@ void CMainFrame::Dump(CDumpContext& dc) const
 	CFrameWndEx::Dump(dc);
 }
 #endif //_DEBUG
-
 
 // CMainFrame 消息处理程序
 
@@ -315,7 +315,6 @@ void CMainFrame::OnUpdateViewCommandPane(CCmdUI *pCmdUI)
 	pCmdUI->SetCheck(m_wndUICommandPane.IsPaneVisible());
 }
 
-
 void CMainFrame::OnOptions()
 {
 	CMFCRibbonCustomizeDialog *pOptionsDlg = new CMFCRibbonCustomizeDialog(this, &m_wndRibbonBar);
@@ -388,20 +387,17 @@ void CMainFrame::OnUpdateEditcommand(CCmdUI *pCmdUI)
 	pCmdUI->Enable(TRUE);
 }
 
-
 void CMainFrame::OnUpdateEditcommandlog(CCmdUI *pCmdUI)
 {
 	// TODO: 在此添加命令更新用户界面处理程序代码
 	pCmdUI->Enable(TRUE);
 }
 
-
 void CMainFrame::OnUpdateStatusbarPane1(CCmdUI *pCmdUI)
 {
 	// TODO: 在此添加命令更新用户界面处理程序代码
 	pCmdUI->Enable(TRUE);
 }
-
 
 void CMainFrame::OnUpdateStatusbarPane2(CCmdUI *pCmdUI)
 {
@@ -418,15 +414,14 @@ void CMainFrame::CallShowContextMenu( int x, int y )
 	m_wndUIPopupMenu.Create(this, x, y, hmenuPopup);
 }
 
-
 void CMainFrame::CallEnableFloatCommand( int vk/*=0*/ )
 {
 	m_wndUIFloatingEdit.Show(vk);
 }
 
-bool CMainFrame::AddHistory( const char * desc, const char * commandstr )
+bool CMainFrame::AddHistory( const char * desc, const char * commandstr, int command )
 {
-	return m_wndUIHistoryPane.AddHistory(desc, commandstr);
+	return m_wndUIHistoryPane.AddHistory(desc, commandstr, command);
 }
 
 bool CMainFrame::ChangeCurrentHistory( int step )

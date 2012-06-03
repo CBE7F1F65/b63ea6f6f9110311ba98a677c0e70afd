@@ -6,7 +6,6 @@
 ** System layer API
 */
 
-
 #ifndef HGE_H
 #define HGE_H
 
@@ -306,7 +305,6 @@ typedef DWORD HD3DFONT;
 #define SETG(col,g)		(((col) & 0xFFFF00FF) + (DWORD(g)<<8))
 #define SETB(col,b)		(((col) & 0xFFFFFF00) + DWORD(b))
 
-
 /*
 ** HGE Blending constants
 */
@@ -319,7 +317,6 @@ typedef DWORD HD3DFONT;
 
 #define BLEND_DEFAULT		(BLEND_COLORMUL | BLEND_ALPHABLEND | BLEND_NOZWRITE)
 #define BLEND_DEFAULT_Z		(BLEND_COLORMUL | BLEND_ALPHABLEND | BLEND_ZWRITE)
-
 
 /*
 ** HGE System state constants
@@ -335,7 +332,6 @@ typedef DWORD HD3DFONT;
 #define HGE_STATE_INTTEST		0x0400
 #define HGE_STATE_STRINGTEST	0x0500
 
-
 /************************************************************************/
 /* Thes defines are modified by h5nc (h5nc@yahoo.com.cn)                */
 /************************************************************************/
@@ -344,18 +340,18 @@ enum hgeBoolState
 	HGE_WINDOWED		= 0x0101,    // bool		run in window?		(default: false)
 	HGE_ZBUFFER			= 0x0102,    // bool		use z-buffer?		(default: false)
 	HGE_TEXTUREFILTER	= 0x0103,    // bool		texture filtering?	(default: true)
-	
+
 	HGE_USESOUND		= 0x0104,    // bool		use BASS for sound?	(default: true)
-	
+
 	HGE_DONTSUSPEND		= 0x0105,	// bool		focus lost:suspend?	(default: false)
 	HGE_HIDEMOUSE		= 0x0106,	// bool		hide system cursor?	(default: true)
-	
+
 	HGE_2DMODE			= 0x0107,	// bool		2d mode? (default: true)
 
 	HGE_MANAGELOOP		= 0x0108,	// bool		manage loop? (default: true)
 	HGE_USEDINPUT		= 0x0109,	// bool		use dinput? (default: true)
 	HGE_NOWMPAINT		= 0x010A,	// bool		no WM_PAINT render? (default: false)
-	
+
 	HGEBOOLSTATE_FORCE_DWORD = 0x7FFFFFFF
 };
 
@@ -369,7 +365,7 @@ enum hgeFuncState
 	HGE_EXITFUNC		= 0x0206,   // bool*()	exit function		(default: NULL)
 
 	HGE_LOADTEXTUREFUNC	= 0x0211,	// bool*()	load texture function	(default: NULL)
-	
+
 	HGEFUNCSTATE_FORCE_DWORD = 0x7FFFFFFF
 };
 
@@ -377,7 +373,7 @@ enum hgeHwndState
 {
 	HGE_HWND			= 0x0301,	// int		window handle: read only
 	HGE_HWNDPARENT		= 0x0302,	// int		parent win handle	(default: 0)
-	
+
 	HGEHWNDSTATE_FORCE_DWORD = 0x7FFFFFFF
 };
 
@@ -386,12 +382,12 @@ enum hgeIntState
 	HGE_SCREENWIDTH		= 0x0401,   // int		screen width		(default: 800)
 	HGE_SCREENHEIGHT	= 0x0402,   // int		screen height		(default: 600)
 	HGE_SCREENBPP		= 0x0403,   // int		screen bitdepth		(default: 32) (desktop bpp in windowed mode)
-	
+
 	HGE_SAMPLERATE		= 0x0404,   // int		sample rate			(default: 44100)
 	HGE_SAMPLEVOLUME	= 0x0405,	// int		global sample volume(default: 10000)
 	HGE_FXVOLUME		= 0x0406,   // int		global fx volume	(default: 10000)
 //	HGE_MUSVOLUME		= 0x0406,   // int		global music volume	(default: 10000)
-	HGE_STREAMVOLUME	= 0x0407,   // int		global music volume	(default: 10000)	
+	HGE_STREAMVOLUME	= 0x0407,   // int		global music volume	(default: 10000)
 	HGE_FPS				= 0x0408,	// int		fixed fps			(default: HGEFPS_UNLIMITED)
 
 	/************************************************************************/
@@ -402,7 +398,7 @@ enum hgeIntState
 	HGE_FRAMESKIP		= 0x040A,	//int		frame skip			(default: 0)
 	HGE_RENDERSKIP		= 0x040B,	//int		render skip			(default: 0)
 	//End
-	
+
 	HGEINTSTATE_FORCE_DWORD = 0x7FFFFFF
 };
 
@@ -410,7 +406,7 @@ enum hgeStringState
 {
 	HGE_ICON			= 0x0501,   // char*	icon resource		(default: NULL)
 	HGE_TITLE			= 0x0502,   // char*	window title		(default: "HGE")
-	
+
 	HGE_INIFILE			= 0x0503,   // char*	ini file			(default: NULL) (meaning no file)
 	HGE_LOGFILE			= 0x0504,   // char*	log file			(default: NULL) (meaning no file)
 
@@ -426,7 +422,6 @@ enum hgeStringState
 ** Callback protoype used by HGE
 */
 typedef bool (*hgeCallback)();
-
 
 /*
 ** HGE_FPS system state special constants
@@ -447,13 +442,12 @@ typedef bool (*hgeCallback)();
 #define HGEPRIM_TRIPLES		3
 #define HGEPRIM_QUADS		4
 
-
 /*
 ** HGE Vertex structure
 */
 struct hgeVertex
 {
-	float			x, y;		// screen position    
+	float			x, y;		// screen position
 	float			z;			// Z-buffer depth 0..1
 	DWORD			col;		// color
 	float			tx, ty;		// texture coordinates
@@ -474,7 +468,6 @@ struct pspVertexUV
 };
 #endif // __PSP
 
-
 /*
 ** HGE Triple structure
 */
@@ -485,7 +478,6 @@ struct hgeTriple
 	int				blend;
 };
 
-
 /*
 ** HGE Quad structure
 */
@@ -495,7 +487,6 @@ struct hgeQuad
 	HTEXTURE		tex;
 	int				blend;
 };
-
 
 /*
 ** HGE Input Event structure
@@ -511,7 +502,6 @@ struct hgeInputEvent
 	float	y;				// mouse cursor y-coordinate
 };
 
-
 /*
 ** HGE Input Event type constants
 */
@@ -521,7 +511,6 @@ struct hgeInputEvent
 #define INPUT_MBUTTONUP		4
 #define INPUT_MOUSEMOVE		5
 #define INPUT_MOUSEWHEEL	6
-
 
 /*
 ** HGE Input Event flags
@@ -554,7 +543,7 @@ struct hgeMemoryFile
 **HGE Channel Sync Info
 */
 
-struct hgeChannelSyncInfo 
+struct hgeChannelSyncInfo
 {
 	QWORD startPos;
 	QWORD allLength;
@@ -569,13 +558,13 @@ struct hgeChannelSyncInfo
 **HGE Point
 */
 
-struct hge2DPoint 
+struct hge2DPoint
 {
 	float x;
 	float y;
 };
 
-struct hge3DPoint 
+struct hge3DPoint
 {
 	float x;
 	float y;
@@ -1001,10 +990,8 @@ public:
 	virtual int			CALL	Gfx_RenderText(HD3DFONT font, const char * text, float x, float y, float w, float h, DWORD color = 0xffffffff) = 0;
 	virtual int			CALL	Gfx_RenderTextToTarget(HTEXTURE * tex, HTARGET tar, HD3DFONT font, const char * text, float x, float y, float w, float h, DWORD color = 0xffffffff) = 0;
 	// end
-
 };
 
 extern "C" { EXPORT HGE * CALL hgeCreate(int ver); }
 
 #endif
-

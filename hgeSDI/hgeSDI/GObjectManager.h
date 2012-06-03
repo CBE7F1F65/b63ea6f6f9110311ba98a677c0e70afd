@@ -23,7 +23,7 @@ private:
 	// Don't implement
 
 public:
-	
+
 	void Init();
 	void Release();
 	void Update();

@@ -5,14 +5,12 @@
 #include <sstream>
 #include <iomanip>
 
-
 CommandTemplate::CommandTemplate(void)
 {
 	pguic = &GUICoordinate::getInstance();
 	pmain = &MainInterface::getInstance();
 	pcommand = &Command::getInstance();
 }
-
 
 CommandTemplate::~CommandTemplate(void)
 {
@@ -25,7 +23,6 @@ void CommandTemplate::ReleaseTarget()
 
 void CommandTemplate::RenderToTarget()
 {
-
 }
 
 int CommandTemplate::OnNormalProcessCommand( int cursorindex/*=-1*/ )

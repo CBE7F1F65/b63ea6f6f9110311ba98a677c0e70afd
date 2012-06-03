@@ -6,14 +6,11 @@
 ** hgeResourceManager resources implementation
 */
 
-
 #include "../../include/hgeresource.h"
 #include "parser.h"
 #include "resources.h"
 
-
 HGE *ResDesc::hge=0;
-
 
 /////////////// COMMON //
 
@@ -48,7 +45,7 @@ bool ScriptSkipToNextParameter(RScriptParser *sp, bool bIgnore)
 		if(sp->tokentype == TTCLOSEBLOCK) { if(bIgnore) {sp->put_back(); return true;} return false; }
 		if((sp->tokentype > TTRES__FIRST && sp->tokentype < TTRES__LAST)  || sp->tokentype == TTEND)
 		{
-			sp->put_back(); 
+			sp->put_back();
 			if(bIgnore) return true;
 			sp->ScriptPostError("'}' missed, "," encountered.");
 			return false;
@@ -112,7 +109,7 @@ void ScriptParseBlendMode(RScriptParser *sp, int *blend)
 	{
 		sp->get_token();
 		if(sp->tokentype != TTEQUALS && sp->tokentype != TTSEPARATOR) { sp->put_back(); return; }
-		
+
 		switch(sp->get_token())
 		{
 			case TTCON_COLORMUL:
@@ -265,7 +262,6 @@ void ScriptParseSpriteAnim(RScriptParser *sp, RSprite *rc, bool anim)
 		}
 	}
 }
-
 
 /////////////// RScript //
 
@@ -483,7 +479,6 @@ void RMusic::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name, 
 {
 //	ScriptParseFileResource(rm, sp, name, basename, new RMusic(), RES_MUSIC);
 
-
 	RMusic *rc, *base;
 
 	rc=new RMusic();
@@ -649,11 +644,11 @@ void RSprite::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
 //		rc->rotation=0.0f;
 //		rc->collision=HGECOL_RECT;
 	}
-	
+
 	rc->handle=0;
 	strcpy(rc->name, name);
 
-	ScriptParseSpriteAnim(sp, rc, false);	
+	ScriptParseSpriteAnim(sp, rc, false);
 	AddRes(rm, RES_SPRITE, rc);
 }
 
@@ -713,11 +708,11 @@ void RAnimation::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *na
 		rc->fps=12.0f;
 		rc->mode=HGEANIM_FWD | HGEANIM_LOOP;
 	}
-	
+
 	rc->handle=0;
 	strcpy(rc->name, name);
 
-	ScriptParseSpriteAnim(sp, rc, true);	
+	ScriptParseSpriteAnim(sp, rc, true);
 	AddRes(rm, RES_ANIMATION, rc);
 }
 
@@ -837,7 +832,7 @@ void RFont::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name, c
 				break;
 		}
 	}
-	
+
 	AddRes(rm, RES_FONT, rc);
 }
 
@@ -908,7 +903,7 @@ void RParticle::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *nam
 				break;
 		}
 	}
-	
+
 	AddRes(rm, RES_PARTICLE, rc);
 }
 
@@ -1003,7 +998,7 @@ void RDistort::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name
 				break;
 		}
 	}
-	
+
 	AddRes(rm, RES_DISTORT, rc);
 }
 

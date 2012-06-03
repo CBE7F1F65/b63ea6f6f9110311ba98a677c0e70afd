@@ -13,13 +13,11 @@ IMPLEMENT_DYNAMIC(UIFloatingEditBox, CEdit)
 
 UIFloatingEditBox::UIFloatingEditBox()
 {
-
 }
 
 UIFloatingEditBox::~UIFloatingEditBox()
 {
 }
-
 
 BEGIN_MESSAGE_MAP(UIFloatingEditBox, CEdit)
 	ON_WM_CHAR()
@@ -29,12 +27,7 @@ BEGIN_MESSAGE_MAP(UIFloatingEditBox, CEdit)
 	ON_CONTROL_REFLECT(EN_CHANGE, &UIFloatingEditBox::OnEnChange)
 END_MESSAGE_MAP()
 
-
-
 // UIEditBox 消息处理程序
-
-
-
 
 void UIFloatingEditBox::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
@@ -58,7 +51,6 @@ void UIFloatingEditBox::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 	CWnd::OnChar(nChar, nRepCnt, nFlags);
 }
 
-
 void UIFloatingEditBox::OnKillFocus(CWnd* pNewWnd)
 {
 	CWnd::OnKillFocus(pNewWnd);
@@ -66,7 +58,6 @@ void UIFloatingEditBox::OnKillFocus(CWnd* pNewWnd)
 	Hide();
 	// TODO: 在此处添加消息处理程序代码
 }
-
 
 void UIFloatingEditBox::OnSetFocus(CWnd* pOldWnd)
 {
@@ -102,7 +93,6 @@ int UIFloatingEditBox::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	return 0;
 }
-
 
 void UIFloatingEditBox::OnEnChange()
 {

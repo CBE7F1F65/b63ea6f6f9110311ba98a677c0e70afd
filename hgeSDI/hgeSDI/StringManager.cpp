@@ -1,12 +1,10 @@
 #include "StdAfx.h"
 #include "StringManager.h"
 
-
 StringManager::StringManager(void)
 {
 	hge = hgeCreate(HGE_VERSION);
 }
-
 
 StringManager::~StringManager(void)
 {
@@ -80,7 +78,7 @@ void StringManager::FillSCInfo()
 #define _LSET(COMM, LSTR, DES, CMT)	\
 	scinfo[COMM].str = LSTR;	\
 	scinfo[COMM].description = hge->Ini_GetString(INIS_COMMAND_PREFIX LSTR, ININ_DES, DES);	\
-	scinfo[COMM].comment = hge->Ini_GetString(INIS_COMMAND_PREFIX LSTR, ININ_COMMENT, CMT)	
+	scinfo[COMM].comment = hge->Ini_GetString(INIS_COMMAND_PREFIX LSTR, ININ_COMMENT, CMT)
 #define _SSET(COMM, SSTR)	\
 	scinfo[COMM].shortstr =  hge->Ini_GetString(INIS_COMMAND_PREFIX SSTR, ININ_SSTR, SSTR)
 #define _BSET(COMM, LSTR, SSTR, DES, CMT)	\
@@ -105,7 +103,6 @@ void StringManager::FillSCInfo()
 
 void StringManager::FillWPInfo()
 {
-
 #define _PSET(INDEX, STR)	\
 	wpinfo[INDEX].str = hge->Ini_GetString(INIS_CWP, STR, STR)
 
@@ -140,7 +137,6 @@ void StringManager::FillSubSCInfo()
 	tstr += STR;	\
 	tstr += ")";	\
 	subcinfo[INDEX].promptstr = tstr
-
 
 	// Keep format for Excel Editing
 	_SUBSET(	SSC_UNDO,	"UnDo",	"U",	""	);

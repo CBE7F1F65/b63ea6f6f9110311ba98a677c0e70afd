@@ -1,6 +1,5 @@
 #pragma once
 
-
 // UIPopupMenu
 
 class UIPopupMenu : public CMFCPopupMenu
@@ -21,5 +20,3 @@ public:
 	afx_msg void OnClose();
 //	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 };
-
-

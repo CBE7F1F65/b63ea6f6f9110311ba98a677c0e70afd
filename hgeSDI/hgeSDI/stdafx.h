@@ -1,9 +1,9 @@
-// 这段 MFC 示例源代码演示如何使用 MFC Microsoft Office Fluent 用户界面 
+// 这段 MFC 示例源代码演示如何使用 MFC Microsoft Office Fluent 用户界面
 // (“Fluent UI”)。该示例仅供参考，
-// 用以补充《Microsoft 基础类参考》和 
+// 用以补充《Microsoft 基础类参考》和
 // MFC C++ 库软件随附的相关电子文档。
 // 复制、使用或分发 Fluent UI 的许可条款是单独提供的。
-// 若要了解有关 Fluent UI 许可计划的详细信息，请访问  
+// 若要了解有关 Fluent UI 许可计划的详细信息，请访问
 // http://msdn.microsoft.com/officeui。
 //
 // 版权所有(C) Microsoft Corporation
@@ -30,14 +30,10 @@
 // 关闭 MFC 对某些常见但经常可放心忽略的警告消息的隐藏
 #define _AFX_ALL_WARNINGS
 
-
 #include <afxwin.h>         // MFC 核心组件和标准组件
 #include <afxext.h>         // MFC 扩展
 
-
 #include <afxdisp.h>        // MFC 自动化类
-
-
 
 #ifndef _AFX_NO_OLE_SUPPORT
 #include <afxdtctl.h>           // MFC 对 Internet Explorer 4 公共控件的支持
@@ -48,12 +44,7 @@
 
 #include <afxcontrolbars.h>     // 功能区和控件条的 MFC 支持
 
-
-
 #include "MainDependency.h"
-
-
-
 
 #ifdef _UNICODE
 #if defined _M_IX86
@@ -64,5 +55,3 @@
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 #endif
 #endif
-
-

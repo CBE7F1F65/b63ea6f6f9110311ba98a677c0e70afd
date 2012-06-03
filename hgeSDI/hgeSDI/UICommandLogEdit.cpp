@@ -5,20 +5,17 @@
 #include "hgeSDI.h"
 #include "UICommandLogEdit.h"
 
-
 // UICommandLogEdit
 
 IMPLEMENT_DYNAMIC(UICommandLogEdit, CEdit)
 
 UICommandLogEdit::UICommandLogEdit()
 {
-
 }
 
 UICommandLogEdit::~UICommandLogEdit()
 {
 }
-
 
 BEGIN_MESSAGE_MAP(UICommandLogEdit, CEdit)
 END_MESSAGE_MAP()
@@ -59,9 +56,6 @@ void UICommandLogEdit::KeepLogLength()
 	}
 }
 // UICommandLogEdit 消息处理程序
-
-
-
 
 BOOL UICommandLogEdit::PreTranslateMessage(MSG* pMsg)
 {

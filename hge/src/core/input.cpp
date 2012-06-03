@@ -65,7 +65,6 @@ char *KeyNames[] =
  "?", "?", "?"
 };
 
-
 bool CALL HGE_Impl::Input_GetEvent(hgeInputEvent *event)
 {
 	CInputEventList *eptr;
@@ -78,7 +77,7 @@ bool CALL HGE_Impl::Input_GetEvent(hgeInputEvent *event)
 		delete eptr;
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -86,7 +85,6 @@ void CALL HGE_Impl::Input_GetMousePos(float *x, float *y)
 {
 	*x=Xpos; *y=Ypos;
 }
-
 
 void CALL HGE_Impl::Input_SetMousePos(float x, float y)
 {
@@ -156,9 +154,7 @@ int CALL HGE_Impl::Input_GetChar()
 	return Char;
 }
 
-
 //////// Implementation ////////
-
 
 void HGE_Impl::_InputInit()
 {
@@ -531,7 +527,7 @@ void HGE_Impl::_BuildEvent(int type, int key, int scan, int flags, int x, int y)
 		pt.x=(int)Xpos; pt.y=(int)Ypos;
 		bCaptured=false;
 	}
-	
+
 	if(kbstate[VK_SHIFT] & 0x80) flags|=HGEINP_SHIFT;
 	if(kbstate[VK_CONTROL] & 0x80) flags|=HGEINP_CTRL;
 	if(kbstate[VK_MENU] & 0x80) flags|=HGEINP_ALT;
@@ -557,7 +553,7 @@ void HGE_Impl::_BuildEvent(int type, int key, int scan, int flags, int x, int y)
 		eptr->event.y=(float)pt.y;
 	}
 
-	eptr->next=0; 
+	eptr->next=0;
 
 	if(!queue) queue=eptr;
 	else
@@ -574,7 +570,6 @@ void HGE_Impl::_BuildEvent(int type, int key, int scan, int flags, int x, int y)
 	else if(eptr->event.type==INPUT_MOUSEMOVE)
 	{
 		Xpos=eptr->event.x;Ypos=eptr->event.y;
-
 	}
 	else if(eptr->event.type==INPUT_MOUSEWHEEL)
 	{
@@ -586,9 +581,9 @@ void HGE_Impl::_BuildEvent(int type, int key, int scan, int flags, int x, int y)
 void HGE_Impl::_ClearQueue()
 {
 	CInputEventList *nexteptr, *eptr=queue;
-	
+
 	memset(&keyz, 0, sizeof(keyz));
-	
+
 	while(eptr)
 	{
 		nexteptr=eptr->next;
@@ -657,7 +652,6 @@ bool HGE_Impl::_DIKInit()
 	}
 #endif
 	return true;
-
 }
 
 bool HGE_Impl::_DIJInit()
@@ -701,8 +695,8 @@ bool HGE_Impl::_DIJInit()
 			joyRange.lMin = -24;
 			joyRange.lMax = 24;
 
-			joyRange.diph.dwSize       = sizeof(DIPROPRANGE); 
-			joyRange.diph.dwHeaderSize = sizeof(DIPROPHEADER); 
+			joyRange.diph.dwSize       = sizeof(DIPROPRANGE);
+			joyRange.diph.dwHeaderSize = sizeof(DIPROPHEADER);
 			joyRange.diph.dwObj        = DIJOFS_X;
 			joyRange.diph.dwHow        = DIPH_BYOFFSET;
 
@@ -711,8 +705,8 @@ bool HGE_Impl::_DIJInit()
 			joyRange.lMin = -24;
 			joyRange.lMax = 24;
 
-			joyRange.diph.dwSize       = sizeof(DIPROPRANGE); 
-			joyRange.diph.dwHeaderSize = sizeof(DIPROPHEADER); 
+			joyRange.diph.dwSize       = sizeof(DIPROPRANGE);
+			joyRange.diph.dwHeaderSize = sizeof(DIPROPHEADER);
 			joyRange.diph.dwObj        = DIJOFS_Y;
 			joyRange.diph.dwHow        = DIPH_BYOFFSET;
 
@@ -745,7 +739,6 @@ bool HGE_Impl::_DIJInit()
 		{
 			joyable = true;
 		}
-
 	}
 
 	if (joyable)
@@ -804,7 +797,7 @@ bool HGE_Impl::_DIMInit()
 	dipdw.diph.dwObj = 0;
 	dipdw.diph.dwHow = DIPH_DEVICE;
 	dipdw.dwData = DIPROPAXISMODE_ABS;
-	lpDIMDevice->SetProperty(DIPROP_AXISMODE, &dipdw.diph); 
+	lpDIMDevice->SetProperty(DIPROP_AXISMODE, &dipdw.diph);
 	*/
 	if (FAILED(lpDIMDevice->Acquire()))
 	{
@@ -837,11 +830,10 @@ bool HGE_Impl::_DIMInit()
 	offsetMouseState.lX = -offsetMouseState.lX;
 	offsetMouseState.lY = -offsetMouseState.lY;
 	offsetMouseState.lZ = -offsetMouseState.lZ;
-	
+
 	mouseState.lX = lastMouseState.lX = pt.x;
 	mouseState.lY = lastMouseState.lY = pt.y;
 	*/
-	
 
 #endif
 	return true;
@@ -885,7 +877,7 @@ int HGE_Impl::_DIInit()
 	sceCtrlSetSamplingCycle(0);
 	sceCtrlSetSamplingMode(PSP_CTRL_MODE_ANALOG);
 #elif defined __IPHONE
-	
+
 #endif
 	return retval;
 }
@@ -1262,6 +1254,5 @@ void HGE_Impl::Input_SetTouchPos(int touch, float x, float y)
 	touchesState[touch].x = x;
 	touchesState[touch].y = y;
 }
-
 
 // end

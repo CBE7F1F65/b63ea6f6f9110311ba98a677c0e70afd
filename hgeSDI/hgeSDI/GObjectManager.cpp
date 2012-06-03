@@ -11,7 +11,6 @@ GObjectManager::GObjectManager()
 }
 GObjectManager::~GObjectManager()
 {
-
 }
 
 void GObjectManager::Update()

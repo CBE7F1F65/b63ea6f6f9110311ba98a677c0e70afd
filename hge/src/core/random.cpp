@@ -6,9 +6,7 @@
 ** Core functions implementation: random number generation
 */
 
-
 #include "hge_impl.h"
-
 
 unsigned int g_seed=0;
 unsigned int g_seed_self=0;

@@ -27,7 +27,6 @@
 #define LOADBASSFUNCTION(f) (#f)
 #endif
 
-
 HEFFECT CALL HGE_Impl::Effect_Load(const char *filename, DWORD size)
 {
 	DWORD _size, length, samples;
@@ -118,7 +117,6 @@ HCHANNEL CALL HGE_Impl::Effect_PlayEx(HEFFECT eff, int volume, int pan, float pi
 	}
 	return NULL;
 }
-
 
 void CALL HGE_Impl::Effect_Free(HEFFECT eff)
 {
@@ -230,7 +228,7 @@ void CALL HGE_Impl::Music_SetInstrVolume(HMUSIC music, int instr, int volume)
 {
 	if(hBass)
 	{
-		BASS_MusicSetAttribute(music, BASS_MUSIC_ATTRIB_VOL_INST + instr, volume);		
+		BASS_MusicSetAttribute(music, BASS_MUSIC_ATTRIB_VOL_INST + instr, volume);
 	}
 }
 
@@ -238,7 +236,7 @@ int CALL HGE_Impl::Music_GetInstrVolume(HMUSIC music, int instr)
 {
 	if(hBass)
 	{
-		return BASS_MusicGetAttribute(music, BASS_MUSIC_ATTRIB_VOL_INST + instr);		
+		return BASS_MusicGetAttribute(music, BASS_MUSIC_ATTRIB_VOL_INST + instr);
 	}
 	else return -1;
 }
@@ -247,7 +245,7 @@ void CALL HGE_Impl::Music_SetChannelVolume(HMUSIC music, int channel, int volume
 {
 	if(hBass)
 	{
-		BASS_MusicSetAttribute(music, BASS_MUSIC_ATTRIB_VOL_CHAN + channel, volume);		
+		BASS_MusicSetAttribute(music, BASS_MUSIC_ATTRIB_VOL_CHAN + channel, volume);
 	}
 }
 
@@ -255,7 +253,7 @@ int CALL HGE_Impl::Music_GetChannelVolume(HMUSIC music, int channel)
 {
 	if(hBass)
 	{
-		return BASS_MusicGetAttribute(music, BASS_MUSIC_ATTRIB_VOL_CHAN + channel);		
+		return BASS_MusicGetAttribute(music, BASS_MUSIC_ATTRIB_VOL_CHAN + channel);
 	}
 	else return -1;
 }
@@ -467,7 +465,6 @@ void CALL HGE_Impl::Channel_SetPos(HCHANNEL chn, QWORD pos) {
 	}
 }
 
-
 /************************************************************************/
 /* This function is added by h5nc (h5nc@yahoo.com.cn)                   */
 /************************************************************************/
@@ -523,9 +520,7 @@ bool CALL HGE_Impl::Channel_IsSliding(HCHANNEL channel)
 	return false;
 }
 
-
 //////// Implementation ////////
-
 
 bool HGE_Impl::_SoundInit()
 {
@@ -579,7 +574,7 @@ bool HGE_Impl::_SoundInit()
 */
 	LOADBASSFUNCTION(BASS_StreamCreateFile);
 	LOADBASSFUNCTION(BASS_StreamFree);
-	
+
 	LOADBASSFUNCTION(BASS_ChannelGetInfo);
 	LOADBASSFUNCTION(BASS_ChannelGetAttribute);
 	LOADBASSFUNCTION(BASS_ChannelSetAttribute);
@@ -639,10 +634,9 @@ bool HGE_Impl::_SoundInit()
 void HGE_Impl::_SoundDone()
 {
 	CStreamList *stmItem=streams, *stmNext;
-	
+
 	if(hBass)
 	{
-
 		/************************************************************************/
 		/* This condition is added by h5nc (h5nc@yahoo.com.cn)                  */
 		/************************************************************************/
@@ -653,7 +647,7 @@ void HGE_Impl::_SoundDone()
 			BASS_Free();
 		}
 
-		//int err = BASS_ErrorGetCode(); 
+		//int err = BASS_ErrorGetCode();
 #if defined __WIN32
 		FreeLibrary(hBass);
 #endif
@@ -729,8 +723,3 @@ void HGE_Impl::Channel_RemoveLoop(HCHANNEL channel, hgeChannelSyncInfo * pcsi)
 #endif // __WIN32
 	}
 }
-
-
-
-
-

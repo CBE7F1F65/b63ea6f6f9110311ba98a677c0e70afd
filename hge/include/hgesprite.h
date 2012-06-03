@@ -6,14 +6,11 @@
 ** hgeSprite helper class header
 */
 
-
 #ifndef HGESPRITE_H
 #define HGESPRITE_H
 
-
 #include "hge.h"
 #include "hgerect.h"
-
 
 /*
 ** HGE Sprite class
@@ -28,12 +25,12 @@ public:
 	hgeSprite(HTEXTURE tex, float x, float y, float w, float h);
 	hgeSprite(const hgeSprite &spr);
 	~hgeSprite() { hge->Release(); }
-	
+
 	/************************************************************************/
 	/* This function is added by h5nc (h5nc@yahoo.com.cn)                   */
 	/************************************************************************/
 	void		NewSprite(HTEXTURE tex, float x, float y, float w, float h);
-	
+
 	void		Render(float x, float y);
 	void		RenderEx(float x, float y, float rot, float hscale=1.0f, float vscale=0.0f);
 	void		RenderStretch(float x1, float y1, float x2, float y2);
@@ -91,6 +88,4 @@ public:
 	bool		bXFlip, bYFlip, bHSFlip;
 };
 
-
 #endif
-

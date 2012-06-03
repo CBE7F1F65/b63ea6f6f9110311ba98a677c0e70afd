@@ -6,10 +6,8 @@
 ** hgeGUI default controls header
 */
 
-
 #ifndef HGEGUICTRLS_H
 #define HGEGUICTRLS_H
-
 
 #include "hge.h"
 #include "hgesprite.h"
@@ -17,14 +15,12 @@
 #include "hgerect.h"
 #include "hgegui.h"
 
-
 #define hgeButtonGetState(gui,id)		((hgeGUIButton*)gui->GetCtrl(id))->GetState()
 #define hgeButtonSetState(gui,id,b)		((hgeGUIButton*)gui->GetCtrl(id))->SetState(b)
 #define hgeSliderGetValue(gui,id)		((hgeGUISlider*)gui->GetCtrl(id))->GetValue()
 #define hgeSliderSetValue(gui,id,f)		((hgeGUISlider*)gui->GetCtrl(id))->SetValue(f)
 #define hgeGetTextCtrl(gui,id)			((hgeGUIText*)gui->GetCtrl(id))
 #define hgeGetListboxCtrl(gui,id)		((hgeGUIListbox*)gui->GetCtrl(id))
-
 
 /*
 ** hgeGUIText
@@ -46,7 +42,6 @@ private:
 	int				align;
 	char			text[256];
 };
-
 
 /*
 ** hgeGUIButton
@@ -70,7 +65,6 @@ private:
 	bool			bOldState;
 	hgeSprite		*sprUp, *sprDown;
 };
-
 
 /*
 ** hgeGUISlider
@@ -101,7 +95,6 @@ private:
 	float			sl_w, sl_h;
 	hgeSprite		*sprSlider;
 };
-
 
 /*
 ** hgeGUIListbox
@@ -145,6 +138,5 @@ private:
 	float				mx, my;
 	hgeGUIListboxItem	*pItems;
 };
-
 
 #endif

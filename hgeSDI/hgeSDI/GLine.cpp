@@ -72,7 +72,6 @@ void GStraightLine::OnInit()
 
 void GStraightLine::OnEnter()
 {
-
 }
 
 void GStraightLine::UpdateMidPoint()

@@ -6,16 +6,13 @@
 ** hgeStringTable helper class implementation
 */
 
-
 #include "../../include/hgestrings.h"
 #include <ctype.h>
 
 const char STRHEADERTAG[]="[HGESTRINGTABLE]";
 const char STRFORMATERROR[]="String table %s has incorrect format.";
 
-
 HGE *hgeStringTable::hge=0;
-
 
 hgeStringTable::hgeStringTable(const char *filename)
 {
@@ -26,7 +23,7 @@ hgeStringTable::hgeStringTable(const char *filename)
 	NamedString *str;
 	char str_name[MAXSTRNAMELENGTH];
 	char *str_value, *pvalue;
-	
+
 	hge=hgeCreate(HGE_VERSION);
 	strings=0;
 
@@ -43,7 +40,7 @@ hgeStringTable::hgeStringTable(const char *filename)
 	if(memcmp(desc, STRHEADERTAG, sizeof(STRHEADERTAG)-1))
 	{
 		hge->System_Log(STRFORMATERROR, filename);
-		delete[] desc;	
+		delete[] desc;
 		return;
 	}
 

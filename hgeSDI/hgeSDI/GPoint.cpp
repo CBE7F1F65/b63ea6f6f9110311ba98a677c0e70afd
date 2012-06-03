@@ -2,11 +2,8 @@
 #include "GPoint.h"
 #include "StringManager.h"
 
-
-
 GPoint::GPoint()
 {
-
 }
 GPoint::GPoint( float _x, float _y )
 {
@@ -31,9 +28,7 @@ const char * GPoint::GetTypeName()
 
 GEndPoint::GEndPoint()
 {
-
 }
-
 
 GEndPoint::GEndPoint( float _x, float _y )
 {
@@ -42,7 +37,6 @@ GEndPoint::GEndPoint( float _x, float _y )
 
 GEndPoint::~GEndPoint()
 {
-
 }
 
 const char * GEndPoint::GetTypeName()

@@ -1,12 +1,10 @@
 #include "StdAfx.h"
 #include "ColorManager.h"
 
-
 ColorManager::ColorManager(void)
 {
 	hge = hgeCreate(HGE_VERSION);
 }
-
 
 ColorManager::~ColorManager(void)
 {
@@ -30,6 +28,8 @@ DWORD ColorManager::GetTextColor( int type, int state )
 		case COLORMS_ACTIVE:
 		case COLORMS_NONACTIVE:
 		case COLORMS_EDITABLE:
+		case COLORMS_BACKGROUND:
+		case COLORMS_FRAME:
 			return 0xffffffff;
 		case COLORMS_DISABLED:
 			return 0xff717171;
@@ -48,6 +48,10 @@ DWORD ColorManager::GetTextBkColor( int type, int state )
 			return 0xff596678;
 		case COLORMS_NONACTIVE:
 			return 0xff494949;
+		case COLORMS_BACKGROUND:
+			return 0xff464646;
+		case COLORMS_FRAME:
+			return 0xff333333;
 		case COLORMS_EDITABLE:
 			return 0xff595959;
 		case COLORMS_DISABLED:
@@ -64,5 +68,4 @@ DWORD ColorManager::ARGBToABGR( DWORD col )
 
 void ColorManager::Init()
 {
-
 }

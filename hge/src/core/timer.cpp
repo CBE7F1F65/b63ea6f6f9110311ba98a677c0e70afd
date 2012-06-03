@@ -6,7 +6,6 @@
 ** Core functions implementation: timer
 */
 
-
 #include "hge_impl.h"
 
 #ifdef __PSP
@@ -30,7 +29,7 @@ LONGLONG CALL HGE_Impl::Timer_GetCurrentSystemTime()
 	sceRtcGetCurrentTick(&ticks);
 	return ticks;
 #endif // __PSP
-	
+
 #ifdef __IPHONE
 	return mach_absolute_time();
 #endif;
@@ -49,7 +48,7 @@ LONGLONG CALL HGE_Impl::Timer_GetPerformanceFrequency()
 #ifdef __PSP
 	return sceRtcGetTickResolution();
 #endif // __PSP
-	
+
 #ifdef __IPHONE
 	mach_timebase_info_data_t info;
 	mach_timebase_info(&info);
@@ -133,7 +132,7 @@ void CALL HGE_Impl::Timer_GetSystemTime(WORD *wYear, WORD *wMonth, WORD *wDayOfW
 		*wMilliseconds = psptime.microseconds;
 	}
 #elif defined __IPHONE
-	
+
 	if (wYear)
 	{
 		*wYear = 0;
@@ -166,7 +165,7 @@ void CALL HGE_Impl::Timer_GetSystemTime(WORD *wYear, WORD *wMonth, WORD *wDayOfW
 	{
 		*wMilliseconds = 0;
 	}
-	
+
 #else
 	if (wYear)
 	{
@@ -200,7 +199,6 @@ void CALL HGE_Impl::Timer_GetSystemTime(WORD *wYear, WORD *wMonth, WORD *wDayOfW
 	{
 		*wMilliseconds = 0;
 	}
-	
 
 #endif
 }

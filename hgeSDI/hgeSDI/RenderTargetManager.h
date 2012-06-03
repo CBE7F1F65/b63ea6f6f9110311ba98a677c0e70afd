@@ -38,7 +38,7 @@ private:
 	// Don't implement
 
 public:
-	
+
 	void SetNeedUpdate();
 	HTARGET UpdateTarget(int id, bool * updated=0, int w=0, int h=0);
 

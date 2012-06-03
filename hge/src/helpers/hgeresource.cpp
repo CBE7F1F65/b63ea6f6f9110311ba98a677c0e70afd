@@ -6,14 +6,11 @@
 ** hgeResourceManager helper class implementation
 */
 
-
 #include "../../include/hgeresource.h"
 #include "parser.h"
 #include "resources.h"
 
-
 HGE *hgeResourceManager::hge=0;
-
 
 hgeResourceManager::hgeResourceManager(const char *scriptname)
 {
@@ -36,7 +33,7 @@ void hgeResourceManager::_parse_script(const char *scriptname)
 	if(scriptname)
 	{
 		RScript::Parse(this, NULL, scriptname, NULL);
-		
+
 		rc=res[RES_SCRIPT];
 		while(rc)
 		{
@@ -127,7 +124,7 @@ void* hgeResourceManager::GetResource(const char *name, int resgroup)
 			strcpy(resource->name, name);
 			strcpy(resource->filename, name);
 			AddRes(this, RES_RESOURCE, resource);
-			
+
 			return reshandle;
 		}
 	}

@@ -6,7 +6,6 @@
 ** Core functions implementation: resources management
 */
 
-
 #include "hge_impl.h"
 
 #define NOCRYPT
@@ -24,7 +23,6 @@
 #ifdef __IPHONE
 #include <unistd.h>
 #endif
-
 
 #ifndef strupr
 #ifndef __IPHONE
@@ -62,7 +60,6 @@ int strcmpi(const char * s1, const char * s2)
 				else {
 					return s1[i]-s2[i];
 				}
-
 			}
 		}
 		else {
@@ -73,7 +70,6 @@ int strcmpi(const char * s1, const char * s2)
 				else {
 					return s2[i]-s1[i];
 				}
-				
 			}
 		}
 		if (s2[i] != 0) {
@@ -101,7 +97,7 @@ bool CALL HGE_Impl::Resource_AttachPack(const char *filename, int password)
 		if(!strcmp(szName,resItem->filename)) return true;
 		resItem=resItem->next;
 	}
-	
+
 	zip=unzOpen(szName);
 	if(!zip) return false;
 	unzClose(zip);
@@ -133,7 +129,7 @@ bool CALL HGE_Impl::Resource_AddFileInPack(const char * filename, int password, 
 	if(!zip)
 		return false;
 
-	if(Z_OK != 
+	if(Z_OK !=
 		zipOpenNewFileInZip3(
 		zip, memfile->filename, NULL,
 		NULL, 0, NULL, 0, NULL,
@@ -164,7 +160,6 @@ bool CALL HGE_Impl::Resource_CreatePack(const char * filename, int password, hge
 {
 	Resource_RemovePack(filename);
 
-
 	zipFile zip = zipOpen(Resource_MakePath(filename), APPEND_STATUS_CREATE);
 
 	if(!zip)
@@ -177,7 +172,7 @@ bool CALL HGE_Impl::Resource_CreatePack(const char * filename, int password, hge
 
 	while(vai != NULL)
 	{
-		if(Z_OK != 
+		if(Z_OK !=
 			zipOpenNewFileInZip3(
 			zip, vai->filename, NULL,
 			NULL, 0, NULL, 0, NULL,
@@ -204,7 +199,6 @@ bool CALL HGE_Impl::Resource_CreatePack(const char * filename, int password, hge
 
 	va_end(ap);
 	zipClose(zip, NULL);
-
 
 	bool bret = Resource_AttachPack(filename, password);
 	Resource_RemovePack(filename);
@@ -248,7 +242,6 @@ void CALL HGE_Impl::Resource_RemoveAllPacks()
 
 	res=0;
 }
-
 
 /************************************************************************/
 /* These functions are added by h5nc (h5nc@yahoo.com.cn)                */
@@ -384,7 +377,7 @@ BYTE * CALL HGE_Impl::Resource_Load(const char *filename, DWORD *size)
 	if(filename[0]==M_FOLDER_SLASH || filename[0]==M_FOLDER_SLASH_WRONG || filename[1]==':') goto _fromfile; // skip absolute paths
 
 	// Load from pack
- 
+
 	strcpy(szName,filename);
 	strupr(szName);
 	for(i=0; szName[i]; i++) { if(szName[i]==M_FOLDER_SLASH_WRONG) szName[i]=M_FOLDER_SLASH; }
@@ -433,10 +426,10 @@ BYTE * CALL HGE_Impl::Resource_Load(const char *filename, DWORD *size)
 				if(size) *size=file_info.uncompressed_size;
 				return ptr;
 			}
-			
+
 			done=unzGoToNextFile(zip);
 		}
-		
+
 		unzClose(zip);
 		resItem=resItem->next;
 	}
@@ -501,12 +494,10 @@ _fromfile:
 	return ptr;
 }
 
-
 void CALL HGE_Impl::Resource_Free(void *res)
 {
 	if(res) free(res);
 }
-
 
 /************************************************************************/
 /* This function is added by h5nc (h5nc@yahoo.com.cn)                   */
@@ -517,7 +508,7 @@ char* CALL HGE_Impl::Resource_SetPath(const char *filename)
 
 	if(filename[0]==M_FOLDER_SLASH || filename[0]==M_FOLDER_SLASH_WRONG|| filename[1]==':')
 		strcpy(szResourcePath, filename);
-	
+
 	else
 	{
 		char szTmp[_MAX_PATH];
@@ -550,7 +541,6 @@ char* CALL HGE_Impl::Resource_SetPath(const char *filename)
 	}
 	return szResourcePath;
 }
-
 
 /************************************************************************/
 /* This function is modified by h5nc (h5nc@yahoo.com.cn)                */

@@ -1,9 +1,9 @@
-// 这段 MFC 示例源代码演示如何使用 MFC Microsoft Office Fluent 用户界面 
+// 这段 MFC 示例源代码演示如何使用 MFC Microsoft Office Fluent 用户界面
 // (“Fluent UI”)。该示例仅供参考，
-// 用以补充《Microsoft 基础类参考》和 
+// 用以补充《Microsoft 基础类参考》和
 // MFC C++ 库软件随附的相关电子文档。
 // 复制、使用或分发 Fluent UI 的许可条款是单独提供的。
-// 若要了解有关 Fluent UI 许可计划的详细信息，请访问  
+// 若要了解有关 Fluent UI 许可计划的详细信息，请访问
 // http://msdn.microsoft.com/officeui。
 //
 // 版权所有(C) Microsoft Corporation
@@ -28,7 +28,6 @@
 #define new DEBUG_NEW
 #endif
 
-
 // ChgeSDIApp
 
 BEGIN_MESSAGE_MAP(ChgeSDIApp, CWinAppEx)
@@ -39,7 +38,6 @@ BEGIN_MESSAGE_MAP(ChgeSDIApp, CWinAppEx)
 	// 标准打印设置命令
 	ON_COMMAND(ID_FILE_PRINT_SETUP, &CWinAppEx::OnFilePrintSetup)
 END_MESSAGE_MAP()
-
 
 // ChgeSDIApp 构造
 
@@ -66,7 +64,6 @@ ChgeSDIApp::ChgeSDIApp()
 
 ChgeSDIApp theApp;
 
-
 // ChgeSDIApp 初始化
 
 BOOL ChgeSDIApp::InitInstance()
@@ -83,7 +80,6 @@ BOOL ChgeSDIApp::InitInstance()
 
 	CWinAppEx::InitInstance();
 
-
 	// 初始化 OLE 库
 	if (!AfxOleInit())
 	{
@@ -95,7 +91,7 @@ BOOL ChgeSDIApp::InitInstance()
 
 	EnableTaskbarInteraction(FALSE);
 
-	// 使用 RichEdit 控件需要  AfxInitRichEdit2()	
+	// 使用 RichEdit 控件需要  AfxInitRichEdit2()
 	// AfxInitRichEdit2();
 
 	// 标准初始化
@@ -107,7 +103,6 @@ BOOL ChgeSDIApp::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(StringManager::getInstance().GetRegistryKeyName()/*_T("应用程序向导生成的本地应用程序")*/);
 	LoadStdProfileSettings(4);  // 加载标准 INI 文件选项(包括 MRU)
-
 
 	InitContextMenuManager();
 
@@ -131,12 +126,9 @@ BOOL ChgeSDIApp::InitInstance()
 		return FALSE;
 	AddDocTemplate(pDocTemplate);
 
-
 	// 分析标准 shell 命令、DDE、打开文件操作的命令行
 	CCommandLineInfo cmdInfo;
 	ParseCommandLine(cmdInfo);
-
-
 
 	// 调度在命令行中指定的命令。如果
 	// 用 /RegServer、/Register、/Unregserver 或 /Unregister 启动应用程序，则返回 FALSE。
@@ -159,7 +151,6 @@ int ChgeSDIApp::ExitInstance()
 }
 
 // ChgeSDIApp 消息处理程序
-
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
@@ -220,6 +211,3 @@ void ChgeSDIApp::SaveCustomState()
 }
 
 // ChgeSDIApp 消息处理程序
-
-
-

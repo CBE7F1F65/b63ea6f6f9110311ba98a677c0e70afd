@@ -5,7 +5,6 @@
 #include "hgeSDI.h"
 #include "UISplitterWnd.h"
 
-
 // UISplitterWnd
 
 IMPLEMENT_DYNCREATE(UISplitterWnd, CSplitterWnd)
@@ -24,7 +23,6 @@ BEGIN_MESSAGE_MAP(UISplitterWnd, CSplitterWnd)
 	ON_WM_CREATE()
 END_MESSAGE_MAP()
 
-
 // UISplitterWnd 消息处理程序
 
 void UISplitterWnd::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
@@ -34,15 +32,12 @@ void UISplitterWnd::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	CSplitterWnd::OnVScroll(nSBCode, nPos, pScrollBar);
 }
 
-
 void UISplitterWnd::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 
-
 	CSplitterWnd::OnHScroll(nSBCode, nPos, pScrollBar);
 }
-
 
 int UISplitterWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {

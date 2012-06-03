@@ -1,7 +1,5 @@
 #pragma once
 
-
-
 // UISplitterWnd
 
 class UISplitterWnd : public CSplitterWnd
@@ -19,5 +17,3 @@ public:
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 };
-
-

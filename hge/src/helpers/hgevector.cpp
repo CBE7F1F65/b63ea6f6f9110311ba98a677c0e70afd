@@ -6,7 +6,6 @@
 ** hgeVector helper class implementation
 */
 
-
 #include "../../include/hgevector.h"
 
 float InvSqrt(float x)
@@ -64,6 +63,3 @@ hgeVector *hgeVector::Rotate(float a)
 
 	return this;
 }
-
-
-

@@ -8,9 +8,7 @@
 
 #include "parser.h"
 
-
 HGE *RScriptParser::hge=0;
-
 
 struct keyword
 {
