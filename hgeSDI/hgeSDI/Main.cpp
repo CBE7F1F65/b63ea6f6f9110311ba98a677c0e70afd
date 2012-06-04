@@ -376,9 +376,14 @@ int MainInterface::OnCommitCommand( const char * str )
 	return Command::getInstance().CommitCommand(str);
 }
 
-void MainInterface::OnRebuildLayerTree( GObject * changebase )
+void MainInterface::OnRebuildLayerTree( GObject * changebase, GObject * activeitem )
 {
-	parentview->GetMainFrame()->RebuildLayerTree(changebase);
+	parentview->GetMainFrame()->RebuildLayerTree(changebase, activeitem);
+}
+
+GLayer * MainInterface::OnGetActiveLayer()
+{
+	return parentview->GetMainFrame()->GetActiveLayer();
 }
 
 void MainInterface::DoResizeWindow()

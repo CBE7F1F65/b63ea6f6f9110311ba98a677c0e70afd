@@ -5,11 +5,14 @@
 #include <sstream>
 #include <iomanip>
 
+#include "GObjectManager.h"
+
 CommandTemplate::CommandTemplate(void)
 {
 	pguic = &GUICoordinate::getInstance();
 	pmain = &MainInterface::getInstance();
 	pcommand = &Command::getInstance();
+	workingLayer = NULL;
 }
 
 CommandTemplate::~CommandTemplate(void)
@@ -51,13 +54,13 @@ int CommandTemplate::OnNormalProcessCommand( int cursorindex/*=-1*/ )
 	case CSI_FINISH:
 		GUICursor::getInstance().ChangeCursor(GUIC_NORMAL);
 		ReleaseTarget();
-		DoneCommand();
+		CallDoneCommand();
 		pcommand->FinishCommand();
 		return CSI_FINISH;
 		break;
 	case CSI_FINISHCONTINUE:
 		ReleaseTarget();
-		DoneCommand();
+		CallDoneCommand();
 		return CSI_FINISHCONTINUE;
 		break;
 	case CSI_TERMINAL:
@@ -85,7 +88,7 @@ void CommandTemplate::DispatchNormalSubCommand( int subcommand )
 	case SSC_FINISH:
 		GUICursor::getInstance().ChangeCursor(GUIC_NORMAL);
 		ReleaseTarget();
-		DoneCommand();
+		CallDoneCommand();
 		pcommand->FinishCommand();
 		break;
 	case SSC_TERMINAL:
@@ -244,5 +247,28 @@ void CommandTemplate::ProtectPendingFinishCommand()
 	if (ccp.type)
 	{
 		CommitFrontCommand(&ccp, NULL);
+	}
+}
+
+void CommandTemplate::CallDoneCommand()
+{
+	GLayer * activeLayer = GObjectManager::getInstance().GetActiveLayer();
+	if (workingLayer != activeLayer)
+	{
+		workingLayer = activeLayer;
+	}
+	OnDoneCommand();
+}
+
+void CommandTemplate::InstantProcessCommand()
+{
+	int step = OnNormalProcessCommand();
+	UpdateLastStep();
+
+	if (step == CSI_INIT)
+	{
+		pcommand->StepTo(
+			CSI_FINISH
+			);
 	}
 }

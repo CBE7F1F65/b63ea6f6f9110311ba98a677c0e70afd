@@ -64,6 +64,30 @@ int IconManager::GetImageListType( int icmsize )
 
 int IconManager::GetCommandIconIndex( int comm )
 {
-	// ToDo
+	// ToDo!!
+	return 0;
+}
+
+int IconManager::GetLBVisibleIcon( bool bVisible, bool bRecVisible )
+{
+	// ToDo!!
+	return 0;
+}
+
+int IconManager::GetLBLockedIcon( bool bLock, bool bRecLock )
+{
+	// ToDo!!
+	return 0;
+}
+
+int IconManager::GetLBFoldExpandIcon( bool bFolded )
+{
+	// ToDo!!
+	return 0;
+}
+
+int IconManager::GetLBLineSelectIcon( bool toSelect )
+{
+	// ToDo!!
 	return 0;
 }

@@ -7,5 +7,5 @@ public:
 	GShape(void);
 	~GShape(void);
 
-	virtual const char * GetTypeName();
+	virtual const char * getDisplayName();
 };

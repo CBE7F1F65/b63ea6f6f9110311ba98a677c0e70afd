@@ -18,6 +18,7 @@
 #include "MainFrm.h"
 #include "StringManager.h"
 #include "Main.h"
+#include "GObjectManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -45,13 +46,20 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_COMMAND(ID_VIEW_COMMAND_PANE, &CMainFrame::OnViewCommandPane)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_COMMAND_PANE, &CMainFrame::OnUpdateViewCommandPane)
 	ON_WM_CLOSE()
+	ON_COMMAND(ID_VIEW_HISTORY_PANE, &CMainFrame::OnViewHistoryPane)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_HISTORY_PANE, &CMainFrame::OnUpdateViewHistoryPane)
+	ON_COMMAND(ID_VIEW_LAYER_PANE, &CMainFrame::OnViewLayerPane)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_LAYER_PANE, &CMainFrame::OnUpdateViewLayerPane)
+	ON_COMMAND(ID_COMMAND_LAYER_NEW, &CMainFrame::OnCommandLayerNew)
+	ON_COMMAND(ID_COMMAND_NEWSUBLAYER, &CMainFrame::OnCommandNewsublayer)
+	ON_COMMAND(ID_COMMAND_LINE, &CMainFrame::OnCommandLine)
 END_MESSAGE_MAP()
 
 // CMainFrame 构造/析构
 
 CMainFrame::CMainFrame()
 {
-//	_CrtSetBreakAlloc(26907);
+//	_CrtSetBreakAlloc(26449);
 	// TODO: 在此添加成员初始化代码
 	theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_OFF_2007_BLACK);
 }
@@ -289,32 +297,6 @@ void CMainFrame::OnUpdateApplicationLook(CCmdUI* pCmdUI)
 	pCmdUI->SetRadio(theApp.m_nAppLook == pCmdUI->m_nID);
 }
 
-void CMainFrame::OnViewCaptionBar()
-{
-	m_wndCaptionBar.ShowWindow(m_wndCaptionBar.IsVisible() ? SW_HIDE : SW_SHOW);
-	RecalcLayout(FALSE);
-}
-
-void CMainFrame::OnUpdateViewCaptionBar(CCmdUI* pCmdUI)
-{
-	pCmdUI->SetCheck(m_wndCaptionBar.IsVisible());
-}
-
-void CMainFrame::OnViewCommandPane()
-{
-	// TODO: 在此添加命令处理程序代码
-	BOOL visible = m_wndUICommandPane.IsPaneVisible();
-	m_wndUICommandPane.ShowPane(visible?FALSE:TRUE, TRUE, FALSE);
-//	m_wndUICommandPane.ShowWindow(m_wndUICommandPane.IsVisible() ? SW_HIDE : SW_SHOW);
-	RecalcLayout(FALSE);
-}
-
-void CMainFrame::OnUpdateViewCommandPane(CCmdUI *pCmdUI)
-{
-	// TODO: 在此添加命令更新用户界面处理程序代码
-	pCmdUI->SetCheck(m_wndUICommandPane.IsPaneVisible());
-}
-
 void CMainFrame::OnOptions()
 {
 	CMFCRibbonCustomizeDialog *pOptionsDlg = new CMFCRibbonCustomizeDialog(this, &m_wndRibbonBar);
@@ -439,10 +421,15 @@ bool CMainFrame::ClearPreviousHistory( int ndelete )
 	return m_wndUIHistoryPane.ClearPreviousHistory(ndelete);
 }
 
-bool CMainFrame::RebuildLayerTree( GObject * changebase )
+bool CMainFrame::RebuildLayerTree( GObject * changebase, GObject * activeitem )
 {
-	m_wndUILayerPane.RebuildTree(changebase);
+	m_wndUILayerPane.RebuildTree(changebase,activeitem);
 	return true;
+}
+
+GLayer * CMainFrame::GetActiveLayer()
+{
+	return m_wndUILayerPane.GetActiveLayer();
 }
 
 void CMainFrame::OnClose()
@@ -451,4 +438,84 @@ void CMainFrame::OnClose()
 	MainInterface::getInstance().Exit();
 
 	CFrameWndEx::OnClose();
+}
+
+
+void CMainFrame::OnViewCaptionBar()
+{
+	m_wndCaptionBar.ShowWindow(m_wndCaptionBar.IsVisible() ? SW_HIDE : SW_SHOW);
+	RecalcLayout(FALSE);
+}
+
+void CMainFrame::OnUpdateViewCaptionBar(CCmdUI* pCmdUI)
+{
+	pCmdUI->SetCheck(m_wndCaptionBar.IsVisible());
+}
+
+void CMainFrame::OnViewCommandPane()
+{
+	// TODO: 在此添加命令处理程序代码
+	BOOL visible = m_wndUICommandPane.IsPaneVisible();
+	m_wndUICommandPane.ShowPane(visible?FALSE:TRUE, TRUE, FALSE);
+	RecalcLayout(FALSE);
+}
+
+void CMainFrame::OnUpdateViewCommandPane(CCmdUI *pCmdUI)
+{
+	// TODO: 在此添加命令更新用户界面处理程序代码
+	pCmdUI->SetCheck(m_wndUICommandPane.IsPaneVisible());
+}
+
+void CMainFrame::OnViewHistoryPane()
+{
+	// TODO: 在此添加命令处理程序代码
+	BOOL visible = m_wndUIHistoryPane.IsPaneVisible();
+	m_wndUIHistoryPane.ShowPane(visible?FALSE:TRUE, TRUE, FALSE);
+	RecalcLayout(FALSE);
+}
+
+
+void CMainFrame::OnUpdateViewHistoryPane(CCmdUI *pCmdUI)
+{
+	// TODO: 在此添加命令更新用户界面处理程序代码
+	pCmdUI->SetCheck(m_wndUIHistoryPane.IsPaneVisible());
+}
+
+
+void CMainFrame::OnViewLayerPane()
+{
+	// TODO: 在此添加命令处理程序代码
+	BOOL visible = m_wndUILayerPane.IsPaneVisible();
+	m_wndUILayerPane.ShowPane(visible?FALSE:TRUE, TRUE, FALSE);
+	RecalcLayout(FALSE);
+}
+
+
+void CMainFrame::OnUpdateViewLayerPane(CCmdUI *pCmdUI)
+{
+	// TODO: 在此添加命令更新用户界面处理程序代码
+	pCmdUI->SetCheck(m_wndUILayerPane.IsPaneVisible());
+}
+
+
+void CMainFrame::OnCommandLayerNew()
+{
+	// TODO: 在此添加命令处理程序代码
+	MainInterface::getInstance().OnCommand(COMM_NEWLAYER);
+//	GObjectManager::getInstance().NewLayer(GObjectManager::getInstance().GetActiveLayer());
+}
+
+
+void CMainFrame::OnCommandNewsublayer()
+{
+	// TODO: 在此添加命令处理程序代码
+	MainInterface::getInstance().OnCommand(COMM_NEWSUBLAYER);
+//	GObjectManager::getInstance().NewSubLayer(GObjectManager::getInstance().GetActiveLayer());
+}
+
+
+void CMainFrame::OnCommandLine()
+{
+	// TODO: 在此添加命令处理程序代码
+	MainInterface::getInstance().OnCommand(COMM_LINE);
 }

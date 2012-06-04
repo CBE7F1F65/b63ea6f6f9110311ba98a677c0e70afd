@@ -35,7 +35,7 @@ int UILayerDockablePane::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	rectDummy.SetRectEmpty ();
 
 	if (!m_wndListCtrl.Create(
-		WS_CHILD|WS_VISIBLE|WS_BORDER|WS_HSCROLL|WS_VSCROLL|LVS_ALIGNLEFT|LVS_REPORT|LVS_SHOWSELALWAYS|LVS_NOCOLUMNHEADER|LVS_ICON,
+		WS_CHILD|WS_VISIBLE|WS_BORDER|WS_HSCROLL|WS_VSCROLL|LVS_ALIGNLEFT|LVS_REPORT|LVS_SHOWSELALWAYS|LVS_NOCOLUMNHEADER|LVS_ICON|LVS_EDITLABELS,
 		rectDummy, this, IDLB_LISTCTRL))
 	{
 		return -1;
@@ -60,7 +60,12 @@ void UILayerDockablePane::OnSize(UINT nType, int cx, int cy)
 		SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
 }
 
-void UILayerDockablePane::RebuildTree( GObject * changebase )
+void UILayerDockablePane::RebuildTree( GObject * changebase, GObject * activeitem )
 {
-	m_wndListCtrl.RebuildTree(changebase);
+	m_wndListCtrl.RebuildTree(changebase, activeitem);
+}
+
+GLayer * UILayerDockablePane::GetActiveLayer()
+{
+	return m_wndListCtrl.GetActiveLayer();
 }

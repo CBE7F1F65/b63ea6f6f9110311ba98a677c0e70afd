@@ -14,7 +14,7 @@ public:
 	virtual void SetBeginEnd(float xb, float yb, float xe, float ye);
 	virtual void UpdateMidPoint() = 0;
 
-	virtual const char * GetTypeName();
+	virtual const char * getDisplayName();
 
 	GPoint * plbegin;
 	GPoint * plend;
@@ -31,7 +31,6 @@ public:
 	virtual void UpdateMidPoint();
 
 	virtual void OnInit();
-	virtual void OnEnter();
 	virtual void OnUpdate();
 	virtual void OnRender();
 

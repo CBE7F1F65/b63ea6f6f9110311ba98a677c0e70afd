@@ -95,7 +95,7 @@ public:
 	}
 	************************************************************************/
 
-#define _FDEF(COLNAME, DEF)	\
+#define _CMFDEF(COLNAME, DEF)	\
 	UIColor col##COLNAME;	\
 	DWORD Get##COLNAME##Color()	\
 	{	\
@@ -124,13 +124,13 @@ public:
 		}	\
 	}
 
-	_FDEF(	BG,	0xff212830	);
-	_FDEF(	GridMain,	0xff333949	);
-	_FDEF(	GridSub,	0xff272d38	);
-	_FDEF(	GridXAxis,	0xff6d2426	);
-	_FDEF(	GridYAxis,	0xff236e26	);
-	_FDEF(	Coord,	0xffffffff	);
-	_FDEF(	Cursor,	0xffffffff	);
+	_CMFDEF(	BG,	0xff212830	);
+	_CMFDEF(	GridMain,	0xff333949	);
+	_CMFDEF(	GridSub,	0xff272d38	);
+	_CMFDEF(	GridXAxis,	0xff6d2426	);
+	_CMFDEF(	GridYAxis,	0xff236e26	);
+	_CMFDEF(	Coord,	0xffffffff	);
+	_CMFDEF(	Cursor,	0xffffffff	);
 
 	// ToDo!!
 	void RestoreDefault();
@@ -150,7 +150,7 @@ public:
 
 	DWORD GetLayerLineColor(int layer=-1);
 
-#undef _FDEF
+#undef _CMFDEF
 
 	DWORD ARGBToABGR(DWORD col);
 };

@@ -2,9 +2,12 @@
 
 #include "GObject.h"
 #include "MainDependency.h"
+#include "GLayer.h"
 
 class GObjectManager
 {
+	friend class GObject;
+
 public:
 	static GObjectManager& getInstance()
 	{
@@ -30,16 +33,23 @@ public:
 	void Render();
 	void Delete();
 
-	void OnTreeChanged(GObject * changingbase);
+	void OnTreeChanged(GObject * changingbase, GObject * activeitem);
 
 	void AddNodeToDelete(GObject * node);
 
 	void MoveToUnDoList(GObject * node);
 
+	GLayer * NewLayer(GObject * node, const char * layername);
+	GLayer * NewSubLayer(GObject * node, const char * layername);
+
 	GObject basenode;
 	list<GObject*> nodetodelete;
 
 	GObject undobasenode;
+	int layerIndex;
+	string defaultLayerName;
 
-	HTARGET tarobjs;
+	GLayer * GetActiveLayer();
+	const char * GetDefaultLayerName( int layerIndex=-1 );
+	HTARGET tarObjs;
 };

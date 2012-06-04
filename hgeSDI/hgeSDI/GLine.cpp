@@ -35,8 +35,12 @@ void GLine::SetBeginEnd( float xb, float yb, float xe, float ye )
 	}
 }
 
-const char * GLine::GetTypeName()
+const char * GLine::getDisplayName()
 {
+	if (strDisplayName.length())
+	{
+		return strDisplayName.c_str();
+	}
 	return StringManager::getInstance().GetNNLineName();
 }
 
@@ -57,21 +61,16 @@ GStraightLine::~GStraightLine()
 
 void GStraightLine::OnInit()
 {
-	assert(parent!=NULL);
+	assert(pParent!=NULL);
 
 	plbegin = new GEndPoint();
 	plend = new GEndPoint();
 
-	pmid = new GPoint();
-	pmid->SetMotifyParent(false);
+	pmid = new GMidPoint();
 
 	this->AddChild(plbegin);
 	this->AddChild(plend);
 	this->AddChild(pmid);
-}
-
-void GStraightLine::OnEnter()
-{
 }
 
 void GStraightLine::UpdateMidPoint()
@@ -95,7 +94,7 @@ void GStraightLine::OnRender()
 {
 	if (plbegin && plend)
 	{
-		RenderHelper::getInstance().RenderLine(plbegin->x, plbegin->y, plend->x, plend->y, ColorManager::getInstance().GetLayerLineColor());
+		RenderHelper::getInstance().RenderLine(plbegin->x, plbegin->y, plend->x, plend->y, getLineColor());
 	}
 	GObject::OnRender();
 }

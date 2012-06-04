@@ -177,7 +177,7 @@ public:
 	}
 	************************************************************************/
 
-#define _FDEF(STRNAME, SEC, DEF)	\
+#define _SMFDEF(STRNAME, SEC, DEF)	\
 	string str##STRNAME##Name;	\
 	const char * Get##STRNAME##Name()	\
 	{	\
@@ -193,34 +193,34 @@ public:
 		hge->Ini_SetString(SEC, #STRNAME, "");	\
 	}
 
-#define _CLFDEF(STRNAME, DEF)	\
-	_FDEF(CL##STRNAME, INIS_COMMANDLOG, DEF)
+#define _SMCLFDEF(STRNAME, DEF)	\
+	_SMFDEF(CL##STRNAME, INIS_COMMANDLOG, DEF)
 
-	_CLFDEF(	CreateCommand,	"Command"	);
-	_CLFDEF(	FinishCommand,	"Done Command"	);
-	_CLFDEF(	TerminalCommand,	"Terminal Command"	);
-	_CLFDEF(	Error,	"Error"	);
-	_CLFDEF(	SetParameter,	"Set Parameter"	);
-	_CLFDEF(	NextPrompt,	"Please Input"	);
-	_CLFDEF(	FinishSubCommand,	"Done"	);
-	_CLFDEF(	UnDo,	"Processing UnDo"	);
-	_CLFDEF(	ReDo,	"Processing ReDo"	);
+	_SMCLFDEF(	CreateCommand,	"Command"	);
+	_SMCLFDEF(	FinishCommand,	"Done Command"	);
+	_SMCLFDEF(	TerminalCommand,	"Terminal Command"	);
+	_SMCLFDEF(	Error,	"Error"	);
+	_SMCLFDEF(	SetParameter,	"Set Parameter"	);
+	_SMCLFDEF(	NextPrompt,	"Please Input"	);
+	_SMCLFDEF(	FinishSubCommand,	"Done"	);
+	_SMCLFDEF(	UnDo,	"Processing UnDo"	);
+	_SMCLFDEF(	ReDo,	"Processing ReDo"	);
 
-#undef _CLFDEF
+#undef _SMCLFDEF
 
-#define _NNFDEF(STRNAME, DEF)	\
-	_FDEF(NN##STRNAME, INIS_NODENAME, DEF)
+#define _SMNNFDEF(STRNAME, DEF)	\
+	_SMFDEF(NN##STRNAME, INIS_NODENAME, DEF)
 
-	_NNFDEF(	Object,	"Object"	);
-	_NNFDEF(	Layer,	"Layer"	);
-	_NNFDEF(	Shape,	"Shape"	);
-	_NNFDEF(	Piece,	"Piece"	);
-	_NNFDEF(	Line,	"Line"	);
-	_NNFDEF(	Point,	"Point"	);
-	_NNFDEF(	EndPoint,	"End Point"	);
-	_NNFDEF(	MidPoint,	"Mid Point"	);
+	_SMNNFDEF(	Object,	"Object"	);
+	_SMNNFDEF(	Layer,	"Layer"	);
+	_SMNNFDEF(	Shape,	"Shape"	);
+	_SMNNFDEF(	Piece,	"Piece"	);
+	_SMNNFDEF(	Line,	"Line"	);
+	_SMNNFDEF(	Point,	"Point"	);
+	_SMNNFDEF(	EndPoint,	"End Point"	);
+	_SMNNFDEF(	MidPoint,	"Mid Point"	);
 
-#undef _NNFDEF
+#undef _SMNNFDEF
 
-#undef _FDEF
+#undef _SMFDEF
 };

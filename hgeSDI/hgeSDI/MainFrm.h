@@ -22,6 +22,7 @@
 #include "UILayerDockablePane.h"
 
 #include "Command.h"
+#include "GLayer.h"
 
 class CMainFrame : public CFrameWndEx
 {
@@ -43,7 +44,9 @@ public:
 	bool ClearLaterHistory(int ndelete);
 	bool ClearPreviousHistory(int ndelete);
 
-	bool RebuildLayerTree(GObject * changebase);
+	bool RebuildLayerTree(GObject * changebase, GObject * activeitem);
+
+	GLayer * GetActiveLayer();
 
 // ²Ù×÷
 public:
@@ -102,4 +105,11 @@ public:
 	afx_msg void OnViewCommandPane();
 	afx_msg void OnUpdateViewCommandPane(CCmdUI *pCmdUI);
 	afx_msg void OnClose();
+	afx_msg void OnViewHistoryPane();
+	afx_msg void OnUpdateViewHistoryPane(CCmdUI *pCmdUI);
+	afx_msg void OnViewLayerPane();
+	afx_msg void OnUpdateViewLayerPane(CCmdUI *pCmdUI);
+	afx_msg void OnCommandLayerNew();
+	afx_msg void OnCommandNewsublayer();
+	afx_msg void OnCommandLine();
 };

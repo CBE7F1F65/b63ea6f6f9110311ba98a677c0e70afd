@@ -33,7 +33,10 @@ public:
 	int GetImageListType(int icmsize);
 
 	int GetCommandIconIndex(int comm);
-	
+	int GetLBVisibleIcon( bool bVisible, bool bRecVisible );
+	int GetLBLockedIcon( bool bLock, bool bRecLock );
+	int GetLBFoldExpandIcon( bool bFolded );
+	int GetLBLineSelectIcon( bool toSelect );
 	CImageList imgList16;
 	CImageList imgList24;
 	CImageList imgList32;

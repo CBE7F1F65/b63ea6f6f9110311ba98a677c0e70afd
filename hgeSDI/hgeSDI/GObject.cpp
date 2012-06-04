@@ -6,9 +6,17 @@
 
 GObject::GObject(void)
 {
-	parent = NULL;
+	pParent = NULL;
 	bModified = false;
-	SetID();
+	bModifyParent = true;
+	bAttributeNode = false;
+	nNonAttributeChildrenCount = 0;
+
+	bDisplayFolded = false;
+	nDisplayState = GOBJ_DISPSTATE_NORMAL;
+	dwLineColor = 0;
+
+	_SetID();
 	OnInit();
 }
 
@@ -19,76 +27,111 @@ GObject::~GObject(void)
 #define _FOREACH_L(T, IT, L)	\
 	for (list<T>::iterator IT=L.begin(); IT!=L.end(); ++IT)
 #define FOREACH_GOBJ_CHILDREN_IT()	\
-	_FOREACH_L(GObject*, it, children)
+	_FOREACH_L(GObject*, it, listChildren)
 
-void GObject::SetID( int _ID/*=-1*/ )
-{
-	ID = _ID;
-}
 
-int GObject::AddChild( GObject * child )
+int GObject::_ActualAddChild( GObject * child )
 {
 	if (child)
 	{
-		child->SetParent(this);
+		child->_SetParent(this);
 		child->OnEnter();
 
-		if (child->ID < 0)
+		if (child->nID < 0)
 		{
-			child->SetID();
+			child->_SetID();
 			int maxid = 0;
 			FOREACH_GOBJ_CHILDREN_IT()
 			{
-				if ((*it)->ID > maxid)
+				if ((*it)->nID > maxid)
 				{
-					maxid = (*it)->ID;
+					maxid = (*it)->nID;
 				}
 			}
-			child->SetID(maxid+1);
+			child->_SetID(maxid+1);
 		}
 
-		child->OnModify();
+		child->CallModify();
 
-		children.push_back(child);
+		listChildren.push_back(child);
 
-		GObjectManager::getInstance().OnTreeChanged(this);
+		if (!child->bAttributeNode)
+		{
+			_ModifyNonAttributeChildrenCount(1);
+		}
 
-		return child->ID;
+		GObjectManager::getInstance().OnTreeChanged(this, child);
+
+
+		return child->nID;
 	}
 	return -1;
 }
 
-void GObject::SetParent( GObject * _parent )
+list<GObject *>::iterator GObject::_ActualRemoveChild( list<GObject *>::iterator it, bool bRelease )
 {
-	assert(parent==NULL);
-	parent = _parent;
+	if (!(*it)->bAttributeNode)
+	{
+		_ModifyNonAttributeChildrenCount(-1);
+	}
+	if (bRelease)
+	{
+		(*it)->OnRelease();
+	}
+	it = listChildren.erase(it);
+
+	// Add OnModify and OnTreeChanged after all operation done!!
+//	OnModify();
+//	GObjectManager::getInstance().OnTreeChanged(this);
+
+	return it;
+}
+
+void GObject::_SetID( int _ID/*=-1*/ )
+{
+	nID = _ID;
+}
+
+int GObject::AddChild( GObject * child )
+{
+	return _ActualAddChild(child);
+}
+
+void GObject::_SetParent( GObject * _parent )
+{
+	assert(pParent==NULL);
+	pParent = _parent;
 	// Do not Add Children
 }
 
-int GObject::RemoveChild( int _ID )
+int GObject::RemoveChild( int _ID, bool bRelease )
 {
-	return _RemoveChild(_ID);
+	return _RemoveChild(_ID, bRelease);
 }
 
-int GObject::RemoveChild( GObject * child )
+int GObject::RemoveChild( GObject * child, bool bRelease )
 {
-	return _RemoveChild(child);
+	return _RemoveChild(child, bRelease);
 }
 
-int GObject::_RemoveChild( int _ID, bool bRelease/*=true*/ )
+
+int GObject::_RemoveChild( int _ID, bool bRelease )
 {
 	// Do not use FOREACH
-	if (!children.empty())
+	if (!listChildren.empty())
 	{
-		for (list<GObject*>::iterator it=children.begin(); it!=children.end();)
+		for (list<GObject*>::iterator it=listChildren.begin(); it!=listChildren.end();)
 		{
-			if ((*it)->ID == _ID)
+			if ((*it)->nID == _ID)
 			{
+				it = _ActualRemoveChild(it, bRelease);
+				/*
 				if (bRelease)
 				{
 					(*it)->OnRelease();
 				}
 				it = children.erase(it);
+				*/
 			}
 			else
 			{
@@ -96,66 +139,72 @@ int GObject::_RemoveChild( int _ID, bool bRelease/*=true*/ )
 			}
 		}
 	}
-	OnModify();
-	GObjectManager::getInstance().OnTreeChanged(this);
-	return children.size();
+	CallModify();
+	GObjectManager::getInstance().OnTreeChanged(this, this);
+	return listChildren.size();
 }
 
-int GObject::_RemoveChild( GObject * child, bool bRelease/*=true*/ )
+int GObject::_RemoveChild( GObject * child, bool bRelease )
 {
 	if (!child)
 	{
 		return -1;
 	}
-	if (!children.empty())
+	if (!listChildren.empty())
 	{
 		FOREACH_GOBJ_CHILDREN_IT()
 		{
 			if ((*it) == child)
 			{
+				_ActualRemoveChild(it, bRelease);
+				/*
 				if (bRelease)
 				{
 					child->OnRelease();
 				}
 				it = children.erase(it);
+				*/
 				break;
 			}
 		}
 	}
-	OnModify();
-	GObjectManager::getInstance().OnTreeChanged(this);
-	return children.size();
+	CallModify();
+	GObjectManager::getInstance().OnTreeChanged(this, this);
+	return listChildren.size();
 }
-int GObject::RemoveFromParent()
+int GObject::RemoveFromParent( bool bRelease )
 {
-	return _RemoveFromParent();
+	return _RemoveFromParent(bRelease);
 }
 
-int GObject::_RemoveFromParent( bool bRelease/*=true*/ )
+int GObject::_RemoveFromParent( bool bRelease )
 {
-	if (parent)
+	if (pParent)
 	{
-		return parent->_RemoveChild(this, bRelease);
+		return pParent->_RemoveChild(this, bRelease);
 	}
 	return -1;
 }
 
-int GObject::RemoveAllChildren()
+int GObject::RemoveAllChildren( bool bRelease )
 {
 	// Do not use FOREACH
-	if (!children.empty())
+	if (!listChildren.empty())
 	{
-		for (list<GObject*>::iterator it=children.begin(); it!=children.end();)
+		for (list<GObject*>::iterator it=listChildren.begin(); it!=listChildren.end();)
 		{
+			it = _ActualRemoveChild(it, bRelease);
+			/*
 			if ((*it))
 			{
 				(*it)->OnRelease();
 				it = children.erase(it);
 			}
+			*/
 		}
 	}
-	OnModify();
-	GObjectManager::getInstance().OnTreeChanged(this);
+	CallModify();
+	GObjectManager::getInstance().OnTreeChanged(this, this);
 	return 0;
 }
 
@@ -165,73 +214,52 @@ void GObject::OnInit()
 
 void GObject::OnEnter()
 {
+	assert(pParent != NULL);
+
+	if (!dwLineColor)
+	{
+		GObject * pLayer = GetLayer();
+		if (pLayer)
+		{
+			setLineColor(pLayer->dwLineColor);
+		}
+		else
+		{
+			setLineColor(pParent->dwLineColor);
+		}
+	}
 }
 
 void GObject::OnUpdate()
 {
-	if (!children.empty())
-	{
-		FOREACH_GOBJ_CHILDREN_IT()
-		{
-			if ((*it))
-			{
-				(*it)->OnUpdate();
-			}
-		}
-	}
-//	bModified = false;
 }
 
 void GObject::OnRender()
 {
-	if (!children.empty())
-	{
-		FOREACH_GOBJ_CHILDREN_IT()
-		{
-			if ((*it))
-			{
-				(*it)->OnRender();
-			}
-		}
-	}
 }
 
 void GObject::OnRelease()
 {
-	RemoveAllChildren();
+	RemoveAllChildren(true);
 	GObjectManager::getInstance().AddNodeToDelete(this);
 }
 
 void GObject::SortChildren()
 {
-	children.sort();
+	listChildren.sort();
 }
 
 void GObject::OnModify()
 {
 	bModified = true;
-	if (bModifyParent && parent)
-	{
-		parent->OnModify();
-	}
 }
 
 void GObject::OnClearModify()
 {
-	if (!children.empty())
-	{
-		FOREACH_GOBJ_CHILDREN_IT()
-		{
-			if ((*it))
-			{
-				(*it)->OnClearModify();
-			}
-		}
-	}
 	bModified = false;
 }
 
-void GObject::SetMotifyParent( bool bToModify )
+void GObject::setMotifyParent( bool bToModify )
 {
 	bModifyParent = bToModify;
 }
@@ -243,7 +271,278 @@ int GObject::Reparent( GObject * newparent )
 	return newparent->AddChild(this);
 }
 
-const char * GObject::GetTypeName()
+const char * GObject::getDisplayName()
 {
+	if (strDisplayName.length())
+	{
+		return strDisplayName.c_str();
+	}
 	return StringManager::getInstance().GetNNObjectName();
+}
+
+void GObject::setIsAttributeNode( bool bToAttribute/*=true*/ )
+{
+	if (bToAttribute && !bAttributeNode)
+	{
+		_ModifyNonAttributeChildrenCount(1);
+	}
+	else if (!bToAttribute && bAttributeNode)
+	{
+		_ModifyNonAttributeChildrenCount(-1);
+	}
+	bAttributeNode = bToAttribute;
+}
+
+void GObject::_ModifyNonAttributeChildrenCount( int countchange )
+{
+	nNonAttributeChildrenCount += countchange;
+	assert(nNonAttributeChildrenCount >= 0);
+}
+
+// Can only be called by UI
+void GObject::setDisplayFold( bool toDisplayFold )
+{
+	if (bDisplayFolded != toDisplayFold)
+	{
+		bDisplayFolded = toDisplayFold;
+//		GObjectManager::getInstance().OnTreeChanged(this);
+	}
+}
+
+// Can only be called by UI
+void GObject::setDisplayVisible( bool toDisplayVisible )
+{
+	bool changed = false;
+	if (toDisplayVisible && (nDisplayState & GOBJ_DISPSTATE_INVISIBLE))
+	{
+		nDisplayState &= ~GOBJ_DISPSTATE_INVISIBLE;
+		changed = true;
+	}
+	else if (!toDisplayVisible && !(nDisplayState & GOBJ_DISPSTATE_INVISIBLE))
+	{
+		nDisplayState |= GOBJ_DISPSTATE_INVISIBLE;
+		changed = true;
+	}
+
+	if (changed)
+	{
+		if (!listChildren.empty())
+		{
+			FOREACH_GOBJ_CHILDREN_IT()
+			{
+				(*it)->OnParentToggleDisplayVisible(toDisplayVisible);
+			}
+		}
+	}
+}
+
+// Can only be called by UI
+void GObject::setDisplayLock( bool toDisplayLock )
+{
+	bool changed = false;
+	if (toDisplayLock && !(nDisplayState & GOBJ_DISPSTATE_LOCKED))
+	{
+		nDisplayState |= GOBJ_DISPSTATE_LOCKED;
+		changed = true;
+	}
+	else if (!toDisplayLock && (nDisplayState & GOBJ_DISPSTATE_LOCKED))
+	{
+		nDisplayState &= ~GOBJ_DISPSTATE_LOCKED;
+		changed = true;
+	}
+
+	if (changed)
+	{
+		if (!listChildren.empty())
+		{
+			FOREACH_GOBJ_CHILDREN_IT()
+			{
+				(*it)->OnParentToggleDisplayLocked(toDisplayLock);
+			}
+		}
+	}
+}
+
+bool GObject::canRender()
+{
+	if (isDisplayVisible())
+	{
+		return true;
+	}
+	return false;
+}
+
+bool GObject::canUpdate()
+{
+	return true;
+}
+
+bool GObject::isDisplayVisible()
+{
+	if ((nDisplayState & GOBJ_DISPSTATE_INVISIBLE) || (nDisplayState & GOBJ_DISPSTATE_RECINVISIBLE))
+	{
+		return false;
+	}
+	return true;
+}
+
+bool GObject::isRecDisplayVisible()
+{
+	if (nDisplayState & GOBJ_DISPSTATE_RECINVISIBLE)
+	{
+		return false;
+	}
+	return true;
+}
+
+bool GObject::isDisplayLocked()
+{
+	if ((nDisplayState & GOBJ_DISPSTATE_LOCKED) || (nDisplayState & GOBJ_DISPSTATE_RECLOCKED))
+	{
+		return true;
+	}
+	return false;
+}
+
+bool GObject::isRecDisplayLocked()
+{
+	if (nDisplayState & GOBJ_DISPSTATE_RECLOCKED)
+	{
+		return true;
+	}
+	return false;
+}
+
+void GObject::setLineColor( DWORD col )
+{
+	dwLineColor = col;
+	FOREACH_GOBJ_CHILDREN_IT()
+	{
+		(*it)->setLineColor(col);
+	}
+}
+
+void GObject::OnParentToggleDisplayVisible( bool toDisplayVisible )
+{
+	if (toDisplayVisible)
+	{
+		nDisplayState &= ~GOBJ_DISPSTATE_RECINVISIBLE;
+	}
+	else
+	{
+		nDisplayState |= GOBJ_DISPSTATE_RECINVISIBLE;
+	}
+	FOREACH_GOBJ_CHILDREN_IT()
+	{
+		(*it)->OnParentToggleDisplayVisible(toDisplayVisible);
+	}
+}
+
+void GObject::OnParentToggleDisplayLocked( bool toDisplayLock )
+{
+	if (toDisplayLock)
+	{
+		nDisplayState |= GOBJ_DISPSTATE_RECLOCKED;
+	}
+	else
+	{
+		nDisplayState &= ~GOBJ_DISPSTATE_RECLOCKED;
+	}
+	FOREACH_GOBJ_CHILDREN_IT()
+	{
+		(*it)->OnParentToggleDisplayLocked(toDisplayLock);
+	}
+
+}
+
+void GObject::CallRender()
+{
+	if (canRender())
+	{
+		OnRender();
+		if (!listChildren.empty())
+		{
+			FOREACH_GOBJ_CHILDREN_IT()
+			{
+				(*it)->CallRender();
+			}
+		}
+	}
+}
+
+void GObject::CallUpdate()
+{
+	if (canUpdate())
+	{
+		OnUpdate();
+		if (!listChildren.empty())
+		{
+			FOREACH_GOBJ_CHILDREN_IT()
+			{
+				(*it)->CallUpdate();
+			}
+		}
+	}
+}
+
+void GObject::CallModify()
+{
+	OnModify();
+	if (bModifyParent && pParent)
+	{
+		pParent->CallModify();
+	}
+}
+
+void GObject::CallClearModify()
+{
+	if (!listChildren.empty())
+	{
+		FOREACH_GOBJ_CHILDREN_IT()
+		{
+			if ((*it))
+			{
+				(*it)->CallClearModify();
+			}
+		}
+	}
+	OnClearModify();
+}
+
+GObject * GObject::GetLayer()
+{
+	GObject * pobj = this;
+	while (pobj)
+	{
+		if (pobj->isLayer())
+		{
+			return pobj;
+		}
+		pobj = pobj->pParent;
+	}
+	return NULL;
+}
+
+GObject * GObject::GetBase()
+{
+	GObject * pobj = this;
+	while (pobj->pParent)
+	{
+		pobj = pobj->pParent;
+	}
+	return pobj;
+}
+
+bool GObject::isRecDisplayFolded()
+{
+	GObject * pobj = this;
+	while (pobj->pParent)
+	{
+		pobj = pobj->pParent;
+		if (pobj->bDisplayFolded)
+		{
+			return true;
+		}
+	}
+	return false;
 }

@@ -4,6 +4,7 @@
 #include "Main.h"
 #include "RenderHelper.h"
 #include "Command.h"
+#include "GLayer.h"
 
 class CommandTemplate
 {
@@ -12,7 +13,9 @@ public:
 	~CommandTemplate(void);
 
 	virtual void OnProcessCommand()=0;
-	virtual void DoneCommand()=0;
+	virtual void InstantProcessCommand();
+	virtual void OnDoneCommand()=0;
+	virtual void CallDoneCommand();
 
 	virtual int OnNormalProcessCommand(int cursorindex=-1);
 	virtual void DispatchNormalSubCommand(int subcommand);
@@ -42,6 +45,8 @@ public:
 	MainInterface * pmain;
 	Command * pcommand;
 	list<CommittedCommand*> madecctodelete;
+
+	GLayer * workingLayer;
 
 	CommandStepInfo laststep;
 };

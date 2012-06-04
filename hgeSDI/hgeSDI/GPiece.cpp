@@ -10,7 +10,11 @@ GPiece::~GPiece(void)
 {
 }
 
-const char * GPiece::GetTypeName()
+const char * GPiece::getDisplayName()
 {
+	if (strDisplayName.length())
+	{
+		return strDisplayName.c_str();
+	}
 	return StringManager::getInstance().GetNNPieceName();
 }

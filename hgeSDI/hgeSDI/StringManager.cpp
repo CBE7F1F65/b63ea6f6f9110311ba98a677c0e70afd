@@ -91,7 +91,10 @@ void StringManager::FillSCInfo()
 	_LSET(	COMM_ZOOMIN,	"ZOOMIN",	"Zone Zoom",	""	);
 	_LSET(	COMM_DOZOOM,	"ZOOM",	"Instant Zoom",	""	);
 
-	_LSET(	COMM_INITIAL,	"INITIAL",	"Initialization",	"");
+	_LSET(	COMM_INITIAL,	"INITIAL",	"Initialization",	""	);
+	_LSET(	COMM_SETWORKINGLAYER,	"SETWORKINGLAYER",	"Set Working Layer",	""	);
+	_BSET(	COMM_NEWLAYER,	"NEWLAYER", "NL",	"New Layer",	""	);
+	_BSET(	COMM_NEWSUBLAYER,	"NEWSUBLAYER",	"NSL",	"New Sub Layer", "");
 
 	_BSET(	COMM_LINE,	"LINE",	"L",	"Draw Line",	""	);
 	_BSET(	COMM_BEZIER,	"BEZIER",	"B",	"Draw Bezier Curve",	""	);

@@ -5,6 +5,7 @@
 #include "LineCommand.h"
 #include "BezierCommand.h"
 #include "InitialCommand.h"
+#include "NewLayerCommand.h"
 
 int Command::ProcessPending( int index, int useflag, int fillprompt, int step, int wantprompt/*=0*/, bool pushback/*=true*/ )
 {
@@ -131,6 +132,12 @@ void Command::ProcessCommand()
 		{
 		case COMM_INITIAL:
 			InitialCommand::getInstance().OnProcessCommand();
+			break;
+		case COMM_NEWLAYER:
+			NewLayerCommand::getInstance().OnProcessCommand();
+			break;
+		case COMM_NEWSUBLAYER:
+			NewSubLayerCommand::getInstance().OnProcessCommand();
 			break;
 		case COMM_PAN:
 			GUICoordinate::getInstance().OnProcessPanCommand();

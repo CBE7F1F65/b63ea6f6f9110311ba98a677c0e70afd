@@ -18,16 +18,21 @@ void GPoint::SetPosition( float _x, float _y )
 {
 	x = _x;
 	y = _y;
-	OnModify();
+	CallModify();
 }
 
-const char * GPoint::GetTypeName()
+const char * GPoint::getDisplayName()
 {
+	if (strDisplayName.length())
+	{
+		return strDisplayName.c_str();
+	}
 	return StringManager::getInstance().GetNNPointName();
 }
 
 GEndPoint::GEndPoint()
 {
+	setIsAttributeNode(true);
 }
 
 GEndPoint::GEndPoint( float _x, float _y )
@@ -39,7 +44,35 @@ GEndPoint::~GEndPoint()
 {
 }
 
-const char * GEndPoint::GetTypeName()
+const char * GEndPoint::getDisplayName()
 {
+	if (strDisplayName.length())
+	{
+		return strDisplayName.c_str();
+	}
 	return StringManager::getInstance().GetNNEndPointName();
+}
+
+GMidPoint::GMidPoint()
+{
+	setIsAttributeNode(true);
+	setMotifyParent(false);
+}
+
+GMidPoint::GMidPoint( float _x, float _y )
+{
+	SetPosition(_x, _y);
+}
+
+GMidPoint::~GMidPoint()
+{
+}
+
+const char * GMidPoint::getDisplayName()
+{
+	if (strDisplayName.length())
+	{
+		return strDisplayName.c_str();
+	}
+	return StringManager::getInstance().GetNNMidPointName();
 }

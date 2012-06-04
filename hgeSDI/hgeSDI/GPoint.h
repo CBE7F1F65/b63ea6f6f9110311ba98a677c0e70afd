@@ -11,7 +11,7 @@ public:
 
 	void SetPosition(float x, float y);
 
-	virtual const char * GetTypeName();
+	virtual const char * getDisplayName();
 
 	float x;
 	float y;
@@ -24,5 +24,15 @@ public:
 	GEndPoint(float x, float y);
 	~GEndPoint();
 
-	virtual const char * GetTypeName();
+	virtual const char * getDisplayName();
+};
+
+class GMidPoint : public GPoint
+{
+public:
+	GMidPoint();
+	GMidPoint(float x, float y);
+	~GMidPoint();
+
+	virtual const char * getDisplayName();
 };

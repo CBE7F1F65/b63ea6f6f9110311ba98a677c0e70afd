@@ -139,6 +139,7 @@
     <ClInclude Include="Command.h" />
     <ClInclude Include="CommandDefines.h" />
     <ClInclude Include="CommandTemplate.h" />
+    <ClInclude Include="GLayer.h" />
     <ClInclude Include="GLine.h" />
     <ClInclude Include="GObject.h" />
     <ClInclude Include="GObjectManager.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="MainDependency.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MathHelper.h" />
+    <ClInclude Include="NewLayerCommand.h" />
     <ClInclude Include="RenderHelper.h" />
     <ClInclude Include="RenderTargetManager.h" />
     <ClInclude Include="Resource.h" />
@@ -180,8 +182,9 @@
   <ItemGroup>
     <ClCompile Include="ColorManager.cpp" />
     <ClCompile Include="Command.cpp" />
-    <ClCompile Include="CommandProcess.cpp" />
+    <ClCompile Include="ProcessCommand.cpp" />
     <ClCompile Include="CommandTemplate.cpp" />
+    <ClCompile Include="GLayer.cpp" />
     <ClCompile Include="GLine.cpp" />
     <ClCompile Include="GObject.cpp" />
     <ClCompile Include="GObjectManager.cpp" />
@@ -202,6 +205,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MathHelper.cpp" />
+    <ClCompile Include="NewLayerCommand.cpp" />
     <ClCompile Include="RenderHelper.cpp" />
     <ClCompile Include="RenderTargetManager.cpp" />
     <ClCompile Include="stdafx.cpp">

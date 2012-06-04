@@ -16,6 +16,23 @@ ColorManager::~ColorManager(void)
 
 DWORD ColorManager::GetLayerLineColor( int layer/*=-1*/ )
 {
+	switch (layer%16)
+	{
+	case 0:
+		return 0xffffffff;
+	case 1:
+		return 0xffff0000;
+	case 2:
+		return 0xffffff00;
+	case 3:
+		return 0xff00ff00;
+	case 4:
+		return 0xff800000;
+	case 5:
+		return 0xff808000;
+	case 6:
+		return 0xff008000;
+	}
 	return 0xffffffff;
 }
 

@@ -10,7 +10,11 @@ GShape::~GShape(void)
 {
 }
 
-const char * GShape::GetTypeName()
+const char * GShape::getDisplayName()
 {
+	if (strDisplayName.length())
+	{
+		return strDisplayName.c_str();
+	}
 	return StringManager::getInstance().GetNNShapeName();
 }

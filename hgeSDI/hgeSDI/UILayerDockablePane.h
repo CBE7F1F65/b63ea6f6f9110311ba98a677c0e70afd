@@ -2,6 +2,7 @@
 
 // UILayerDockablePane
 #include "UILayerListCtrl.h"
+#include "GLayer.h"
 
 #define IDLB_LISTCTRL	0
 
@@ -13,7 +14,8 @@ public:
 	UILayerDockablePane();
 	virtual ~UILayerDockablePane();
 
-	void RebuildTree(GObject * changebase);
+	void RebuildTree(GObject * changebase, GObject * activeitem);
+	GLayer * GetActiveLayer();
 
 	UILayerListCtrl m_wndListCtrl;
 

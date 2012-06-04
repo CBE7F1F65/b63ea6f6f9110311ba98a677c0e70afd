@@ -181,16 +181,16 @@ void LineCommand::RenderToTarget()
 		HTARGET tar = RenderTargetManager::getInstance().UpdateTarget(RTID_COMMAND);
 
 		RenderHelper::getInstance().BeginRenderTar(tar);
-		RenderHelper::getInstance().RenderLine(x1, y1, x2, y2, ColorManager::getInstance().GetLayerLineColor());
+		RenderHelper::getInstance().RenderLine(x1, y1, x2, y2, GObjectManager::getInstance().GetActiveLayer()->getLineColor());
 		RenderHelper::getInstance().EndRenderTar();
 
 		Command::getInstance().SetRenderTarget(tar);
 	}
 }
 
-void LineCommand::DoneCommand()
+void LineCommand::OnDoneCommand()
 {
-	GStraightLine * line = new GStraightLine(&(GObjectManager::getInstance().basenode));
+	GStraightLine * line = new GStraightLine(workingLayer/*GObjectManager::getInstance().GetActiveLayer()*/);
 	float xb, yb, xe, ye;
 	pcommand->GetParamXY(CSP_LINE_B_XY, &xb, &yb);
 	pcommand->GetParamXY(CSP_LINE_N_XY, &xe, &ye);
@@ -199,7 +199,7 @@ void LineCommand::DoneCommand()
 	PushRevertable(
 		CCMake_C(COMM_I_ADDNODE, 2),
 		CCMake_D((int)line),
-		CCMake_D((int)(line->parent)),
+		CCMake_D((int)(line->getParent())),
 		CCMake_C(COMM_I_COMMAND, 5, 3),
 		CCMake_C(COMM_LINE),
 		CCMake_F(xb),

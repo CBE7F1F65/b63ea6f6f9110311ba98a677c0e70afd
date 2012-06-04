@@ -40,7 +40,6 @@ BEGIN_MESSAGE_MAP(ChgeSDIView, CView)
 
 	ON_WM_SIZE()
 
-	ON_COMMAND(ID_LINE, &ChgeSDIView::OnLine)
 	ON_WM_ACTIVATE()
 	ON_WM_TIMER()
 	ON_WM_MOUSEACTIVATE()
@@ -180,12 +179,6 @@ void ChgeSDIView::OnSize(UINT nType, int cx, int cy)
 }
 
 // ChgeSDIView 消息处理程序
-
-void ChgeSDIView::OnLine()
-{
-	// TODO: 在此添加命令处理程序代码
-	MainInterface::getInstance().OnCommand(COMM_LINE);
-}
 
 void ChgeSDIView::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 {

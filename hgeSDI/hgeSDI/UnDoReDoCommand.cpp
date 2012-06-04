@@ -194,9 +194,8 @@ bool Command::DoUnDoAddNode( GObject * obj, GObject * parent )
 	assert(obj != NULL);
 	assert(parent != NULL);
 
-	assert(obj->parent == parent);
-	parent->RemoveChild(obj);
-//	obj->RemoveFromParent();
+	assert(obj->getParent() == parent);
+	parent->RemoveChild(obj, true);
 	return true;
 }
 
@@ -230,7 +229,7 @@ bool Command::DoUnDoReparentNode( GObject * obj, GObject * oparent, GObject * ap
 	assert(oparent != NULL);
 	assert(aparent != NULL);
 
-	assert(obj->parent == aparent);
+	assert(obj->getParent() == aparent);
 	obj->Reparent(oparent);
 	return true;
 }
@@ -242,7 +241,7 @@ bool Command::DoReDoReparentNode( GObject * obj, GObject * oparent, GObject * ap
 //	assert(oparent != NULL);
 //	assert(aparent != NULL);
 
-	assert(obj->parent == oparent);
+	assert(obj->getParent() == oparent);
 	obj->Reparent(aparent);
 	return true;
 }

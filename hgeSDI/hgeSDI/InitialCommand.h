@@ -24,6 +24,5 @@ private:
 public:
 
 	virtual void OnProcessCommand();
-	virtual void DoneCommand();
-	virtual void RenderToTarget();
+	virtual void OnDoneCommand();
 };

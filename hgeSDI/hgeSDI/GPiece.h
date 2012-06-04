@@ -7,5 +7,5 @@ public:
 	GPiece(void);
 	~GPiece(void);
 
-	virtual const char * GetTypeName();
+	virtual const char * getDisplayName();
 };
