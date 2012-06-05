@@ -47,6 +47,8 @@ public:
 	GLayer * pBaseNode;
 	list<GObject*> nodetodelete;
 
+	bool bReleasing;
+
 	GObject undobasenode;
 	int stackedLayerIndex;
 	string defaultLayerName;

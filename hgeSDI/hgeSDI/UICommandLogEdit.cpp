@@ -61,7 +61,7 @@ BOOL UICommandLogEdit::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
 
-	if (pMsg->message == WM_KEYDOWN && ::GetKeyState(VK_CONTROL))
+	if (pMsg->message == WM_KEYDOWN && (GetKeyState(VK_CONTROL)&0x8000))
 	{
 		switch (pMsg->wParam)
 		{

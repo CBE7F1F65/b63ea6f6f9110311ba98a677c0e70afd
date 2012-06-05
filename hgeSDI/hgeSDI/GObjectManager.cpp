@@ -12,6 +12,7 @@ GObjectManager::GObjectManager()
 {
 	// Put all to Release
 	pBaseNode = NULL;
+	bReleasing = false;
 	Release();
 }
 GObjectManager::~GObjectManager()
@@ -32,11 +33,13 @@ void GObjectManager::Init()
 
 void GObjectManager::Release()
 {
+	bReleasing = true;
 	if (pBaseNode)
 	{
 		pBaseNode->RemoveAllChildren(true);
 	}
 	undobasenode.RemoveAllChildren(true);
+	OnTreeChanged(pBaseNode, pBaseNode);
 	Delete();
 	stackedLayerIndex = 0;
 	tarObjs = NULL;
@@ -45,6 +48,7 @@ void GObjectManager::Release()
 		delete pBaseNode;
 		pBaseNode = NULL;
 	}
+	bReleasing = false;
 }
 
 void GObjectManager::Update()
@@ -104,6 +108,10 @@ void GObjectManager::MoveToUnDoList( GObject * node )
 
 void GObjectManager::OnTreeChanged( GObject * changingbase, GObject * activeitem )
 {
+	if (bReleasing)
+	{
+		return;
+	}
 	if (changingbase->GetBase() == (GObject *)pBaseNode)
 	{
 		pBaseNode->CallResetID();

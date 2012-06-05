@@ -459,7 +459,8 @@ GLayer * UILayerListCtrl::GetActiveLayer()
 	int index = GetNextItem(-1, LVNI_SELECTED);
 	if (index < 0)
 	{
-		index = 0;
+		return NULL;
+//		index = 0;
 	}
 	GObject * pobj = (GObject *)GetItemData(index);
 	ASSERT(pobj);
@@ -471,7 +472,11 @@ GLayer * UILayerListCtrl::GetActiveLayer()
 void UILayerListCtrl::SetActiveLayer( GLayer * pLayer )
 {
 	int index = FindItemByData(pLayer);
-	ASSERT(index>=0);
+	if (index < 0)
+	{
+		index = 0;
+	}
+//	ASSERT(index>=0);
 	DeSelect();
 	AddSelect(index);
 }

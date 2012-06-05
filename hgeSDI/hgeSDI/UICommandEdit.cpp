@@ -88,7 +88,7 @@ void UICommandEdit::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 BOOL UICommandEdit::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类if (pMsg-&gt;message == WM_KEYDOWN &amp;&amp; ::GetKeyState(VK_CONTROL) &lt; 0)
-	if (pMsg->message == WM_KEYDOWN && ::GetKeyState(VK_CONTROL))
+	if (pMsg->message == WM_KEYDOWN && (GetKeyState(VK_CONTROL)&0x8000))
 	{
 		switch (pMsg->wParam)
 		{

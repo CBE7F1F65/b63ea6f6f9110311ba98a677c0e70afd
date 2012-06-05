@@ -4,7 +4,7 @@
 #include "GObject.h"
 #include "GObjectManager.h"
 #include "Main.h"
-
+#include "CommandTemplate.h"
 bool Command::DoUnDo( int undostep/*=1*/ )
 {
 	if (undolist.size()<=1 || undostep < 1)
@@ -113,6 +113,11 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 
 	undolist.pop_back();
 	redolist.push_back(rc);
+
+	if (!GObjectManager::getInstance().GetActiveLayer())
+	{
+		GObjectManager::getInstance().SetActiveLayer(CommandTemplate::workingLayer);
+	}
 
 	return true;
 }

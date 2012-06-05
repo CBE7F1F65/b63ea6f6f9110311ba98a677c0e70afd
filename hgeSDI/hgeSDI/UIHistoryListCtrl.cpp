@@ -256,7 +256,7 @@ void UIHistoryListCtrl::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
 BOOL UIHistoryListCtrl::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
-	if (pMsg->message == WM_KEYDOWN && ::GetKeyState(VK_CONTROL))
+	if (pMsg->message == WM_KEYDOWN && (GetKeyState(VK_CONTROL)&0x8000))
 	{
 		if (pMsg->wParam == 'C' || pMsg->wParam == 'X')
 		{

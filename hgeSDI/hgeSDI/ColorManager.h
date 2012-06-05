@@ -148,7 +148,7 @@ public:
 	DWORD GetTextColor(int type, int state);
 	DWORD GetTextBkColor(int type, int state);
 
-	DWORD GetLayerLineColor(int layer=-1);
+	DWORD GetLayerLineColor(int layer);
 
 #undef _CMFDEF
 
