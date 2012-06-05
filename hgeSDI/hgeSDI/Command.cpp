@@ -5,6 +5,7 @@
 #include "RenderHelper.h"
 #include <sstream>
 #include <iomanip>
+#include "CommandTemplate.h"
 
 Command::Command()
 {
@@ -499,6 +500,81 @@ bool Command::CheckParamSet( int index, int useflag )
 	}
 	GrowParam(index);
 	return (ccomm.params[index].useflag & useflag);
+}
+
+int Command::GetIvalFromRC( RevertableCommand * rc, int csp )
+{
+	if (rc)
+	{
+		if ((int)(rc->commandlist.size()) >= csp)
+		{
+			list<CommittedCommand>::reverse_iterator it = rc->commandlist.rbegin();
+			for (int i=0; i<csp; i++)
+			{
+				++it;
+			}
+			return it->ival;
+		}
+	}
+	ASSERT(true);
+	return 0;
+}
+
+float Command::GetFvalFromRC( RevertableCommand * rc, int csp )
+{
+	if (rc)
+	{
+		if ((int)(rc->commandlist.size()) >= csp)
+		{
+			list<CommittedCommand>::reverse_iterator it = rc->commandlist.rbegin();
+			for (int i=0; i<csp; i++)
+			{
+				++it;
+			}
+			return it->fval;
+		}
+	}
+	ASSERT(true);
+	return 0;
+
+}
+
+const char * Command::GetSvalFromRC( RevertableCommand * rc, int csp )
+{
+	if (rc)
+	{
+		if ((int)(rc->commandlist.size()) >= csp)
+		{
+			list<CommittedCommand>::reverse_iterator it = rc->commandlist.rbegin();
+			for (int i=0; i<csp; i++)
+			{
+				++it;
+			}
+			return it->sval.c_str();
+		}
+	}
+	ASSERT(true);
+	return "";
+
+}
+
+int Command::GetCSubFromRC( RevertableCommand * rc, int csp )
+{
+	if (rc)
+	{
+		if ((int)(rc->commandlist.size()) >= csp)
+		{
+			list<CommittedCommand>::reverse_iterator it = rc->commandlist.rbegin();
+			for (int i=0; i<csp; i++)
+			{
+				++it;
+			}
+			return it->csub;
+		}
+	}
+	ASSERT(true);
+	return 0;
+
 }
 
 int Command::CommitCommand( const char * str )

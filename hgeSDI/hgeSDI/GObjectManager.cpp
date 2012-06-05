@@ -6,6 +6,7 @@
 #include "Main.h"
 #include "ColorManager.h"
 #include <sstream>
+#include "CommandTemplate.h"
 
 GObjectManager::GObjectManager()
 {
@@ -19,7 +20,8 @@ GObjectManager::~GObjectManager()
 void GObjectManager::Init()
 {
 	Release();
-	NewLayer(NULL, GetDefaultLayerName(layerIndex));
+	GLayer * pLayer = NewLayer(NULL, GetDefaultLayerName(stackedLayerIndex));
+	CommandTemplate::Init(pLayer);
 }
 
 void GObjectManager::Release()
@@ -27,7 +29,7 @@ void GObjectManager::Release()
 	basenode.RemoveAllChildren(true);
 	undobasenode.RemoveAllChildren(true);
 	Delete();
-	layerIndex = 0;
+	stackedLayerIndex = 0;
 	tarObjs = NULL;
 }
 
@@ -90,6 +92,7 @@ void GObjectManager::OnTreeChanged( GObject * changingbase, GObject * activeitem
 {
 	if (changingbase->GetBase() == &basenode)
 	{
+		basenode.CallResetID();
 		if (!activeitem->isAttributeNode())
 		{
 			if (!activeitem->isRecDisplayFolded())
@@ -100,7 +103,7 @@ void GObjectManager::OnTreeChanged( GObject * changingbase, GObject * activeitem
 	}
 }
 
-GLayer * GObjectManager::NewLayer( GObject * node/*=NULL*/, const char * layername )
+GLayer * GObjectManager::NewLayer( GObject * node, const char * layername, int layerIndex/*=-1*/ )
 {
 	/*
 	if (!node)
@@ -121,22 +124,31 @@ GLayer * GObjectManager::NewLayer( GObject * node/*=NULL*/, const char * layerna
 
 	return pLayer;
 	*/
-	if (!node)
+	GObject * pnodeparent = node;
+	if (!node || !node->getParent())
 	{
-		node = &basenode;
+		pnodeparent = &basenode;
 	}
-	return NewSubLayer(node->getParent(), layername);
+	else
+	{
+		pnodeparent = node->getParent();
+	}
+	return NewSubLayer(pnodeparent, layername, layerIndex);
 }
 
-GLayer * GObjectManager::NewSubLayer( GObject * node/*=NULL*/, const char * layername )
+GLayer * GObjectManager::NewSubLayer( GObject * node, const char * layername, int layerIndex/*=-1*/ )
 {
 	if (!node)
 	{
 		node = &basenode;
 	}
+	if (layerIndex < 0)
+	{
+		layerIndex = stackedLayerIndex;
+		stackedLayerIndex++;
+	}
 	GLayer * pLayer = new GLayer(layerIndex, ColorManager::getInstance().GetLayerLineColor(layerIndex), layername);
-	assert(pLayer != NULL);
-	layerIndex++;
+	ASSERT(pLayer != NULL);
 	node->AddChild(pLayer);
 
 	return pLayer;
@@ -152,10 +164,24 @@ const char * GObjectManager::GetDefaultLayerName( int _layerIndex/*=-1 */ )
 {
 	if (_layerIndex < 0)
 	{
-		_layerIndex = layerIndex;
+		_layerIndex = stackedLayerIndex;
 	}
 	stringstream ss;
 	ss << StringManager::getInstance().GetNNLayerName() << " " << (_layerIndex+1);
 	defaultLayerName = ss.str();
 	return defaultLayerName.c_str();
+}
+
+GObject * GObjectManager::FindObjectByID( int id )
+{
+	return basenode.FindNodeByID(id);
+}
+
+void GObjectManager::SetActiveLayer( GObject * pObj )
+{
+	ASSERT(pObj);
+	GLayer * pLayer = (GLayer *)pObj->GetLayer();
+	ASSERT(pLayer);
+	
+	MainInterface::getInstance().OnSetActiveLayer(pLayer);
 }

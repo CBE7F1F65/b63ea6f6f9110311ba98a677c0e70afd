@@ -2,10 +2,7 @@
 #include "Command.h"
 
 #include "GUICoordinate.h"
-#include "LineCommand.h"
-#include "BezierCommand.h"
-#include "InitialCommand.h"
-#include "NewLayerCommand.h"
+#include "CommandTemplate.h"
 
 int Command::ProcessPending( int index, int useflag, int fillprompt, int step, int wantprompt/*=0*/, bool pushback/*=true*/ )
 {
@@ -16,7 +13,7 @@ int Command::ProcessPending( int index, int useflag, int fillprompt, int step, i
 
 	if (pendingparam.type & COMMITTEDCOMMANDTYPE_SUBCOMMAND)
 	{
-		assert(pendingparam.csub != 0);
+		DASSERT(pendingparam.csub != 0);
 		return pendingparam.csub;
 	}
 
@@ -130,27 +127,16 @@ void Command::ProcessCommand()
 
 		switch (ccomm.command)
 		{
-		case COMM_INITIAL:
-			InitialCommand::getInstance().OnProcessCommand();
-			break;
-		case COMM_NEWLAYER:
-			NewLayerCommand::getInstance().OnProcessCommand();
-			break;
-		case COMM_NEWSUBLAYER:
-			NewSubLayerCommand::getInstance().OnProcessCommand();
-			break;
 		case COMM_PAN:
 			GUICoordinate::getInstance().OnProcessPanCommand();
 			break;
 		case COMM_DOZOOM:
 			GUICoordinate::getInstance().OnProcessZoomCommand();
 			break;
-		case COMM_LINE:
-			LineCommand::getInstance().OnProcessCommand();
-			break;
-		case COMM_BEZIER:
-			BezierCommand::getInstance().OnProcessCommand();
-			break;
+		default:
+			CommandTemplate * pct = CommandTemplate::GetTemplateByCommand(ccomm.command);
+			ASSERT(pct);
+			pct->CallProcessCommand();
 		}
 
 		if (inputcommandlist.empty())
@@ -160,17 +146,10 @@ void Command::ProcessCommand()
 	}
 }
 
-void Command::ProcessUnDoCommand( RevertableCommand * rc, int ucount )
-{
-	int nsize = rc->commandlist.size();
-	assert(ucount <= nsize);
 
-	list<CommittedCommand>::reverse_iterator it=rc->commandlist.rbegin();
-	for (int i=nsize; i>ucount; i--)
-	{
-		++it;
-	}
-	for (; it!=rc->commandlist.rend(); ++it)
+void Command::ProcessUnDoCommandCommit( RevertableCommand * rc )
+{
+	for (list<CommittedCommand>::reverse_iterator it=rc->commandlist.rbegin(); it!=rc->commandlist.rend(); ++it)
 	{
 		CommitFrontCommand(*it);
 	}
@@ -179,4 +158,10 @@ void Command::ProcessUnDoCommand( RevertableCommand * rc, int ucount )
 	pendingparam.ClearSet();
 	ProcessCommand();
 	pendingparam = tp;
+}
+
+void Command::ProcessUnDoCommandParam( int command, RevertableCommand * rc )
+{
+	CommandTemplate * pct = CommandTemplate::GetTemplateByCommand(command);
+	pct->CallProcessUnDoCommand(command, rc);
 }

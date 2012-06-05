@@ -7,12 +7,15 @@
 
 #include "GObjectManager.h"
 
+GLayer * CommandTemplate::workingLayer=NULL;
+GLayer * CommandTemplate::lastWorkingLayer=NULL;
+
 CommandTemplate::CommandTemplate(void)
 {
 	pguic = &GUICoordinate::getInstance();
 	pmain = &MainInterface::getInstance();
 	pcommand = &Command::getInstance();
-	workingLayer = NULL;
+	comm = COMM_NULL;
 }
 
 CommandTemplate::~CommandTemplate(void)
@@ -253,10 +256,26 @@ void CommandTemplate::ProtectPendingFinishCommand()
 void CommandTemplate::CallDoneCommand()
 {
 	GLayer * activeLayer = GObjectManager::getInstance().GetActiveLayer();
-	if (workingLayer != activeLayer)
+	if (!pcommand->IsUnDoReDoing())
 	{
-		workingLayer = activeLayer;
+		if (workingLayer != activeLayer)
+		{
+			if (workingLayer)
+			{
+				PushRevertable(
+					CCMake_C(COMM_I_COMMAND, 3, 1),
+					CCMake_C(COMM_SETWORKINGLAYER),
+					CCMake_I(workingLayer->getID()),
+					CCMake_I(activeLayer->getID()),
+					CCMake_C(COMM_I_UNDO_PARAM, 1),
+					CCMake_I(workingLayer->getID()),
+					NULL
+					);
+			}
+		}
 	}
+	lastWorkingLayer = workingLayer;
+	workingLayer = activeLayer;
 	OnDoneCommand();
 }
 
@@ -272,3 +291,27 @@ void CommandTemplate::InstantProcessCommand()
 			);
 	}
 }
+
+void CommandTemplate::CallProcessCommand()
+{
+	comm = pcommand->ccomm.command;
+	OnProcessCommand();
+}
+
+void CommandTemplate::CallProcessUnDoCommand( int _comm, RevertableCommand * rc )
+{
+	comm = _comm;
+	OnProcessUnDoCommand(rc);
+}
+
+void CommandTemplate::OnProcessUnDoCommand( RevertableCommand * rc )
+{
+
+}
+
+void CommandTemplate::Init( GLayer * pLayer )
+{
+	workingLayer = pLayer;
+	lastWorkingLayer = pLayer;
+}
+

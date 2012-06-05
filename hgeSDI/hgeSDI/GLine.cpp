@@ -14,7 +14,7 @@ GLine::GLine(void)
 
 GLine::GLine( GObject * _parent )
 {
-	assert(_parent!=NULL);
+	ASSERT(_parent!=NULL);
 	_parent->AddChild(this);
 	OnInit();
 }
@@ -50,7 +50,7 @@ GStraightLine::GStraightLine()
 
 GStraightLine::GStraightLine( GObject * _parent )
 {
-	assert(_parent!=NULL);
+	ASSERT(_parent!=NULL);
 	_parent->AddChild(this);
 	OnInit();
 }
@@ -61,7 +61,7 @@ GStraightLine::~GStraightLine()
 
 void GStraightLine::OnInit()
 {
-	assert(pParent!=NULL);
+	ASSERT(pParent!=NULL);
 
 	plbegin = new GEndPoint();
 	plend = new GEndPoint();

@@ -16,6 +16,7 @@ public:
 
 	void RebuildTree(GObject * changebase, GObject * activeitem);
 	GLayer * GetActiveLayer();
+	void SetActiveLayer( GLayer * pLayer );
 
 	UILayerListCtrl m_wndListCtrl;
 

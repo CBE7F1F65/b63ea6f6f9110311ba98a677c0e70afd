@@ -12,10 +12,13 @@ public:
 	CommandTemplate(void);
 	~CommandTemplate(void);
 
+	virtual void CallProcessCommand();
 	virtual void OnProcessCommand()=0;
 	virtual void InstantProcessCommand();
 	virtual void OnDoneCommand()=0;
 	virtual void CallDoneCommand();
+	virtual void OnProcessUnDoCommand(RevertableCommand * rc);
+	virtual void CallProcessUnDoCommand(int comm, RevertableCommand * rc);
 
 	virtual int OnNormalProcessCommand(int cursorindex=-1);
 	virtual void DispatchNormalSubCommand(int subcommand);
@@ -46,7 +49,14 @@ public:
 	Command * pcommand;
 	list<CommittedCommand*> madecctodelete;
 
-	GLayer * workingLayer;
+	int comm;
+
 
 	CommandStepInfo laststep;
+
+
+	static GLayer * lastWorkingLayer;
+	static GLayer * workingLayer;
+	static void Init( GLayer * pLayer );
+	static CommandTemplate * GetTemplateByCommand(int comm);
 };

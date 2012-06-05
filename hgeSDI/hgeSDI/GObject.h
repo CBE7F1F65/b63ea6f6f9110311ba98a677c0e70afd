@@ -15,13 +15,14 @@ public:
 public:
 	virtual int AddChild(GObject * child);
 
-	virtual void SortChildren();
-
 	virtual int RemoveAllChildren(bool bRelease);
 
 	virtual int RemoveChild(int ID, bool bRelease);
 	virtual int RemoveChild(GObject * child, bool bRelease);
 	virtual int RemoveFromParent(bool bRelease);
+	virtual void CallResetID(int beginindex=0);
+
+	virtual GObject * FindNodeByID(int id);
 
 private:
 	int _ActualAddChild(GObject * child);
@@ -31,6 +32,8 @@ private:
 	int _RemoveChild(GObject * child, bool bRelease);
 	int _RemoveFromParent(bool bRelease);
 	void _SetID(int ID=-1);
+	void _CallTreeChanged(GObject * changebase, GObject * activenode);
+	int _CallResetID(int resetbase);
 
 	void _ModifyNonAttributeChildrenCount(int countchange);
 

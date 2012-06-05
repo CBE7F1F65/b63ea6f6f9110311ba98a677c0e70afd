@@ -157,7 +157,8 @@ public:
 
 	int CreateCommand(int comm);
 	void ProcessCommand();
-	void ProcessUnDoCommand(RevertableCommand * rc, int ucount);
+	void ProcessUnDoCommandCommit(RevertableCommand * rc);
+	void ProcessUnDoCommandParam(int command, RevertableCommand * rc);
 	int ProcessCommittedCommand();
 	int ProcessPending(int index, int useflag, int fillprompt, int step, int wantprompt=0, bool pushback=true);
 	void CommitFrontCommand(CommittedCommand &cc);
@@ -192,11 +193,12 @@ public:
 	bool DoUnDo(int undostep=1);
 	bool DoReDo(int redostep=1);
 
-	bool DoUnDoCommandSingle(RevertableCommand * rc, int ucount);
+	bool DoUnDoCommandCommit(RevertableCommand * rc);
+	bool DoUnDoCommandParam(int command, RevertableCommand * rc);
 	bool DoReDoCommandSingle(RevertableCommand * rc);
 
-	bool DoUnDoAddNode(GObject * obj, GObject * parent);
-	bool DoReDoAddNode(GObject * obj, GObject * parent);
+	bool DoUnDoAddNode(int objid, int objparentid);
+	bool DoReDoAddNode(int objid, int objparentid);
 	bool DoUnDoDeleteNode(GObject * obj, GObject * parent);
 	bool DoReDoDeleteNode(GObject * obj, GObject * parent);
 	bool DoUnDoReparentNode(GObject * obj, GObject * oparent, GObject * aparent);
@@ -239,6 +241,11 @@ public:
 	const char * GetParamS(int index);
 	int GetParamG(int index);
 	bool CheckParamSet(int index, int useflag);
+
+	int GetIvalFromRC( RevertableCommand * rc, int csp);
+	float GetFvalFromRC( RevertableCommand * rc, int csp );
+	const char * GetSvalFromRC( RevertableCommand * rc, int csp );
+	int GetCSubFromRC( RevertableCommand * rc, int csp );
 
 	list<CommittedCommand> inputcommandlist;
 	CommittedCommand pendingparam;

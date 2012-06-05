@@ -386,6 +386,11 @@ GLayer * MainInterface::OnGetActiveLayer()
 	return parentview->GetMainFrame()->GetActiveLayer();
 }
 
+void MainInterface::OnSetActiveLayer( GLayer * pLayer )
+{
+	return parentview->GetMainFrame()->SetActiveLayer(pLayer);
+}
+
 void MainInterface::DoResizeWindow()
 {
 	if (resizewindow_w >= 0 && resizewindow_h >= 0)

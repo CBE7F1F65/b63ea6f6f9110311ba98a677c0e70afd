@@ -32,7 +32,7 @@ const char * GLayer::getDisplayName()
 		ss << layerID;
 		strDisplayName += ss.str();
 		*/
-		assert(true);
+		ASSERT(true);
 	}
 	return strDisplayName.c_str();
 }

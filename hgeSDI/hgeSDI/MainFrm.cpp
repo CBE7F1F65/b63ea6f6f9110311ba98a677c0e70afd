@@ -432,6 +432,11 @@ GLayer * CMainFrame::GetActiveLayer()
 	return m_wndUILayerPane.GetActiveLayer();
 }
 
+void CMainFrame::SetActiveLayer( GLayer * pLayer )
+{
+	return m_wndUILayerPane.SetActiveLayer(pLayer);
+}
+
 void CMainFrame::OnClose()
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值

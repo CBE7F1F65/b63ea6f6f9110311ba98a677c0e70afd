@@ -53,7 +53,7 @@ CImageList * IconManager::GetImageList( int icmsize )
 	case ICMSIZE_LARGE:
 		return &imgList32;
 	}
-	assert(true);
+	DASSERT(true);
 	return NULL;
 }
 

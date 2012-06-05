@@ -39,17 +39,20 @@ public:
 
 	void MoveToUnDoList(GObject * node);
 
-	GLayer * NewLayer(GObject * node, const char * layername);
-	GLayer * NewSubLayer(GObject * node, const char * layername);
+	GObject * FindObjectByID(int id);
+
+	GLayer * NewLayer(GObject * node, const char * layername, int layerIndex=-1);
+	GLayer * NewSubLayer(GObject * node, const char * layername, int layerIndex=-1);
 
 	GObject basenode;
 	list<GObject*> nodetodelete;
 
 	GObject undobasenode;
-	int layerIndex;
+	int stackedLayerIndex;
 	string defaultLayerName;
 
 	GLayer * GetActiveLayer();
+	void SetActiveLayer(GObject * pObj);
 	const char * GetDefaultLayerName( int layerIndex=-1 );
 	HTARGET tarObjs;
 };

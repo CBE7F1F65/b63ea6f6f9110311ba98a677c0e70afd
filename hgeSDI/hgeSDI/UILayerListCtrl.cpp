@@ -75,7 +75,7 @@ void UILayerListCtrl::RebuildTree( GObject * changebase, GObject * activeitem )
 	}
 	else
 	{
-		assert(true);
+		ASSERT(true);
 	}
 	Invalidate();
 	SetRedraw();
@@ -462,11 +462,19 @@ GLayer * UILayerListCtrl::GetActiveLayer()
 		index = 0;
 	}
 	GObject * pobj = (GObject *)GetItemData(index);
-	assert(pobj);
+	ASSERT(pobj);
 	GLayer * pLayer = (GLayer *)pobj->GetLayer();
-	assert(pLayer);
+	ASSERT(pLayer);
 	return pLayer;
 }
+
+void UILayerListCtrl::SetActiveLayer( GLayer * pLayer )
+{
+	int index = FindItemByData(pLayer);
+	ASSERT(index>=0);
+	AddSelect(index);
+}
+
 
 void UILayerListCtrl::SetItemVisible( int index, bool bVisible, bool bRecVisible )
 {

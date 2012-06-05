@@ -198,14 +198,20 @@ void LineCommand::OnDoneCommand()
 
 	PushRevertable(
 		CCMake_C(COMM_I_ADDNODE, 2),
-		CCMake_D((int)line),
-		CCMake_D((int)(line->getParent())),
-		CCMake_C(COMM_I_COMMAND, 5, 3),
+// 		CCMake_D((int)line),
+// 		CCMake_D((int)(line->getParent())),
+		CCMake_I(line->getID()),
+		CCMake_I(line->getParent()->getID()),
+		CCMake_C(COMM_I_COMMAND, 5, 1),
 		CCMake_C(COMM_LINE),
 		CCMake_F(xb),
 		CCMake_F(yb),
 		CCMake_F(xe),
 		CCMake_F(ye),
+		CCMake_C(COMM_I_UNDO_COMMIT, 3),
+		CCMake_C(COMM_LINE),
+		CCMake_F(xb),
+		CCMake_F(yb),
 		NULL
 		);
 }

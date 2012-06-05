@@ -41,7 +41,7 @@ public:
 
 	PointF2D operator/(float fval) const
 	{
-		assert(fval!=0);
+		ASSERT(fval!=0);
 		return PointF2D(x / fval,
 			y / fval);
 	}

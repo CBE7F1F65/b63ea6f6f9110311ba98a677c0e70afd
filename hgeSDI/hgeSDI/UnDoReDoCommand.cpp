@@ -24,45 +24,80 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 	undoredoflag = CUNDOREDO_UNDOING;
 	for (list<CommittedCommand>::iterator it=rc.commandlist.begin(); it!=rc.commandlist.end(); ++it)
 	{
-		assert(it->type == COMMITTEDCOMMANDTYPE_COMMAND);
-		assert(it->ival > _COMM_INTERNALBEGIN);
-		int command = it->ival;
+		DASSERT(it->type == COMMITTEDCOMMANDTYPE_COMMAND);
+		DASSERT(it->ival > _COMM_INTERNALBEGIN);
+		int internalcommand = it->ival;
 
 		int pcount = CI_GETPCOUNT(it->csub);
 		int ucount = CI_GETUCOUNT(it->csub);
-		if (command == COMM_I_COMMAND)
+		if (internalcommand == COMM_I_COMMAND)
 		{
-			assert(pcount != 0);
+			ASSERT(pcount != 0);
 			RevertableCommand rct;
+			int command = COMM_NULL;
 			for (int i=0; i<pcount; i++)
 			{
 				++it;
-				assert(it!=rc.commandlist.end());
-				rct.PushCommand(&(*it));
+				if (!i)
+				{
+					DASSERT(it->type == COMMITTEDCOMMANDTYPE_COMMAND);
+					DASSERT(it->ival < _COMM_INTERNALBEGIN);
+					command = it->ival;
+				}
+				DASSERT(it!=rc.commandlist.end());
+//				rct.PushCommand(&(*it));
 			}
-			DoUnDoCommandSingle(&rct, ucount);
+			for (int j=0; j<ucount; j++)
+			{
+				++it;
+				DASSERT(it->type == COMMITTEDCOMMANDTYPE_COMMAND);
+				DASSERT(it->ival > _COMM_INTERNALBEGIN);
+
+				int usubcount = CI_GETPCOUNT(it->csub);
+				DASSERT(usubcount != 0);
+
+				int undocommand = it->ival;
+				for (int i=0; i<usubcount; i++)
+				{
+					++it;
+					DASSERT(it!=rc.commandlist.end());
+					rct.PushCommand(&(*it));
+				}
+				if (undocommand == COMM_I_UNDO_COMMIT)
+				{
+					DoUnDoCommandCommit(&rct);
+				}
+				else if (undocommand == COMM_I_UNDO_PARAM)
+				{
+					ASSERT(command);
+					DoUnDoCommandParam(command, &rct);
+				}
+			}
 		}
-		else if (command == COMM_I_ADDNODE)
+		else if (internalcommand == COMM_I_ADDNODE)
 		{
-			assert(pcount == 2);
+			ASSERT(pcount == 2);
 			++it;
-			GObject * obj = (GObject *)((it)->ival);
+			int objid = it->ival;
+//			GObject * obj = (GObject *)((it)->ival);
 			++it;
-			GObject * parent = (GObject *)((it)->ival);
-			DoUnDoAddNode(obj, parent);
+			int objparentid = it->ival;
+//			GObject * parent = (GObject *)((it)->ival);
+//			DoUnDoAddNode(obj, parent);
+			DoUnDoAddNode(objid, objparentid);
 		}
-		else if (command == COMM_I_DELETENODE)
+		else if (internalcommand == COMM_I_DELETENODE)
 		{
-			assert(pcount == 2);
+			ASSERT(pcount == 2);
 			++it;
 			GObject * obj = (GObject *)((it)->ival);
 			++it;
 			GObject * parent = (GObject *)((it)->ival);
 			DoUnDoDeleteNode(obj, parent);
 		}
-		else if (command == COMM_I_REPARENTNODE)
+		else if (internalcommand == COMM_I_REPARENTNODE)
 		{
-			assert(pcount == 3);
+			ASSERT(pcount == 3);
 			++it;
 			GObject * obj = (GObject *)((it)->ival);
 			++it;
@@ -99,45 +134,64 @@ bool Command::DoReDo( int redostep/*=1*/ )
 	undoredoflag = CUNDOREDO_REDOING;
 	for (list<CommittedCommand>::iterator it=rc.commandlist.begin(); it!=rc.commandlist.end(); ++it)
 	{
-		assert(it->type == COMMITTEDCOMMANDTYPE_COMMAND);
-		assert(it->ival > _COMM_INTERNALBEGIN);
-		int command = it->ival;
+		DASSERT(it->type == COMMITTEDCOMMANDTYPE_COMMAND);
+		DASSERT(it->ival > _COMM_INTERNALBEGIN);
+		int internalcommand = it->ival;
 
 		int pcount = CI_GETPCOUNT(it->csub);
 		int ucount = CI_GETUCOUNT(it->csub);
-		if (command == COMM_I_COMMAND)
+		if (internalcommand == COMM_I_COMMAND)
 		{
-			assert(pcount != 0);
+			ASSERT(pcount != 0);
 			RevertableCommand rct;
 			for (int i=0; i<pcount; i++)
 			{
 				++it;
-				assert(it!=rc.commandlist.end());
+				DASSERT(it!=rc.commandlist.end());
 				rct.PushCommand(&(*it));
+			}
+			for (int j=0; j<ucount; j++)
+			{
+				++it;
+//				DASSERT(it->type == COMMITTEDCOMMANDTYPE_COMMAND);
+//				DASSERT(it->ival > _COMM_INTERNALBEGIN);
+
+				int usubcount = CI_GETPCOUNT(it->csub);
+//				DASSERT(usubcount != 0);
+
+				int undocommand = it->ival;
+				for (int i=0; i<usubcount; i++)
+				{
+					++it;
+//					DASSERT(it!=rc.commandlist.end());
+				}
 			}
 			DoReDoCommandSingle(&rct);
 		}
-		else if (command == COMM_I_ADDNODE)
+		else if (internalcommand == COMM_I_ADDNODE)
 		{
-			assert(pcount == 2);
+			ASSERT(pcount == 2);
 			++it;
-			GObject * obj = (GObject *)((it)->ival);
+			int objid = it->ival;
+//			GObject * obj = (GObject *)((it)->ival);
 			++it;
-			GObject * parent = (GObject *)((it)->ival);
-			DoReDoAddNode(obj, parent);
+			int objparentid = it->ival;
+//			GObject * parent = (GObject *)((it)->ival);
+//			DoReDoAddNode(obj, parent);
+			DoReDoAddNode(objid, objparentid);
 		}
-		else if (command == COMM_I_DELETENODE)
+		else if (internalcommand == COMM_I_DELETENODE)
 		{
-			assert(pcount == 2);
+			ASSERT(pcount == 2);
 			++it;
 			GObject * obj = (GObject *)((it)->ival);
 			++it;
 			GObject * parent = (GObject *)((it)->ival);
 			DoReDoDeleteNode(obj, parent);
 		}
-		else if (command == COMM_I_REPARENTNODE)
+		else if (internalcommand == COMM_I_REPARENTNODE)
 		{
-			assert(pcount == 3);
+			ASSERT(pcount == 3);
 			++it;
 			GObject * obj = (GObject *)((it)->ival);
 			++it;
@@ -158,9 +212,16 @@ bool Command::DoReDo( int redostep/*=1*/ )
 	return true;
 }
 
-bool Command::DoUnDoCommandSingle( RevertableCommand * rc, int ucount )
+bool Command::DoUnDoCommandCommit( RevertableCommand * rc )
 {
-	ProcessUnDoCommand(rc, ucount);
+	ProcessUnDoCommandCommit(rc);
+	MainInterface::getInstance().OnUnDo();
+	return true;
+}
+
+bool Command::DoUnDoCommandParam( int command, RevertableCommand * rc )
+{
+	ProcessUnDoCommandParam(command, rc);
 	MainInterface::getInstance().OnUnDo();
 	return true;
 }
@@ -188,18 +249,20 @@ bool Command::DoReDoCommandSingle( RevertableCommand * rc )
 	return true;
 }
 
-bool Command::DoUnDoAddNode( GObject * obj, GObject * parent )
+bool Command::DoUnDoAddNode( int objid, int objparentid )
 {
 	// Destroy Added
-	assert(obj != NULL);
-	assert(parent != NULL);
-
-	assert(obj->getParent() == parent);
-	parent->RemoveChild(obj, true);
+	GObject * obj = GObjectManager::getInstance().FindObjectByID(objid);
+	GObject * parent = GObjectManager::getInstance().FindObjectByID(objparentid);
+ 	ASSERT(obj != NULL);
+ 	ASSERT(parent != NULL);
+ 
+ 	DASSERT(obj->getParent() == parent);
+	parent->RemoveChild(objid, true);
 	return true;
 }
 
-bool Command::DoReDoAddNode( GObject * obj, GObject * parent )
+bool Command::DoReDoAddNode( int objid, int objparentid )
 {
 	// No need to redo
 	return true;
@@ -208,8 +271,8 @@ bool Command::DoReDoAddNode( GObject * obj, GObject * parent )
 bool Command::DoUnDoDeleteNode( GObject * obj, GObject * parent )
 {
 	// All delete = move to undolist
-	assert(obj != NULL);
-	assert(parent != NULL);
+	ASSERT(obj != NULL);
+	ASSERT(parent != NULL);
 	obj->Reparent(parent);
 	return true;
 }
@@ -225,11 +288,11 @@ bool Command::DoReDoDeleteNode( GObject * obj, GObject * parent )
 bool Command::DoUnDoReparentNode( GObject * obj, GObject * oparent, GObject * aparent )
 {
 	// Swap parent
-	assert(obj != NULL);
-	assert(oparent != NULL);
-	assert(aparent != NULL);
+	ASSERT(obj != NULL);
+	ASSERT(oparent != NULL);
+	ASSERT(aparent != NULL);
 
-	assert(obj->getParent() == aparent);
+	DASSERT(obj->getParent() == aparent);
 	obj->Reparent(oparent);
 	return true;
 }
@@ -241,7 +304,7 @@ bool Command::DoReDoReparentNode( GObject * obj, GObject * oparent, GObject * ap
 //	assert(oparent != NULL);
 //	assert(aparent != NULL);
 
-	assert(obj->getParent() == oparent);
+	DASSERT(obj->getParent() == oparent);
 	obj->Reparent(aparent);
 	return true;
 }

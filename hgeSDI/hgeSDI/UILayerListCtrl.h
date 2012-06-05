@@ -21,6 +21,7 @@ public:
 	void DeSelectParadox(int index);
 
 	GLayer * GetActiveLayer();
+	void SetActiveLayer( GLayer * pLayer );
 
 	int FindItemByData(GObject * obj);
 	int GetItemIndent(int index);

@@ -165,6 +165,7 @@
     <ClInclude Include="RenderHelper.h" />
     <ClInclude Include="RenderTargetManager.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="SetWorkingLayerCommand.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StringManager.h" />
     <ClInclude Include="targetver.h" />
@@ -182,6 +183,7 @@
   <ItemGroup>
     <ClCompile Include="ColorManager.cpp" />
     <ClCompile Include="Command.cpp" />
+    <ClCompile Include="CommandGetTemplate.cpp" />
     <ClCompile Include="ProcessCommand.cpp" />
     <ClCompile Include="CommandTemplate.cpp" />
     <ClCompile Include="GLayer.cpp" />
@@ -208,6 +210,7 @@
     <ClCompile Include="NewLayerCommand.cpp" />
     <ClCompile Include="RenderHelper.cpp" />
     <ClCompile Include="RenderTargetManager.cpp" />
+    <ClCompile Include="SetWorkingLayerCommand.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

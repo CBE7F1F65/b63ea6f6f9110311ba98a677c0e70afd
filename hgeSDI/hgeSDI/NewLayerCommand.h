@@ -27,30 +27,3 @@ public:
 	virtual void OnDoneCommand();
 
 }; 
-
-class NewSubLayerCommand : 
-	public CommandTemplate
-{
-public:
-	static NewSubLayerCommand& getInstance()
-	{
-		static NewSubLayerCommand instance;
-		// Guaranteed to be destroyed. Instantiated on first use.
-		return instance;
-	}
-
-private:
-	NewSubLayerCommand();
-	~NewSubLayerCommand();
-	// Don't forget to declare these two.
-	NewSubLayerCommand(NewSubLayerCommand const&);
-	// Don't Implement
-	void operator=(NewSubLayerCommand const&);
-	// Don't implement
-
-public:
-	virtual void OnProcessCommand();
-	virtual void OnDoneCommand();
-	
-
-}; 
