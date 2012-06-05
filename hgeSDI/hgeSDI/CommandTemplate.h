@@ -34,6 +34,7 @@ public:
 	virtual void ReleaseTarget();
 
 	virtual CommittedCommand * CCMake_C(int command, int paramcount=0, int undocount=0);
+	virtual CommittedCommand * CCMake_CI(int command, int ival);
 	virtual CommittedCommand * CCMake_F(float fval);
 	virtual CommittedCommand * CCMake_I(int ival);
 	virtual CommittedCommand * CCMake_D(int ival){return CCMake_I(ival);};

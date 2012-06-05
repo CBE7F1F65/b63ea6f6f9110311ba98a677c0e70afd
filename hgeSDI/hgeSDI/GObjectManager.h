@@ -44,7 +44,7 @@ public:
 	GLayer * NewLayer(GObject * node, const char * layername, int layerIndex=-1);
 	GLayer * NewSubLayer(GObject * node, const char * layername, int layerIndex=-1);
 
-	GObject basenode;
+	GLayer * pBaseNode;
 	list<GObject*> nodetodelete;
 
 	GObject undobasenode;

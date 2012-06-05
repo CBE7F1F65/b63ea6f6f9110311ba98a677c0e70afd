@@ -11,42 +11,56 @@
 GObjectManager::GObjectManager()
 {
 	// Put all to Release
+	pBaseNode = NULL;
 	Release();
 }
 GObjectManager::~GObjectManager()
 {
+	if (pBaseNode)
+	{
+		delete pBaseNode;
+	}
 }
 
 void GObjectManager::Init()
 {
 	Release();
+	pBaseNode = new GLayer(0, ColorManager::getInstance().GetLayerLineColor(0), "");
 	GLayer * pLayer = NewLayer(NULL, GetDefaultLayerName(stackedLayerIndex));
 	CommandTemplate::Init(pLayer);
 }
 
 void GObjectManager::Release()
 {
-	basenode.RemoveAllChildren(true);
+	if (pBaseNode)
+	{
+		pBaseNode->RemoveAllChildren(true);
+	}
 	undobasenode.RemoveAllChildren(true);
 	Delete();
 	stackedLayerIndex = 0;
 	tarObjs = NULL;
+	if (pBaseNode)
+	{
+		delete pBaseNode;
+		pBaseNode = NULL;
+	}
 }
 
 void GObjectManager::Update()
 {
-	basenode.CallUpdate();
+	pBaseNode->CallUpdate();
 
 	bool tarupdated=false;
 	HTARGET tar = RenderTargetManager::getInstance().UpdateTarget(RTID_GOBJECTS, &tarupdated);
-	if (tar != tarObjs || tarupdated || basenode.isModified())
+	if (tar != tarObjs || tarupdated || pBaseNode->isModified())
 	{
 		tarObjs = tar;
 		RenderHelper::getInstance().BeginRenderTar(tar);
-		basenode.CallRender();
+		pBaseNode->CallRender();
 		RenderHelper::getInstance().EndRenderTar();
 	}
-	basenode.CallClearModify();
+	pBaseNode->CallClearModify();
 }
 
 void GObjectManager::Render()
@@ -90,9 +104,9 @@ void GObjectManager::MoveToUnDoList( GObject * node )
 
 void GObjectManager::OnTreeChanged( GObject * changingbase, GObject * activeitem )
 {
-	if (changingbase->GetBase() == &basenode)
+	if (changingbase->GetBase() == (GObject *)pBaseNode)
 	{
-		basenode.CallResetID();
+		pBaseNode->CallResetID();
 		if (!activeitem->isAttributeNode())
 		{
 			if (!activeitem->isRecDisplayFolded())
@@ -127,7 +141,7 @@ GLayer * GObjectManager::NewLayer( GObject * node, const char * layername, int l
 	GObject * pnodeparent = node;
 	if (!node || !node->getParent())
 	{
-		pnodeparent = &basenode;
+		pnodeparent = pBaseNode;
 	}
 	else
 	{
@@ -140,7 +154,7 @@ GLayer * GObjectManager::NewSubLayer( GObject * node, const char * layername, in
 {
 	if (!node)
 	{
-		node = &basenode;
+		node = pBaseNode;
 	}
 	if (layerIndex < 0)
 	{
@@ -174,7 +188,7 @@ const char * GObjectManager::GetDefaultLayerName( int _layerIndex/*=-1 */ )
 
 GObject * GObjectManager::FindObjectByID( int id )
 {
-	return basenode.FindNodeByID(id);
+	return pBaseNode->FindNodeByID(id);
 }
 
 void GObjectManager::SetActiveLayer( GObject * pObj )

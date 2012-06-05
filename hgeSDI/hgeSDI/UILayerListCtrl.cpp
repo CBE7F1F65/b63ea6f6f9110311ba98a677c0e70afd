@@ -472,6 +472,7 @@ void UILayerListCtrl::SetActiveLayer( GLayer * pLayer )
 {
 	int index = FindItemByData(pLayer);
 	ASSERT(index>=0);
+	DeSelect();
 	AddSelect(index);
 }
 

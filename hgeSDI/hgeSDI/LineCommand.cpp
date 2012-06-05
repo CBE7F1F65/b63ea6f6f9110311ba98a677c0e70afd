@@ -203,6 +203,7 @@ void LineCommand::OnDoneCommand()
 		CCMake_I(line->getID()),
 		CCMake_I(line->getParent()->getID()),
 		CCMake_C(COMM_I_COMMAND, 5, 1),
+		CCMake_CI(COMM_I_COMM_WORKINGLAYER, workingLayer->getID()),
 		CCMake_C(COMM_LINE),
 		CCMake_F(xb),
 		CCMake_F(yb),

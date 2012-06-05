@@ -18,6 +18,7 @@ void InitialCommand::OnDoneCommand()
 {
 	PushRevertable(
 		CCMake_C(COMM_I_COMMAND, 1, 0),
+		CCMake_C(COMM_I_COMM_WORKINGLAYER, workingLayer?workingLayer->getID():0),
 		CCMake_C(COMM_INITIAL),
 		NULL
 		);

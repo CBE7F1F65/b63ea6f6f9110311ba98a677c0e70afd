@@ -980,6 +980,7 @@ void Command::PushRevertable( RevertableCommand * rc )
 				string strcomm;
 				int pcount = CI_GETPCOUNT(it->csub);
 				int ucount = CI_GETUCOUNT(it->csub);
+				++it;	// working layer
 				if (pcount)
 				{
 					int comm=0;

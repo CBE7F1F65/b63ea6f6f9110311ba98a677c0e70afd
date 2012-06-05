@@ -63,6 +63,7 @@ void SetWorkingLayerCommand::OnDoneCommand()
 
 	PushRevertable(
 		CCMake_C(COMM_I_COMMAND, 3, 1),
+		CCMake_C(COMM_I_COMM_WORKINGLAYER, workingLayer->getID()),
 		CCMake_C(COMM_SETWORKINGLAYER),
 		CCMake_I(lastobjid),
 		CCMake_I(newobjid),

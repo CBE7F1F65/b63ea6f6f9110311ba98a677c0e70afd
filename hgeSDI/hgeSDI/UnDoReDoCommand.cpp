@@ -7,7 +7,7 @@
 
 bool Command::DoUnDo( int undostep/*=1*/ )
 {
-	if (undolist.empty() || undostep < 1)
+	if (undolist.size()<=1 || undostep < 1)
 	{
 		MainInterface::getInstance().MBeep();
 		return false;
@@ -35,6 +35,7 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 			ASSERT(pcount != 0);
 			RevertableCommand rct;
 			int command = COMM_NULL;
+			++it;	//working layer
 			for (int i=0; i<pcount; i++)
 			{
 				++it;
@@ -73,6 +74,7 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 					DoUnDoCommandParam(command, &rct);
 				}
 			}
+			MainInterface::getInstance().OnUnDo();
 		}
 		else if (internalcommand == COMM_I_ADDNODE)
 		{
@@ -144,6 +146,16 @@ bool Command::DoReDo( int redostep/*=1*/ )
 		{
 			ASSERT(pcount != 0);
 			RevertableCommand rct;
+
+			//
+			++it;	//working layer
+			DASSERT(it->type == COMMITTEDCOMMANDTYPE_COMMAND);
+			DASSERT(it->ival == COMM_I_COMM_WORKINGLAYER);
+			GObject * pobj = GObjectManager::getInstance().FindObjectByID(it->csub);
+			ASSERT(pobj);
+			GObjectManager::getInstance().SetActiveLayer(pobj);
+			//
+
 			for (int i=0; i<pcount; i++)
 			{
 				++it;
@@ -215,14 +227,12 @@ bool Command::DoReDo( int redostep/*=1*/ )
 bool Command::DoUnDoCommandCommit( RevertableCommand * rc )
 {
 	ProcessUnDoCommandCommit(rc);
-	MainInterface::getInstance().OnUnDo();
 	return true;
 }
 
 bool Command::DoUnDoCommandParam( int command, RevertableCommand * rc )
 {
 	ProcessUnDoCommandParam(command, rc);
-	MainInterface::getInstance().OnUnDo();
 	return true;
 }
 

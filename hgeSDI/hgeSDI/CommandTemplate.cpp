@@ -114,16 +114,22 @@ bool CommandTemplate::IsStepped()
 
 CommittedCommand * CommandTemplate::CCMake_C( int command, int paramcount/*=0*/, int undocount/*=0*/ )
 {
+	return CCMake_CI(command, CI_MAKESUBEX(paramcount, undocount));
+}
+
+CommittedCommand * CommandTemplate::CCMake_CI( int command, int ival )
+{
 	CommittedCommand * cc = new CommittedCommand();
 	cc->type = COMMITTEDCOMMANDTYPE_COMMAND;
 	cc->ival = command;
 	if (command > _COMM_INTERNALBEGIN)
 	{
-		cc->csub = CI_MAKESUBEX(paramcount, undocount);
+		cc->csub = ival;
 	}
 	cc->sval = pcommand->GetCommandStr(command);
 	madecctodelete.push_back(cc);
 	return cc;
+
 }
 
 CommittedCommand * CommandTemplate::CCMake_F( float fval )
@@ -264,6 +270,7 @@ void CommandTemplate::CallDoneCommand()
 			{
 				PushRevertable(
 					CCMake_C(COMM_I_COMMAND, 3, 1),
+					CCMake_C(COMM_I_COMM_WORKINGLAYER, workingLayer->getID()),
 					CCMake_C(COMM_SETWORKINGLAYER),
 					CCMake_I(workingLayer->getID()),
 					CCMake_I(activeLayer->getID()),
