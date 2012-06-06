@@ -133,6 +133,7 @@
     <ClInclude Include="Command.h" />
     <ClInclude Include="CommandDefines.h" />
     <ClInclude Include="CommandTemplate.h" />
+    <ClInclude Include="DeleteItemCommand.h" />
     <ClInclude Include="GLayer.h" />
     <ClInclude Include="GLine.h" />
     <ClInclude Include="GObject.h" />
@@ -178,6 +179,7 @@
     <ClCompile Include="ColorManager.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="CommandGetTemplate.cpp" />
+    <ClCompile Include="DeleteItemCommand.cpp" />
     <ClCompile Include="ProcessCommand.cpp" />
     <ClCompile Include="CommandTemplate.cpp" />
     <ClCompile Include="GLayer.cpp" />

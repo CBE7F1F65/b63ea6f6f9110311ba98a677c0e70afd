@@ -24,6 +24,7 @@ public:
 	GObject * GetObjectByIndex(int index);
 
 	GLayer * GetActiveLayer();
+	GObject * GetActiveNodes( int * pnextfromIndex );
 	void SetActiveLayer_Internal( GLayer * pLayer );
 
 	int FindItemByData(GObject * obj);
@@ -53,6 +54,8 @@ public:
 	afx_msg void OnLvnEndlabeledit(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };
 
 

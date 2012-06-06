@@ -74,3 +74,8 @@ void UILayerDockablePane::SetActiveLayer_Internal( GLayer * pLayer )
 {
 	return m_wndListCtrl.SetActiveLayer_Internal(pLayer);
 }
+
+GObject * UILayerDockablePane::GetActiveNodes( int * pnextfromIndex )
+{
+	return m_wndListCtrl.GetActiveNodes( pnextfromIndex );
+}

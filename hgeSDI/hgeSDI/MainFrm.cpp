@@ -50,9 +50,10 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_HISTORY_PANE, &CMainFrame::OnUpdateViewHistoryPane)
 	ON_COMMAND(ID_VIEW_LAYER_PANE, &CMainFrame::OnViewLayerPane)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_LAYER_PANE, &CMainFrame::OnUpdateViewLayerPane)
-	ON_COMMAND(ID_COMMAND_LAYER_NEW, &CMainFrame::OnCommandLayerNew)
+	ON_COMMAND(ID_COMMAND_NEWLAYER, &CMainFrame::OnCommandLayerNew)
 	ON_COMMAND(ID_COMMAND_NEWSUBLAYER, &CMainFrame::OnCommandNewsublayer)
 	ON_COMMAND(ID_COMMAND_LINE, &CMainFrame::OnCommandLine)
+	ON_COMMAND(ID_COMMAND_DELETEITEM, &CMainFrame::OnCommandDeleteitem)
 END_MESSAGE_MAP()
 
 // CMainFrame 构造/析构
@@ -432,6 +433,11 @@ GLayer * CMainFrame::GetActiveLayer()
 	return m_wndUILayerPane.GetActiveLayer();
 }
 
+GObject * CMainFrame::GetActiveNodes( int * pnextfromIndex )
+{
+	return m_wndUILayerPane.GetActiveNodes(pnextfromIndex);
+}
+
 void CMainFrame::SetActiveLayer_Internal( GLayer * pLayer )
 {
 	return m_wndUILayerPane.SetActiveLayer_Internal(pLayer);
@@ -523,4 +529,10 @@ void CMainFrame::OnCommandLine()
 {
 	// TODO: 在此添加命令处理程序代码
 	MainInterface::getInstance().OnCommand(COMM_LINE);
+}
+
+void CMainFrame::OnCommandDeleteitem()
+{
+	// TODO: 在此添加命令处理程序代码
+	MainInterface::getInstance().OnCommand(COMM_DELETEITEM);
 }

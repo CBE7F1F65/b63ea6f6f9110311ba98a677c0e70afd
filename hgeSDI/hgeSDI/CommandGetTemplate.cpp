@@ -6,6 +6,7 @@
 #include "InitialCommand.h"
 #include "NewLayerCommand.h"
 #include "SetWorkingLayerCommand.h"
+#include "DeleteItemCommand.h"
 
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
@@ -14,6 +15,9 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 	{
 	case COMM_INITIAL:
 		return &InitialCommand::getInstance();
+
+	case COMM_DELETEITEM:
+		return &DeleteItemCommand::getInstance();
 
 	case COMM_NEWLAYER:
 	case COMM_NEWSUBLAYER:

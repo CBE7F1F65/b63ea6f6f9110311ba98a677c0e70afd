@@ -70,8 +70,6 @@ void UICommandEdit::OnEnChange()
 void UICommandEdit::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-
-	CEdit::OnChar(nChar, nRepCnt, nFlags);
 	if (nChar == VK_ESCAPE)
 	{
 		ClearCommand();
@@ -83,6 +81,8 @@ void UICommandEdit::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 		ClearCommand();
 		return;
 	}
+
+	CEdit::OnChar(nChar, nRepCnt, nFlags);
 }
 
 BOOL UICommandEdit::PreTranslateMessage(MSG* pMsg)

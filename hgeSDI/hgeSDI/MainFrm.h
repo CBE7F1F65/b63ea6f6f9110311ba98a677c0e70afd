@@ -47,6 +47,7 @@ public:
 	bool RebuildLayerTree(GObject * changebase, GObject * activeitem);
 
 	GLayer * GetActiveLayer();
+	GObject * GetActiveNodes( int * pnextfromIndex );
 	void SetActiveLayer_Internal( GLayer * pLayer );
 
 // ²Ù×÷
@@ -113,4 +114,5 @@ public:
 	afx_msg void OnCommandLayerNew();
 	afx_msg void OnCommandNewsublayer();
 	afx_msg void OnCommandLine();
+	afx_msg void OnCommandDeleteitem();
 };

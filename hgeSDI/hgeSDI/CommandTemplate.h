@@ -5,6 +5,7 @@
 #include "RenderHelper.h"
 #include "Command.h"
 #include "GLayer.h"
+#include "GObjectManager.h"
 
 class CommandTemplate
 {
@@ -48,6 +49,7 @@ public:
 	GUICoordinate * pguic;
 	MainInterface * pmain;
 	Command * pcommand;
+	GObjectManager * pgm;
 	list<CommittedCommand*> madecctodelete;
 
 	int comm;

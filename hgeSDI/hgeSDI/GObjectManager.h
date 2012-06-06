@@ -38,6 +38,7 @@ public:
 	void AddNodeToDelete(GObject * node);
 
 	void MoveToUnDoList(GObject * node);
+	GObject * GetUnDoListFront();
 
 	GObject * FindObjectByID(int id);
 
@@ -56,5 +57,8 @@ public:
 	GLayer * GetActiveLayer();
 	void SetActiveLayer_Internal(GObject * pObj);
 	const char * GetDefaultLayerName( int layerIndex=-1 );
+	list<GObject*> * GetSelectedNodes();
+	list<GObject*> selectednodes;
+
 	HTARGET tarObjs;
 };

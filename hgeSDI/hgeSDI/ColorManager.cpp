@@ -83,12 +83,6 @@ DWORD ColorManager::GetTextColor( int type, int state )
 	{
 		switch (state)
 		{
-		case COLORMS_ACTIVE:
-		case COLORMS_NONACTIVE:
-		case COLORMS_EDITABLE:
-		case COLORMS_BACKGROUND:
-		case COLORMS_FRAME:
-			return 0xffffffff;
 		case COLORMS_DISABLED:
 			return 0xff717171;
 		}
@@ -110,7 +104,9 @@ DWORD ColorManager::GetTextBkColor( int type, int state )
 			return 0xff464646;
 		case COLORMS_FRAME:
 			return 0xff333333;
-		case COLORMS_EDITABLE:
+		case COLORMS_NONEEDITABLE:
+			return 0xff494949;
+		case COLORMS_SUBSTANCE:
 			return 0xff595959;
 		case COLORMS_DISABLED:
 			return 0xff535353;

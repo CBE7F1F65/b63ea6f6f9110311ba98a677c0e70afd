@@ -56,6 +56,7 @@ public:
 	void OnClearPreviousHistory(int ndelete=1);
 	void OnRebuildLayerTree(GObject * changebase, GObject * activeitem);
 	GLayer * OnGetActiveLayer();
+	GObject * OnGetSelectedNodes( int * pnextfromIndex );
 	void OnSetActiveLayer_Internal( GLayer * pLayer );
 	void OnInternalActiveLayerSetDone();
 
@@ -93,7 +94,6 @@ public:
 	{
 		return precision;
 	};
-
 	HGE * hge;
 	int resizewindow_w;
 	int resizewindow_h;

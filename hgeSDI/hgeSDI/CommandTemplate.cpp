@@ -16,6 +16,7 @@ CommandTemplate::CommandTemplate(void)
 	pguic = &GUICoordinate::getInstance();
 	pmain = &MainInterface::getInstance();
 	pcommand = &Command::getInstance();
+	pgm = &GObjectManager::getInstance();
 	comm = COMM_NULL;
 }
 

@@ -14,6 +14,9 @@ public:
 
 public:
 	virtual int AddChild(GObject * child);
+private:
+	virtual int AddChildAfterObj( GObject* child, GObject*afterobj );
+public:
 
 	virtual int RemoveAllChildren(bool bRelease);
 
@@ -25,7 +28,7 @@ public:
 	virtual GObject * FindNodeByID(int id);
 
 private:
-	int _ActualAddChild(GObject * child);
+	int _ActualAddChildAfterObj(GObject * child, GObject * afterobj);
 	void _SetParent(GObject * parent);
 	list<GObject *>::iterator _ActualRemoveChild(list<GObject *>::iterator it, bool bRelease);
 	int _RemoveChild(int ID, bool bRelease);
@@ -39,6 +42,7 @@ private:
 
 public:
 	virtual int Reparent(GObject * newparent);
+	virtual int ReparentAfterObject( GObject * newparent, GObject * afterobj );
 
 	virtual bool isLayer(){return false;};
 	virtual GObject * GetLayer();
@@ -79,6 +83,9 @@ public:
 	GObject * getParent(){return pParent;};
 	int getID(){return nID;};
 	list<GObject *> * getChildren(){return &listChildren;};
+	int getChildrenCount(){return listChildren.size();};
+	GObject * getNewestChild(){if(!getChildrenCount()){ return NULL;} return listChildren.front();};
+	GObject * getOldestChild(){if(!getChildrenCount()){ return NULL;} return listChildren.back();};
 	int getNonAttributeChildrenCount(){return nNonAttributeChildrenCount;};
 	bool isAttributeNode(){return bAttributeNode;};
 
@@ -114,7 +121,6 @@ public:
 			strDisplayName=str;
 		}
 	};
-
 protected:
 	bool bAttributeNode;
 	int nNonAttributeChildrenCount;

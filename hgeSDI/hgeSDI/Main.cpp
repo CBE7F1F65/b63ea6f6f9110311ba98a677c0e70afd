@@ -387,6 +387,11 @@ GLayer * MainInterface::OnGetActiveLayer()
 	return parentview->GetMainFrame()->GetActiveLayer();
 }
 
+GObject * MainInterface::OnGetSelectedNodes( int * pnextfromIndex )
+{
+	return parentview->GetMainFrame()->GetActiveNodes(pnextfromIndex);
+}
+
 void MainInterface::OnSetActiveLayer_Internal( GLayer * pLayer )
 {
 	return parentview->GetMainFrame()->SetActiveLayer_Internal(pLayer);

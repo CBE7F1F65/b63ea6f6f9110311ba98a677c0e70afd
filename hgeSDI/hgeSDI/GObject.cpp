@@ -34,7 +34,7 @@ GObject::~GObject(void)
 #define FOREACHREV_GOBJ_CHILDREN_IT()	\
 	_FOREACHREV_L(GObject*, it, listChildren)
 
-int GObject::_ActualAddChild( GObject * child )
+int GObject::_ActualAddChildAfterObj( GObject * child, GObject * afterobj )
 {
 	if (child)
 	{
@@ -58,7 +58,27 @@ int GObject::_ActualAddChild( GObject * child )
 
 		child->CallModify();
 
-		listChildren.push_front(child);
+		//
+		if (!afterobj)
+		{
+//			listChildren.push_front(child);
+			// -1 means front, which is back
+			listChildren.push_back(child);
+		}
+		else
+		{
+			bool bdone = false;
+			FOREACH_GOBJ_CHILDREN_IT()
+			{
+				if ((*it) == afterobj)
+				{
+					listChildren.insert(it, child);
+					bdone = true;
+					break;
+				}
+			}
+			ASSERT(bdone);
+		}
 
 		if (!child->bAttributeNode)
 		{
@@ -82,6 +102,7 @@ list<GObject *>::iterator GObject::_ActualRemoveChild( list<GObject *>::iterator
 	{
 		(*it)->OnRelease();
 	}
+	(*it)->pParent = NULL;
 	it = listChildren.erase(it);
 
 	// Add OnModify and OnTreeChanged after all operation done!!
@@ -98,7 +119,12 @@ void GObject::_SetID( int _ID/*=-1*/ )
 
 int GObject::AddChild( GObject * child )
 {
-	return _ActualAddChild(child);
+	return _ActualAddChildAfterObj(child, getNewestChild());
+}
+
+int GObject::AddChildAfterObj( GObject* child, GObject*afterobj )
+{
+	return _ActualAddChildAfterObj(child, afterobj);
 }
 
 void GObject::_SetParent( GObject * _parent )
@@ -110,12 +136,16 @@ void GObject::_SetParent( GObject * _parent )
 
 int GObject::RemoveChild( int _ID, bool bRelease )
 {
-	return _RemoveChild(_ID, bRelease);
+	int ret = _RemoveChild(_ID, bRelease);
+	_CallTreeChanged(this, this);
+	return ret;
 }
 
 int GObject::RemoveChild( GObject * child, bool bRelease )
 {
-	return _RemoveChild(child, bRelease);
+	int ret = _RemoveChild(child, bRelease);
+	_CallTreeChanged(this, this);
+	return ret;
 }
 
 
@@ -144,7 +174,7 @@ int GObject::_RemoveChild( int _ID, bool bRelease )
 		}
 	}
 	CallModify();
-	_CallTreeChanged(this, this);
+//	_CallTreeChanged(this, this);
 //	GObjectManager::getInstance().OnTreeChanged(this, this);
 	return listChildren.size();
 }
@@ -174,13 +204,16 @@ int GObject::_RemoveChild( GObject * child, bool bRelease )
 		}
 	}
 	CallModify();
-	_CallTreeChanged(this, this);
+//	_CallTreeChanged(this, this);
 //	GObjectManager::getInstance().OnTreeChanged(this, this);
 	return listChildren.size();
 }
 int GObject::RemoveFromParent( bool bRelease )
 {
-	return _RemoveFromParent(bRelease);
+	GObject * _pParent = pParent;
+	int ret = _RemoveFromParent(bRelease);
+	_CallTreeChanged(_pParent, _pParent);
+	return ret;
 }
 
 int GObject::_RemoveFromParent( bool bRelease )
@@ -268,9 +301,30 @@ void GObject::setMotifyParent( bool bToModify )
 
 int GObject::Reparent( GObject * newparent )
 {
+	/*
 	ASSERT(newparent != NULL);
 	_RemoveFromParent(false);
 	return newparent->AddChild(this);
+	*/
+	return ReparentAfterObject(newparent, newparent->getNewestChild());
+}
+
+int GObject::ReparentAfterObject( GObject * newparent, GObject * afterobj )
+{
+	ASSERT(newparent != NULL);
+	bool calltreechange = false;
+	if (newparent->GetBase() != GetBase())
+	{
+		calltreechange = true;
+	}
+	GObject * _pParent = pParent;
+	_RemoveFromParent(false);
+	int ret = newparent->AddChildAfterObj(this, afterobj);
+	if (calltreechange)
+	{
+		_CallTreeChanged(_pParent, _pParent);
+	}
+	return ret;
 }
 
 const char * GObject::getDisplayName()

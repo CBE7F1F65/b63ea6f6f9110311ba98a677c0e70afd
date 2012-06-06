@@ -106,6 +106,11 @@ void GObjectManager::MoveToUnDoList( GObject * node )
 	}
 }
 
+GObject * GObjectManager::GetUnDoListFront()
+{
+	return undobasenode.getNewestChild();
+}
+
 void GObjectManager::OnTreeChanged( GObject * changingbase, GObject * activeitem )
 {
 	if (bReleasing)
@@ -211,4 +216,21 @@ void GObjectManager::SetActiveLayer_Internal( GObject * pObj )
 			MainInterface::getInstance().OnSetActiveLayer_Internal(pLayer);
 		}
 	}	
+}
+
+list<GObject*> * GObjectManager::GetSelectedNodes()
+{
+	selectednodes.clear();
+	GObject * _pobj = NULL;
+	int nextfromindex = -1;
+	do 
+	{
+		_pobj = MainInterface::getInstance().OnGetSelectedNodes(&nextfromindex);
+		if (_pobj)
+		{
+			selectednodes.push_back(_pobj);
+		}
+	} while (_pobj);
+
+	return &selectednodes;
 }

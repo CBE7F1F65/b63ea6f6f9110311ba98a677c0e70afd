@@ -48,13 +48,16 @@ BEGIN_MESSAGE_MAP(UILayerListCtrl, CListCtrl)
 	ON_NOTIFY_REFLECT(LVN_ENDLABELEDIT, &UILayerListCtrl::OnLvnEndlabeledit)
 	ON_WM_MOUSEMOVE()
 	ON_NOTIFY_REFLECT(LVN_GETINFOTIP, &UILayerListCtrl::OnLvnGetInfoTip)
+	ON_WM_CHAR()
 END_MESSAGE_MAP()
 
 void UILayerListCtrl::RebuildTree( GObject * changebase, GObject * activeitem )
 {
 	SetRedraw(FALSE);
-//	DeleteAllItems();
+
 	DeleteItemsUnderObj(changebase);
+//	DeleteAllItems();
+//	changebase = changebase->GetBase();
 
 	GObjectManager * pgm = &GObjectManager::getInstance();
 
@@ -280,8 +283,16 @@ void UILayerListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 				}
 				else
 				{
-					pCD->clrText	= pcm->ARGBToABGR(pcm->GetTextColor(COLORMT_LIST, COLORMS_EDITABLE))&0xffffff;
-					pCD->clrTextBk	= pcm->ARGBToABGR(pcm->GetTextBkColor(COLORMT_LIST, COLORMS_EDITABLE))&0xffffff;
+					if (!pobj->isLayer())
+					{
+						pCD->clrText	= pcm->ARGBToABGR(pcm->GetTextColor(COLORMT_LIST, COLORMS_SUBSTANCE))&0xffffff;
+						pCD->clrTextBk	= pcm->ARGBToABGR(pcm->GetTextBkColor(COLORMT_LIST, COLORMS_SUBSTANCE))&0xffffff;
+					}
+					else
+					{
+						pCD->clrText	= pcm->ARGBToABGR(pcm->GetTextColor(COLORMT_LIST, COLORMS_NONEEDITABLE))&0xffffff;
+						pCD->clrTextBk	= pcm->ARGBToABGR(pcm->GetTextBkColor(COLORMT_LIST, COLORMS_NONEEDITABLE))&0xffffff;
+					}
 				}
 			}
 			*pResult =  CDRF_NOTIFYPOSTPAINT;
@@ -474,8 +485,21 @@ GLayer * UILayerListCtrl::GetActiveLayer()
 	}
 	GObject * pobj = GetObjectByIndex(index);//(GObject *)GetItemData(index);
 	GLayer * pLayer = (GLayer *)pobj->GetLayer();
-	ASSERT(pLayer);
+//	ASSERT(pLayer);
 	return pLayer;
+}
+
+GObject * UILayerListCtrl::GetActiveNodes( int * pnextfromIndex )
+{
+	ASSERT(pnextfromIndex);
+
+	int index = GetNextItem(*pnextfromIndex, LVNI_SELECTED);
+	if (index < 0)
+	{
+		return NULL;
+	}
+	*pnextfromIndex = index;
+	return GetObjectByIndex(index);
 }
 
 void UILayerListCtrl::SetActiveLayer_Internal( GLayer * pLayer )
@@ -554,7 +578,7 @@ void UILayerListCtrl::OnLvnEndlabeledit(NMHDR *pNMHDR, LRESULT *pResult)
 GObject * UILayerListCtrl::GetObjectByIndex( int index )
 {
 	GObject * pObj = (GObject *)GetItemData(index);
-	ASSERT(pObj);
+//	ASSERT(pObj);
 	return pObj;
 }
 
@@ -589,4 +613,26 @@ void UILayerListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 	pGetInfoTip->pszText = str.GetBuffer();
 
 	*pResult = 0;
+}
+
+void UILayerListCtrl::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+	CListCtrl::OnChar(nChar, nRepCnt, nFlags);
+}
+
+
+BOOL UILayerListCtrl::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		if (pMsg->wParam == VK_DELETE)
+		{
+//			MainInterface::getInstance().OnCommand(COMM_DELETEITEM);
+		}
+	}
+
+	return CListCtrl::PreTranslateMessage(pMsg);
 }

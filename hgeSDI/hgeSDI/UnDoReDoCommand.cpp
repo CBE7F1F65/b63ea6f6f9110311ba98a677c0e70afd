@@ -95,10 +95,12 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 		{
 			ASSERT(pcount == 2);
 			++it;
-			GObject * obj = (GObject *)((it)->ival);
+			int objparentid = it->ival;
+//			GObject * obj = (GObject *)((it)->ival);
 			++it;
-			GObject * parent = (GObject *)((it)->ival);
-			DoUnDoDeleteNode(obj, parent);
+//			GObject * parent = (GObject *)((it)->ival);
+			int objafterid = it->ival;
+			DoUnDoDeleteNode(objparentid, objafterid);
 		}
 		else if (internalcommand == COMM_I_REPARENTNODE)
 		{
@@ -207,10 +209,12 @@ bool Command::DoReDo( int redostep/*=1*/ )
 		{
 			ASSERT(pcount == 2);
 			++it;
-			GObject * obj = (GObject *)((it)->ival);
+			int objparentid = it->ival;
+//			GObject * obj = (GObject *)((it)->ival);
 			++it;
-			GObject * parent = (GObject *)((it)->ival);
-			DoReDoDeleteNode(obj, parent);
+			int objafterid = it->ival;
+//			GObject * parent = (GObject *)((it)->ival);
+			DoReDoDeleteNode(objparentid, objafterid);
 		}
 		else if (internalcommand == COMM_I_REPARENTNODE)
 		{
@@ -295,20 +299,26 @@ bool Command::DoReDoAddNode( int objid, int objparentid )
 	return true;
 }
 
-bool Command::DoUnDoDeleteNode( GObject * obj, GObject * parent )
+bool Command::DoUnDoDeleteNode( int objparentid, int objafterid )
 {
-	// All delete = move to undolist
+	// move back from undobase
+	GObject * obj = GObjectManager::getInstance().GetUnDoListFront();
 	ASSERT(obj != NULL);
-	ASSERT(parent != NULL);
-	obj->Reparent(parent);
+	GObject * objparent = GObjectManager::getInstance().FindObjectByID(objparentid);
+	GObject * objafter = GObjectManager::getInstance().FindObjectByID(objafterid);
+	obj->ReparentAfterObject(objparent, objafter);
 	return true;
 }
 
-bool Command::DoReDoDeleteNode( GObject * obj, GObject * parent )
+bool Command::DoReDoDeleteNode( int objparentid, int objafterid )
 {
-	// Put back to undolist
+	/*
+	// Put back to undobase
 //	assert(obj != NULL);
+	GObject * obj = GObjectManager::getInstance().FindObjectByID(objid);
 	GObjectManager::getInstance().MoveToUnDoList(obj);
+	*/
+	// No need to redo
 	return true;
 }
 

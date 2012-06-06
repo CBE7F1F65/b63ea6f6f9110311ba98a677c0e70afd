@@ -232,8 +232,8 @@ public:
 
 	bool DoUnDoAddNode(int objid, int objparentid);
 	bool DoReDoAddNode(int objid, int objparentid);
-	bool DoUnDoDeleteNode(GObject * obj, GObject * parent);
-	bool DoReDoDeleteNode(GObject * obj, GObject * parent);
+	bool DoUnDoDeleteNode(int objparentid, int objafterid);
+	bool DoReDoDeleteNode(int objparentid, int objafterid);
 	bool DoUnDoReparentNode(GObject * obj, GObject * oparent, GObject * aparent);
 	bool DoReDoReparentNode(GObject * obj, GObject * oparent, GObject * aparent);
 

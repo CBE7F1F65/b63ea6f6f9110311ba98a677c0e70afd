@@ -35,6 +35,8 @@ enum{
 
 	_COMM_INSTANTCOMMANDEND,
 	// Common Command
+	// Delete
+	COMM_DELETEITEM,
 	// Layers
 	COMM_NEWLAYER,		// new layer
 	COMM_NEWSUBLAYER,	// new sub layer
@@ -117,6 +119,19 @@ enum{
 //////////////////////////////////////////////////////////////////////////
 enum{
 	CSP_DOZOOM_XY_F_C_SCALE = 0,
+};
+
+/************************************************************************/
+/* DELETEITEM                                                           */
+/************************************************************************/
+
+enum{
+	CSP_DELETEITEM_I_INDEX=0,
+};
+
+enum{
+	CSI_DELETEITEM_DUMMY=0,
+	CSI_DELETEITEM_WANTINDEX,
 };
 
 /************************************************************************/
