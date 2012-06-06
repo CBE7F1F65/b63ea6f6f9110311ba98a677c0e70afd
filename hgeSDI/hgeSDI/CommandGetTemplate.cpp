@@ -16,7 +16,6 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 		return &InitialCommand::getInstance();
 
 	case COMM_NEWLAYER:
-		return &NewLayerCommand::getInstance();
 	case COMM_NEWSUBLAYER:
 		return &NewLayerCommand::getInstance();
 	case COMM_SETWORKINGLAYER:

@@ -12,6 +12,7 @@ public:
 	UILayerListCtrl();
 	virtual ~UILayerListCtrl();
 
+	void ResetAllName(GObject * base);
 	void RebuildTree( GObject * changebase, GObject * activeitem );
 	void BuildChildren(GObject * nowbase, int & nowindex, int indentlevel);
 	void DeleteItemsUnderObj(GObject * obj);
@@ -20,8 +21,10 @@ public:
 	void DeSelect(int index=-1);
 	void DeSelectParadox(int index);
 
+	GObject * GetObjectByIndex(int index);
+
 	GLayer * GetActiveLayer();
-	void SetActiveLayer( GLayer * pLayer );
+	void SetActiveLayer_Internal( GLayer * pLayer );
 
 	int FindItemByData(GObject * obj);
 	int GetItemIndent(int index);
@@ -47,6 +50,9 @@ public:
 	afx_msg void OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS* lpncsp);
 	afx_msg void OnLvnItemchanging(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnLvnItemchanged(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnLvnEndlabeledit(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
 

@@ -199,11 +199,16 @@ GObject * GObjectManager::FindObjectByID( int id )
 	return pBaseNode->FindNodeByID(id);
 }
 
-void GObjectManager::SetActiveLayer( GObject * pObj )
+void GObjectManager::SetActiveLayer_Internal( GObject * pObj )
 {
-	ASSERT(pObj);
-	GLayer * pLayer = (GLayer *)pObj->GetLayer();
-	ASSERT(pLayer);
-	
-	MainInterface::getInstance().OnSetActiveLayer(pLayer);
+	DASSERT(pObj);
+	if (pObj)
+	{
+		GLayer * pLayer = (GLayer *)pObj->GetLayer();
+		DASSERT(pLayer);
+		if (pLayer)
+		{
+			MainInterface::getInstance().OnSetActiveLayer_Internal(pLayer);
+		}
+	}	
 }

@@ -164,6 +164,39 @@ public:
 	void CommitFrontCommand(CommittedCommand &cc);
 	void ClearReDo();
 
+	inline bool IsCCTypeCommand(int type)
+	{
+		return type == COMMITTEDCOMMANDTYPE_COMMAND;
+	};
+	inline bool IsNormalCommand(int comm)
+	{
+		return comm > _COMM_NORMALCOMMANDBEGIN && comm < _COMM_NORMALCOMMANDEND;
+	};
+	inline bool IsInternalCommand(int comm)
+	{
+		return comm > _COMM_INTERNALBEGIN && comm < _COMM_INTERNALEND;
+	};
+	inline bool IsInternalCommand_Command(int comm)
+	{
+		return (comm == COMM_I_COMMAND || comm == COMM_I_COMMAND_AUTO);
+	};
+	inline bool IsInternalCommand_CommandAuto(int comm)
+	{
+		return comm == COMM_I_COMMAND_AUTO;
+	};
+	inline bool IsCommandNoLog(int comm)
+	{
+		return comm > _COMM_NOLOGCOMMANDBEGIN && comm < _COMM_NOLOGCOMMANDEND;
+	};
+	inline bool IsCommandPush(int comm)
+	{
+		return comm > _COMM_PUSHCOMMANDBEGIN && comm < _COMM_PUSHCOMMANDEND;
+	};
+	inline bool IsCommandInstant(int comm)
+	{
+		return comm > _COMM_INSTANTCOMMANDBEGIN && comm < _COMM_INSTANTCOMMANDEND;
+	};
+
 	void FinishPendingSubCommand();
 
 	int FinishCommand();
@@ -205,6 +238,7 @@ public:
 	bool DoReDoReparentNode(GObject * obj, GObject * oparent, GObject * aparent);
 
 	bool IsUnDoReDoing(){return undoredoflag!=0;};
+	bool canReDoDone();
 	int undoredoflag;
 	int undostepmax;
 

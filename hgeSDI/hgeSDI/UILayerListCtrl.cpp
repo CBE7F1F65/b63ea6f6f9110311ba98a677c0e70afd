@@ -45,6 +45,9 @@ BEGIN_MESSAGE_MAP(UILayerListCtrl, CListCtrl)
 	ON_WM_NCCALCSIZE()
 	ON_NOTIFY_REFLECT(LVN_ITEMCHANGING, &UILayerListCtrl::OnLvnItemchanging)
 	ON_NOTIFY_REFLECT(LVN_ITEMCHANGED, &UILayerListCtrl::OnLvnItemchanged)
+	ON_NOTIFY_REFLECT(LVN_ENDLABELEDIT, &UILayerListCtrl::OnLvnEndlabeledit)
+	ON_WM_MOUSEMOVE()
+	ON_NOTIFY_REFLECT(LVN_GETINFOTIP, &UILayerListCtrl::OnLvnGetInfoTip)
 END_MESSAGE_MAP()
 
 void UILayerListCtrl::RebuildTree( GObject * changebase, GObject * activeitem )
@@ -70,6 +73,7 @@ void UILayerListCtrl::RebuildTree( GObject * changebase, GObject * activeitem )
 	int activeindex = FindItemByData(activeitem);
 	if (activeindex >= 0)
 	{
+		SetActiveLayer_Internal((GLayer *)activeitem->GetLayer());
 		AddSelect(activeindex);
 		EnsureVisible(activeindex, FALSE);
 	}
@@ -115,7 +119,9 @@ void UILayerListCtrl::BuildChildren( GObject * nowbase, int & nowindex, int inde
 				SetItemVisible(nowindex, (*it)->isDisplayVisible(), (*it)->isRecDisplayVisible());
 				SetItemLock(nowindex, (*it)->isDisplayLocked(), (*it)->isRecDisplayLocked());
 				SetItemLineColor(nowindex, (*it)->getLineColor());
+
 				SetItemTreeInfo(nowindex, (*it)->getDisplayName(), indentlevel, bFolded);
+
 				SetItemLineSelect(nowindex, (*it)->isSelected());
 				SetItemFrameColor(nowindex, (*it)->GetLayer()->getLineColor());
 				/*
@@ -152,7 +158,7 @@ int UILayerListCtrl::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	ColorManager * pcm = &ColorManager::getInstance();
 	SetBkColor(pcm->ARGBToABGR(pcm->GetTextBkColor(COLORMT_LIST, COLORMS_BACKGROUND)) & 0xffffff);
-	SetExtendedStyle(LVS_EX_FULLROWSELECT|LVS_EX_SUBITEMIMAGES);
+	SetExtendedStyle(LVS_EX_FULLROWSELECT|LVS_EX_SUBITEMIMAGES|LVS_EX_INFOTIP);
 
 	InsertColumn(IDLBC_VISIBLE, "", LVCFMT_LEFT);
 	InsertColumn(IDLBC_LOCK, "", LVCFMT_LEFT);
@@ -180,6 +186,10 @@ int UILayerListCtrl::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	IconManager * picm = &IconManager::getInstance();
 	SetImageList(picm->GetImageList(ICMSIZE_SMALL), picm->GetImageListType(ICMSIZE_SMALL));
+
+	GetToolTips()->SetDelayTime(TTDT_RESHOW, 100);
+	GetToolTips()->SetDelayTime(TTDT_INITIAL, 100);
+	GetToolTips()->SetDelayTime(TTDT_AUTOPOP, 4000);
 
 	return 0;
 }
@@ -262,7 +272,7 @@ void UILayerListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 			}
 			else
 			{
-				GObject * pobj = (GObject *)GetItemData(nowDrawingItem);
+				GObject * pobj = GetObjectByIndex(nowDrawingItem);//(GObject *)GetItemData(nowDrawingItem);
 				if (pobj->isDisplayLocked() || !(pobj->isDisplayVisible()))
 				{
 					pCD->clrText	= pcm->ARGBToABGR(pcm->GetTextColor(COLORMT_LIST, COLORMS_DISABLED))&0xffffff;
@@ -462,14 +472,13 @@ GLayer * UILayerListCtrl::GetActiveLayer()
 		return NULL;
 //		index = 0;
 	}
-	GObject * pobj = (GObject *)GetItemData(index);
-	ASSERT(pobj);
+	GObject * pobj = GetObjectByIndex(index);//(GObject *)GetItemData(index);
 	GLayer * pLayer = (GLayer *)pobj->GetLayer();
 	ASSERT(pLayer);
 	return pLayer;
 }
 
-void UILayerListCtrl::SetActiveLayer( GLayer * pLayer )
+void UILayerListCtrl::SetActiveLayer_Internal( GLayer * pLayer )
 {
 	int index = FindItemByData(pLayer);
 	if (index < 0)
@@ -479,6 +488,7 @@ void UILayerListCtrl::SetActiveLayer( GLayer * pLayer )
 //	ASSERT(index>=0);
 	DeSelect();
 	AddSelect(index);
+	MainInterface::getInstance().OnInternalActiveLayerSetDone();
 }
 
 
@@ -523,4 +533,60 @@ void UILayerListCtrl::FoldItem( int index )
 void UILayerListCtrl::ExpandItem( int index )
 {
 
+}
+
+void UILayerListCtrl::OnLvnEndlabeledit(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	NMLVDISPINFO *pDispInfo = reinterpret_cast<NMLVDISPINFO*>(pNMHDR);
+	// TODO: 在此添加控件通知处理程序代码
+//	SetItemText(pDispInfo->item.iItem, pDispInfo->item.iSubItem, pDispInfo->item.pszText);
+
+	if (pDispInfo->item.iSubItem == IDLBC_TREE)
+	{
+		GObject * pObj = GetObjectByIndex(pDispInfo->item.iItem);
+		pObj->setDisplayName(pDispInfo->item.pszText);
+		SetItemText(pDispInfo->item.iItem, IDLBC_TREE, pDispInfo->item.pszText);
+	}
+
+	*pResult = 0;
+}
+
+GObject * UILayerListCtrl::GetObjectByIndex( int index )
+{
+	GObject * pObj = (GObject *)GetItemData(index);
+	ASSERT(pObj);
+	return pObj;
+}
+
+void UILayerListCtrl::OnMouseMove(UINT nFlags, CPoint point)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+	LVHITTESTINFO ht;
+	ht.flags = 0;
+	ht.pt = point;
+	int iHit = HitTest(&ht);
+	if (ht.flags & LVHT_ONITEM)
+	{
+		if (ht.iSubItem == IDLBC_TREE)
+		{
+		}
+	}
+
+	CListCtrl::OnMouseMove(nFlags, point);
+}
+
+
+void UILayerListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMLVGETINFOTIP pGetInfoTip = reinterpret_cast<LPNMLVGETINFOTIP>(pNMHDR);
+	// TODO: 在此添加控件通知处理程序代码
+	GObject * pObj = GetObjectByIndex(pGetInfoTip->iItem);
+
+	int id = pObj->getID();
+	static CString str;
+	str.Format("ID: %d", id);
+	pGetInfoTip->pszText = str.GetBuffer();
+
+	*pResult = 0;
 }

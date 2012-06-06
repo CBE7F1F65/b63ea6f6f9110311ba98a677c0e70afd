@@ -7,16 +7,19 @@
 #include "CommandTemplate.h"
 bool Command::DoUnDo( int undostep/*=1*/ )
 {
+	if (undostep > 1)
+	{
+		DoUnDo(undostep-1);
+	}
 	if (undolist.size()<=1 || undostep < 1)
 	{
 		MainInterface::getInstance().MBeep();
 		return false;
 	}
 	LogUnDo();
-	if (undostep > 1)
-	{
-		DoUnDo(undostep-1);
-	}
+
+	SetRenderTarget(0);
+	ClearCurrentCommand(true);
 
 	RevertableCommand rc = undolist.back();
 
@@ -24,13 +27,13 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 	undoredoflag = CUNDOREDO_UNDOING;
 	for (list<CommittedCommand>::iterator it=rc.commandlist.begin(); it!=rc.commandlist.end(); ++it)
 	{
-		DASSERT(it->type == COMMITTEDCOMMANDTYPE_COMMAND);
-		DASSERT(it->ival > _COMM_INTERNALBEGIN);
+		DASSERT(IsCCTypeCommand(it->type));
+		DASSERT(IsInternalCommand(it->ival));
 		int internalcommand = it->ival;
 
 		int pcount = CI_GETPCOUNT(it->csub);
 		int ucount = CI_GETUCOUNT(it->csub);
-		if (internalcommand == COMM_I_COMMAND)
+		if (IsInternalCommand_Command(internalcommand))
 		{
 			ASSERT(pcount != 0);
 			RevertableCommand rct;
@@ -41,8 +44,8 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 				++it;
 				if (!i)
 				{
-					DASSERT(it->type == COMMITTEDCOMMANDTYPE_COMMAND);
-					DASSERT(it->ival < _COMM_INTERNALBEGIN);
+					DASSERT(IsCCTypeCommand(it->type));
+					DASSERT(IsNormalCommand(it->ival));
 					command = it->ival;
 				}
 				DASSERT(it!=rc.commandlist.end());
@@ -51,8 +54,8 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 			for (int j=0; j<ucount; j++)
 			{
 				++it;
-				DASSERT(it->type == COMMITTEDCOMMANDTYPE_COMMAND);
-				DASSERT(it->ival > _COMM_INTERNALBEGIN);
+				DASSERT(IsCCTypeCommand(it->type));
+				DASSERT(IsInternalCommand(it->ival));
 
 				int usubcount = CI_GETPCOUNT(it->csub);
 				DASSERT(usubcount != 0);
@@ -116,7 +119,7 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 
 	if (!GObjectManager::getInstance().GetActiveLayer())
 	{
-		GObjectManager::getInstance().SetActiveLayer(CommandTemplate::workingLayer);
+		GObjectManager::getInstance().SetActiveLayer_Internal(CommandTemplate::workingLayer);
 	}
 
 	return true;
@@ -124,16 +127,19 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 
 bool Command::DoReDo( int redostep/*=1*/ )
 {
+	if (redostep > 1)
+	{
+		DoReDo(redostep-1);
+	}
+	LogReDo();
 	if (redolist.empty() || redostep < 1)
 	{
 		MainInterface::getInstance().MBeep();
 		return false;
 	}
-	LogReDo();
-	if (redostep > 1)
-	{
-		DoReDo(redostep-1);
-	}
+
+	SetRenderTarget(0);
+	ClearCurrentCommand(true);
 
 	RevertableCommand rc = redolist.back();
 
@@ -141,8 +147,8 @@ bool Command::DoReDo( int redostep/*=1*/ )
 	undoredoflag = CUNDOREDO_REDOING;
 	for (list<CommittedCommand>::iterator it=rc.commandlist.begin(); it!=rc.commandlist.end(); ++it)
 	{
-		DASSERT(it->type == COMMITTEDCOMMANDTYPE_COMMAND);
-		DASSERT(it->ival > _COMM_INTERNALBEGIN);
+		DASSERT(IsCCTypeCommand(it->type));
+		DASSERT(IsInternalCommand(it->ival));
 		int internalcommand = it->ival;
 
 		int pcount = CI_GETPCOUNT(it->csub);
@@ -154,11 +160,11 @@ bool Command::DoReDo( int redostep/*=1*/ )
 
 			//
 			++it;	//working layer
-			DASSERT(it->type == COMMITTEDCOMMANDTYPE_COMMAND);
+			DASSERT(IsCCTypeCommand(it->type));
 			DASSERT(it->ival == COMM_I_COMM_WORKINGLAYER);
 			GObject * pobj = GObjectManager::getInstance().FindObjectByID(it->csub);
 			ASSERT(pobj);
-			GObjectManager::getInstance().SetActiveLayer(pobj);
+			GObjectManager::getInstance().SetActiveLayer_Internal(pobj);
 			//
 
 			for (int i=0; i<pcount; i++)
@@ -225,7 +231,7 @@ bool Command::DoReDo( int redostep/*=1*/ )
 	// No need to push back undolist
 	// All ReDo should done by command
 //	undolist.push_back(rc);
-
+	CommandTemplate::CallOnUndo();
 	return true;
 }
 
@@ -257,8 +263,14 @@ bool Command::DoReDoCommandSingle( RevertableCommand * rc )
 	CommittedCommand tp = pendingparam;
 	pendingparam.ClearSet();
 	ProcessCommand();
+
 	// To Finish last step
+	while (!canReDoDone())
+	{
+		ProcessCommand();
+	}
 	ProcessCommand();
+
 	pendingparam = tp;
 	MainInterface::getInstance().OnReDo();
 	return true;

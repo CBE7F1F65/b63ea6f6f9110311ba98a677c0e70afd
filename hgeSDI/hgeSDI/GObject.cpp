@@ -58,7 +58,7 @@ int GObject::_ActualAddChild( GObject * child )
 
 		child->CallModify();
 
-		listChildren.push_back(child);
+		listChildren.push_front(child);
 
 		if (!child->bAttributeNode)
 		{

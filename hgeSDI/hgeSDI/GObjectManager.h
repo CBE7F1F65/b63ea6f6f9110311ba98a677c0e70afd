@@ -54,7 +54,7 @@ public:
 	string defaultLayerName;
 
 	GLayer * GetActiveLayer();
-	void SetActiveLayer(GObject * pObj);
+	void SetActiveLayer_Internal(GObject * pObj);
 	const char * GetDefaultLayerName( int layerIndex=-1 );
 	HTARGET tarObjs;
 };

@@ -10,6 +10,7 @@
 #include "RenderTargetManager.h"
 #include "StringManager.h"
 #include "IconManager.h"
+#include "CommandTemplate.h"
 
 #include "Resource.h"
 
@@ -154,9 +155,9 @@ bool MainInterface::Frame()
 	if (mousewheel != lastmousewheel)
 	{
 		pcommand->CreateCommand(COMM_DOZOOM);
-		pcommand->SetParamX(CSP_DOZOOM_C_XY_SCALE, mousex);
-		pcommand->SetParamY(CSP_DOZOOM_C_XY_SCALE, mousey);
-		pcommand->SetParamF(CSP_DOZOOM_C_XY_SCALE, powf(wheelscalefactor, mousewheel-lastmousewheel));
+		pcommand->SetParamX(CSP_DOZOOM_XY_F_C_SCALE, mousex);
+		pcommand->SetParamY(CSP_DOZOOM_XY_F_C_SCALE, mousey);
+		pcommand->SetParamF(CSP_DOZOOM_XY_F_C_SCALE, powf(wheelscalefactor, mousewheel-lastmousewheel));
 	}
 
 	if (hge->Input_GetDIKey(DIK_SPACE, DIKEY_DOWN) && IsMainViewActive())
@@ -386,9 +387,9 @@ GLayer * MainInterface::OnGetActiveLayer()
 	return parentview->GetMainFrame()->GetActiveLayer();
 }
 
-void MainInterface::OnSetActiveLayer( GLayer * pLayer )
+void MainInterface::OnSetActiveLayer_Internal( GLayer * pLayer )
 {
-	return parentview->GetMainFrame()->SetActiveLayer(pLayer);
+	return parentview->GetMainFrame()->SetActiveLayer_Internal(pLayer);
 }
 
 void MainInterface::DoResizeWindow()
@@ -401,6 +402,11 @@ void MainInterface::DoResizeWindow()
 		resizewindow_w = -1;
 		resizewindow_h = -1;
 	}
+}
+
+void MainInterface::OnInternalActiveLayerSetDone()
+{
+	CommandTemplate::InternalActiveLayerSetDone();
 }
 
 void MainInterface::DoUpdateFPS()
@@ -623,11 +629,13 @@ void MainInterface::DoCheckFloatCommand()
 			{
 				if (!bshift)
 				{
-					Command::getInstance().DoUnDo();
+					Command::getInstance().CreateCommand(COMM_UNDO);
+//					Command::getInstance().DoUnDo();
 				}
 				else
 				{
-					Command::getInstance().DoReDo();
+					Command::getInstance().CreateCommand(COMM_REDO);
+//					Command::getInstance().DoReDo();
 				}
 			}
 		}
@@ -683,12 +691,23 @@ void MainInterface::OnClearPreviousHistory( int ndelete/*=1*/ )
 
 void MainInterface::CallUnDoReDo( int step )
 {
-	if (step < 0)
+	if (step)
 	{
-		Command::getInstance().DoUnDo(-step);
-	}
-	else if (step > 0)
-	{
-		Command::getInstance().DoReDo(step);
+		if (step < 0)
+		{
+			for (int i=0; i<-step; i++)
+			{
+				Command::getInstance().CreateCommand(COMM_UNDO);
+			}
+//			Command::getInstance().DoUnDo(-step);
+		}
+		else
+		{
+			for (int i=0; i<step; i++)
+			{
+				Command::getInstance().CreateCommand(COMM_REDO);
+			}
+//			Command::getInstance().DoReDo(step);
+		}
 	}
 }

@@ -240,14 +240,11 @@ void UIHistoryListCtrl::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
 		if (nSelected != newSelected)
 		{
 			MainInterface::getInstance().CallUnDoReDo(newSelected-nSelected);
-			nSelected = newSelected;
+//			nSelected = newSelected;
 		}
 	}
-	else
-	{
-		SetItemState(nSelected, LVIS_SELECTED, LVIS_SELECTED);
-		SetSelectionMark(nSelected);
-	}
+	SetItemState(nSelected, LVIS_SELECTED, LVIS_SELECTED);
+	SetSelectionMark(nSelected);
 
 	Invalidate();
 	*pResult = 0;

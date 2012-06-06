@@ -9,6 +9,7 @@
 
 GLayer * CommandTemplate::workingLayer=NULL;
 GLayer * CommandTemplate::lastWorkingLayer=NULL;
+int CommandTemplate::workingLayerID=0;
 
 CommandTemplate::CommandTemplate(void)
 {
@@ -58,7 +59,10 @@ int CommandTemplate::OnNormalProcessCommand( int cursorindex/*=-1*/ )
 		GUICursor::getInstance().ChangeCursor(GUIC_NORMAL);
 		ReleaseTarget();
 		CallDoneCommand();
-		pcommand->FinishCommand();
+//		if (comm != COMM_UNDO && comm != COMM_REDO)
+//		{
+			pcommand->FinishCommand();
+//		}
 		return CSI_FINISH;
 		break;
 	case CSI_FINISHCONTINUE:
@@ -81,12 +85,14 @@ void CommandTemplate::DispatchNormalSubCommand( int subcommand )
 	switch (subcommand)
 	{
 	case SSC_UNDO:
-		DoUnDo();
-		ReleaseTarget();
+		pcommand->CreateCommand(COMM_UNDO);
+//		DoUnDo();
+//		ReleaseTarget();
 		break;
 	case SSC_REDO:
-		DoReDo();
-		ReleaseTarget();
+		pcommand->CreateCommand(COMM_REDO);
+//		DoReDo();
+//		ReleaseTarget();
 		break;
 	case SSC_FINISH:
 		GUICursor::getInstance().ChangeCursor(GUIC_NORMAL);
@@ -122,7 +128,7 @@ CommittedCommand * CommandTemplate::CCMake_CI( int command, int ival )
 	CommittedCommand * cc = new CommittedCommand();
 	cc->type = COMMITTEDCOMMANDTYPE_COMMAND;
 	cc->ival = command;
-	if (command > _COMM_INTERNALBEGIN)
+	if (pcommand->IsInternalCommand(command))
 	{
 		cc->csub = ival;
 	}
@@ -240,12 +246,16 @@ void CommandTemplate::CommitFrontCommand( CommittedCommand * first, ... )
 
 bool CommandTemplate::DoUnDo( int undostep/*=1*/ )
 {
-	return pcommand->DoUnDo(undostep);
+	bool bret = pcommand->DoUnDo(undostep);
+	ReleaseTarget();
+	return bret;
 }
 
 bool CommandTemplate::DoReDo( int redostep/*=1*/ )
 {
-	return pcommand->DoReDo(redostep);
+	bool bret = pcommand->DoReDo(redostep);
+	ReleaseTarget();
+	return bret;
 }
 
 void CommandTemplate::ProtectPendingFinishCommand()
@@ -269,10 +279,10 @@ void CommandTemplate::CallDoneCommand()
 			if (workingLayer)
 			{
 				PushRevertable(
-					CCMake_C(COMM_I_COMMAND, 3, 1),
+					CCMake_C(COMM_I_COMMAND, 2, 1),
 					CCMake_C(COMM_I_COMM_WORKINGLAYER, workingLayer->getID()),
 					CCMake_C(COMM_SETWORKINGLAYER),
-					CCMake_I(workingLayer->getID()),
+//					CCMake_I(workingLayer->getID()),
 					CCMake_I(activeLayer->getID()),
 					CCMake_C(COMM_I_UNDO_PARAM, 1),
 					CCMake_I(workingLayer->getID()),
@@ -281,8 +291,8 @@ void CommandTemplate::CallDoneCommand()
 			}
 		}
 	}
-	lastWorkingLayer = workingLayer;
-	workingLayer = activeLayer;
+	UpdateWorkingLayer(activeLayer);
+	workingLayerID = workingLayer->getID();
 	OnDoneCommand();
 }
 
@@ -320,5 +330,28 @@ void CommandTemplate::Init( GLayer * pLayer )
 {
 	workingLayer = pLayer;
 	lastWorkingLayer = pLayer;
+}
+
+void CommandTemplate::CallOnUndo()
+{
+	UpdateWorkingLayer();
+	// lastworkinglayer can be dangerous
+	lastWorkingLayer = workingLayer;
+}
+
+void CommandTemplate::InternalActiveLayerSetDone()
+{
+	UpdateWorkingLayer();
+}
+
+void CommandTemplate::UpdateWorkingLayer( GLayer * pLayer/*=NULL*/ )
+{
+	if (!pLayer)
+	{
+		pLayer = GObjectManager::getInstance().GetActiveLayer();
+	}
+	
+	lastWorkingLayer = workingLayer;
+	workingLayer = pLayer;
 }
 

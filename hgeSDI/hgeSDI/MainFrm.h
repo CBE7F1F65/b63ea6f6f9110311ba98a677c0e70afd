@@ -47,7 +47,7 @@ public:
 	bool RebuildLayerTree(GObject * changebase, GObject * activeitem);
 
 	GLayer * GetActiveLayer();
-	void SetActiveLayer( GLayer * pLayer );
+	void SetActiveLayer_Internal( GLayer * pLayer );
 
 // ²Ù×÷
 public:

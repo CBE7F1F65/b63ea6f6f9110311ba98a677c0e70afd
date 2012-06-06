@@ -70,7 +70,7 @@ GLayer * UILayerDockablePane::GetActiveLayer()
 	return m_wndListCtrl.GetActiveLayer();
 }
 
-void UILayerDockablePane::SetActiveLayer( GLayer * pLayer )
+void UILayerDockablePane::SetActiveLayer_Internal( GLayer * pLayer )
 {
-	return m_wndListCtrl.SetActiveLayer(pLayer);
+	return m_wndListCtrl.SetActiveLayer_Internal(pLayer);
 }

@@ -92,6 +92,9 @@ void StringManager::FillSCInfo()
 	_LSET(	COMM_DOZOOM,	"ZOOM",	"Instant Zoom",	""	);
 
 	_LSET(	COMM_INITIAL,	"INITIAL",	"Initialization",	""	);
+	_BSET(	COMM_UNDO,	"UNDO", "U",	"UnDo",	""	);
+	_BSET(	COMM_REDO,	"REDO", "R",	"UnDo",	""	);
+
 	_LSET(	COMM_SETWORKINGLAYER,	"SETWORKINGLAYER",	"Set Working Layer",	""	);
 	_BSET(	COMM_NEWLAYER,	"NEWLAYER", "NL",	"New Layer",	""	);
 	_BSET(	COMM_NEWSUBLAYER,	"NEWSUBLAYER",	"NSL",	"New Sub Layer", "");
@@ -125,6 +128,9 @@ void StringManager::FillWPInfo()
 	_PSET(	CWP_XOFFSET,	"X OFFSET"	);
 	_PSET(	CWP_YOFFSET,	"Y OFFSET"	);
 	_PSET(	CWP_SCALE,	"SCALE"	);
+	_PSET(	CWP_STEP,	"STEP"	);
+	_PSET(	CWP_INDEX,	"INDEX"	);
+	_PSET(	CWP_NAME,	"NAME"	);
 
 #undef _PSET
 }

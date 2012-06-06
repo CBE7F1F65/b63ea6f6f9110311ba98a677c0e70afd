@@ -432,9 +432,9 @@ GLayer * CMainFrame::GetActiveLayer()
 	return m_wndUILayerPane.GetActiveLayer();
 }
 
-void CMainFrame::SetActiveLayer( GLayer * pLayer )
+void CMainFrame::SetActiveLayer_Internal( GLayer * pLayer )
 {
-	return m_wndUILayerPane.SetActiveLayer(pLayer);
+	return m_wndUILayerPane.SetActiveLayer_Internal(pLayer);
 }
 
 void CMainFrame::OnClose()

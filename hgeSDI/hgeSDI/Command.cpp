@@ -30,7 +30,7 @@ void Command::Init()
 
 void Command::LogCreate()
 {
-	if (ccomm.command < _COMM_NOLOGCOMMANDBEGIN || ccomm.command > _COMM_NOLOGCOMMANDEND)
+	if (!IsCommandNoLog(ccomm.command))
 	{
 		string strlog;
 //		sprintf_s(strlog, M_STRMAX, "%s: %s"
@@ -43,7 +43,7 @@ void Command::LogCreate()
 
 void Command::LogFinish()
 {
-	if (ccomm.command < _COMM_NOLOGCOMMANDBEGIN || ccomm.command > _COMM_NOLOGCOMMANDEND)
+	if (!IsCommandNoLog(ccomm.command))
 	{
 		string strlog;
 //		sprintf_s(strlog, M_STRMAX, "%s: %s"
@@ -56,7 +56,7 @@ void Command::LogFinish()
 
 void Command::LogTerminal()
 {
-	if (ccomm.command < _COMM_NOLOGCOMMANDBEGIN || ccomm.command > _COMM_NOLOGCOMMANDEND)
+	if (!IsCommandNoLog(ccomm.command))
 	{
 		string strlog;
 //		sprintf_s(strlog, M_STRMAX, "%s: %s"
@@ -69,7 +69,7 @@ void Command::LogTerminal()
 
 void Command::_LogParam( int index, int useflag, int cwp/*=-1 */ )
 {
-	if (ccomm.command < _COMM_NOLOGCOMMANDBEGIN || ccomm.command > _COMM_NOLOGCOMMANDEND)
+	if (!IsCommandNoLog(ccomm.command))
 	{
 //		char strlog[M_STRMAX*4];
 //		char paramstr[M_STRMAX];
@@ -122,7 +122,7 @@ void Command::LogWantNext()
 	{
 		return;
 	}
-	if (ccomm.command < _COMM_NOLOGCOMMANDBEGIN || ccomm.command > _COMM_NOLOGCOMMANDEND)
+	if (!IsCommandNoLog(ccomm.command))
 	{
 		string strlog;
 //		sprintf_s(strlog, M_STRMAX, "%s: %s: %s: ",
@@ -218,12 +218,22 @@ void Command::LogReDo()
 
 int Command::CreateCommand(int comm)
 {
-	if (comm > _COMM_PUSHCOMMANDBEGIN && comm < _COMM_PUSHCOMMANDEND)
+	if (comm == COMM_UNDO)
+	{
+		DoUnDo();
+		return ccomm.command;
+	}
+	else if (comm == COMM_REDO)
+	{
+		DoReDo();
+		return ccomm.command;
+	}
+	if (IsCommandPush(comm))
 	{
 		PushCommand();
 	}
 	/*
-	if (comm > _COMM_INSTANTCOMMANDBEGIN && comm < _COMM_INSTANTCOMMANDEND)
+	if (IsCommandInstant(comm))
 	{
 	}
 	else
@@ -251,7 +261,7 @@ int Command::FinishCommand()
 			++it;
 		}
 	}
-	if (ccomm.command > _COMM_PUSHCOMMANDBEGIN && ccomm.command < _COMM_PUSHCOMMANDEND)
+	if (IsCommandPush(ccomm.command))
 	{
 		return PullCommand();
 	}
@@ -276,7 +286,7 @@ int Command::TerminalCommand()
 			++it;
 		}
 	}
-	if (ccomm.command > _COMM_PUSHCOMMANDBEGIN && ccomm.command < _COMM_PUSHCOMMANDEND)
+	if (IsCommandPush(ccomm.command))
 	{
 		return PullCommand();
 	}
@@ -973,9 +983,10 @@ void Command::PushRevertable( RevertableCommand * rc )
 	}
 	if (!IsUnDoReDoing())
 	{
+		ClearReDo();
 		for (list<CommittedCommand>::iterator it=rc->commandlist.begin(); it!= rc->commandlist.end(); ++it)
 		{
-			if (it->type == COMMITTEDCOMMANDTYPE_COMMAND && it->ival == COMM_I_COMMAND)
+			if (IsCCTypeCommand(it->type) && IsInternalCommand_Command(it->ival))
 			{
 				string strcomm;
 				int pcount = CI_GETPCOUNT(it->csub);
@@ -1003,7 +1014,6 @@ void Command::PushRevertable( RevertableCommand * rc )
 				}
 			}
 		}
-		ClearReDo();
 	}
 	if (undoredoflag == CUNDOREDO_REDOING)
 	{
@@ -1031,4 +1041,13 @@ void Command::OnInit()
 	}
 
 	CreateCommand(COMM_INITIAL);
+}
+
+bool Command::canReDoDone()
+{
+	if (ccomm.step == CSI_FINISH || ccomm.step == CSI_FINISHCONTINUE || ccomm.step == CSI_TERMINAL)
+	{
+		return true;
+	}
+	return false;
 }

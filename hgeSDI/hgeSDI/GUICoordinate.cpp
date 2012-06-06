@@ -152,8 +152,8 @@ void GUICoordinate::OnProcessZoomCommand()
 {
 	Command * pcommand = &(Command::getInstance());
 	float x, y, _scale;
-	pcommand->GetParamXY(CSP_DOZOOM_C_XY_SCALE, &x, &y);
-	_scale = pcommand->GetParamF(CSP_DOZOOM_C_XY_SCALE);
+	pcommand->GetParamXY(CSP_DOZOOM_XY_F_C_SCALE, &x, &y);
+	_scale = pcommand->GetParamF(CSP_DOZOOM_XY_F_C_SCALE);
 	DoZoom(x, y, _scale);
 	pcommand->FinishCommand();
 }

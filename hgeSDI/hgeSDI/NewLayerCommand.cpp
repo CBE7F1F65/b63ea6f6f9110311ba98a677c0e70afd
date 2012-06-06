@@ -78,7 +78,7 @@ void NewLayerCommand::OnDoneCommand()
 		CCMake_I(pLayer->getID()),
 		CCMake_I(pLayer->getParent()->getID()),
 		CCMake_C(COMM_I_COMMAND, 3, 0),
-		CCMake_C(COMM_I_COMM_WORKINGLAYER, workingLayer->getID()),
+		CCMake_C(COMM_I_COMM_WORKINGLAYER, workingLayerID),
 		CCMake_C(comm),
 		CCMake_S(layername),
 		CCMake_I(layerIndex),

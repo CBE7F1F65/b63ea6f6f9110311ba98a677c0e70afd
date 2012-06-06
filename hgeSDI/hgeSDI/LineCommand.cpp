@@ -48,28 +48,28 @@ void LineCommand::OnProcessCommand()
 	else if (step == CSI_LINE_WANTX1)
 	{
 		ret = pcommand->ProcessPending(
-			CSP_LINE_B_XY, COMMPARAMFLAG_X, CWP_X_B,	// Fill in Param
+			CSP_LINE_XY_B, COMMPARAMFLAG_X, CWP_X_B,	// Fill in Param
 			CSI_LINE_WANTY1, CWP_Y_B					// Step to with want
 			);
 	}
 	else if (step == CSI_LINE_WANTY1)
 	{
 		ret = pcommand->ProcessPending(
-			CSP_LINE_B_XY, COMMPARAMFLAG_Y, CWP_Y_B,	// Fill in Param
+			CSP_LINE_XY_B, COMMPARAMFLAG_Y, CWP_Y_B,	// Fill in Param
 			CSI_LINE_WANTX2, CWP_XY_N					// Step to with want
 			);
 	}
 	else if (step == CSI_LINE_WANTX2)
 	{
 		ret = pcommand->ProcessPending(
-			CSP_LINE_N_XY, COMMPARAMFLAG_X, CWP_X_N,	// Fill in Param
+			CSP_LINE_XY_N, COMMPARAMFLAG_X, CWP_X_N,	// Fill in Param
 			CSI_LINE_WANTY2, CWP_Y_N					// Step to with want
 			);
 	}
 	else if (step == CSI_LINE_WANTY2)
 	{
 		ret = pcommand->ProcessPending(
-			CSP_LINE_N_XY, COMMPARAMFLAG_Y, CWP_Y_N,	// Fill in Param
+			CSP_LINE_XY_N, COMMPARAMFLAG_Y, CWP_Y_N,	// Fill in Param
 			CSI_FINISHCONTINUE							// Step to with want
 			);
 	}
@@ -81,7 +81,7 @@ void LineCommand::OnProcessCommand()
 		if (nowstep == CSI_LINE_WANTX2)
 		{
 			float x1, y1;
-			pcommand->GetParamXY(CSP_LINE_B_XY, &x1, &y1);
+			pcommand->GetParamXY(CSP_LINE_XY_B, &x1, &y1);
 			/*
 			PushRevertable(
 				CCMake_C(COMM_I_COMMAND, 3),
@@ -122,10 +122,10 @@ void LineCommand::OnProcessCommand()
 			{
 				if (!pcommand->IsInternalProcessing())
 				{
-					int tosetpindex = CSP_LINE_B_XY;
+					int tosetpindex = CSP_LINE_XY_B;
 					if (step == CSI_LINE_WANTX2 || step == CSI_LINE_WANTY2)
 					{
-						tosetpindex = CSP_LINE_N_XY;
+						tosetpindex = CSP_LINE_XY_N;
 					}
 					pcommand->SetParamX(tosetpindex, pguic->StoCx(pmain->pickx));
 					pcommand->SetParamY(tosetpindex, pguic->StoCy(pmain->picky));
@@ -149,7 +149,7 @@ void LineCommand::OnProcessCommand()
 		else if (step == CSI_FINISHCONTINUE)
 		{
 			float nx1, ny1;
-			pcommand->GetParamXY(CSP_LINE_N_XY, &nx1, &ny1);
+			pcommand->GetParamXY(CSP_LINE_XY_N, &nx1, &ny1);
 
 			ProtectPendingFinishCommand();
 
@@ -171,7 +171,7 @@ void LineCommand::RenderToTarget()
 	if (nstep >= CSI_LINE_WANTX2 && nstep <= CSI_LINE_WANTY2)
 	{
 		float x1, y1;
-		pcommand->GetParamXY(CSP_LINE_B_XY, &x1, &y1);
+		pcommand->GetParamXY(CSP_LINE_XY_B, &x1, &y1);
 
 		float x2 = MainInterface::getInstance().mousex;
 		float y2 = MainInterface::getInstance().mousey;
@@ -192,8 +192,8 @@ void LineCommand::OnDoneCommand()
 {
 	GStraightLine * line = new GStraightLine(workingLayer/*GObjectManager::getInstance().GetActiveLayer()*/);
 	float xb, yb, xe, ye;
-	pcommand->GetParamXY(CSP_LINE_B_XY, &xb, &yb);
-	pcommand->GetParamXY(CSP_LINE_N_XY, &xe, &ye);
+	pcommand->GetParamXY(CSP_LINE_XY_B, &xb, &yb);
+	pcommand->GetParamXY(CSP_LINE_XY_N, &xe, &ye);
 	line->SetBeginEnd(xb, yb, xe, ye);
 
 	PushRevertable(
@@ -203,7 +203,7 @@ void LineCommand::OnDoneCommand()
 		CCMake_I(line->getID()),
 		CCMake_I(line->getParent()->getID()),
 		CCMake_C(COMM_I_COMMAND, 5, 1),
-		CCMake_CI(COMM_I_COMM_WORKINGLAYER, workingLayer->getID()),
+		CCMake_CI(COMM_I_COMM_WORKINGLAYER, workingLayerID),
 		CCMake_C(COMM_LINE),
 		CCMake_F(xb),
 		CCMake_F(yb),

@@ -10,6 +10,8 @@
 enum{
 	COMM_NULL = 0,
 
+	_COMM_NORMALCOMMANDBEGIN,
+
 	_COMM_PUSHCOMMANDBEGIN,
 
 	// Push
@@ -28,6 +30,8 @@ enum{
 
 	// Instant Commands
 	COMM_INITIAL,	// do nothing
+	COMM_UNDO,		// UnDo
+	COMM_REDO,		// ReDo
 
 	_COMM_INSTANTCOMMANDEND,
 	// Common Command
@@ -40,9 +44,11 @@ enum{
 	COMM_LINE,		// line
 	COMM_BEZIER,	// bezier curve
 
+	_COMM_NORMALCOMMANDEND,
 	_COMM_INTERNALBEGIN,
 
 	COMM_I_COMMAND,
+	COMM_I_COMMAND_AUTO,
 	COMM_I_UNDO_COMMIT,
 	COMM_I_UNDO_PARAM,
 	COMM_I_ADDNODE,
@@ -72,46 +78,83 @@ enum{
 #define CSI_RESUME			-5
 
 // CSP Param
+// CSPUNDO UnDo Param
 // CSI Step
 
+/************************************************************************/
+/* UnDo                                                                 */
+/************************************************************************/
 enum{
-	CSP_PAN_OFFSET_XY = 0,
+	CSP_UNDO_I_STEP=0,
 };
 
+enum{
+	CSI_UNDO_DUMMY=0,
+	CSI_UNDO_WANTSTEP,
+};
+
+/************************************************************************/
+/* PAN                                                                  */
+/************************************************************************/
+
+enum{
+	CSP_PAN_XY_OFFSET = 0,
+};
+//////////////////////////////////////////////////////////////////////////
 enum{
 	CSI_PAN_DUMMY=0,
 	CSI_PAN_READY,
 };
 
-enum{
-	CSP_ZOOMIN_B_XY = 0,
-	CSP_ZOOMIN_E_XY,
-};
+/************************************************************************/
+/* ZOOM                                                                 */
+/************************************************************************/
 
 enum{
-	CSP_DOZOOM_C_XY_SCALE = 0,
+	CSP_ZOOMIN_XY_B = 0,
+	CSP_ZOOMIN_XY_E,
 };
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSP_DOZOOM_XY_F_C_SCALE = 0,
+};
+
+/************************************************************************/
+/* NEWLAYER                                                             */
+/************************************************************************/
 
 enum{
 	CSP_NEWLAYER_S_I_NAME_INDEX=0,
 };
-
+//////////////////////////////////////////////////////////////////////////
 enum{
 	CSI_NEWLAYER_DUMMY=0,
 	CSI_NEWLAYER_WANTNAME,
 	CSI_NEWLAYER_WANTINDEX,
 };
 
-enum{
-	CSP_SETWORKINGLAYER_I_LASTINDEX=0,
-	CSP_SETWORKINGLAYER_I_NEWINDEX,
-};
+/************************************************************************/
+/* SETWORKINGLAYER                                                      */
+/************************************************************************/
 
 enum{
-	CSI_SETWORKINGLAYER_DUMMY=0,
-	CSI_SETWORKINGLAYER_WANTLASTINDEX,
-	CSI_SETWORKINGLAYER_WANTNEWINDEX,
+	CSP_SETWORKINGLAYER_I_NEWINDEX=0,
+	CSP_SETWORKINGLAYER_I_LASTINDEX,
 };
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSPUNDO_SETWORKINGLAYER_I_LASTINDEX=0,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_SETWORKINGLAYER_DUMMY=0,
+	CSI_SETWORKINGLAYER_WANTNEWINDEX,
+	CSI_SETWORKINGLAYER_WANTLASTINDEX,
+};
+
+/************************************************************************/
+/* LINE                                                                 */
+/************************************************************************/
 
 enum{
 	CSI_LINE_DUMMY=0,
@@ -120,11 +163,19 @@ enum{
 	CSI_LINE_WANTX2,
 	CSI_LINE_WANTY2,
 };
-
+//////////////////////////////////////////////////////////////////////////
 enum{
-	CSP_LINE_B_XY = 0,
-	CSP_LINE_N_XY,
+	CSP_LINE_XY_B = 0,
+	CSP_LINE_XY_N,
 };
+
+
+/************************************************************************/
+/*                                                                      */
+/************************************************************************/
+/************************************************************************/
+/* Prompt                                                               */
+/************************************************************************/
 
 // CWP Prompt
 
@@ -145,9 +196,16 @@ enum{
 	CWP_XOFFSET,
 	CWP_YOFFSET,
 	CWP_SCALE,
+	CWP_STEP,
+	CWP_INDEX,
+	CWP_NAME,
 
 	_CWP_ENDINDEX,
 };
+
+/************************************************************************/
+/* Sub                                                                  */
+/************************************************************************/
 
 // SSC Sub
 
@@ -160,7 +218,9 @@ enum{
 
 	_SSC_ENDINDEX,
 };
-
+/************************************************************************/
+/* Index                                                                */
+/************************************************************************/
 #define COMMANDINDEXMAX			_COMM_ENDINDEX
 #define COMMANDWANTPROMPTMAX	_CWP_ENDINDEX
 #define COMMANDSUBINDEXMAX		_SSC_ENDINDEX

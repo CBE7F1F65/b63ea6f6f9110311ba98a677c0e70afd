@@ -88,21 +88,31 @@ int Command::ProcessCommittedCommand()
 	}
 	else if (((it->type) & COMMITTEDCOMMANDTYPE_COMMAND))
 	{
-		if (!ccomm.command)
+		if (it->ival == COMM_UNDO || it->ival == COMM_REDO)
 		{
-			CreateCommand(it->ival);
+			int comm = it->ival;
+			inputcommandlist.pop_front();
+			CreateCommand(comm);
+			return ccomm.command;
 		}
-		else if (!((it->type) & COMMITTEDCOMMANDTYPE_COMMANDSHORT))
+		else
 		{
-			if (ccomm.command)
+			if (!ccomm.command)
 			{
-				TerminalCommand();
+				CreateCommand(it->ival);
 			}
-			CreateCommand(it->ival);
-		}
-		else if (ccomm.command && ((it->type) & COMMITTEDCOMMANDTYPE_SUBCOMMAND))
-		{
-			pendingparam = (*it);
+			else if (!((it->type) & COMMITTEDCOMMANDTYPE_COMMANDSHORT))
+			{
+				if (ccomm.command)
+				{
+					TerminalCommand();
+				}
+				CreateCommand(it->ival);
+			}
+			else if (ccomm.command && ((it->type) & COMMITTEDCOMMANDTYPE_SUBCOMMAND))
+			{
+				pendingparam = (*it);
+			}
 		}
 	}
 	else
