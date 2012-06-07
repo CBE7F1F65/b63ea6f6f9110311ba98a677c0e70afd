@@ -33,25 +33,34 @@ void DeleteItemCommand::OnProcessCommand()
 			);
 		if (ret<0)
 		{
-			list<GObject*> * activenodelist = GObjectManager::getInstance().GetSelectedNodes();
-			// ToDo!!! Change this sort
-			list <GObject> lobjects;
+			list<GObject*> * activenodelist = pgm->GetSelectedNodes();
+			
+			list <int> lids;
 			for (list<GObject*>::reverse_iterator it=activenodelist->rbegin(); it!= activenodelist->rend(); ++it)
 			{
-				lobjects.push_back(*(*it));
+				if (pgm->CanDeleteItem((*it)))
+				{
+					lids.push_back((*it)->getID());
+				}
 			}
-			lobjects.sort();
-//			activenodelist->sort();
-			int i=0;
-//			for (list<GObject*>::reverse_iterator it=activenodelist->rbegin(); it!= activenodelist->rend(); ++it)
-			for (list<GObject>::reverse_iterator it=lobjects.rbegin(); it!=lobjects.rend(); ++it)
+			if (lids.empty())
 			{
-				pcommand->SetParamI(CSP_DELETEITEM_I_INDEX+i, (*it).getID(), CWP_INDEX);
-				i++;
+				pcommand->StepTo(CSI_TERMINAL);
 			}
-			pcommand->SetParamI(CSP_DELETEITEM_I_INDEX+i, -1, CWP_INDEX);
+			else
+			{
+				lids.sort();
+				int i=0;
+				for (list<int>::reverse_iterator it=lids.rbegin(); it!=lids.rend(); ++it)
+				{
+					pcommand->SetParamI(CSP_DELETEITEM_I_INDEX+i, (*it), CWP_INDEX);
+					i++;
+				}
+				pcommand->SetParamI(CSP_DELETEITEM_I_INDEX+i, -1, CWP_INDEX);
 
-			pcommand->StepTo(CSI_FINISH);
+				pcommand->StepTo(CSI_FINISH);
+			}
+
 		}
 		else
 		{
@@ -72,27 +81,27 @@ void DeleteItemCommand::OnDoneCommand()
 			break;
 		}
 		GObject * pObj = pgm->FindObjectByID(index);
+		if (!pObj)
+		{
+			return;
+		}
+		GObject * pOrderSibling = pObj->getYoungerSibling();
 
 		GObject * pParent = pObj->getParent();
 		ASSERT(pParent);
 		int parentid = pParent->getID();
-		int afterid = index-1;
-		if (afterid >= 0)
+		int afterid = -1;
+		if (pOrderSibling)
 		{
-			GObject * pAfterObj = pgm->FindObjectByID(afterid);
-			if (pAfterObj->getParent() != pParent)
-			{
-				afterid = -1;
-			}
+			afterid = pOrderSibling->getID();
 		}
-
 		pgm->MoveToUnDoList(pObj);
 		PushRevertable(
 			CCMake_C(COMM_I_DELETENODE, 2),
 			CCMake_I(parentid),
 			CCMake_I(afterid),
 			CCMake_C(COMM_I_COMMAND, 2, 0),
-			CCMake_C(COMM_I_COMM_WORKINGLAYER, workingLayerID),
+			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 			CCMake_C(COMM_DELETEITEM),
 			CCMake_I(index),
 			NULL

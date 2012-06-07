@@ -121,7 +121,7 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 
 	if (!GObjectManager::getInstance().GetActiveLayer())
 	{
-		GObjectManager::getInstance().SetActiveLayer_Internal(CommandTemplate::workingLayer);
+		GObjectManager::getInstance().SetActiveLayer_Internal();
 	}
 
 	return true;
@@ -235,7 +235,7 @@ bool Command::DoReDo( int redostep/*=1*/ )
 	// No need to push back undolist
 	// All ReDo should done by command
 //	undolist.push_back(rc);
-	CommandTemplate::CallOnUndo();
+	CommandTemplate::CallOnUnDo();
 	return true;
 }
 

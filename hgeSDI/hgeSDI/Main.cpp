@@ -154,7 +154,7 @@ bool MainInterface::Frame()
 	GUICoordinate * pguic = &GUICoordinate::getInstance();
 	if (mousewheel != lastmousewheel)
 	{
-		pcommand->CreateCommand(COMM_DOZOOM);
+		pcommand->CreateCommandCommit(COMM_DOZOOM);
 		pcommand->SetParamX(CSP_DOZOOM_XY_F_C_SCALE, mousex);
 		pcommand->SetParamY(CSP_DOZOOM_XY_F_C_SCALE, mousey);
 		pcommand->SetParamF(CSP_DOZOOM_XY_F_C_SCALE, powf(wheelscalefactor, mousewheel-lastmousewheel));
@@ -162,7 +162,7 @@ bool MainInterface::Frame()
 
 	if (hge->Input_GetDIKey(DIK_SPACE, DIKEY_DOWN) && IsMainViewActive())
 	{
-		pcommand->CreateCommand(COMM_PAN);
+		pcommand->CreateCommandCommit(COMM_PAN);
 	}
 	if (IsMainViewActive() && hge->Input_GetDIKey(DIK_ESCAPE, DIKEY_UP))
 	{
@@ -369,7 +369,7 @@ void MainInterface::CallAppendCommandLogText( const char * text, bool bNewLine/*
 
 int MainInterface::OnCommand( int comm )
 {
-	return Command::getInstance().CreateCommand(comm);
+	return Command::getInstance().CreateCommandCommit(comm);
 }
 
 int MainInterface::OnCommitCommand( const char * str )
@@ -411,7 +411,7 @@ void MainInterface::DoResizeWindow()
 
 void MainInterface::OnInternalActiveLayerSetDone()
 {
-	CommandTemplate::InternalActiveLayerSetDone();
+	GObjectManager::getInstance().OnInternalActiveLayerSetDone();
 }
 
 void MainInterface::DoUpdateFPS()
@@ -634,12 +634,12 @@ void MainInterface::DoCheckFloatCommand()
 			{
 				if (!bshift)
 				{
-					Command::getInstance().CreateCommand(COMM_UNDO);
+					Command::getInstance().CreateCommandCommit(COMM_UNDO);
 //					Command::getInstance().DoUnDo();
 				}
 				else
 				{
-					Command::getInstance().CreateCommand(COMM_REDO);
+					Command::getInstance().CreateCommandCommit(COMM_REDO);
 //					Command::getInstance().DoReDo();
 				}
 			}
@@ -702,7 +702,7 @@ void MainInterface::CallUnDoReDo( int step )
 		{
 			for (int i=0; i<-step; i++)
 			{
-				Command::getInstance().CreateCommand(COMM_UNDO);
+				Command::getInstance().CreateCommandCommit(COMM_UNDO);
 			}
 //			Command::getInstance().DoUnDo(-step);
 		}
@@ -710,7 +710,7 @@ void MainInterface::CallUnDoReDo( int step )
 		{
 			for (int i=0; i<step; i++)
 			{
-				Command::getInstance().CreateCommand(COMM_REDO);
+				Command::getInstance().CreateCommandCommit(COMM_REDO);
 			}
 //			Command::getInstance().DoReDo(step);
 		}

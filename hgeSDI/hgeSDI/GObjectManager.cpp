@@ -28,7 +28,8 @@ void GObjectManager::Init()
 	Release();
 	pBaseNode = new GLayer(0, ColorManager::getInstance().GetLayerLineColor(0), "");
 	GLayer * pLayer = NewLayer(NULL, GetDefaultLayerName(stackedLayerIndex));
-	CommandTemplate::Init(pLayer);
+	workinglayer = pLayer;
+	lastworkinglayer = pLayer;
 }
 
 void GObjectManager::Release()
@@ -48,6 +49,8 @@ void GObjectManager::Release()
 		delete pBaseNode;
 		pBaseNode = NULL;
 	}
+	workinglayer = NULL;
+	lastworkinglayer = NULL;
 	bReleasing = false;
 }
 
@@ -184,7 +187,13 @@ GLayer * GObjectManager::NewSubLayer( GObject * node, const char * layername, in
 
 GLayer * GObjectManager::GetActiveLayer()
 {
-	return MainInterface::getInstance().OnGetActiveLayer();
+	GLayer * pActiveLayer = MainInterface::getInstance().OnGetActiveLayer();
+	if (!pActiveLayer)
+	{
+		pActiveLayer = (GLayer *)pBaseNode->getNewestChild();
+	}
+	ASSERT(pActiveLayer);
+	return pActiveLayer;
 }
 
 const char * GObjectManager::GetDefaultLayerName( int _layerIndex/*=-1 */ )
@@ -204,8 +213,12 @@ GObject * GObjectManager::FindObjectByID( int id )
 	return pBaseNode->FindNodeByID(id);
 }
 
-void GObjectManager::SetActiveLayer_Internal( GObject * pObj )
+void GObjectManager::SetActiveLayer_Internal( GObject * pObj/*=NULL*/ )
 {
+	if (!pObj)
+	{
+		pObj = workinglayer;
+	}
 	DASSERT(pObj);
 	if (pObj)
 	{
@@ -233,4 +246,43 @@ list<GObject*> * GObjectManager::GetSelectedNodes()
 	} while (_pobj);
 
 	return &selectednodes;
+}
+
+bool GObjectManager::CanDeleteItem( GObject * obj )
+{
+	if (obj)
+	{
+		GObject * parent = obj->getParent();
+		if (parent)
+		{
+			if (parent != pBaseNode || parent->getChildren()->size() > 1)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+void GObjectManager::OnInternalActiveLayerSetDone()
+{
+	UpdateWorkingLayer();
+}
+
+void GObjectManager::UpdateWorkingLayer( GLayer * pLayer/*=NULL*/, bool bothtoactive/*=false*/ )
+{
+	if (!pLayer)
+	{
+		pLayer = GetActiveLayer();
+	}
+	if (bothtoactive)
+	{
+		lastworkinglayer = pLayer;
+	}
+	else
+	{
+		lastworkinglayer = workinglayer;
+	}
+	workinglayer = pLayer;
+	
 }

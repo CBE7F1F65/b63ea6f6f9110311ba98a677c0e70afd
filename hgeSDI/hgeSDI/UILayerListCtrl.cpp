@@ -9,7 +9,9 @@
 #include "IconManager.h"
 #include "GObjectManager.h"
 
-#define _LAYERLIST_ICONSIZE	16
+#include "Main.h"
+
+#define _LAYERLIST_ICONSIZE	ICMSIZE_SMALL
 #define _LAYERLIST_LINECOLORSIZE	6
 
 // UILayerListCtrl
@@ -49,6 +51,7 @@ BEGIN_MESSAGE_MAP(UILayerListCtrl, CListCtrl)
 	ON_WM_MOUSEMOVE()
 	ON_NOTIFY_REFLECT(LVN_GETINFOTIP, &UILayerListCtrl::OnLvnGetInfoTip)
 	ON_WM_CHAR()
+	ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 
 void UILayerListCtrl::RebuildTree( GObject * changebase, GObject * activeitem )
@@ -116,8 +119,10 @@ void UILayerListCtrl::BuildChildren( GObject * nowbase, int & nowindex, int inde
 			{
 				bool bFolded = (*it)->isDisplayFolded();
 
-				InsertItem(nowindex, "");
-				SetItemData(nowindex, (DWORD_PTR)(*it));
+				int iindex = InsertItem(nowindex, "");
+				ASSERT(iindex==nowindex);
+				bool bret = SetItemData(nowindex, (DWORD_PTR)(*it));
+//				ASSERT(bret);
 
 				SetItemVisible(nowindex, (*it)->isDisplayVisible(), (*it)->isRecDisplayVisible());
 				SetItemLock(nowindex, (*it)->isDisplayLocked(), (*it)->isRecDisplayLocked());
@@ -127,6 +132,7 @@ void UILayerListCtrl::BuildChildren( GObject * nowbase, int & nowindex, int inde
 
 				SetItemLineSelect(nowindex, (*it)->isSelected());
 				SetItemFrameColor(nowindex, (*it)->GetLayer()->getLineColor());
+//				ASSERT(GetObjectByIndex(nowindex));
 				/*
 				SetItem(nowindex, IDLBC_VISIBLE, LVIF_IMAGE, "", 0, 0, 0, 0);
 				SetItem(nowindex, IDLBC_LOCK, LVIF_IMAGE, "", 16, 0, 0, 0);
@@ -163,12 +169,12 @@ int UILayerListCtrl::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	SetBkColor(pcm->ARGBToABGR(pcm->GetTextBkColor(COLORMT_LIST, COLORMS_BACKGROUND)) & 0xffffff);
 	SetExtendedStyle(LVS_EX_FULLROWSELECT|LVS_EX_SUBITEMIMAGES|LVS_EX_INFOTIP);
 
-	InsertColumn(IDLBC_VISIBLE, "", LVCFMT_LEFT);
-	InsertColumn(IDLBC_LOCK, "", LVCFMT_LEFT);
-	InsertColumn(IDLBC_LINECOLOR, "", LVCFMT_LEFT);
-	InsertColumn(IDLBC_TREE, "", LVCFMT_LEFT);
-	InsertColumn(IDLBC_LINESELECT, "", LVCFMT_LEFT);
-	InsertColumn(IDLBC_FRAMECOLOR, "", LVCFMT_LEFT);
+	InsertColumn(IDLBC_VISIBLE, "", LVCFMT_LEFT, IDLBC_VISIBLE);
+	InsertColumn(IDLBC_LOCK, "", LVCFMT_LEFT, IDLBC_LOCK);
+	InsertColumn(IDLBC_LINECOLOR, "", LVCFMT_LEFT, IDLBC_LINECOLOR);
+	InsertColumn(IDLBC_TREE, "", LVCFMT_LEFT, IDLBC_TREE);
+	InsertColumn(IDLBC_LINESELECT, "", LVCFMT_LEFT, IDLBC_LINESELECT);
+	InsertColumn(IDLBC_FRAMECOLOR, "", LVCFMT_LEFT, IDLBC_FRAMECOLOR);
 
 //	LPINT pnOrder = (LPINT) malloc(_IDLBC_INDEXMAX*sizeof(int));
 	int nOrder[_IDLBC_INDEXMAX];
@@ -243,6 +249,7 @@ void UILayerListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 
 	//obtain row and column of item
 	int nowDrawingItem = pCD->nmcd.dwItemSpec;
+	int nowDrawingSubItem = pCD->iSubItem;
 //	int iCol = pCD->iSubItem;
 
 	//Remove standard highlighting of selected (sub)item.
@@ -295,6 +302,7 @@ void UILayerListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 					}
 				}
 			}
+
 			*pResult =  CDRF_NOTIFYPOSTPAINT;
 
 			//
@@ -303,15 +311,38 @@ void UILayerListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 
 	case CDDS_ITEMPOSTPAINT | CDDS_SUBITEM: // Stage four (called for each subitem of the focused item)
 		{
-			RECT rect;
-			GetItemRect(nowDrawingItem, &rect, LVIR_BOUNDS);
-			int height = rect.bottom-rect.top;
-			int width = rect.right-rect.left;
+			CRect nowDrawingRect;
+			GetSubItemRect(nowDrawingItem, nowDrawingSubItem, LVIR_BOUNDS, nowDrawingRect);
+			int width = nowDrawingRect.Width();
+			int height = nowDrawingRect.Height();
 			CClientDC dc(this);
 
-			DWORD col = pcm->ARGBToABGR(pcm->GetTextBkColor(COLORMT_LIST, COLORMS_FRAME))&0xffffff;
+			DWORD framecol = pcm->ARGBToABGR(pcm->GetTextBkColor(COLORMT_LIST, COLORMS_FRAME))&0xffffff;
 
-			dc.Draw3dRect(rect.left, rect.top, width, height, col, col);
+			dc.Draw3dRect(nowDrawingRect, framecol, framecol);
+
+
+			GObject * pObj = GetObjectByIndex(nowDrawingItem);
+			// Draw Line Color and Frame Color
+			if (nowDrawingSubItem == IDLBC_LINECOLOR)
+			{
+				CRect rect(nowDrawingRect);
+				rect.right = rect.left+_LAYERLIST_LINECOLORSIZE;
+				rect.DeflateRect(0, 1, 0, 1);
+				DWORD col = pObj->getLineColor()&0xffffff;
+
+				dc.FillSolidRect(rect, col);
+				dc.Draw3dRect(rect, framecol, framecol);
+			}
+			else if (nowDrawingSubItem == IDLBC_FRAMECOLOR)
+			{
+				CRect rect(nowDrawingRect);
+				rect.DeflateRect(4, 4, 4, 4);
+				DWORD col = pObj->GetLayer()->getLineColor()&0xffffff;
+
+				dc.FillSolidRect(rect, col);
+				dc.Draw3dRect(rect, framecol, framecol);
+			}
 		}
 		break;
 
@@ -435,7 +466,25 @@ void UILayerListCtrl::OnLvnItemchanging(NMHDR *pNMHDR, LRESULT *pResult)
 	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
 	*pResult = 0;
-
+	/*
+	if (pNMLV->uChanged & LVIF_STATE)
+	{
+		if (pNMLV->uOldState & LVIS_SELECTED)
+		{
+			int index = GetNextItem(-1, LVNI_SELECTED);
+			if (index == pNMLV->iItem)
+			{
+				index = GetNextItem(index, LVNI_SELECTED);
+			}
+			if (index < 0)
+			{
+				AddSelect(pNMLV->iItem);
+				*pResult = 1;
+			}
+		}
+	}
+	*/
+	
 	DWORD dwPos = GetMessagePos();
 	POINTS pts = MAKEPOINTS(dwPos);
 	CPoint pt(pts.x, pts.y);
@@ -447,30 +496,23 @@ void UILayerListCtrl::OnLvnItemchanging(NMHDR *pNMHDR, LRESULT *pResult)
 
 	if(uiFlags & LVHT_NOWHERE)
 	{
-		*pResult = 1;	
+		*pResult = 1;
 	}
+	
 }
 
-#include "Main.h"
-#include <cstring>
 void UILayerListCtrl::OnLvnItemchanged(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
 	if (pNMLV->uChanged & LVIF_STATE)
 	{
-		CString str;
-		if (pNMLV->uNewState & LVNI_SELECTED)
+		if (pNMLV->uNewState & LVIS_SELECTED)
 		{
-			str.Format("Selected: %d, %d", pNMLV->iItem, pNMLV->iSubItem);
-			MainInterface::getInstance().CallAppendCommandLogText(str.GetBuffer());
 		}
-		else if (pNMLV->uOldState & LVNI_SELECTED)
+		else if (pNMLV->uOldState & LVIS_SELECTED)
 		{
-			str.Format("DeSelected: %d, %d", pNMLV->iItem, pNMLV->iSubItem);
-			MainInterface::getInstance().CallAppendCommandLogText(str.GetBuffer());
 		}
-		// do stuff...
 	}
 	*pResult = 0;
 }
@@ -546,7 +588,7 @@ void UILayerListCtrl::SetItemLineSelect( int index, bool toSelect )
 
 void UILayerListCtrl::SetItemFrameColor( int index, DWORD col )
 {
-
+//	SetColumnWidth(IDLBC_LINECOLOR, _LAYERLIST_LINECOLORSIZE);
 }
 
 void UILayerListCtrl::FoldItem( int index )
@@ -635,4 +677,20 @@ BOOL UILayerListCtrl::PreTranslateMessage(MSG* pMsg)
 	}
 
 	return CListCtrl::PreTranslateMessage(pMsg);
+}
+
+
+void UILayerListCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+	if (nChar == VK_DELETE)
+	{
+//		MainInterface::getInstance().OnCommand(COMM_DELETEITEM);
+	}
+	if (nChar == VK_INSERT)
+	{
+//		MainInterface::getInstance().OnCommand(COMM_NEWLAYER);
+	}
+	CListCtrl::OnKeyDown(nChar, nRepCnt, nFlags);
 }

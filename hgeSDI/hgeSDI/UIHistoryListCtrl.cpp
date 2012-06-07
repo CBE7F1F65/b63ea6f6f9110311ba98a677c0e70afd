@@ -75,7 +75,8 @@ void UIHistoryListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = CDRF_DODEFAULT;
 
 	//obtain row and column of item
-	int nowDrawing = pCD->nmcd.dwItemSpec;
+	int nowDrawingItem = pCD->nmcd.dwItemSpec;
+	int nowDrawingSubItem = pCD->iSubItem;
 //	int iCol = pCD->iSubItem;
 
 	//Remove standard highlighting of selected (sub)item.
@@ -101,12 +102,12 @@ void UIHistoryListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 		{
 			//if (sub)item was the one clicked, set custom text/background color
 			//Un-comment the code segment to allow single cell highlight
-			if( (nSelected == nowDrawing ) )
+			if( (nSelected == nowDrawingItem ) )
 			{
 				pCD->clrText	= pcm->ARGBToABGR(pcm->GetTextColor(COLORMT_LIST, COLORMS_ACTIVE))&0xffffff;
 				pCD->clrTextBk	= pcm->ARGBToABGR(pcm->GetTextBkColor(COLORMT_LIST, COLORMS_ACTIVE))&0xffffff;
 			}
-			else if (nSelected > nowDrawing)
+			else if (nSelected > nowDrawingItem)
 			{
 				pCD->clrText	= pcm->ARGBToABGR(pcm->GetTextColor(COLORMT_LIST, COLORMS_NONACTIVE))&0xffffff;
 				pCD->clrTextBk	= pcm->ARGBToABGR(pcm->GetTextBkColor(COLORMT_LIST, COLORMS_NONACTIVE))&0xffffff;
@@ -124,10 +125,8 @@ void UIHistoryListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 
 	case CDDS_ITEMPOSTPAINT | CDDS_SUBITEM: // Stage four (called for each subitem of the focused item)
 		{
-			RECT rect;
-			GetItemRect(nowDrawing, &rect, LVIR_BOUNDS);
-			int height = rect.bottom-rect.top;
-			int width = rect.right-rect.left;
+			CRect nowDrawingRect;
+			GetSubItemRect(nowDrawingItem, nowDrawingSubItem, LVIR_BOUNDS, nowDrawingRect);
 			CClientDC dc(this);
 
 			DWORD col = pcm->ARGBToABGR(pcm->GetTextBkColor(COLORMT_LIST, COLORMS_FRAME))&0xffffff;
@@ -135,7 +134,7 @@ void UIHistoryListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 //			HPEN hpen = CreatePen(PS_SOLID, 2, col);
 //			SelectObject(dc.m_hDC, hpen);
 //			dc.DrawEdge(&rect, BDR_RAISEDINNER, BF_RECT);
-			dc.Draw3dRect(rect.left, rect.top, width, height, col, col);
+			dc.Draw3dRect(nowDrawingRect, col, col);
 			/*
 			dc.MoveTo(rect.left, rect.top);
 			dc.LineTo(rect.right, rect.top);

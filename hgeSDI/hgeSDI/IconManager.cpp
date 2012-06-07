@@ -17,7 +17,7 @@ IconManager::~IconManager(void)
 
 void IconManager::Init()
 {
-	imgList32.Create(32, 32, ILC_COLORDDB|ILC_MASK, 0, 4);
+	imgList32.Create(ICMSIZE_LARGE, ICMSIZE_LARGE, ILC_COLORDDB|ILC_MASK, 0, 4);
 	CBitmap bm32[_ICM_BMPMAX_L];
 	for (int i=0; i<_ICM_BMPMAX_L; i++)
 	{
@@ -25,7 +25,7 @@ void IconManager::Init()
 		imgList32.Add(&(bm32[i]), RGB(0, 0, 0));
 	}
 
-	imgList24.Create(24, 24, ILC_COLORDDB|ILC_MASK, 0, 4);
+	imgList24.Create(ICMSIZE_MIDDLE, ICMSIZE_MIDDLE, ILC_COLORDDB|ILC_MASK, 0, 4);
 	CBitmap bm24[_ICM_BMPMAX_M];
 	for (int i=0; i<_ICM_BMPMAX_M; i++)
 	{
@@ -33,7 +33,7 @@ void IconManager::Init()
 		imgList24.Add(&(bm24[i]), RGB(0, 0, 0));
 	}
 
-	imgList16.Create(16, 16, ILC_COLORDDB|ILC_MASK, 0, 4);
+	imgList16.Create(ICMSIZE_SMALL, ICMSIZE_SMALL, ILC_COLORDDB|ILC_MASK, 0, 4);
 	CBitmap bm16[_ICM_BMPMAX_S];
 	for (int i=0; i<_ICM_BMPMAX_S; i++)
 	{
@@ -87,6 +87,24 @@ int IconManager::GetLBFoldExpandIcon( bool bFolded )
 }
 
 int IconManager::GetLBLineSelectIcon( bool toSelect )
+{
+	// ToDo!!
+	return 0;
+}
+
+int IconManager::GetCMDDeleteItemIcon( int state )
+{
+	// ToDo!!
+	return 0;
+}
+
+int IconManager::GetCMDNewLayerIcon( int state )
+{
+	// ToDo!!
+	return 0;
+}
+
+int IconManager::GetCMDNewSubLayerIcon( int state )
 {
 	// ToDo!!
 	return 0;

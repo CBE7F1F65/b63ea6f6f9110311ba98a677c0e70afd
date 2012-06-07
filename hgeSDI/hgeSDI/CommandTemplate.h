@@ -57,13 +57,8 @@ public:
 
 	CommandStepInfo laststep;
 
-
-	static GLayer * lastWorkingLayer;
-	static GLayer * workingLayer;
-	static int workingLayerID;
-	static void Init( GLayer * pLayer );
 	static CommandTemplate * GetTemplateByCommand(int comm);
-	static void CallOnUndo();
-	static void InternalActiveLayerSetDone();
-	static void UpdateWorkingLayer(GLayer * pLayer=NULL);
+
+	int workinglayerID;
+	static void CallOnUnDo();
 };

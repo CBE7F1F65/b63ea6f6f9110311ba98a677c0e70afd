@@ -85,18 +85,18 @@ void StringManager::FillSCInfo()
 	_LSET(COMM, LSTR, DES, CMT);	\
 	_SSET(COMM, SSTR)
 
-	// Do not use _SSET directly
+	// Do not use _SSET, _LSET directly
 	// Keep format for Excel Editing
-	_LSET(	COMM_PAN,	"PAN",	"Pan",	""	);
-	_LSET(	COMM_ZOOMIN,	"ZOOMIN",	"Zone Zoom",	""	);
-	_LSET(	COMM_DOZOOM,	"ZOOM",	"Instant Zoom",	""	);
+	_BSET(	COMM_PAN,	"PAN",	"",	"Pan",	""	);
+	_BSET(	COMM_ZOOMIN,	"ZOOMIN",	"",	"Zone Zoom",	""	);
+	_BSET(	COMM_DOZOOM,	"ZOOM",	"",	"Instant Zoom",	""	);
 
-	_LSET(	COMM_INITIAL,	"INITIAL",	"Initialization",	""	);
+	_BSET(	COMM_INITIAL,	"INITIAL",	"",	"Initialization",	""	);
 	_BSET(	COMM_UNDO,	"UNDO", "U",	"UnDo",	""	);
 	_BSET(	COMM_REDO,	"REDO", "R",	"UnDo",	""	);
 
 	_BSET(	COMM_DELETEITEM,	"DELETE",	"DEL",	"Delete Item",	""	);
-	_LSET(	COMM_SETWORKINGLAYER,	"SETWORKINGLAYER",	"Set Working Layer",	""	);
+	_BSET(	COMM_SETWORKINGLAYER,	"SETWORKINGLAYER",	"",	"Set Working Layer",	""	);
 	_BSET(	COMM_NEWLAYER,	"NEWLAYER", "NL",	"New Layer",	""	);
 	_BSET(	COMM_NEWSUBLAYER,	"NEWSUBLAYER",	"NSL",	"New Sub Layer", "");
 

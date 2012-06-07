@@ -4,8 +4,18 @@
 #include "stdafx.h"
 #include "hgeSDI.h"
 #include "UILayerDockablePane.h"
+#include "Main.h"
 
+#include "StringManager.h"
+#include "ColorManager.h"
+#include "IconManager.h"
+#include "Command.h"
+
+#define _LAYERBUTTON_ICONSIZE	ICMSIZE_MIDDLE
 // UILayerDockablePane
+
+
+#define _UILBBUTTONCOUNT	3
 
 IMPLEMENT_DYNAMIC(UILayerDockablePane, CDockablePane)
 
@@ -21,6 +31,10 @@ BEGIN_MESSAGE_MAP(UILayerDockablePane, CDockablePane)
 	ON_WM_CREATE()
 	ON_WM_CLOSE()
 	ON_WM_SIZE()
+	ON_UPDATE_COMMAND_UI_RANGE(ID_UI_BUTTON_LAYER_BEGIN, ID_UI_BUTTON_LAYER_END, &UILayerDockablePane::OnUpdateUIButtons)
+	ON_BN_CLICKED(ID_UI_BUTTON_LAYER_NEWLAYER, OnNewLayerButtonClicked)
+	ON_BN_CLICKED(ID_UI_BUTTON_LAYER_NEWSUBLAYER, OnNewSubLayerButtonClicked)
+	ON_BN_CLICKED(ID_UI_BUTTON_LAYER_DELETEITEM, OnDeleteItemButtonClicked)
 END_MESSAGE_MAP()
 
 // UILayerDockablePane 消息处理程序
@@ -40,6 +54,36 @@ int UILayerDockablePane::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	{
 		return -1;
 	}
+	if (!m_wndFakeButtonL.DCreate(ID_UI_BUTTON_LAYER_FAKEL, this))
+	{
+		return -1;
+	}
+	m_wndFakeButtonL.SetButtonEnable(false);
+	if (!m_wndFakeButtonR.DCreate(ID_UI_BUTTON_LAYER_FAKER, this))
+	{
+		return -1;
+	}
+	m_wndFakeButtonR.SetButtonEnable(false);
+	IconManager * picm = &IconManager::getInstance();
+
+	if (!m_wndNewLayerButton.DCreate(ID_UI_BUTTON_LAYER_NEWLAYER, this, 
+		StringManager::getInstance().GetCommandDescriptionName(COMM_NEWLAYER), 
+		ICMSIZE_MIDDLE, picm->GetCMDNewLayerIcon(ICMSTATE_NORMAL), picm->GetCMDNewLayerIcon(ICMSTATE_DISABLED)))
+	{
+		return -1;
+	}
+	if (!m_wndNewSubLayerButton.DCreate(ID_UI_BUTTON_LAYER_NEWSUBLAYER, this, 
+		StringManager::getInstance().GetCommandDescriptionName(COMM_NEWSUBLAYER), 
+		ICMSIZE_MIDDLE, picm->GetCMDNewSubLayerIcon(ICMSTATE_NORMAL), picm->GetCMDNewSubLayerIcon(ICMSTATE_DISABLED)))
+	{
+		return -1;
+	}
+	if (!m_wndDeleteItemButton.DCreate(ID_UI_BUTTON_LAYER_DELETEITEM, this, 
+		StringManager::getInstance().GetCommandDescriptionName(COMM_DELETEITEM), 
+		ICMSIZE_MIDDLE, picm->GetCMDDeleteItemIcon(ICMSTATE_NORMAL), picm->GetCMDDeleteItemIcon(ICMSTATE_DISABLED)))
+	{
+		return -1;
+	}
 
 	return 0;
 }
@@ -56,8 +100,25 @@ void UILayerDockablePane::OnSize(UINT nType, int cx, int cy)
 	CDockablePane::OnSize(nType, cx, cy);
 
 	// TODO: 在此处添加消息处理程序代码
-	m_wndListCtrl.SetWindowPos (NULL, -1, -1, cx, cy,
+	m_wndListCtrl.SetWindowPos (NULL, -1, -1, cx, cy-_LAYERBUTTON_ICONSIZE,
 		SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
+
+	int fakerwidth = _LAYERBUTTON_ICONSIZE;
+	int fakelwidth = cx-_UILBBUTTONCOUNT*_LAYERBUTTON_ICONSIZE-fakerwidth;
+	int ybegin = cy-_LAYERBUTTON_ICONSIZE;
+	int a = _LAYERBUTTON_ICONSIZE;
+
+	m_wndFakeButtonL.SetWindowPos(NULL, 0, ybegin, fakelwidth, a, 
+		SWP_NOACTIVATE | SWP_NOZORDER);
+	m_wndNewLayerButton.SetWindowPos(NULL, fakelwidth, ybegin, a, a, 
+		SWP_NOACTIVATE | SWP_NOZORDER);
+	m_wndNewSubLayerButton.SetWindowPos(NULL, fakelwidth+a, ybegin, a, a, 
+		SWP_NOACTIVATE | SWP_NOZORDER);
+	m_wndDeleteItemButton.SetWindowPos(NULL, fakelwidth+2*a, ybegin, a, a, 
+		SWP_NOACTIVATE | SWP_NOZORDER);
+	m_wndFakeButtonR.SetWindowPos(NULL, fakelwidth+_UILBBUTTONCOUNT*a, ybegin, a, a, 
+		SWP_NOACTIVATE | SWP_NOZORDER);
+	Invalidate();
 }
 
 void UILayerDockablePane::RebuildTree( GObject * changebase, GObject * activeitem )
@@ -78,4 +139,27 @@ void UILayerDockablePane::SetActiveLayer_Internal( GLayer * pLayer )
 GObject * UILayerDockablePane::GetActiveNodes( int * pnextfromIndex )
 {
 	return m_wndListCtrl.GetActiveNodes( pnextfromIndex );
+}
+
+void UILayerDockablePane::OnUpdateUIButtons(CCmdUI *pCmdUI)
+{
+	if (pCmdUI->m_nID != ID_UI_BUTTON_LAYER_FAKEL && pCmdUI->m_nID != ID_UI_BUTTON_LAYER_FAKER)
+	{
+		pCmdUI->Enable();
+	}
+}
+
+void UILayerDockablePane::OnNewLayerButtonClicked()
+{
+	MainInterface::getInstance().OnCommand(COMM_NEWLAYER);
+}
+
+void UILayerDockablePane::OnNewSubLayerButtonClicked()
+{
+	MainInterface::getInstance().OnCommand(COMM_NEWSUBLAYER);
+}
+
+void UILayerDockablePane::OnDeleteItemButtonClicked()
+{
+	MainInterface::getInstance().OnCommand(COMM_DELETEITEM);
 }

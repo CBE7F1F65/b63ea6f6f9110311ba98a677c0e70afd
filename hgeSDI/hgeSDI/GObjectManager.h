@@ -40,6 +40,8 @@ public:
 	void MoveToUnDoList(GObject * node);
 	GObject * GetUnDoListFront();
 
+	bool CanDeleteItem( GObject * obj );
+
 	GObject * FindObjectByID(int id);
 
 	GLayer * NewLayer(GObject * node, const char * layername, int layerIndex=-1);
@@ -54,8 +56,17 @@ public:
 	int stackedLayerIndex;
 	string defaultLayerName;
 
+private:
+	GLayer * workinglayer;
+	GLayer * lastworkinglayer;
+public:
+	GLayer * getWorkingLayer(){return workinglayer;};
+	GLayer * getLastWorkingLayer(){return lastworkinglayer;};
+	void OnInternalActiveLayerSetDone();
+	void UpdateWorkingLayer(GLayer * pLayer=NULL, bool bothtoactive=false);
+
 	GLayer * GetActiveLayer();
-	void SetActiveLayer_Internal(GObject * pObj);
+	void SetActiveLayer_Internal(GObject * pObj=NULL);
 	const char * GetDefaultLayerName( int layerIndex=-1 );
 	list<GObject*> * GetSelectedNodes();
 	list<GObject*> selectednodes;

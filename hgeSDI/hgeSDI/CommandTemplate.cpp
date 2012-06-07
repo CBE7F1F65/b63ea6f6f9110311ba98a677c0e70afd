@@ -7,10 +7,6 @@
 
 #include "GObjectManager.h"
 
-GLayer * CommandTemplate::workingLayer=NULL;
-GLayer * CommandTemplate::lastWorkingLayer=NULL;
-int CommandTemplate::workingLayerID=0;
-
 CommandTemplate::CommandTemplate(void)
 {
 	pguic = &GUICoordinate::getInstance();
@@ -18,6 +14,7 @@ CommandTemplate::CommandTemplate(void)
 	pcommand = &Command::getInstance();
 	pgm = &GObjectManager::getInstance();
 	comm = COMM_NULL;
+	workinglayerID = 0;
 }
 
 CommandTemplate::~CommandTemplate(void)
@@ -86,12 +83,12 @@ void CommandTemplate::DispatchNormalSubCommand( int subcommand )
 	switch (subcommand)
 	{
 	case SSC_UNDO:
-		pcommand->CreateCommand(COMM_UNDO);
+		pcommand->CreateCommandCommit(COMM_UNDO);
 //		DoUnDo();
 //		ReleaseTarget();
 		break;
 	case SSC_REDO:
-		pcommand->CreateCommand(COMM_REDO);
+		pcommand->CreateCommandCommit(COMM_REDO);
 //		DoReDo();
 //		ReleaseTarget();
 		break;
@@ -272,28 +269,29 @@ void CommandTemplate::ProtectPendingFinishCommand()
 
 void CommandTemplate::CallDoneCommand()
 {
-	GLayer * activeLayer = GObjectManager::getInstance().GetActiveLayer();
+	GLayer * activeLayer = pgm->GetActiveLayer();
 	if (!pcommand->IsUnDoReDoing())
 	{
-		if (workingLayer != activeLayer)
+		GLayer * workinglayer = pgm->getWorkingLayer();
+		if (workinglayer != activeLayer)
 		{
-			if (workingLayer)
+			if (workinglayer)
 			{
 				PushRevertable(
 					CCMake_C(COMM_I_COMMAND, 2, 1),
-					CCMake_C(COMM_I_COMM_WORKINGLAYER, workingLayer->getID()),
+					CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayer->getID()),
 					CCMake_C(COMM_SETWORKINGLAYER),
 //					CCMake_I(workingLayer->getID()),
 					CCMake_I(activeLayer->getID()),
 					CCMake_C(COMM_I_UNDO_PARAM, 1),
-					CCMake_I(workingLayer->getID()),
+					CCMake_I(workinglayer->getID()),
 					NULL
 					);
 			}
 		}
 	}
-	UpdateWorkingLayer(activeLayer);
-	workingLayerID = workingLayer->getID();
+	pgm->UpdateWorkingLayer(activeLayer);
+	workinglayerID = pgm->getWorkingLayer()->getID();
 	OnDoneCommand();
 }
 
@@ -327,32 +325,8 @@ void CommandTemplate::OnProcessUnDoCommand( RevertableCommand * rc )
 
 }
 
-void CommandTemplate::Init( GLayer * pLayer )
+void CommandTemplate::CallOnUnDo()
 {
-	workingLayer = pLayer;
-	lastWorkingLayer = pLayer;
-}
-
-void CommandTemplate::CallOnUndo()
-{
-	UpdateWorkingLayer();
 	// lastworkinglayer can be dangerous
-	lastWorkingLayer = workingLayer;
+	GObjectManager::getInstance().UpdateWorkingLayer(NULL, true);
 }
-
-void CommandTemplate::InternalActiveLayerSetDone()
-{
-	UpdateWorkingLayer();
-}
-
-void CommandTemplate::UpdateWorkingLayer( GLayer * pLayer/*=NULL*/ )
-{
-	if (!pLayer)
-	{
-		pLayer = GObjectManager::getInstance().GetActiveLayer();
-	}
-	
-	lastWorkingLayer = workingLayer;
-	workingLayer = pLayer;
-}
-

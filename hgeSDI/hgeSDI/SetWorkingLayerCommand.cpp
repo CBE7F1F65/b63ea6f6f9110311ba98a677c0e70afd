@@ -34,7 +34,7 @@ void SetWorkingLayerCommand::OnProcessCommand()
 			);
 		if (ret<0)
 		{
-			pcommand->SetParamI(CSP_SETWORKINGLAYER_I_NEWINDEX, workingLayer->getID());
+			pcommand->SetParamI(CSP_SETWORKINGLAYER_I_NEWINDEX, pgm->getWorkingLayer()->getID());
 			pcommand->StepTo(CSI_SETWORKINGLAYER_WANTLASTINDEX);
 		}
 	}
@@ -46,7 +46,7 @@ void SetWorkingLayerCommand::OnProcessCommand()
 			);
 		if (ret<0)
 		{
-			pcommand->SetParamI(CSP_SETWORKINGLAYER_I_LASTINDEX, lastWorkingLayer->getID());
+			pcommand->SetParamI(CSP_SETWORKINGLAYER_I_LASTINDEX, pgm->getLastWorkingLayer()->getID());
 			pcommand->StepTo(CSI_FINISH);
 		}
 	}
@@ -58,12 +58,12 @@ void SetWorkingLayerCommand::OnDoneCommand()
 	int lastobjid = pcommand->GetParamI(CSP_SETWORKINGLAYER_I_LASTINDEX);
 	int newobjid = pcommand->GetParamI(CSP_SETWORKINGLAYER_I_NEWINDEX);
 //	GObject * lastObj = GObjectManager::getInstance().FindObjectByID(lastobjid);
-	GObject * newObj = GObjectManager::getInstance().FindObjectByID(newobjid);
-	GObjectManager::getInstance().SetActiveLayer_Internal(newObj);
+	GObject * newObj = pgm->FindObjectByID(newobjid);
+	pgm->SetActiveLayer_Internal(newObj);
 
 	PushRevertable(
 		CCMake_C(COMM_I_COMMAND, 2, 1),
-		CCMake_C(COMM_I_COMM_WORKINGLAYER, workingLayerID),
+		CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 		CCMake_C(COMM_SETWORKINGLAYER),
 //		CCMake_I(lastobjid),
 		CCMake_I(newobjid),
@@ -76,6 +76,6 @@ void SetWorkingLayerCommand::OnDoneCommand()
 void SetWorkingLayerCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 {
 	int lastobjid = pcommand->GetIvalFromRC(rc, CSPUNDO_SETWORKINGLAYER_I_LASTINDEX);
-	GObject * lastObj = GObjectManager::getInstance().FindObjectByID(lastobjid);
-	GObjectManager::getInstance().SetActiveLayer_Internal(lastObj);
+	GObject * lastObj = pgm->FindObjectByID(lastobjid);
+	pgm->SetActiveLayer_Internal(lastObj);
 }

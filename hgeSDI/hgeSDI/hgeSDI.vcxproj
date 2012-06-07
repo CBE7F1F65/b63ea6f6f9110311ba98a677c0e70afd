@@ -167,6 +167,7 @@
     <ClInclude Include="UICommandDockablePane.h" />
     <ClInclude Include="UICommandEdit.h" />
     <ClInclude Include="UICommandLogEdit.h" />
+    <ClInclude Include="UIDockablePaneButton.h" />
     <ClInclude Include="UIFloatingEditBox.h" />
     <ClInclude Include="UIHistoryDockablePane.h" />
     <ClInclude Include="UIHistoryListCtrl.h" />
@@ -215,6 +216,7 @@
     <ClCompile Include="UICommandDockablePane.cpp" />
     <ClCompile Include="UICommandEdit.cpp" />
     <ClCompile Include="UICommandLogEdit.cpp" />
+    <ClCompile Include="UIDockablePaneButton.cpp" />
     <ClCompile Include="UIFloatingEditBox.cpp" />
     <ClCompile Include="UIHistoryDockablePane.cpp" />
     <ClCompile Include="UIHistoryListCtrl.cpp" />

@@ -1,9 +1,14 @@
 #pragma once
 
+
+#define ICMSIZE_SMALL	16
+#define ICMSIZE_MIDDLE	24
+#define ICMSIZE_LARGE	32
+
+
 enum{
-	ICMSIZE_SMALL=0,
-	ICMSIZE_MIDDLE,
-	ICMSIZE_LARGE,
+	ICMSTATE_NORMAL=0,
+	ICMSTATE_DISABLED,
 };
 
 class IconManager
@@ -37,6 +42,9 @@ public:
 	int GetLBLockedIcon( bool bLock, bool bRecLock );
 	int GetLBFoldExpandIcon( bool bFolded );
 	int GetLBLineSelectIcon( bool toSelect );
+	int GetCMDDeleteItemIcon( int state );
+	int GetCMDNewLayerIcon( int state );
+	int GetCMDNewSubLayerIcon( int state );
 	CImageList imgList16;
 	CImageList imgList24;
 	CImageList imgList32;

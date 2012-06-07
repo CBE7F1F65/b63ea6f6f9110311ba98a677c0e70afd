@@ -34,7 +34,7 @@ void NewLayerCommand::OnProcessCommand()
 			);
 		if (ret<0)
 		{
-			pcommand->SetParamS(CSP_NEWLAYER_S_I_NAME_INDEX, GObjectManager::getInstance().GetDefaultLayerName());
+			pcommand->SetParamS(CSP_NEWLAYER_S_I_NAME_INDEX, pgm->GetDefaultLayerName());
 			pcommand->StepTo(CSI_NEWLAYER_WANTINDEX);
 		}
 	}
@@ -60,11 +60,11 @@ void NewLayerCommand::OnDoneCommand()
 
 	if (comm == COMM_NEWLAYER)
 	{
-		pLayer = GObjectManager::getInstance().NewLayer(workingLayer, layername, layerIndex);
+		pLayer = pgm->NewLayer(pgm->getWorkingLayer(), layername, layerIndex);
 	}
 	else
 	{
-		pLayer = GObjectManager::getInstance().NewSubLayer(workingLayer, layername, layerIndex);
+		pLayer = pgm->NewSubLayer(pgm->getWorkingLayer(), layername, layerIndex);
 	}
 
 	if (layerIndex < 0)
@@ -78,7 +78,7 @@ void NewLayerCommand::OnDoneCommand()
 		CCMake_I(pLayer->getID()),
 		CCMake_I(pLayer->getParent()->getID()),
 		CCMake_C(COMM_I_COMMAND, 3, 0),
-		CCMake_C(COMM_I_COMM_WORKINGLAYER, workingLayerID),
+		CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 		CCMake_C(comm),
 		CCMake_S(layername),
 		CCMake_I(layerIndex),

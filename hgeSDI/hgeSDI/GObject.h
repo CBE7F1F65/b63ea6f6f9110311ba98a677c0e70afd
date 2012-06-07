@@ -84,6 +84,12 @@ public:
 	int getID(){return nID;};
 	list<GObject *> * getChildren(){return &listChildren;};
 	int getChildrenCount(){return listChildren.size();};
+
+	GObject * getOlderSibling();
+	GObject * getOlderSiblingForChild( GObject* child );
+	GObject * getYoungerSibling();
+	GObject * getYoungerSiblingForChild( GObject* child );
+
 	GObject * getNewestChild(){if(!getChildrenCount()){ return NULL;} return listChildren.front();};
 	GObject * getOldestChild(){if(!getChildrenCount()){ return NULL;} return listChildren.back();};
 	int getNonAttributeChildrenCount(){return nNonAttributeChildrenCount;};

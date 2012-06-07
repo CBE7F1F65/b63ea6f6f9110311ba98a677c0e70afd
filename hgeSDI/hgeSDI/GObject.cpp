@@ -61,9 +61,7 @@ int GObject::_ActualAddChildAfterObj( GObject * child, GObject * afterobj )
 		//
 		if (!afterobj)
 		{
-//			listChildren.push_front(child);
-			// -1 means front, which is back
-			listChildren.push_back(child);
+			listChildren.push_front(child);
 		}
 		else
 		{
@@ -72,12 +70,19 @@ int GObject::_ActualAddChildAfterObj( GObject * child, GObject * afterobj )
 			{
 				if ((*it) == afterobj)
 				{
-					listChildren.insert(it, child);
-					bdone = true;
+					++it;
+					if (it!=listChildren.end())
+					{
+						listChildren.insert(it, child);
+						bdone = true;
+					}
 					break;
 				}
 			}
-			ASSERT(bdone);
+			if (!bdone)
+			{
+				listChildren.push_back(child);
+			}
 		}
 
 		if (!child->bAttributeNode)
@@ -119,7 +124,7 @@ void GObject::_SetID( int _ID/*=-1*/ )
 
 int GObject::AddChild( GObject * child )
 {
-	return _ActualAddChildAfterObj(child, getNewestChild());
+	return _ActualAddChildAfterObj(child, NULL);
 }
 
 int GObject::AddChildAfterObj( GObject* child, GObject*afterobj )
@@ -306,7 +311,7 @@ int GObject::Reparent( GObject * newparent )
 	_RemoveFromParent(false);
 	return newparent->AddChild(this);
 	*/
-	return ReparentAfterObject(newparent, newparent->getNewestChild());
+	return ReparentAfterObject(newparent, NULL);
 }
 
 int GObject::ReparentAfterObject( GObject * newparent, GObject * afterobj )
@@ -646,4 +651,60 @@ GObject * GObject::FindNodeByID( int id )
 		}
 	}
 	return NULL;
+}
+
+GObject * GObject::getOlderSibling()
+{
+	if (!pParent)
+	{
+		return NULL;
+	}
+	return pParent->getOlderSiblingForChild(this);
+}
+
+GObject * GObject::getOlderSiblingForChild( GObject* child )
+{
+	ASSERT(child);
+	FOREACH_GOBJ_CHILDREN_IT()
+	{
+		if ((*it) == child)
+		{
+			++it;
+			if (it!=listChildren.end())
+			{
+				return (*it);
+			}
+			break;
+		}
+	}
+	return NULL;
+}
+
+GObject * GObject::getYoungerSibling()
+{
+	if (!pParent)
+	{
+		return NULL;
+	}
+	return pParent->getYoungerSiblingForChild(this);
+
+}
+
+GObject * GObject::getYoungerSiblingForChild( GObject* child )
+{
+	ASSERT(child);
+	FOREACHREV_GOBJ_CHILDREN_IT()
+	{
+		if ((*it) == child)
+		{
+			++it;
+			if (it!=listChildren.rend())
+			{
+				return (*it);
+			}
+			break;
+		}
+	}
+	return NULL;
+
 }

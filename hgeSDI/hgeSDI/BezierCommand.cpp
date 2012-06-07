@@ -51,7 +51,7 @@ void BezierCommand::RenderToTarget()
 	y4 = GUICoordinate::getInstance().StoCy(y4);
 	PointF2D p3(x4, y4);
 
-	RenderHelper::getInstance().RenderBezier(p1, p2, p3, p4, GObjectManager::getInstance().GetActiveLayer()->getLineColor(), pmain->GetPrecision());
+	RenderHelper::getInstance().RenderBezier(p1, p2, p3, p4, pgm->GetActiveLayer()->getLineColor(), pmain->GetPrecision());
 	RenderHelper::getInstance().EndRenderTar();
 
 	Command::getInstance().SetRenderTarget(tar);

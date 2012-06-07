@@ -591,26 +591,7 @@ int Command::CommitCommand( const char * str )
 {
 	bool notfinished = false;
 	CommittedCommand _cc;
-	int inext = 0;//_FindNextSubStr(str, &_ic, M_STRMAX);
-	/*
-	if (!ccomm.command)
-	{
-		if (!CreateCommand(FindCommandByStr(_ic.substr.c_str())))
-		{
-			LogError(_ic.substr.c_str());
-			return ccomm.command;
-		}
-
-		if (inext)
-		{
-			inext = _FindNextSubStr(str, _ic.substr, M_STRMAX, inext);
-		}
-		else
-		{
-			return ccomm.command;
-		}
-	}
-	*/
+	int inext = 0;
 	while (true)
 	{
 		inext = _FindNextSubStr(str, &_cc, M_STRMAX, inext);
@@ -624,6 +605,16 @@ int Command::CommitCommand( const char * str )
 			break;
 		}
 	}
+	return ccomm.command;
+}
+
+int Command::CreateCommandCommit( int command )
+{
+	CommittedCommand _cc;
+	_cc.type = COMMITTEDCOMMANDTYPE_COMMAND;
+	_cc.ival = command;
+	_cc.sval = StringManager::getInstance().GetCommandStrName(command);
+	inputcommandlist.push_back(_cc);
 	return ccomm.command;
 }
 

@@ -117,7 +117,14 @@ int Command::ProcessCommittedCommand()
 	}
 	else
 	{
-		pendingparam = (*it);
+		if (ccomm.command)
+		{
+			pendingparam = (*it);
+		}
+		else
+		{
+			LogError(it->sval.c_str());
+		}
 	}
 
 	inputcommandlist.pop_front();

@@ -154,8 +154,9 @@ public:
 	void Render();
 
 	void OnInit();
-
+private:
 	int CreateCommand(int comm);
+public:
 	void ProcessCommand();
 	void ProcessUnDoCommandCommit(RevertableCommand * rc);
 	void ProcessUnDoCommandParam(int command, RevertableCommand * rc);
@@ -203,6 +204,8 @@ public:
 	int TerminalCommand();
 
 	int CommitCommand(const char * str);
+	int CreateCommandCommit(int command);
+
 	int _FindNextSubStr(const char * str, CommittedCommand * substr, int maxnsubstr, int ibegin=0);
 	int FindCommandByStr(const char * str, bool * isshort=0);
 	int FindSubCommandByStr(const char * str);

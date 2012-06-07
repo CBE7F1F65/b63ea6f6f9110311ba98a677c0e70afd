@@ -181,7 +181,7 @@ void LineCommand::RenderToTarget()
 		HTARGET tar = RenderTargetManager::getInstance().UpdateTarget(RTID_COMMAND);
 
 		RenderHelper::getInstance().BeginRenderTar(tar);
-		RenderHelper::getInstance().RenderLine(x1, y1, x2, y2, GObjectManager::getInstance().GetActiveLayer()->getLineColor());
+		RenderHelper::getInstance().RenderLine(x1, y1, x2, y2, pgm->GetActiveLayer()->getLineColor());
 		RenderHelper::getInstance().EndRenderTar();
 
 		Command::getInstance().SetRenderTarget(tar);
@@ -190,7 +190,7 @@ void LineCommand::RenderToTarget()
 
 void LineCommand::OnDoneCommand()
 {
-	GStraightLine * line = new GStraightLine(workingLayer/*GObjectManager::getInstance().GetActiveLayer()*/);
+	GStraightLine * line = new GStraightLine(pgm->getWorkingLayer()/*pgm->GetActiveLayer()*/);
 	float xb, yb, xe, ye;
 	pcommand->GetParamXY(CSP_LINE_XY_B, &xb, &yb);
 	pcommand->GetParamXY(CSP_LINE_XY_N, &xe, &ye);
@@ -203,7 +203,7 @@ void LineCommand::OnDoneCommand()
 		CCMake_I(line->getID()),
 		CCMake_I(line->getParent()->getID()),
 		CCMake_C(COMM_I_COMMAND, 5, 1),
-		CCMake_CI(COMM_I_COMM_WORKINGLAYER, workingLayerID),
+		CCMake_CI(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 		CCMake_C(COMM_LINE),
 		CCMake_F(xb),
 		CCMake_F(yb),
