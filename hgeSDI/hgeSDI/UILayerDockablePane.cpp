@@ -68,19 +68,19 @@ int UILayerDockablePane::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	if (!m_wndNewLayerButton.DCreate(ID_UI_BUTTON_LAYER_NEWLAYER, this, 
 		StringManager::getInstance().GetCommandDescriptionName(COMM_NEWLAYER), 
-		ICMSIZE_MIDDLE, picm->GetCMDNewLayerIcon(ICMSTATE_NORMAL), picm->GetCMDNewLayerIcon(ICMSTATE_DISABLED)))
+		_LAYERBUTTON_ICONSIZE, picm->GetCMDNewLayerIcon(ICMSTATE_NORMAL), picm->GetCMDNewLayerIcon(ICMSTATE_DISABLED)))
 	{
 		return -1;
 	}
 	if (!m_wndNewSubLayerButton.DCreate(ID_UI_BUTTON_LAYER_NEWSUBLAYER, this, 
 		StringManager::getInstance().GetCommandDescriptionName(COMM_NEWSUBLAYER), 
-		ICMSIZE_MIDDLE, picm->GetCMDNewSubLayerIcon(ICMSTATE_NORMAL), picm->GetCMDNewSubLayerIcon(ICMSTATE_DISABLED)))
+		_LAYERBUTTON_ICONSIZE, picm->GetCMDNewSubLayerIcon(ICMSTATE_NORMAL), picm->GetCMDNewSubLayerIcon(ICMSTATE_DISABLED)))
 	{
 		return -1;
 	}
 	if (!m_wndDeleteItemButton.DCreate(ID_UI_BUTTON_LAYER_DELETEITEM, this, 
 		StringManager::getInstance().GetCommandDescriptionName(COMM_DELETEITEM), 
-		ICMSIZE_MIDDLE, picm->GetCMDDeleteItemIcon(ICMSTATE_NORMAL), picm->GetCMDDeleteItemIcon(ICMSTATE_DISABLED)))
+		_LAYERBUTTON_ICONSIZE, picm->GetCMDDeleteItemIcon(ICMSTATE_NORMAL), picm->GetCMDDeleteItemIcon(ICMSTATE_DISABLED)))
 	{
 		return -1;
 	}
@@ -99,13 +99,13 @@ void UILayerDockablePane::OnSize(UINT nType, int cx, int cy)
 {
 	CDockablePane::OnSize(nType, cx, cy);
 
+	int ybegin = cy-_LAYERBUTTON_ICONSIZE;
 	// TODO: 在此处添加消息处理程序代码
-	m_wndListCtrl.SetWindowPos (NULL, -1, -1, cx, cy-_LAYERBUTTON_ICONSIZE,
+	m_wndListCtrl.SetWindowPos (NULL, -1, -1, cx, ybegin,
 		SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
 
 	int fakerwidth = _LAYERBUTTON_ICONSIZE;
 	int fakelwidth = cx-_UILBBUTTONCOUNT*_LAYERBUTTON_ICONSIZE-fakerwidth;
-	int ybegin = cy-_LAYERBUTTON_ICONSIZE;
 	int a = _LAYERBUTTON_ICONSIZE;
 
 	m_wndFakeButtonL.SetWindowPos(NULL, 0, ybegin, fakelwidth, a, 

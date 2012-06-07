@@ -1,6 +1,7 @@
 #pragma once
 
 #include "UIHistoryListCtrl.h"
+#include "UIDockablePaneButton.h"
 
 // UIHistoryDockablePane
 
@@ -19,6 +20,14 @@ public:
 	bool ClearLaterHistory(int ndelete);
 	bool ClearPreviousHistory(int ndelete);
 
+	UIDockablePaneButton m_wndFakeButtonL;
+	UIDockablePaneButton m_wndFakeButtonR;
+	UIDockablePaneButton m_wndSnapshotButton;
+	UIDockablePaneButton m_wndDeleteButton;
+
+	void OnSnapShotButtonClicked();
+	void OnDeleteButtonClicked();
+
 	UIHistoryListCtrl m_wndListCtrl;
 protected:
 	DECLARE_MESSAGE_MAP()
@@ -26,4 +35,5 @@ public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnClose();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnUpdateUIButtons(CCmdUI *pCmdUI);
 };

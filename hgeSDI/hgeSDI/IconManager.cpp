@@ -109,3 +109,9 @@ int IconManager::GetCMDNewSubLayerIcon( int state )
 	// ToDo!!
 	return 0;
 }
+
+int IconManager::GetCMDSnapShotIcon( int state )
+{
+	// ToDo!!
+	return 0;
+}

@@ -43,6 +43,7 @@ public:
 	int GetLBFoldExpandIcon( bool bFolded );
 	int GetLBLineSelectIcon( bool toSelect );
 	int GetCMDDeleteItemIcon( int state );
+	int GetCMDSnapShotIcon( int state );
 	int GetCMDNewLayerIcon( int state );
 	int GetCMDNewSubLayerIcon( int state );
 	CImageList imgList16;
