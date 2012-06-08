@@ -83,12 +83,14 @@ void CommandTemplate::DispatchNormalSubCommand( int subcommand )
 	switch (subcommand)
 	{
 	case SSC_UNDO:
-		pcommand->CreateCommandCommit(COMM_UNDO);
+		pcommand->CreateUnDoCommandCommit();
+//		pcommand->CreateCommandCommit(COMM_UNDO);
 //		DoUnDo();
 //		ReleaseTarget();
 		break;
 	case SSC_REDO:
-		pcommand->CreateCommandCommit(COMM_REDO);
+		pcommand->CreateReDoCommandCommit();
+//		pcommand->CreateCommandCommit(COMM_REDO);
 //		DoReDo();
 //		ReleaseTarget();
 		break;

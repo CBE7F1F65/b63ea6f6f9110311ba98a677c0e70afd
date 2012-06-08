@@ -66,6 +66,9 @@ public:
 #define INIS_NODENAME		"NodeName"
 #define INIS_COMMANDLOG		"CommandLog"
 
+#define INIS_TOOLTIP		"ToolTip"
+#define INIS_DEFAULTSTR		"DefaultString"
+
 #define INIS_CWP			"WPrompt"
 #define INIS_COMMAND_PREFIX		"Command_"
 #define INIS_SSC_PREFIX			"SubCommand_"
@@ -193,6 +196,8 @@ public:
 		hge->Ini_SetString(SEC, #STRNAME, "");	\
 	}
 
+	_SMFDEF(	SnapshotDefault,	INIS_DEFAULTSTR,	"Snapshot"	);
+
 #define _SMCLFDEF(STRNAME, DEF)	\
 	_SMFDEF(CL##STRNAME, INIS_COMMANDLOG, DEF)
 
@@ -221,6 +226,14 @@ public:
 	_SMNNFDEF(	MidPoint,	"Mid Point"	);
 
 #undef _SMNNFDEF
+
+#define _SMTOOLTIPDEF(STRNAME, DEF)	\
+	_SMFDEF(ToolTip##STRNAME, INIS_TOOLTIP, DEF)
+
+	_SMTOOLTIPDEF(	Snapshot,	"SnapShot"	);
+	_SMTOOLTIPDEF(	Delete,	"Delete"	);
+
+#undef _SMTOOLTIPDEF
 
 #undef _SMFDEF
 };

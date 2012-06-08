@@ -609,9 +609,12 @@ void UILayerListCtrl::OnLvnEndlabeledit(NMHDR *pNMHDR, LRESULT *pResult)
 
 	if (pDispInfo->item.iSubItem == IDLBC_TREE)
 	{
-		GObject * pObj = GetObjectByIndex(pDispInfo->item.iItem);
-		pObj->setDisplayName(pDispInfo->item.pszText);
-		SetItemText(pDispInfo->item.iItem, IDLBC_TREE, pDispInfo->item.pszText);
+		if (strlen(pDispInfo->item.pszText))
+		{
+			GObject * pObj = GetObjectByIndex(pDispInfo->item.iItem);
+			pObj->setDisplayName(pDispInfo->item.pszText);
+			SetItemText(pDispInfo->item.iItem, IDLBC_TREE, pDispInfo->item.pszText);
+		}
 	}
 
 	*pResult = 0;

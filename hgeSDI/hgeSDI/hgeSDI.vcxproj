@@ -161,6 +161,7 @@
     <ClInclude Include="RenderTargetManager.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SetWorkingLayerCommand.h" />
+    <ClInclude Include="SnapshotManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StringManager.h" />
     <ClInclude Include="targetver.h" />
@@ -171,6 +172,7 @@
     <ClInclude Include="UIFloatingEditBox.h" />
     <ClInclude Include="UIHistoryDockablePane.h" />
     <ClInclude Include="UIHistoryListCtrl.h" />
+    <ClInclude Include="UIHistorySnapShotListCtrl.h" />
     <ClInclude Include="UILayerDockablePane.h" />
     <ClInclude Include="UILayerListCtrl.h" />
     <ClInclude Include="UIPopupMenu.h" />
@@ -208,6 +210,7 @@
     <ClCompile Include="RenderHelper.cpp" />
     <ClCompile Include="RenderTargetManager.cpp" />
     <ClCompile Include="SetWorkingLayerCommand.cpp" />
+    <ClCompile Include="SnapshotManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -220,6 +223,7 @@
     <ClCompile Include="UIFloatingEditBox.cpp" />
     <ClCompile Include="UIHistoryDockablePane.cpp" />
     <ClCompile Include="UIHistoryListCtrl.cpp" />
+    <ClCompile Include="UIHistorySnapShotListCtrl.cpp" />
     <ClCompile Include="UILayerDockablePane.cpp" />
     <ClCompile Include="UILayerListCtrl.cpp" />
     <ClCompile Include="UIPopupMenu.cpp" />

@@ -46,6 +46,7 @@ public:
 	int GetCMDSnapShotIcon( int state );
 	int GetCMDNewLayerIcon( int state );
 	int GetCMDNewSubLayerIcon( int state );
+	int GetBlankIcon();
 	CImageList imgList16;
 	CImageList imgList24;
 	CImageList imgList32;

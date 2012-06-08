@@ -6,6 +6,7 @@
 #include <sstream>
 #include <iomanip>
 #include "CommandTemplate.h"
+#include "SnapshotManager.h"
 
 Command::Command()
 {
@@ -969,6 +970,8 @@ void Command::PushRevertable( RevertableCommand * rc )
 		while ((int)undolist.size() > undostepmax)
 		{
 			undolist.pop_front();
+			// ToDo!!! can be dangerous when a list contains multiple undos
+			SnapshotManager::getInstance().OnDeleteUnDo(undostepmax);
 			MainInterface::getInstance().OnClearPreviousHistory();
 		}
 	}
@@ -1001,6 +1004,7 @@ void Command::PushRevertable( RevertableCommand * rc )
 						}
 					}
 					strcomm += ");";
+					SnapshotManager::getInstance().OnPushRevertable();
 					MainInterface::getInstance().OnPushRevertable(GetCommandDescriptionStr(comm), strcomm.c_str(), comm);
 				}
 			}
@@ -1018,6 +1022,7 @@ void Command::ClearReDo()
 	if (ntodelete)
 	{
 		redolist.clear();
+		SnapshotManager::getInstance().OnClearReDo(ntodelete);
 		MainInterface::getInstance().OnClearReDo(ntodelete);
 	}
 }
@@ -1041,4 +1046,24 @@ bool Command::canReDoDone()
 		return true;
 	}
 	return false;
+}
+
+int Command::CreateUnDoCommandCommit( int step/*=1*/ )
+{
+	ASSERT(step>=0);
+	for (int i=0; i<step; i++)
+	{
+		CreateCommandCommit(COMM_UNDO);
+	}
+	return ccomm.command;
+}
+
+int Command::CreateReDoCommandCommit( int step/*=1*/ )
+{
+	ASSERT(step>=0);
+	for (int i=0; i<step; i++)
+	{
+		CreateCommandCommit(COMM_REDO);
+	}
+	return ccomm.command;
 }

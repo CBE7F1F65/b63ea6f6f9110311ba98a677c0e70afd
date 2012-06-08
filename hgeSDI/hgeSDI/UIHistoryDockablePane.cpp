@@ -52,6 +52,12 @@ int UIHistoryDockablePane::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	{
 		return -1;
 	}
+	if (!m_wndSnapshotListCtrl.Create(
+		WS_CHILD|WS_VISIBLE|WS_BORDER|WS_HSCROLL|WS_VSCROLL|LVS_ALIGNLEFT|LVS_SINGLESEL|LVS_REPORT|LVS_SHOWSELALWAYS|LVS_NOCOLUMNHEADER|LVS_ICON|LVS_EDITLABELS,
+		rectDummy, this, IDHB_SNAPSHOTLISTCTRL))
+	{
+		return -1;
+	}
 
 	if (!m_wndFakeButtonL.DCreate(ID_UI_BUTTON_HISTORY_FAKEL, this))
 	{
@@ -67,13 +73,13 @@ int UIHistoryDockablePane::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	IconManager * picm = &IconManager::getInstance();
 
 	if (!m_wndSnapshotButton.DCreate(ID_UI_BUTTON_HISTORY_SNAPSHOT, this, 
-		StringManager::getInstance().GetCommandDescriptionName(COMM_SNAPSHOT), 
+		StringManager::getInstance().GetToolTipSnapshotName(), 
 		_HISTORYBUTTON_ICONSIZE, picm->GetCMDSnapShotIcon(ICMSTATE_NORMAL), picm->GetCMDSnapShotIcon(ICMSTATE_DISABLED)))
 	{
 		return -1;
 	}
 	if (!m_wndDeleteButton.DCreate(ID_UI_BUTTON_HISTORY_DELETE, this, 
-		StringManager::getInstance().GetCommandDescriptionName(COMM_DELETESNAPSHOT), 
+		StringManager::getInstance().GetToolTipDeleteName(), 
 		_HISTORYBUTTON_ICONSIZE, picm->GetCMDDeleteItemIcon(ICMSTATE_NORMAL), picm->GetCMDDeleteItemIcon(ICMSTATE_DISABLED)))
 	{
 		return -1;
@@ -92,21 +98,26 @@ void UIHistoryDockablePane::OnSize(UINT nType, int cx, int cy)
 {
 	CDockablePane::OnSize(nType, cx, cy);
 
-	int ybegin = cy-_HISTORYBUTTON_ICONSIZE;
-	m_wndListCtrl.SetWindowPos (NULL, -1, -1, cx, ybegin,
+	int snapshotheight = cy/4;
+	m_wndSnapshotListCtrl.SetWindowPos(NULL, -1, -1, cx, snapshotheight,
 		SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
+
+	int buttonybegin = cy-_HISTORYBUTTON_ICONSIZE;
+	int listctrlheight = buttonybegin-snapshotheight;
+	m_wndListCtrl.SetWindowPos (NULL, 0, snapshotheight, cx, listctrlheight,
+		SWP_NOACTIVATE | SWP_NOZORDER);
 	// TODO: 在此处添加消息处理程序代码
 	int fakerwidth = _HISTORYBUTTON_ICONSIZE;
 	int fakelwidth = cx-_UIHBBUTTONCOUNT*_HISTORYBUTTON_ICONSIZE-fakerwidth;
 	int a = _HISTORYBUTTON_ICONSIZE;
 
-	m_wndFakeButtonL.SetWindowPos(NULL, 0, ybegin, fakelwidth, a, 
+	m_wndFakeButtonL.SetWindowPos(NULL, 0, buttonybegin, fakelwidth, a, 
 		SWP_NOACTIVATE | SWP_NOZORDER);
-	m_wndSnapshotButton.SetWindowPos(NULL, fakelwidth, ybegin, a, a, 
+	m_wndSnapshotButton.SetWindowPos(NULL, fakelwidth, buttonybegin, a, a, 
 		SWP_NOACTIVATE | SWP_NOZORDER);
-	m_wndDeleteButton.SetWindowPos(NULL, fakelwidth+a, ybegin, a, a, 
+	m_wndDeleteButton.SetWindowPos(NULL, fakelwidth+a, buttonybegin, a, a, 
 		SWP_NOACTIVATE | SWP_NOZORDER);
-	m_wndFakeButtonR.SetWindowPos(NULL, fakelwidth+_UIHBBUTTONCOUNT*a, ybegin, a, a, 
+	m_wndFakeButtonR.SetWindowPos(NULL, fakelwidth+_UIHBBUTTONCOUNT*a, buttonybegin, a, a, 
 		SWP_NOACTIVATE | SWP_NOZORDER);
 	Invalidate();
 }
@@ -141,10 +152,10 @@ void UIHistoryDockablePane::OnUpdateUIButtons(CCmdUI *pCmdUI)
 
 void UIHistoryDockablePane::OnSnapShotButtonClicked()
 {
-
+	m_wndSnapshotListCtrl.AddSnapshot();
 }
 
 void UIHistoryDockablePane::OnDeleteButtonClicked()
 {
-
+	m_wndSnapshotListCtrl.DeleteSnapshot();
 }

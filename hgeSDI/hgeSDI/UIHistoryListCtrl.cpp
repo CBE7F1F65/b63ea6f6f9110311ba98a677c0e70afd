@@ -56,8 +56,8 @@ int UIHistoryListCtrl::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	*/
 	SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
-	InsertColumn(IDHBC_MAIN, "", LVCFMT_LEFT);
-	InsertColumn(IDHBC_COMMANDSTR, "", LVCFMT_LEFT);
+	InsertColumn(IDHBC_MAIN, "", LVCFMT_LEFT, 0, IDHBC_MAIN);
+	InsertColumn(IDHBC_COMMANDSTR, "", LVCFMT_LEFT, 0, IDHBC_COMMANDSTR);
 
 	IconManager * picm = &IconManager::getInstance();
 	SetImageList(picm->GetImageList(ICMSIZE_SMALL), picm->GetImageListType(ICMSIZE_SMALL));
@@ -141,14 +141,10 @@ void UIHistoryListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 			dc.MoveTo(rect.left, rect.bottom);
 			dc.LineTo(rect.right, rect.bottom);
 			*/
-		}
-		break;
-
-	default:// it wasn't a notification that was interesting to us.
-		{
 			*pResult = CDRF_DODEFAULT;
 		}
 		break;
+
 	}
 
 //	*pResult = 0;

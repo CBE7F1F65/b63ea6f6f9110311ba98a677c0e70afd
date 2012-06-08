@@ -41,9 +41,6 @@ enum{
 	COMM_NEWLAYER,		// new layer
 	COMM_NEWSUBLAYER,	// new sub layer
 	COMM_SETWORKINGLAYER,	// set a working layer
-	// History
-	COMM_SNAPSHOT,
-	COMM_DELETESNAPSHOT,
 
 	// Draw
 	COMM_LINE,		// line

@@ -2,10 +2,12 @@
 
 #include "UIHistoryListCtrl.h"
 #include "UIDockablePaneButton.h"
+#include "UIHistorySnapShotListCtrl.h"
 
 // UIHistoryDockablePane
 
-#define IDHB_LISTCTRL	0
+#define IDHB_LISTCTRL			0
+#define IDHB_SNAPSHOTLISTCTRL	1
 
 class UIHistoryDockablePane : public CDockablePane
 {
@@ -29,6 +31,7 @@ public:
 	void OnDeleteButtonClicked();
 
 	UIHistoryListCtrl m_wndListCtrl;
+	UIHistorySnapshotListCtrl m_wndSnapshotListCtrl;
 protected:
 	DECLARE_MESSAGE_MAP()
 public:

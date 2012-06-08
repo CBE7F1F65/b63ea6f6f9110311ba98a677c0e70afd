@@ -634,12 +634,14 @@ void MainInterface::DoCheckFloatCommand()
 			{
 				if (!bshift)
 				{
-					Command::getInstance().CreateCommandCommit(COMM_UNDO);
+					Command::getInstance().CreateUnDoCommandCommit();
+//					Command::getInstance().CreateCommandCommit(COMM_UNDO);
 //					Command::getInstance().DoUnDo();
 				}
 				else
 				{
-					Command::getInstance().CreateCommandCommit(COMM_REDO);
+					Command::getInstance().CreateReDoCommandCommit();
+//					Command::getInstance().CreateCommandCommit(COMM_REDO);
 //					Command::getInstance().DoReDo();
 				}
 			}
@@ -700,18 +702,24 @@ void MainInterface::CallUnDoReDo( int step )
 	{
 		if (step < 0)
 		{
+			/*
 			for (int i=0; i<-step; i++)
 			{
 				Command::getInstance().CreateCommandCommit(COMM_UNDO);
 			}
+			*/
+			Command::getInstance().CreateUnDoCommandCommit(-step);
 //			Command::getInstance().DoUnDo(-step);
 		}
 		else
 		{
+			/*
 			for (int i=0; i<step; i++)
 			{
 				Command::getInstance().CreateCommandCommit(COMM_REDO);
 			}
+			*/
+			Command::getInstance().CreateReDoCommandCommit(step);
 //			Command::getInstance().DoReDo(step);
 		}
 	}

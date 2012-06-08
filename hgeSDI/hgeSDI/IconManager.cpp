@@ -115,3 +115,9 @@ int IconManager::GetCMDSnapShotIcon( int state )
 	// ToDo!!
 	return 0;
 }
+
+int IconManager::GetBlankIcon()
+{
+	// ToDo!!
+	return 0;
+}

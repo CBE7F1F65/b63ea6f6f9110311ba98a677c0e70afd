@@ -205,6 +205,8 @@ public:
 
 	int CommitCommand(const char * str);
 	int CreateCommandCommit(int command);
+	int CreateUnDoCommandCommit(int step=1);
+	int CreateReDoCommandCommit(int step=1);
 
 	int _FindNextSubStr(const char * str, CommittedCommand * substr, int maxnsubstr, int ibegin=0);
 	int FindCommandByStr(const char * str, bool * isshort=0);

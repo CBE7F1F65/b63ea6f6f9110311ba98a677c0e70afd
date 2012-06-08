@@ -100,9 +100,6 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_NEWLAYER,	"NEWLAYER", "NL",	"New Layer",	""	);
 	_BSET(	COMM_NEWSUBLAYER,	"NEWSUBLAYER",	"NSL",	"New Sub Layer", "");
 
-	_BSET(	COMM_SNAPSHOT,	"SNAPSHOT",	"SS",	"Snapshot",	"");
-	_BSET(	COMM_DELETESNAPSHOT,	"DELSNAPSHOT",	"",	"Delete Snapshot",	"");
-
 	_BSET(	COMM_LINE,	"LINE",	"L",	"Draw Line",	""	);
 	_BSET(	COMM_BEZIER,	"BEZIER",	"B",	"Draw Bezier Curve",	""	);
 

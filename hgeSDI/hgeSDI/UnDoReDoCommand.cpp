@@ -5,6 +5,8 @@
 #include "GObjectManager.h"
 #include "Main.h"
 #include "CommandTemplate.h"
+#include "SnapshotManager.h"
+
 bool Command::DoUnDo( int undostep/*=1*/ )
 {
 	if (undostep > 1)
@@ -77,6 +79,7 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 					DoUnDoCommandParam(command, &rct);
 				}
 			}
+			SnapshotManager::getInstance().OnUnDo();
 			MainInterface::getInstance().OnUnDo();
 		}
 		else if (internalcommand == COMM_I_ADDNODE)
@@ -118,6 +121,7 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 
 	undolist.pop_back();
 	redolist.push_back(rc);
+
 
 	if (!GObjectManager::getInstance().GetActiveLayer())
 	{
@@ -276,6 +280,7 @@ bool Command::DoReDoCommandSingle( RevertableCommand * rc )
 	ProcessCommand();
 
 	pendingparam = tp;
+	SnapshotManager::getInstance().OnReDo();
 	MainInterface::getInstance().OnReDo();
 	return true;
 }
@@ -285,10 +290,10 @@ bool Command::DoUnDoAddNode( int objid, int objparentid )
 	// Destroy Added
 	GObject * obj = GObjectManager::getInstance().FindObjectByID(objid);
 	GObject * parent = GObjectManager::getInstance().FindObjectByID(objparentid);
- 	ASSERT(obj != NULL);
- 	ASSERT(parent != NULL);
+	ASSERT(obj != NULL);
+	ASSERT(parent != NULL);
  
- 	DASSERT(obj->getParent() == parent);
+	DASSERT(obj->getParent() == parent);
 	parent->RemoveChild(objid, true);
 	return true;
 }
