@@ -15,9 +15,11 @@ public:
 	UILayerDockablePane();
 	virtual ~UILayerDockablePane();
 
+	void CallRebuildTree(GObject * changebase, GObject * activeitem);
 	void RebuildTree(GObject * changebase, GObject * activeitem);
 	GLayer * GetActiveLayer();
 	GObject * GetActiveNodes( int * pnextfromIndex );
+	bool GetDragDropNodes( GLayer ** pLayerNode, GObject ** pAfterNode );
 	void SetActiveLayer_Internal( GLayer * pLayer );
 
 	UILayerListCtrl m_wndListCtrl;
@@ -31,6 +33,8 @@ public:
 	void OnNewLayerButtonClicked();
 	void OnNewSubLayerButtonClicked();
 	void OnDeleteItemButtonClicked();
+
+	void CallReparentSelectedNodes( int op );
 
 protected:
 	DECLARE_MESSAGE_MAP()

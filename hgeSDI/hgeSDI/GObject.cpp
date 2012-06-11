@@ -4,6 +4,10 @@
 #include "GObjectManager.h"
 #include "StringManager.h"
 
+
+GObject * GObject::pTreeBase=NULL;
+
+
 GObject::GObject(void)
 {
 	pParent = NULL;
@@ -38,6 +42,13 @@ int GObject::_ActualAddChildAfterObj( GObject * child, GObject * afterobj )
 {
 	if (child)
 	{
+		ASSERT(child != this);
+		if (child == this)
+		{
+			MessageBeep(-1);
+		}
+		ASSERT(child != afterobj);
+
 		child->_SetParent(this);
 		child->OnEnter();
 
@@ -318,7 +329,7 @@ int GObject::ReparentAfterObject( GObject * newparent, GObject * afterobj )
 {
 	ASSERT(newparent != NULL);
 	bool calltreechange = false;
-	if (newparent->GetBase() != GetBase())
+//	if (newparent->GetBase() != GetBase())
 	{
 		calltreechange = true;
 	}
@@ -328,6 +339,7 @@ int GObject::ReparentAfterObject( GObject * newparent, GObject * afterobj )
 	if (calltreechange)
 	{
 		_CallTreeChanged(_pParent, _pParent);
+		_CallTreeChanged(newparent, this);
 	}
 	return ret;
 }
@@ -570,14 +582,17 @@ void GObject::CallClearModify()
 	OnClearModify();
 }
 
-GObject * GObject::GetLayer()
+GObject * GObject::GetLayer( bool bIncludingSelf/*=true*/ )
 {
 	GObject * pobj = this;
 	while (pobj)
 	{
 		if (pobj->isLayer())
 		{
-			return pobj;
+			if (bIncludingSelf || pobj != this)
+			{
+				return pobj;
+			}
 		}
 		pobj = pobj->pParent;
 	}
@@ -707,4 +722,31 @@ GObject * GObject::getYoungerSiblingForChild( GObject* child )
 	}
 	return NULL;
 
+}
+
+bool GObject::isAncestorOf( GObject * pObj )
+{
+	if (!pObj)
+	{
+		return false;
+	}
+	GObject * pTemp = pObj;
+	while (pTemp)
+	{
+		pTemp = pTemp->pParent;
+		if (pTemp == this)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool GObject::isDescendantOf( GObject * pObj )
+{
+	if (!pObj)
+	{
+		return false;
+	}
+	return pObj->isAncestorOf(this);
 }

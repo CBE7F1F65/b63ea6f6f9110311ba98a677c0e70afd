@@ -87,11 +87,8 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 			ASSERT(pcount == 2);
 			++it;
 			int objid = it->ival;
-//			GObject * obj = (GObject *)((it)->ival);
 			++it;
 			int objparentid = it->ival;
-//			GObject * parent = (GObject *)((it)->ival);
-//			DoUnDoAddNode(obj, parent);
 			DoUnDoAddNode(objid, objparentid);
 		}
 		else if (internalcommand == COMM_I_DELETENODE)
@@ -99,9 +96,7 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 			ASSERT(pcount == 2);
 			++it;
 			int objparentid = it->ival;
-//			GObject * obj = (GObject *)((it)->ival);
 			++it;
-//			GObject * parent = (GObject *)((it)->ival);
 			int objafterid = it->ival;
 			DoUnDoDeleteNode(objparentid, objafterid);
 		}
@@ -109,12 +104,12 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 		{
 			ASSERT(pcount == 3);
 			++it;
-			GObject * obj = (GObject *)((it)->ival);
+			int objid = it->ival;
 			++it;
-			GObject * oparent = (GObject *)((it)->ival);
+			int oparentid = it->ival;
 			++it;
-			GObject * aparent = (GObject *)((it)->ival);
-			DoUnDoReparentNode(obj, oparent, aparent);
+			int afterid = it->ival;
+			DoUnDoReparentNode(objid, oparentid, afterid);
 		}
 	}
 	undoredoflag = CUNDOREDO_NULL;
@@ -202,11 +197,8 @@ bool Command::DoReDo( int redostep/*=1*/ )
 			ASSERT(pcount == 2);
 			++it;
 			int objid = it->ival;
-//			GObject * obj = (GObject *)((it)->ival);
 			++it;
 			int objparentid = it->ival;
-//			GObject * parent = (GObject *)((it)->ival);
-//			DoReDoAddNode(obj, parent);
 			DoReDoAddNode(objid, objparentid);
 		}
 		else if (internalcommand == COMM_I_DELETENODE)
@@ -214,22 +206,20 @@ bool Command::DoReDo( int redostep/*=1*/ )
 			ASSERT(pcount == 2);
 			++it;
 			int objparentid = it->ival;
-//			GObject * obj = (GObject *)((it)->ival);
 			++it;
 			int objafterid = it->ival;
-//			GObject * parent = (GObject *)((it)->ival);
 			DoReDoDeleteNode(objparentid, objafterid);
 		}
 		else if (internalcommand == COMM_I_REPARENTNODE)
 		{
 			ASSERT(pcount == 3);
 			++it;
-			GObject * obj = (GObject *)((it)->ival);
+			int objid = it->ival;
 			++it;
-			GObject * oparent = (GObject *)((it)->ival);
+			int oparentid = it->ival;
 			++it;
-			GObject * aparent = (GObject *)((it)->ival);
-			DoReDoReparentNode(obj, oparent, aparent);
+			int afterid = it->ival;
+			DoReDoReparentNode(objid, oparentid, afterid);
 		}
 	}
 	// Clear redoflag when push revertable
@@ -294,7 +284,7 @@ bool Command::DoUnDoAddNode( int objid, int objparentid )
 	ASSERT(parent != NULL);
  
 	DASSERT(obj->getParent() == parent);
-	parent->RemoveChild(objid, true);
+	parent->RemoveChild(obj, true);
 	return true;
 }
 
@@ -327,26 +317,35 @@ bool Command::DoReDoDeleteNode( int objparentid, int objafterid )
 	return true;
 }
 
-bool Command::DoUnDoReparentNode( GObject * obj, GObject * oparent, GObject * aparent )
+bool Command::DoUnDoReparentNode( int objid, int oparentid, int afterid )
 {
 	// Swap parent
-	ASSERT(obj != NULL);
-	ASSERT(oparent != NULL);
-	ASSERT(aparent != NULL);
 
-	DASSERT(obj->getParent() == aparent);
-	obj->Reparent(oparent);
+	GObject * obj = GObjectManager::getInstance().FindObjectByID(objid);
+	if (oparentid >= 0)
+	{
+		GObject * objaparent = GObjectManager::getInstance().FindObjectByID(oparentid);
+		GObject * objafter = GObjectManager::getInstance().FindObjectByID(afterid);
+		obj->ReparentAfterObject(objaparent, objafter);
+	}
+	else
+	{
+		// ToDo!
+		ASSERT(true);
+	}
+
 	return true;
 }
 
-bool Command::DoReDoReparentNode( GObject * obj, GObject * oparent, GObject * aparent )
+bool Command::DoReDoReparentNode( int objid, int oparentid, int afterid )
 {
 	// Swap parent
 //	assert(obj != NULL);
 //	assert(oparent != NULL);
 //	assert(aparent != NULL);
 
-	DASSERT(obj->getParent() == oparent);
-	obj->Reparent(aparent);
+//	DASSERT(objid->getParent() == oparentid);
+//	objid->Reparent(aparentid);
+	// No need to redo
 	return true;
 }

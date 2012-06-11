@@ -24,6 +24,8 @@ enum{
 
 	_COMM_NOLOGCOMMANDEND,
 
+	COMM_OUTPUT,	// output node structure
+
 	_COMM_PUSHCOMMANDEND,
 
 	_COMM_INSTANTCOMMANDBEGIN,
@@ -35,8 +37,11 @@ enum{
 
 	_COMM_INSTANTCOMMANDEND,
 	// Common Command
-	// Delete
+
+	// Node
 	COMM_DELETEITEM,
+	COMM_REPARENT,
+
 	// Layers
 	COMM_NEWLAYER,		// new layer
 	COMM_NEWSUBLAYER,	// new sub layer
@@ -122,16 +127,35 @@ enum{
 };
 
 /************************************************************************/
+/* REPARENT                                                             */
+/************************************************************************/
+
+#define CREPARENTINDEX_SNAPSHOT	-1
+
+enum{
+	CSP_REPARENT_I_NEWPARENTINDEX=0,
+	CSP_REPARENT_I_AFTERINDEX,
+	CSP_REPARENT_I_OLDINDEXES,
+};
+
+enum{
+	CSI_REPARENT_DUMMY=0,
+	CSI_REPARENT_WANTNEWPARENTINDEX,
+	CSI_REPARENT_WANTAFTERINDEX,
+	CSI_REPARENT_WANTOLDINDEXES,
+};
+
+/************************************************************************/
 /* DELETEITEM                                                           */
 /************************************************************************/
 
 enum{
-	CSP_DELETEITEM_I_INDEX=0,
+	CSP_DELETEITEM_I_INDEXES=0,
 };
 
 enum{
 	CSI_DELETEITEM_DUMMY=0,
-	CSI_DELETEITEM_WANTINDEX,
+	CSI_DELETEITEM_WANTINDEXES,
 };
 
 /************************************************************************/

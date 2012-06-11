@@ -31,6 +31,9 @@ IMPLEMENT_DYNAMIC(UILayerListCtrl, CListCtrl)
 
 UILayerListCtrl::UILayerListCtrl()
 {
+	bDragging = false;
+	pDragDropAfter = NULL;
+	pDragDropLayer = NULL;
 }
 
 UILayerListCtrl::~UILayerListCtrl()
@@ -52,6 +55,8 @@ BEGIN_MESSAGE_MAP(UILayerListCtrl, CListCtrl)
 	ON_NOTIFY_REFLECT(LVN_GETINFOTIP, &UILayerListCtrl::OnLvnGetInfoTip)
 	ON_WM_CHAR()
 	ON_WM_KEYDOWN()
+	ON_NOTIFY_REFLECT(LVN_BEGINDRAG, &UILayerListCtrl::OnLvnBegindrag)
+	ON_WM_LBUTTONUP()
 END_MESSAGE_MAP()
 
 void UILayerListCtrl::RebuildTree( GObject * changebase, GObject * activeitem )
@@ -119,10 +124,8 @@ void UILayerListCtrl::BuildChildren( GObject * nowbase, int & nowindex, int inde
 			{
 				bool bFolded = (*it)->isDisplayFolded();
 
-				int iindex = InsertItem(nowindex, "");
-				ASSERT(iindex==nowindex);
-				bool bret = SetItemData(nowindex, (DWORD_PTR)(*it));
-//				ASSERT(bret);
+				InsertItem(nowindex, "");
+				SetItemData(nowindex, (DWORD_PTR)(*it));
 
 				SetItemVisible(nowindex, (*it)->isDisplayVisible(), (*it)->isRecDisplayVisible());
 				SetItemLock(nowindex, (*it)->isDisplayLocked(), (*it)->isRecDisplayLocked());
@@ -132,16 +135,6 @@ void UILayerListCtrl::BuildChildren( GObject * nowbase, int & nowindex, int inde
 
 				SetItemLineSelect(nowindex, (*it)->isSelected());
 				SetItemFrameColor(nowindex, (*it)->GetLayer()->getLineColor());
-//				ASSERT(GetObjectByIndex(nowindex));
-				/*
-				SetItem(nowindex, IDLBC_VISIBLE, LVIF_IMAGE, "", 0, 0, 0, 0);
-				SetItem(nowindex, IDLBC_LOCK, LVIF_IMAGE, "", 16, 0, 0, 0);
-				SetItem(nowindex, IDLBC_LINECOLOR, LVIF_IMAGE, "", 32, 0, 0, 0);
-				SetItem(nowindex, IDLBC_TREE, LVIF_TEXT|LVIF_IMAGE|LVIF_INDENT, (*it)->getDisplayName(), 63, 0, 0, 0, indentlevel);
-				SetItem(nowindex, IDLBC_SELECT, LVIF_IMAGE, "", 32, 0, 0, 0);
-				SetItem(nowindex, IDLBC_FRAMECOLOR, LVIF_IMAGE, "", 16, 0, 0, 0);
-				*/
-
 
 				nowindex++;
 
@@ -156,8 +149,6 @@ void UILayerListCtrl::BuildChildren( GObject * nowbase, int & nowindex, int inde
 
 
 // UILayerListCtrl 消息处理程序
-
-
 
 
 int UILayerListCtrl::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -229,12 +220,7 @@ void UILayerListCtrl::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
 
 	if (pNMItemActivate->iSubItem == IDLBC_TREE)
 	{
-		if (newSelected >= 0)
-		{
-			DeSelectParadox(newSelected);
-//			AddSelect();
-		}
-
+//		DeSelectParadox(newSelected);
 	}
 	Invalidate();
 	*pResult = 0;
@@ -283,22 +269,25 @@ void UILayerListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 			else
 			{
 				GObject * pobj = GetObjectByIndex(nowDrawingItem);//(GObject *)GetItemData(nowDrawingItem);
-				if (pobj->isDisplayLocked() || !(pobj->isDisplayVisible()))
+				if (pobj)
 				{
-					pCD->clrText	= pcm->ARGBToABGR(pcm->GetTextColor(COLORMT_LIST, COLORMS_DISABLED))&0xffffff;
-					pCD->clrTextBk	= pcm->ARGBToABGR(pcm->GetTextBkColor(COLORMT_LIST, COLORMS_DISABLED))&0xffffff;
-				}
-				else
-				{
-					if (!pobj->isLayer())
+					if (pobj->isDisplayLocked() || !(pobj->isDisplayVisible()))
 					{
-						pCD->clrText	= pcm->ARGBToABGR(pcm->GetTextColor(COLORMT_LIST, COLORMS_SUBSTANCE))&0xffffff;
-						pCD->clrTextBk	= pcm->ARGBToABGR(pcm->GetTextBkColor(COLORMT_LIST, COLORMS_SUBSTANCE))&0xffffff;
+						pCD->clrText	= pcm->ARGBToABGR(pcm->GetTextColor(COLORMT_LIST, COLORMS_DISABLED))&0xffffff;
+						pCD->clrTextBk	= pcm->ARGBToABGR(pcm->GetTextBkColor(COLORMT_LIST, COLORMS_DISABLED))&0xffffff;
 					}
 					else
 					{
-						pCD->clrText	= pcm->ARGBToABGR(pcm->GetTextColor(COLORMT_LIST, COLORMS_NONEEDITABLE))&0xffffff;
-						pCD->clrTextBk	= pcm->ARGBToABGR(pcm->GetTextBkColor(COLORMT_LIST, COLORMS_NONEEDITABLE))&0xffffff;
+						if (!pobj->isLayer())
+						{
+							pCD->clrText	= pcm->ARGBToABGR(pcm->GetTextColor(COLORMT_LIST, COLORMS_SUBSTANCE))&0xffffff;
+							pCD->clrTextBk	= pcm->ARGBToABGR(pcm->GetTextBkColor(COLORMT_LIST, COLORMS_SUBSTANCE))&0xffffff;
+						}
+						else
+						{
+							pCD->clrText	= pcm->ARGBToABGR(pcm->GetTextColor(COLORMT_LIST, COLORMS_NONEEDITABLE))&0xffffff;
+							pCD->clrTextBk	= pcm->ARGBToABGR(pcm->GetTextBkColor(COLORMT_LIST, COLORMS_NONEEDITABLE))&0xffffff;
+						}
 					}
 				}
 			}
@@ -329,7 +318,12 @@ void UILayerListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 				CRect rect(nowDrawingRect);
 				rect.right = rect.left+_LAYERLIST_LINECOLORSIZE;
 				rect.DeflateRect(0, 1, 0, 1);
-				DWORD col = pObj->getLineColor()&0xffffff;
+				
+				DWORD col = 0xffffff;
+				if (pObj)
+				{
+					col = pObj->getLineColor()&0xffffff;
+				}
 
 				dc.FillSolidRect(rect, col);
 				dc.Draw3dRect(rect, framecol, framecol);
@@ -338,7 +332,11 @@ void UILayerListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 			{
 				CRect rect(nowDrawingRect);
 				rect.DeflateRect(4, 4, 4, 4);
-				DWORD col = pObj->GetLayer()->getLineColor()&0xffffff;
+				DWORD col = 0xffffff;
+				if (pObj)
+				{
+					col = pObj->GetLayer()->getLineColor()&0xffffff;
+				}
 
 				dc.FillSolidRect(rect, col);
 				dc.Draw3dRect(rect, framecol, framecol);
@@ -443,21 +441,25 @@ int UILayerListCtrl::GetItemIndent( int index )
 
 void UILayerListCtrl::DeSelectParadox( int index )
 {
-	int selindent = GetItemIndent(index);
-	int selectedindex = GetNextItem(-1, LVNI_SELECTED);
-	if (selectedindex == index)
+	if (index < 0)
 	{
-		selectedindex = GetNextItem(selectedindex, LVNI_SELECTED);
+		index = GetNextItem(-1, LVNI_SELECTED);
 	}
-	if (selectedindex >= 0)
+	int selindent = GetItemIndent(index);
+	int selindex = -1;
+
+	while (true)
 	{
-		if (GetItemIndent(selectedindex) != selindent)
+		selindex = GetNextItem(selindex, LVNI_SELECTED);
+		if (selindex < 0)
 		{
-			DeSelect();
-			AddSelect(index);
+			return;
+		}
+		if (GetItemIndent(selindex) != selindent)
+		{
+			DeSelect(selindex);
 		}
 	}
-
 }
 
 
@@ -466,25 +468,16 @@ void UILayerListCtrl::OnLvnItemchanging(NMHDR *pNMHDR, LRESULT *pResult)
 	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
 	*pResult = 0;
-	/*
+	
 	if (pNMLV->uChanged & LVIF_STATE)
 	{
-		if (pNMLV->uOldState & LVIS_SELECTED)
+		if (pNMLV->uNewState & LVIS_SELECTED)
 		{
-			int index = GetNextItem(-1, LVNI_SELECTED);
-			if (index == pNMLV->iItem)
-			{
-				index = GetNextItem(index, LVNI_SELECTED);
-			}
-			if (index < 0)
-			{
-				AddSelect(pNMLV->iItem);
-				*pResult = 1;
-			}
+			DeSelectParadox(pNMLV->iItem);
 		}
 	}
-	*/
 	
+	/*
 	DWORD dwPos = GetMessagePos();
 	POINTS pts = MAKEPOINTS(dwPos);
 	CPoint pt(pts.x, pts.y);
@@ -498,6 +491,7 @@ void UILayerListCtrl::OnLvnItemchanging(NMHDR *pNMHDR, LRESULT *pResult)
 	{
 		*pResult = 1;
 	}
+	*/
 	
 }
 
@@ -509,6 +503,7 @@ void UILayerListCtrl::OnLvnItemchanged(NMHDR *pNMHDR, LRESULT *pResult)
 	{
 		if (pNMLV->uNewState & LVIS_SELECTED)
 		{
+//			DeSelectParadox(pNMLV->iItem);
 		}
 		else if (pNMLV->uOldState & LVIS_SELECTED)
 		{
@@ -542,6 +537,23 @@ GObject * UILayerListCtrl::GetActiveNodes( int * pnextfromIndex )
 	}
 	*pnextfromIndex = index;
 	return GetObjectByIndex(index);
+}
+
+bool UILayerListCtrl::GetDragDropNodes( GLayer ** pLayerNode, GObject ** pAfterNode )
+{
+	DASSERT(pLayerNode);
+	DASSERT(pAfterNode);
+	if (!pLayerNode || !pAfterNode)
+	{
+		return false;
+	}
+	if (pDragDropLayer)
+	{
+		*pLayerNode = pDragDropLayer;
+		*pAfterNode = pDragDropAfter;
+		return true;
+	}
+	return false;
 }
 
 void UILayerListCtrl::SetActiveLayer_Internal( GLayer * pLayer )
@@ -609,7 +621,7 @@ void UILayerListCtrl::OnLvnEndlabeledit(NMHDR *pNMHDR, LRESULT *pResult)
 
 	if (pDispInfo->item.iSubItem == IDLBC_TREE)
 	{
-		if (strlen(pDispInfo->item.pszText))
+		if (pDispInfo->item.pszText && strlen(pDispInfo->item.pszText))
 		{
 			GObject * pObj = GetObjectByIndex(pDispInfo->item.iItem);
 			pObj->setDisplayName(pDispInfo->item.pszText);
@@ -625,24 +637,6 @@ GObject * UILayerListCtrl::GetObjectByIndex( int index )
 	GObject * pObj = (GObject *)GetItemData(index);
 //	ASSERT(pObj);
 	return pObj;
-}
-
-void UILayerListCtrl::OnMouseMove(UINT nFlags, CPoint point)
-{
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
-
-	LVHITTESTINFO ht;
-	ht.flags = 0;
-	ht.pt = point;
-	int iHit = HitTest(&ht);
-	if (ht.flags & LVHT_ONITEM)
-	{
-		if (ht.iSubItem == IDLBC_TREE)
-		{
-		}
-	}
-
-	CListCtrl::OnMouseMove(nFlags, point);
 }
 
 
@@ -671,13 +665,18 @@ void UILayerListCtrl::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 BOOL UILayerListCtrl::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
-	if (pMsg->message == WM_KEYDOWN)
-	{
-		if (pMsg->wParam == VK_DELETE)
-		{
-//			MainInterface::getInstance().OnCommand(COMM_DELETEITEM);
-		}
-	}
+// 	if (pMsg->message == WMUSER_REBUILDTREE)
+// 	{
+// 		RebuildTree((GObject *)pMsg->wParam, (GObject *)pMsg->lParam);
+// 	}
+// 	else if (pMsg->message == WM_KEYDOWN)
+// 	{
+// 		if (pMsg->wParam == VK_DELETE)
+// 		{
+// 			MainInterface::getInstance().OnCommand(COMM_DELETEITEM);
+// 		}
+// 	}
+
 
 	return CListCtrl::PreTranslateMessage(pMsg);
 }
@@ -687,13 +686,198 @@ void UILayerListCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 
-	if (nChar == VK_DELETE)
-	{
+// 	if (nChar == VK_DELETE)
+// 	{
 //		MainInterface::getInstance().OnCommand(COMM_DELETEITEM);
-	}
-	if (nChar == VK_INSERT)
-	{
+// 	}
+// 	if (nChar == VK_INSERT)
+// 	{
 //		MainInterface::getInstance().OnCommand(COMM_NEWLAYER);
-	}
+// 	}
 	CListCtrl::OnKeyDown(nChar, nRepCnt, nFlags);
+}
+
+
+void UILayerListCtrl::OnLvnBegindrag(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
+	// TODO: 在此添加控件通知处理程序代码
+//	bDragging = true;
+//	SetCapture();
+	*pResult = 0;
+}
+
+void UILayerListCtrl::OnMouseMove(UINT nFlags, CPoint point)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+	CListCtrl::OnMouseMove(nFlags, point);
+}
+
+void UILayerListCtrl::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+// 	if (bDragging)
+// 	{
+// 		bDragging = false;
+// 		ReleaseCapture();
+// 
+// 		UINT uFlags = 0;
+// 		int droppedindex = HitTest(point, &uFlags);
+// 		if (droppedindex >= 0)
+// 		{
+// 			GObject * touchedobj = GetObjectByIndex(droppedindex);
+// 			if (touchedobj->isLayer())
+// 			{
+// 				pDragDropLayer = (GLayer *)touchedobj;
+// 				pDragDropAfter = NULL;
+// 			}
+// 			else
+// 			{
+// 				pDragDropLayer = (GLayer *)touchedobj->GetLayer();
+// 				pDragDropAfter = touchedobj;
+// 			}
+// 			MainInterface::getInstance().OnCommand(COMM_REPARENT);
+// 		}
+// 	}
+	CListCtrl::OnLButtonUp(nFlags, point);
+}
+
+void UILayerListCtrl::ReparentSelectedNodes( int op )
+{
+	int index=-1;
+	int outindex=-1;
+	GObject * pFirst = GetActiveNodes(&index);
+	if (!pFirst)
+	{
+		return;
+	}
+	switch (op)
+	{
+	case LBCOMMAND_REPARENT_UPLAYER:
+		pDragDropLayer = FindPreviousLayer(index, &outindex);
+		if (pFirst->GetContainerLayer() == pDragDropLayer)
+		{
+			pDragDropLayer = FindPreviousLayer(outindex, &outindex);
+		}
+		break;
+	case LBCOMMAND_REPARENT_DOWNLAYER:
+		pDragDropLayer = FindNextLayer(index, &outindex);
+		break;
+	case LBCOMMAND_REPARENT_UP:
+		pDragDropLayer = (GLayer *)pFirst->GetContainerLayer();
+		pDragDropAfter = FindPreviousNode(index-1, &outindex);
+		break;
+	case LBCOMMAND_REPARENT_DOWN:
+		pDragDropLayer = (GLayer *)pFirst->GetContainerLayer();
+		pDragDropAfter = FindNextNode(index, &outindex);
+		break;
+	}
+	if (!pDragDropLayer)
+	{
+		return;
+	}
+	MainInterface::getInstance().OnCommand(COMM_REPARENT);
+}
+
+GLayer * UILayerListCtrl::FindPreviousLayer( int index, int * outindex/*=NULL */ )
+{
+	GObject * pRet = NULL;
+	if (outindex)
+	{
+		*outindex = NULL;
+	}
+	for (int i=index-1; i>=0; i--)
+	{
+		pRet = GetObjectByIndex(i);
+		if (pRet->isLayer())
+		{
+			if (outindex)
+			{
+				*outindex = i;
+			}
+			return (GLayer *)pRet;
+		}
+	}
+	return NULL;
+}
+
+GLayer * UILayerListCtrl::FindNextLayer( int index, int * outindex/*=NULL */ )
+{
+	GObject * pRet = NULL;
+	if (outindex)
+	{
+		*outindex = NULL;
+	}
+	int itemcount = GetItemCount();
+	for (int i=index+1; i<itemcount; i++)
+	{
+		pRet = GetObjectByIndex(i);
+		if (pRet->isLayer())
+		{
+			if (outindex)
+			{
+				*outindex = i;
+			}
+			return (GLayer *)pRet;
+		}
+	}
+	return NULL;
+}
+
+GObject * UILayerListCtrl::FindPreviousNode( int index, int * outindex/*=NULL */ )
+{
+	GObject * pRet = NULL;
+	if (outindex)
+	{
+		*outindex = NULL;
+	}
+	for (int i=index-1; i>0; i--)
+	{
+		pRet = GetObjectByIndex(i);
+		if (outindex)
+		{
+			*outindex = i;
+		}
+		return pRet;
+		/*
+		if (!pRet->isLayer())
+		{
+		}
+		else
+		{
+			return NULL;
+		}
+		*/
+	}
+	return NULL;
+}
+
+GObject * UILayerListCtrl::FindNextNode( int index, int * outindex/*=NULL */ )
+{
+	GObject * pRet = NULL;
+	if (outindex)
+	{
+		*outindex = NULL;
+	}
+	int itemcount = GetItemCount();
+	for (int i=index+1; i<itemcount; i++)
+	{
+		pRet = GetObjectByIndex(i);
+		if (outindex)
+		{
+			*outindex = i;
+		}
+		return pRet;
+		/*
+		if (!pRet->isLayer())
+		{
+		}
+		else
+		{
+			return NULL;
+		}
+		*/
+	}
+	return NULL;
 }

@@ -155,7 +155,7 @@ public:
 
 	void OnInit();
 private:
-	int CreateCommand(int comm);
+	int CreateCommand(int comm, int iparam=1);
 public:
 	void ProcessCommand();
 	void ProcessUnDoCommandCommit(RevertableCommand * rc);
@@ -204,7 +204,7 @@ public:
 	int TerminalCommand();
 
 	int CommitCommand(const char * str);
-	int CreateCommandCommit(int command);
+	int CreateCommandCommit(int command, int iparam=1);
 	int CreateUnDoCommandCommit(int step=1);
 	int CreateReDoCommandCommit(int step=1);
 
@@ -239,8 +239,8 @@ public:
 	bool DoReDoAddNode(int objid, int objparentid);
 	bool DoUnDoDeleteNode(int objparentid, int objafterid);
 	bool DoReDoDeleteNode(int objparentid, int objafterid);
-	bool DoUnDoReparentNode(GObject * obj, GObject * oparent, GObject * aparent);
-	bool DoReDoReparentNode(GObject * obj, GObject * oparent, GObject * aparent);
+	bool DoUnDoReparentNode(int objid, int oparentid, int afterid);
+	bool DoReDoReparentNode(int objid, int oparentid, int afterid);
 
 	bool IsUnDoReDoing(){return undoredoflag!=0;};
 	bool canReDoDone();

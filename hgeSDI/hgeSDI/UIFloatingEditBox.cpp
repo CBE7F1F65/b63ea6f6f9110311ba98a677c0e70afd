@@ -106,13 +106,13 @@ void UIFloatingEditBox::OnEnChange()
 	if (nlength)
 	{
 		CString str;
-		CString strw = "w";
+		CString strm = "mm";
 		GetWindowText(str);
 		CDC * cdc = GetDC();
 		if (cdc)
 		{
 			CSize size = cdc->GetTextExtent(str);
-			CSize sizew = cdc->GetTextExtent(strw);
+			CSize sizew = cdc->GetTextExtent(strm);
 			float cx = size.cx+sizew.cx;
 			SetWindowPos(NULL, -1, -1, cx, size.cy, SWP_NOMOVE|SWP_DRAWFRAME);
 		}
@@ -160,7 +160,6 @@ void UIFloatingEditBox::Hide(bool bForce)
 BOOL UIFloatingEditBox::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
-
 	if (pMsg->message == WM_KEYDOWN && (GetKeyState(VK_CONTROL)&0x8000))
 	{
 		switch (pMsg->wParam)

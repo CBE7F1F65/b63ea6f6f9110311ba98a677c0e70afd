@@ -7,6 +7,8 @@
 #include "NewLayerCommand.h"
 #include "SetWorkingLayerCommand.h"
 #include "DeleteItemCommand.h"
+#include "ReparentCommand.h"
+#include "OutputCommand.h"
 
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
@@ -16,6 +18,8 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 	case COMM_INITIAL:
 		return &InitialCommand::getInstance();
 
+	case COMM_REPARENT:
+		return &ReparentCommand::getInstance();
 	case COMM_DELETEITEM:
 		return &DeleteItemCommand::getInstance();
 
@@ -29,6 +33,9 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 		return &LineCommand::getInstance();
 	case COMM_BEZIER:
 		return &BezierCommand::getInstance();
+
+	case COMM_OUTPUT:
+		return &OutputCommand::getInstance();
 
 	default:
 		ASSERT(true);

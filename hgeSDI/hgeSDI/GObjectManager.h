@@ -4,6 +4,8 @@
 #include "MainDependency.h"
 #include "GLayer.h"
 
+#include "GBaseNode.h"
+
 class GObjectManager
 {
 	friend class GObject;
@@ -40,14 +42,15 @@ public:
 	void MoveToUnDoList(GObject * node);
 	GObject * GetUnDoListFront();
 
-	bool CanDeleteItem( GObject * obj );
+	bool CanDeleteItem( GObject * pObj );
+	bool CanReparentItem( GObject * pObj, int newparentindex );
 
 	GObject * FindObjectByID(int id);
 
 	GLayer * NewLayer(GObject * node, const char * layername, int layerIndex=-1);
 	GLayer * NewSubLayer(GObject * node, const char * layername, int layerIndex=-1);
 
-	GLayer * pBaseNode;
+	GMainBaseNode * pBaseNode;
 	list<GObject*> nodetodelete;
 
 	bool bReleasing;
@@ -69,6 +72,8 @@ public:
 	void SetActiveLayer_Internal(GObject * pObj=NULL);
 	const char * GetDefaultLayerName( int layerIndex=-1 );
 	list<GObject*> * GetSelectedNodes();
+	GLayer * GetDragDroppedLayerNode();
+	GObject * GetDragDroppedAfterNode();
 	list<GObject*> selectednodes;
 
 	HTARGET tarObjs;

@@ -22,13 +22,13 @@ void DeleteItemCommand::OnProcessCommand()
 	if (step == CSI_INIT)
 	{
 		pcommand->StepTo(
-			CSI_DELETEITEM_WANTINDEX,
+			CSI_DELETEITEM_WANTINDEXES,
 			CWP_INDEX);
 	}
-	else if (step == CSI_NEWLAYER_WANTNAME)
+	else if (step == CSI_DELETEITEM_WANTINDEXES)
 	{
 		ret = pcommand->ProcessPending(
-			CSP_DELETEITEM_I_INDEX, COMMPARAMFLAG_I, CWP_INDEX,
+			CSP_DELETEITEM_I_INDEXES, COMMPARAMFLAG_I, CWP_INDEX,
 			CSI_FINISH
 			);
 		if (ret<0)
@@ -53,10 +53,10 @@ void DeleteItemCommand::OnProcessCommand()
 				int i=0;
 				for (list<int>::reverse_iterator it=lids.rbegin(); it!=lids.rend(); ++it)
 				{
-					pcommand->SetParamI(CSP_DELETEITEM_I_INDEX+i, (*it), CWP_INDEX);
+					pcommand->SetParamI(CSP_DELETEITEM_I_INDEXES+i, (*it), CWP_INDEX);
 					i++;
 				}
-				pcommand->SetParamI(CSP_DELETEITEM_I_INDEX+i, -1, CWP_INDEX);
+				pcommand->SetParamI(CSP_DELETEITEM_I_INDEXES+i, -1, CWP_INDEX);
 
 				pcommand->StepTo(CSI_FINISH);
 			}
@@ -64,7 +64,16 @@ void DeleteItemCommand::OnProcessCommand()
 		}
 		else
 		{
-			pcommand->SetParamI(CSP_DELETEITEM_I_INDEX+1, -1, CWP_INDEX);
+			int index = pcommand->GetParamI(CSP_DELETEITEM_I_INDEXES);
+			/*
+			GObject * pObj = pgm->FindObjectByID(index);
+			if (!pgm->CanDeleteItem(pObj))
+			{
+				pcommand->StepTo(CSI_TERMINAL);
+				return;
+			}
+			*/
+			pcommand->SetParamI(CSP_DELETEITEM_I_INDEXES+1, -1, CWP_INDEX);
 		}
 	}
 
@@ -75,13 +84,13 @@ void DeleteItemCommand::OnDoneCommand()
 	int i=0;
 	while (true)
 	{
-		int index = pcommand->GetParamI(CSP_DELETEITEM_I_INDEX+i);
+		int index = pcommand->GetParamI(CSP_DELETEITEM_I_INDEXES+i);
 		if (index < 0)
 		{
 			break;
 		}
 		GObject * pObj = pgm->FindObjectByID(index);
-		if (!pObj)
+		if (!pObj || !pgm->CanDeleteItem(pObj))
 		{
 			return;
 		}

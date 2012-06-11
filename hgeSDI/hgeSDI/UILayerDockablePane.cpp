@@ -121,6 +121,10 @@ void UILayerDockablePane::OnSize(UINT nType, int cx, int cy)
 	Invalidate();
 }
 
+// void UILayerDockablePane::RebuildTree( GObject * changebase, GObject * activeitem )
+// {
+// 	m_wndListCtrl.PostMessage(WMUSER_REBUILDTREE, (WPARAM)changebase, (LPARAM)activeitem);
+// }
 void UILayerDockablePane::RebuildTree( GObject * changebase, GObject * activeitem )
 {
 	m_wndListCtrl.RebuildTree(changebase, activeitem);
@@ -139,6 +143,11 @@ void UILayerDockablePane::SetActiveLayer_Internal( GLayer * pLayer )
 GObject * UILayerDockablePane::GetActiveNodes( int * pnextfromIndex )
 {
 	return m_wndListCtrl.GetActiveNodes( pnextfromIndex );
+}
+
+bool UILayerDockablePane::GetDragDropNodes( GLayer ** pLayerNode, GObject ** pAfterNode )
+{
+	return m_wndListCtrl.GetDragDropNodes(pLayerNode, pAfterNode);
 }
 
 void UILayerDockablePane::OnUpdateUIButtons(CCmdUI *pCmdUI)
@@ -162,4 +171,9 @@ void UILayerDockablePane::OnNewSubLayerButtonClicked()
 void UILayerDockablePane::OnDeleteItemButtonClicked()
 {
 	MainInterface::getInstance().OnCommand(COMM_DELETEITEM);
+}
+
+void UILayerDockablePane::CallReparentSelectedNodes( int op )
+{
+	m_wndListCtrl.ReparentSelectedNodes(op);
 }

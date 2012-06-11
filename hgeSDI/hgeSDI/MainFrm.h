@@ -48,6 +48,7 @@ public:
 
 	GLayer * GetActiveLayer();
 	GObject * GetActiveNodes( int * pnextfromIndex );
+	bool GetDragDropNodes( GLayer ** pLayerNode, GObject ** pAfterNode );
 	void SetActiveLayer_Internal( GLayer * pLayer );
 
 // ²Ù×÷
@@ -115,4 +116,6 @@ public:
 	afx_msg void OnCommandNewsublayer();
 	afx_msg void OnCommandLine();
 	afx_msg void OnCommandDeleteitem();
+	afx_msg void OnCommandReparent(UINT nID);
+	afx_msg void OnUpdateCommandReparent(CCmdUI *pCmdUI);
 };

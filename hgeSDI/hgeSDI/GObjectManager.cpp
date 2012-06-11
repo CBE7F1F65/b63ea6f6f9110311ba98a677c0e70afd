@@ -17,16 +17,12 @@ GObjectManager::GObjectManager()
 }
 GObjectManager::~GObjectManager()
 {
-	if (pBaseNode)
-	{
-		delete pBaseNode;
-	}
 }
 
 void GObjectManager::Init()
 {
 	Release();
-	pBaseNode = new GLayer(0, ColorManager::getInstance().GetLayerLineColor(0), "");
+	pBaseNode = &GMainBaseNode::getInstance();//new GLayer(0, ColorManager::getInstance().GetLayerLineColor(0), "");
 	GLayer * pLayer = NewLayer(NULL, GetDefaultLayerName(stackedLayerIndex));
 	workinglayer = pLayer;
 	lastworkinglayer = pLayer;
@@ -44,11 +40,6 @@ void GObjectManager::Release()
 	Delete();
 	stackedLayerIndex = 0;
 	tarObjs = NULL;
-	if (pBaseNode)
-	{
-		delete pBaseNode;
-		pBaseNode = NULL;
-	}
 	workinglayer = NULL;
 	lastworkinglayer = NULL;
 	bReleasing = false;
@@ -248,17 +239,50 @@ list<GObject*> * GObjectManager::GetSelectedNodes()
 	return &selectednodes;
 }
 
-bool GObjectManager::CanDeleteItem( GObject * obj )
+bool GObjectManager::CanDeleteItem( GObject * pObj )
 {
-	if (obj)
+	if (pObj)
 	{
-		GObject * parent = obj->getParent();
+		if (pObj->isAttributeNode())
+		{
+			return false;
+		}
+		GObject * parent = pObj->getParent();
 		if (parent)
 		{
 			if (parent != pBaseNode || parent->getChildren()->size() > 1)
 			{
 				return true;
 			}
+		}
+	}
+	return false;
+}
+
+bool GObjectManager::CanReparentItem( GObject * pObj, int newparentindex )
+{
+	if (pObj)
+	{
+		if (pObj->isAttributeNode())
+		{
+			return false;
+		}
+		if (newparentindex >= 0)
+		{
+			GObject * pNewPlaceAfter = FindObjectByID(newparentindex);
+			if (pNewPlaceAfter->isAttributeNode())
+			{
+				return false;
+			}
+			if (pNewPlaceAfter == pObj || pNewPlaceAfter->isDescendantOf(pObj))
+			{
+				return false;
+			}
+			return true;
+		}
+		else if (CanDeleteItem(pObj))
+		{
+			return true;
 		}
 	}
 	return false;
@@ -285,4 +309,26 @@ void GObjectManager::UpdateWorkingLayer( GLayer * pLayer/*=NULL*/, bool bothtoac
 	}
 	workinglayer = pLayer;
 	
+}
+
+GLayer * GObjectManager::GetDragDroppedLayerNode()
+{
+	GLayer * pLayerNode=NULL;
+	GObject * pAfterNode=NULL;
+	if (MainInterface::getInstance().OnGetDragDroppedNodes(&pLayerNode, &pAfterNode))
+	{
+		return pLayerNode;
+	}
+	return NULL;
+}
+
+GObject * GObjectManager::GetDragDroppedAfterNode()
+{
+	GLayer * pLayerNode=NULL;
+	GObject * pAfterNode=NULL;
+	if (MainInterface::getInstance().OnGetDragDroppedNodes(&pLayerNode, &pAfterNode))
+	{
+		return pAfterNode;
+	}
+	return NULL;
 }

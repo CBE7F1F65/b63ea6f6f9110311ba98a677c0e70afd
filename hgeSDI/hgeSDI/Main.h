@@ -57,6 +57,7 @@ public:
 	void OnRebuildLayerTree(GObject * changebase, GObject * activeitem);
 	GLayer * OnGetActiveLayer();
 	GObject * OnGetSelectedNodes( int * pnextfromIndex );
+	bool OnGetDragDroppedNodes( GLayer ** pLayerNode, GObject ** pAfterNode );
 	void OnSetActiveLayer_Internal( GLayer * pLayer );
 	void OnInternalActiveLayerSetDone();
 

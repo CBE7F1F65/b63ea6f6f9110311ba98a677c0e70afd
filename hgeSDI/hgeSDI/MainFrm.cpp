@@ -54,6 +54,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_COMMAND(ID_COMMAND_NEWSUBLAYER, &CMainFrame::OnCommandNewsublayer)
 	ON_COMMAND(ID_COMMAND_LINE, &CMainFrame::OnCommandLine)
 	ON_COMMAND(ID_COMMAND_DELETEITEM, &CMainFrame::OnCommandDeleteitem)
+	ON_COMMAND_RANGE(ID_COMMAND_REPARENT, ID_COMMAND_REPARENT_END, &CMainFrame::OnCommandReparent)
+	ON_UPDATE_COMMAND_UI_RANGE(ID_COMMAND_REPARENT, ID_COMMAND_REPARENT_END, &CMainFrame::OnUpdateCommandReparent)
 END_MESSAGE_MAP()
 
 // CMainFrame 构造/析构
@@ -438,6 +440,11 @@ GObject * CMainFrame::GetActiveNodes( int * pnextfromIndex )
 	return m_wndUILayerPane.GetActiveNodes(pnextfromIndex);
 }
 
+bool CMainFrame::GetDragDropNodes( GLayer ** pLayerNode, GObject ** pAfterNode )
+{
+	return m_wndUILayerPane.GetDragDropNodes(pLayerNode, pAfterNode);
+}
+
 void CMainFrame::SetActiveLayer_Internal( GLayer * pLayer )
 {
 	return m_wndUILayerPane.SetActiveLayer_Internal(pLayer);
@@ -535,4 +542,34 @@ void CMainFrame::OnCommandDeleteitem()
 {
 	// TODO: 在此添加命令处理程序代码
 	MainInterface::getInstance().OnCommand(COMM_DELETEITEM);
+}
+
+#include "UILayerListCtrl.h"
+afx_msg void CMainFrame::OnCommandReparent( UINT nID )
+{
+	// TODO: 在此添加命令处理程序代码
+	int op = LBCOMMAND_REPARENT_NONE;
+	switch (nID)
+	{
+	case ID_COMMAND_REPARENT_UPLAYER:
+		op = LBCOMMAND_REPARENT_UPLAYER;
+		break;
+	case ID_COMMAND_REPARENT_DOWNLAYER:
+		op = LBCOMMAND_REPARENT_DOWNLAYER;
+		break;
+	case ID_COMMAND_REPARENT_UP:
+		op = LBCOMMAND_REPARENT_UP;
+		break;
+	case ID_COMMAND_REPARENT_DOWN:
+		op = LBCOMMAND_REPARENT_DOWN;
+		break;
+	}
+	m_wndUILayerPane.CallReparentSelectedNodes(op);
+}
+
+
+void CMainFrame::OnUpdateCommandReparent(CCmdUI *pCmdUI)
+{
+	// TODO: 在此添加命令更新用户界面处理程序代码
+	pCmdUI->Enable(TRUE);
 }

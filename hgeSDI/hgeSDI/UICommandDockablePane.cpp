@@ -128,9 +128,9 @@ void UICommandDockablePane::OnSize(UINT nType, int cx, int cy)
 #define _UICDP_EDITLBEGIN	15
 	cy -= m_wndTabs.GetTabsHeight();
 	cx -= _UICDP_EDITLBEGIN;
-	CString strw = "w";
+	CString strm = "mm";
 	CDC * cdc = m_wndCommandEdit.GetDC();
-	CSize sizew = cdc->GetTextExtent(strw);
+	CSize sizew = cdc->GetTextExtent(strm);
 	float commandeditheight = sizew.cy*2;
 	m_wndCommandLogEdit.SetWindowPos(NULL, _UICDP_EDITLBEGIN, 0, cx, cy-commandeditheight, SWP_NOACTIVATE|SWP_DRAWFRAME);
 	m_wndCommandLogEdit.PostMessage(WM_VSCROLL, SB_BOTTOM, 0);

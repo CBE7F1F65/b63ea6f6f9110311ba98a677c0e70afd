@@ -45,7 +45,8 @@ public:
 	virtual int ReparentAfterObject( GObject * newparent, GObject * afterobj );
 
 	virtual bool isLayer(){return false;};
-	virtual GObject * GetLayer();
+	virtual GObject * GetLayer(bool bIncludingSelf=true);
+	virtual GObject * GetContainerLayer(){return GetLayer(false);};
 	virtual GObject * GetBase();
 	// ToDo!!
 	virtual bool isSelected(){return false;};
@@ -89,6 +90,9 @@ public:
 	GObject * getOlderSiblingForChild( GObject* child );
 	GObject * getYoungerSibling();
 	GObject * getYoungerSiblingForChild( GObject* child );
+
+	bool isAncestorOf( GObject * pObj );
+	bool isDescendantOf( GObject * pObj );
 
 	GObject * getNewestChild(){if(!getChildrenCount()){ return NULL;} return listChildren.front();};
 	GObject * getOldestChild(){if(!getChildrenCount()){ return NULL;} return listChildren.back();};
@@ -143,4 +147,11 @@ protected:
 	bool bModifyParent;
 
 	list<GObject*> listChildren;
+
+private:
+	static GObject * pTreeBase;
+protected:
+	// Only by MainBaseNode
+	void setTreeBase(GObject * pObj){pTreeBase=pObj;};
+	GObject * getTreeBase(){return pTreeBase;};
 };

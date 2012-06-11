@@ -231,7 +231,7 @@ void UIHistorySnapshotListCtrl::OnLvnEndlabeledit(NMHDR *pNMHDR, LRESULT *pResul
 	// TODO: 在此添加控件通知处理程序代码
 	if (pDispInfo->item.iSubItem == IDHBSSC_NAME)
 	{
-		if (strlen(pDispInfo->item.pszText))
+		if (pDispInfo->item.pszText && strlen(pDispInfo->item.pszText))
 		{
 			SetItemText(pDispInfo->item.iItem, IDHBSSC_NAME, pDispInfo->item.pszText);
 		}

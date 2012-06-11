@@ -90,11 +90,13 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_PAN,	"PAN",	"",	"Pan",	""	);
 	_BSET(	COMM_ZOOMIN,	"ZOOMIN",	"",	"Zone Zoom",	""	);
 	_BSET(	COMM_DOZOOM,	"ZOOM",	"",	"Instant Zoom",	""	);
+	_BSET(	COMM_OUTPUT,	"OUTPUT",	"O",	"Output",	""	);
 
 	_BSET(	COMM_INITIAL,	"INITIAL",	"",	"Initialization",	""	);
 	_BSET(	COMM_UNDO,	"UNDO", "U",	"UnDo",	""	);
 	_BSET(	COMM_REDO,	"REDO", "R",	"UnDo",	""	);
 
+	_BSET(	COMM_REPARENT,	"REPARENT",	"",	"Reparent Item",	"");
 	_BSET(	COMM_DELETEITEM,	"DELETE",	"DEL",	"Delete Item",	""	);
 	_BSET(	COMM_SETWORKINGLAYER,	"SETWORKINGLAYER",	"",	"Set Working Layer",	""	);
 	_BSET(	COMM_NEWLAYER,	"NEWLAYER", "NL",	"New Layer",	""	);

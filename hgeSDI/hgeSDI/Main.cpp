@@ -392,6 +392,11 @@ GObject * MainInterface::OnGetSelectedNodes( int * pnextfromIndex )
 	return parentview->GetMainFrame()->GetActiveNodes(pnextfromIndex);
 }
 
+bool MainInterface::OnGetDragDroppedNodes( GLayer ** pLayerNode, GObject ** pAfterNode )
+{
+	return parentview->GetMainFrame()->GetDragDropNodes(pLayerNode, pAfterNode);
+}
+
 void MainInterface::OnSetActiveLayer_Internal( GLayer * pLayer )
 {
 	return parentview->GetMainFrame()->SetActiveLayer_Internal(pLayer);

@@ -217,16 +217,16 @@ void Command::LogReDo()
 	MainInterface::getInstance().CallAppendCommandLogText(strlog.c_str());
 }
 
-int Command::CreateCommand(int comm)
+int Command::CreateCommand( int comm, int iparam/*=1*/ )
 {
 	if (comm == COMM_UNDO)
 	{
-		DoUnDo();
+		DoUnDo(iparam);
 		return ccomm.command;
 	}
 	else if (comm == COMM_REDO)
 	{
-		DoReDo();
+		DoReDo(iparam);
 		return ccomm.command;
 	}
 	if (IsCommandPush(comm))
@@ -609,14 +609,17 @@ int Command::CommitCommand( const char * str )
 	return ccomm.command;
 }
 
-int Command::CreateCommandCommit( int command )
+int Command::CreateCommandCommit( int command, int iparam/*=1*/ )
 {
+	/*
 	CommittedCommand _cc;
 	_cc.type = COMMITTEDCOMMANDTYPE_COMMAND;
 	_cc.ival = command;
 	_cc.sval = StringManager::getInstance().GetCommandStrName(command);
 	inputcommandlist.push_back(_cc);
-	return ccomm.command;
+	*/
+	return CreateCommand(command, iparam);
+//	return ccomm.command;
 }
 
 bool _CheckCharToBreak(char ch)
@@ -1047,23 +1050,37 @@ bool Command::canReDoDone()
 	}
 	return false;
 }
-
+#include <sstream>
 int Command::CreateUnDoCommandCommit( int step/*=1*/ )
 {
 	ASSERT(step>=0);
-	for (int i=0; i<step; i++)
-	{
-		CreateCommandCommit(COMM_UNDO);
-	}
+// 	for (int i=0; i<step; i++)
+// 	{
+// 		CreateCommandCommit(COMM_UNDO);
+// 	}
+// 	CommittedCommand cc;
+// 	cc.ival = step;
+// 	stringstream ss;
+// 	ss<<step;
+// 	cc.sval = ss.str();
+// 	CommitFrontCommand(cc);
+	CreateCommandCommit(COMM_UNDO, step);
 	return ccomm.command;
 }
 
 int Command::CreateReDoCommandCommit( int step/*=1*/ )
 {
 	ASSERT(step>=0);
-	for (int i=0; i<step; i++)
-	{
-		CreateCommandCommit(COMM_REDO);
-	}
+// 	for (int i=0; i<step; i++)
+// 	{
+// 		CreateCommandCommit(COMM_REDO);
+// 	}
+// 	CommittedCommand cc;
+// 	cc.ival = step;
+// 	stringstream ss;
+// 	ss<<step;
+// 	cc.sval = ss.str();
+// 	CommitFrontCommand(cc);
+	CreateCommandCommit(COMM_REDO, step);
 	return ccomm.command;
 }

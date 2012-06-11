@@ -4,7 +4,7 @@
 class GLayer :
 	public GObject
 {
-private:
+protected:
 	GLayer(void);
 public:
 	GLayer(int layerID, DWORD linecolor, const char * layername);

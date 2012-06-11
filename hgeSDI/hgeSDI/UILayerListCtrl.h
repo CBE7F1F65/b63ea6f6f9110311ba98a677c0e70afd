@@ -4,10 +4,17 @@
 // UILayerListCtrl
 #include "GLayer.h"
 
+enum{
+	LBCOMMAND_REPARENT_NONE = 0,
+	LBCOMMAND_REPARENT_UPLAYER,
+	LBCOMMAND_REPARENT_DOWNLAYER,
+	LBCOMMAND_REPARENT_UP,
+	LBCOMMAND_REPARENT_DOWN,
+};
+
 class UILayerListCtrl : public CListCtrl
 {
 	DECLARE_DYNAMIC(UILayerListCtrl)
-
 public:
 	UILayerListCtrl();
 	virtual ~UILayerListCtrl();
@@ -25,6 +32,7 @@ public:
 
 	GLayer * GetActiveLayer();
 	GObject * GetActiveNodes( int * pnextfromIndex );
+	bool GetDragDropNodes( GLayer ** pLayerNode, GObject ** pAfterNode );
 	void SetActiveLayer_Internal( GLayer * pLayer );
 
 	int FindItemByData(GObject * obj);
@@ -40,6 +48,16 @@ public:
 	void FoldItem(int index);
 	void ExpandItem(int index);
 
+	void ReparentSelectedNodes( int op );
+
+	GLayer * FindPreviousLayer( int index, int * outindex=NULL );
+	GLayer * FindNextLayer( int index, int * outindex=NULL );
+	GObject * FindPreviousNode( int index, int * outindex=NULL );
+	GObject * FindNextNode( int index, int * outindex=NULL );
+
+	bool bDragging;
+	GLayer * pDragDropLayer;
+	GObject * pDragDropAfter;
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
@@ -57,6 +75,8 @@ public:
 	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnLvnBegindrag(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 };
 
 
