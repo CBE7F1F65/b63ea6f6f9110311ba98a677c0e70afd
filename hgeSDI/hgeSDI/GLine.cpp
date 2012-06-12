@@ -98,3 +98,16 @@ void GStraightLine::OnRender()
 	}
 	GObject::OnRender();
 }
+
+bool GStraightLine::Clone( GObject * pNewParent )
+{
+	_GOBJ_CLONE_PRE(GStraightLine);
+	_GOBJ_CLONE_POST_NORET();
+	list<GObject *>::reverse_iterator it=_node->listChildren.rbegin();
+	_node->plbegin = (GPoint *)*it;
+	++it;
+	_node->plend = (GPoint *)*it;
+	++it;
+	_node->pmid = (GPoint *)*it;
+	return true;
+}

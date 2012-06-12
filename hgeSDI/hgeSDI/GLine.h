@@ -34,5 +34,7 @@ public:
 	virtual void OnUpdate();
 	virtual void OnRender();
 
+	virtual bool Clone( GObject * pNewParent );
+
 	bool bModified;
 };

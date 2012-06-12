@@ -212,14 +212,17 @@ bool UIHistoryListCtrl::ClearPreviousHistory( int ndelete )
 	for (int i=0; i<ndelete; i++)
 	{
 		DeleteItem(0);
-		if (nSelected)
+//		if (nSelected)
 		{
 			nSelected--;
 		}
 	}
 	topIndex -= ndelete;
-	SetItemState(nSelected, LVIS_SELECTED, LVIS_SELECTED);
-	SetSelectionMark(nSelected);
+	if (nSelected >= 0)
+	{
+		SetItemState(nSelected, LVIS_SELECTED, LVIS_SELECTED);
+		SetSelectionMark(nSelected);
+	}
 
 	return true;
 }

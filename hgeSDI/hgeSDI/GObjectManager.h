@@ -35,6 +35,7 @@ public:
 	void Render();
 	void Delete();
 
+	void OnTreeWillChange();
 	void OnTreeChanged(GObject * changingbase, GObject * activeitem);
 
 	void AddNodeToDelete(GObject * node);
@@ -55,7 +56,7 @@ public:
 
 	bool bReleasing;
 
-	GObject undobasenode;
+	GBaseNode undobasenode;
 	int stackedLayerIndex;
 	string defaultLayerName;
 

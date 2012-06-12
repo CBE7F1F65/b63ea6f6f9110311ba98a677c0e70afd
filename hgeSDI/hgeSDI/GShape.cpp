@@ -18,3 +18,9 @@ const char * GShape::getDisplayName()
 	}
 	return StringManager::getInstance().GetNNShapeName();
 }
+
+bool GShape::Clone( GObject * pNewParent )
+{
+	_GOBJ_CLONE_PRE(GShape);
+	_GOBJ_CLONE_POST();
+}

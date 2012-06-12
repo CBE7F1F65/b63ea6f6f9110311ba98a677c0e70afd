@@ -12,6 +12,11 @@ GLayer::GLayer(void)
 
 GLayer::GLayer( int _layerID, DWORD linecolor, const char * layername )
 {
+	setInitial(_layerID, linecolor, layername);
+}
+
+void GLayer::setInitial( int _layerID, DWORD linecolor, const char * layername )
+{
 	layerID = _layerID;
 	setLineColor(linecolor);
 	setDisplayName(layername);
@@ -35,4 +40,11 @@ const char * GLayer::getDisplayName()
 		ASSERT(true);
 	}
 	return strDisplayName.c_str();
+}
+
+bool GLayer::Clone( GObject * pNewParent )
+{
+	_GOBJ_CLONE_PRE(GLayer);
+	_node->setInitial(layerID, dwLineColor, strDisplayName.c_str());
+	_GOBJ_CLONE_POST();
 }

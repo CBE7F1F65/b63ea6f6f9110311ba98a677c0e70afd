@@ -42,6 +42,8 @@ public:
 	void OnMouseActivate();
 	void OnDoScroll(bool horz, int pos, int range);
 
+	void OnChangeMouseCursor(HWND hwnd, int mousecursor=-1);
+
 	// From Command
 	enum{
 		COMM_LINE,
@@ -53,7 +55,9 @@ public:
 	void OnUnDo(int step=1);
 	void OnReDo(int step=1);
 	void OnClearReDo(int ndelete);
+	void OnClearUnDo(int ndelete);
 	void OnClearPreviousHistory(int ndelete=1);
+	void OnTreeLockChange( bool toLock );
 	void OnRebuildLayerTree(GObject * changebase, GObject * activeitem);
 	GLayer * OnGetActiveLayer();
 	GObject * OnGetSelectedNodes( int * pnextfromIndex );

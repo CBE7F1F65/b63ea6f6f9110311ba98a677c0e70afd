@@ -20,13 +20,14 @@ public:
 	virtual ~UILayerListCtrl();
 
 	void ResetAllName(GObject * base);
+	void LockTreeChange( bool toLock );
 	void RebuildTree( GObject * changebase, GObject * activeitem );
 	void BuildChildren(GObject * nowbase, int & nowindex, int indentlevel);
 	void DeleteItemsUnderObj(GObject * obj);
 
 	void AddSelect(int index=-1);
 	void DeSelect(int index=-1);
-	void DeSelectParadox(int index);
+	bool DeSelectParadox(int index, int nowselecting);
 
 	GObject * GetObjectByIndex(int index);
 
@@ -58,6 +59,8 @@ public:
 	bool bDragging;
 	GLayer * pDragDropLayer;
 	GObject * pDragDropAfter;
+	int firstMarqueeSelected;
+	bool bTreeLocked;
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
@@ -77,6 +80,8 @@ public:
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnLvnBegindrag(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnNcLButtonUp(UINT nHitTest, CPoint point);
 };
 
 

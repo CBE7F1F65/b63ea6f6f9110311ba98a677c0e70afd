@@ -105,8 +105,14 @@ GObject * GObjectManager::GetUnDoListFront()
 	return undobasenode.getNewestChild();
 }
 
+void GObjectManager::OnTreeWillChange()
+{
+	MainInterface::getInstance().OnTreeLockChange(true);
+}
+
 void GObjectManager::OnTreeChanged( GObject * changingbase, GObject * activeitem )
 {
+	MainInterface::getInstance().OnTreeLockChange(false);
 	if (bReleasing)
 	{
 		return;
@@ -183,7 +189,7 @@ GLayer * GObjectManager::GetActiveLayer()
 	{
 		pActiveLayer = (GLayer *)pBaseNode->getNewestChild();
 	}
-	ASSERT(pActiveLayer);
+//	ASSERT(pActiveLayer);
 	return pActiveLayer;
 }
 

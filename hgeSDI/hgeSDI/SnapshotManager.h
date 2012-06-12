@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GObject.h"
+#include "GBaseNode.h"
 
 class SnapshotInfo{
 public:
@@ -9,20 +9,23 @@ public:
 	void ClearSet()
 	{
 		diffstep=0;
-		savednode=NULL;
+		bValid = true;
+		savednode.RemoveAllChildren(true);
 	};
 
-	void SetSaved(GObject * psave)
+	bool SaveNode(GBaseNode * pBaseNode=NULL);
+	bool isValid()
 	{
-		savednode = psave;
+		return bValid;
 	};
-	bool isSaved()
+	void Invalid()
 	{
-		return (savednode!=NULL);
+		bValid = false;
 	};
 
 	int diffstep;
-	GObject * savednode;
+	bool bValid;
+	GBaseNode savednode;
 };
 
 class SnapshotManager
@@ -50,8 +53,8 @@ public:
 	void OnPushRevertable();
 	void OnReDo();
 	void OnClearReDo(int nClear);
+	void OnClearUnDo(int nClear);
 
-	GObject * SaveNode();
 	void LoadNode(GObject * node);
 
 	void _MovePointer(int movediff);
@@ -60,6 +63,8 @@ public:
 	int DeleteSnapshot(int nSnapshot);
 	bool RevertToSnapshot(int nSnapshot);
 	bool NeedLoad(int nSnapshot);
+
+	void Release();
 
 	list<SnapshotInfo>snapshots;
 };

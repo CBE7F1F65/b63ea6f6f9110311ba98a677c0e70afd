@@ -424,6 +424,11 @@ bool CMainFrame::ClearPreviousHistory( int ndelete )
 	return m_wndUIHistoryPane.ClearPreviousHistory(ndelete);
 }
 
+void CMainFrame::LockTreeChange( bool toLock )
+{
+	m_wndUILayerPane.LockTreeChange(toLock);
+}
+
 bool CMainFrame::RebuildLayerTree( GObject * changebase, GObject * activeitem )
 {
 	m_wndUILayerPane.RebuildTree(changebase,activeitem);

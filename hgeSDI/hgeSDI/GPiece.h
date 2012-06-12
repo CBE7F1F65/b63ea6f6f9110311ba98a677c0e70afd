@@ -8,4 +8,6 @@ public:
 	~GPiece(void);
 
 	virtual const char * getDisplayName();
+
+	virtual bool Clone( GObject * pNewParent );
 };

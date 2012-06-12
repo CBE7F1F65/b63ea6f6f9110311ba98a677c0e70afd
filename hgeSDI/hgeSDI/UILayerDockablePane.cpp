@@ -177,3 +177,8 @@ void UILayerDockablePane::CallReparentSelectedNodes( int op )
 {
 	m_wndListCtrl.ReparentSelectedNodes(op);
 }
+
+void UILayerDockablePane::LockTreeChange( bool toLock )
+{
+	m_wndListCtrl.LockTreeChange(toLock);
+}

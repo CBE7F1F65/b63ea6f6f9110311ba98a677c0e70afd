@@ -7,6 +7,11 @@ class GBaseNode :
 public:
 	GBaseNode(void);
 	~GBaseNode(void);
+
+	void CopyBaseFrom( GBaseNode * pFrom );
+	void CopyBaseTo( GBaseNode * pTo );
+
+	virtual bool Clone(GObject * pNewParent);
 };
 
 class GMainBaseNode :
@@ -30,7 +35,8 @@ private:
 	// Don't implement
 
 public:
-	
+
+	virtual bool Clone(GObject * pNewParent);
 
 }; 
 

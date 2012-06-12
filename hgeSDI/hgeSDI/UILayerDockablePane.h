@@ -15,6 +15,7 @@ public:
 	UILayerDockablePane();
 	virtual ~UILayerDockablePane();
 
+	void LockTreeChange( bool toLock );
 	void CallRebuildTree(GObject * changebase, GObject * activeitem);
 	void RebuildTree(GObject * changebase, GObject * activeitem);
 	GLayer * GetActiveLayer();

@@ -2,6 +2,9 @@
 #include "SnapshotManager.h"
 #include "Main.h"
 
+#include "GObjectManager.h"
+#include "Command.h"
+
 
 SnapshotManager::SnapshotManager(void)
 {
@@ -12,15 +15,23 @@ SnapshotManager::~SnapshotManager(void)
 {
 }
 
+void SnapshotManager::Release()
+{
+	for (list<SnapshotInfo>::iterator it=snapshots.begin(); it!=snapshots.end(); ++it)
+	{
+		it->ClearSet();
+	}
+}
+
 void SnapshotManager::OnDeleteUnDo( int maxsize )
 {
 	for (list<SnapshotInfo>::iterator it=snapshots.begin(); it!=snapshots.end(); ++it)
 	{
-		if (!it->isSaved())
+		if (it->isValid())
 		{
 			if (it->diffstep >= maxsize)
 			{
-				it->SetSaved(SaveNode());
+				it->Invalid();
 			}
 		}
 	}
@@ -45,12 +56,23 @@ void SnapshotManager::OnClearReDo( int nClear )
 {
 	for (list<SnapshotInfo>::iterator it=snapshots.begin(); it!=snapshots.end(); ++it)
 	{
-		if (!it->isSaved())
+		if (it->isValid())
 		{
 			if (it->diffstep < 0)
 			{
-				it->SetSaved(SaveNode());
+				it->Invalid();
 			}
+		}
+	}
+}
+
+void SnapshotManager::OnClearUnDo( int nClear )
+{
+	for (list<SnapshotInfo>::iterator it=snapshots.begin(); it!=snapshots.end(); ++it)
+	{
+		if (it->isValid())
+		{
+			it->Invalid();
 		}
 	}
 }
@@ -61,7 +83,7 @@ void SnapshotManager::_MovePointer( int movediff )
 	{
 		for (list<SnapshotInfo>::iterator it=snapshots.begin(); it!=snapshots.end(); ++it)
 		{
-			if (!it->isSaved())
+			if (it->isValid())
 			{
 				it->diffstep += movediff;
 			}
@@ -73,6 +95,7 @@ int SnapshotManager::AddSnapshot()
 {
 	SnapshotInfo _ssinfo;
 	snapshots.push_back(_ssinfo);
+	snapshots.back().SaveNode();
 	return (int)snapshots.size()-1;
 }
 
@@ -98,9 +121,9 @@ bool SnapshotManager::RevertToSnapshot( int nSnapshot )
 	{
 		if (i==nSnapshot)
 		{
-			if (it->isSaved())
+			if (!it->isValid())
 			{
-				LoadNode(it->savednode);
+				LoadNode(&(it->savednode));
 			}
 			else
 			{
@@ -115,15 +138,23 @@ bool SnapshotManager::RevertToSnapshot( int nSnapshot )
 	return false;
 }
 
-GObject * SnapshotManager::SaveNode()
-{
-	// ToDo
-	return (GObject *)1;
-}
-
 void SnapshotManager::LoadNode( GObject * node )
 {
-
+	ASSERT(node);
+	GObjectManager * pgm = &GObjectManager::getInstance();
+	list<GObject *>dellist;
+	for (list<GObject *>::iterator it=pgm->pBaseNode->getChildren()->begin(); it!=pgm->pBaseNode->getChildren()->end(); ++it)
+	{
+		dellist.push_back(*it);
+	}
+	pgm->pBaseNode->CopyBaseFrom((GBaseNode *)node);
+	for (list<GObject *>::iterator it=dellist.begin(); it!=dellist.end(); ++it)
+	{
+		pgm->pBaseNode->RemoveChild(*it, true);
+	}
+	Command::getInstance().StepTo(CSI_TERMINAL);
+	Command::getInstance().ClearUnDo();
+	Command::getInstance().ClearReDo();
 }
 
 bool SnapshotManager::NeedLoad( int nSnapshot )
@@ -133,7 +164,7 @@ bool SnapshotManager::NeedLoad( int nSnapshot )
 	{
 		if (i==nSnapshot)
 		{
-			if (it->isSaved())
+			if (!it->isValid())
 			{
 				return true;
 			}
@@ -141,4 +172,18 @@ bool SnapshotManager::NeedLoad( int nSnapshot )
 		i++;
 	}
 	return false;
+}
+
+bool SnapshotInfo::SaveNode(GBaseNode * pBaseNode/* =NULL */)
+{
+	if (!pBaseNode)
+	{
+		pBaseNode = GObjectManager::getInstance().pBaseNode;
+	}
+	if (pBaseNode)
+	{
+		pBaseNode->CopyBaseTo(&savednode);
+	}
+	bValid = true;
+	return true;
 }

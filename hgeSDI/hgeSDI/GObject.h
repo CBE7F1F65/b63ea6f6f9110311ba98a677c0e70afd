@@ -6,11 +6,34 @@
 #define GOBJ_DISPSTATE_RECINVISIBLE			0x10
 #define GOBJ_DISPSTATE_RECLOCKED			0x20
 
+#define _GOBJ_CLONE_PRE(TNAME)	\
+	TNAME * _node = new TNAME();	\
+	ASSERT(pNewParent);	\
+	ASSERT(pNewParent != this);	\
+	ASSERT(!(pNewParent->isDescendantOf(this)));	\
+	*_node = *this;	\
+	_node->Independ();
+
+#define _GOBJ_CLONE_POST_NORET()	\
+	pNewParent->AddChild(_node);	\
+	for (list<GObject *>::reverse_iterator it=getChildren()->rbegin(); it!=getChildren()->rend(); ++it)	\
+	{	\
+		(*it)->Clone(_node);	\
+	}
+
+#define _GOBJ_CLONE_POST()	\
+	_GOBJ_CLONE_POST_NORET();	\
+	return true;
+
+
 class GObject
 {
 public:
 	GObject(void);
 	~GObject(void);
+
+public:
+	virtual bool Clone(GObject * pNewParent)=0;
 
 public:
 	virtual int AddChild(GObject * child);
@@ -25,6 +48,8 @@ public:
 	virtual int RemoveFromParent(bool bRelease);
 	virtual void CallResetID(int beginindex=0);
 
+	virtual void Independ();
+
 	virtual GObject * FindNodeByID(int id);
 
 private:
@@ -36,6 +61,7 @@ private:
 	int _RemoveFromParent(bool bRelease);
 	void _SetID(int ID=-1);
 	void _CallTreeChanged(GObject * changebase, GObject * activenode);
+	void _CallTreeWillChange();
 	int _CallResetID(int resetbase);
 
 	void _ModifyNonAttributeChildrenCount(int countchange);

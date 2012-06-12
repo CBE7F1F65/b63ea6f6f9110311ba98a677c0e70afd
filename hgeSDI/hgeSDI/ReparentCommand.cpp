@@ -188,7 +188,7 @@ void ReparentCommand::OnDoneCommand()
 		GObject * pOriParent = pObj->getParent();
 		GObject * pOAfter = pObj->getYoungerSibling();
 
-		GObject tempHoldingPlace;
+		GBaseNode tempHoldingPlace;
 		pObj->Reparent(&tempHoldingPlace);
 
 		newparentindex = pNewParent->getID();

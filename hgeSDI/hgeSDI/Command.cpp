@@ -1030,6 +1030,18 @@ void Command::ClearReDo()
 	}
 }
 
+void Command::ClearUnDo()
+{
+	int ntodelete = undolist.size();
+	if (ntodelete)
+	{
+		undolist.clear();
+		SnapshotManager::getInstance().OnClearUnDo(ntodelete);
+		MainInterface::getInstance().OnClearUnDo(ntodelete);
+	}
+//	CreateCommandCommit(COMM_INITIAL);
+}
+
 void Command::OnInit()
 {
 	HGE * hge = MainInterface::getInstance().hge;

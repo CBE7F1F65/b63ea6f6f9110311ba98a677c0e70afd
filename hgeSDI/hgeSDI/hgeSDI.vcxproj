@@ -157,6 +157,7 @@
     <ClInclude Include="MainDependency.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MathHelper.h" />
+    <ClInclude Include="MouseCursorManager.h" />
     <ClInclude Include="NewLayerCommand.h" />
     <ClInclude Include="OutputCommand.h" />
     <ClInclude Include="RenderHelper.h" />
@@ -188,6 +189,7 @@
     <ClCompile Include="CommandGetTemplate.cpp" />
     <ClCompile Include="DeleteItemCommand.cpp" />
     <ClCompile Include="GBaseNode.cpp" />
+    <ClCompile Include="MouseCursorManager.cpp" />
     <ClCompile Include="OutputCommand.cpp" />
     <ClCompile Include="ProcessCommand.cpp" />
     <ClCompile Include="CommandTemplate.cpp" />

@@ -18,3 +18,9 @@ const char * GPiece::getDisplayName()
 	}
 	return StringManager::getInstance().GetNNPieceName();
 }
+
+bool GPiece::Clone( GObject * pNewParent )
+{
+	_GOBJ_CLONE_PRE(GPiece);
+	_GOBJ_CLONE_POST();
+}

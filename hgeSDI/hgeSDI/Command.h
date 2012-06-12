@@ -164,6 +164,7 @@ public:
 	int ProcessPending(int index, int useflag, int fillprompt, int step, int wantprompt=0, bool pushback=true);
 	void CommitFrontCommand(CommittedCommand &cc);
 	void ClearReDo();
+	void ClearUnDo();
 
 	inline bool IsCCTypeCommand(int type)
 	{

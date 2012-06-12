@@ -30,6 +30,11 @@ const char * GPoint::getDisplayName()
 	return StringManager::getInstance().GetNNPointName();
 }
 
+bool GPoint::Clone( GObject * pNewParent )
+{
+	_GOBJ_CLONE_PRE(GPoint);
+	_GOBJ_CLONE_POST();
+}
 GEndPoint::GEndPoint()
 {
 	setIsAttributeNode(true);
@@ -51,6 +56,12 @@ const char * GEndPoint::getDisplayName()
 		return strDisplayName.c_str();
 	}
 	return StringManager::getInstance().GetNNEndPointName();
+}
+
+bool GEndPoint::Clone( GObject * pNewParent )
+{
+	_GOBJ_CLONE_PRE(GEndPoint);
+	_GOBJ_CLONE_POST();
 }
 
 GMidPoint::GMidPoint()
@@ -75,4 +86,10 @@ const char * GMidPoint::getDisplayName()
 		return strDisplayName.c_str();
 	}
 	return StringManager::getInstance().GetNNMidPointName();
+}
+
+bool GMidPoint::Clone( GObject * pNewParent )
+{
+	_GOBJ_CLONE_PRE(GMidPoint);
+	_GOBJ_CLONE_POST();
 }

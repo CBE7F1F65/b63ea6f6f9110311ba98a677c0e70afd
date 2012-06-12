@@ -44,6 +44,7 @@ public:
 	bool ClearLaterHistory(int ndelete);
 	bool ClearPreviousHistory(int ndelete);
 
+	void LockTreeChange( bool toLock );
 	bool RebuildLayerTree(GObject * changebase, GObject * activeitem);
 
 	GLayer * GetActiveLayer();

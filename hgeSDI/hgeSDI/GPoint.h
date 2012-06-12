@@ -13,6 +13,7 @@ public:
 
 	virtual const char * getDisplayName();
 
+	virtual bool Clone( GObject * pNewParent );
 	float x;
 	float y;
 };
@@ -25,6 +26,7 @@ public:
 	~GEndPoint();
 
 	virtual const char * getDisplayName();
+	virtual bool Clone( GObject * pNewParent );
 };
 
 class GMidPoint : public GPoint
@@ -35,4 +37,5 @@ public:
 	~GMidPoint();
 
 	virtual const char * getDisplayName();
+	virtual bool Clone( GObject * pNewParent );
 };

@@ -11,6 +11,8 @@
 #include "StringManager.h"
 #include "IconManager.h"
 #include "CommandTemplate.h"
+#include "MouseCursorManager.h"
+#include "SnapshotManager.h"
 
 #include "Resource.h"
 
@@ -229,6 +231,7 @@ bool MainInterface::FocusGain()
 
 bool MainInterface::Exit()
 {
+	SnapshotManager::getInstance().Release();
 	GObjectManager::getInstance().Release();
 	RenderHelper::getInstance().Release();
 	hge->System_Shutdown();
@@ -375,6 +378,11 @@ int MainInterface::OnCommand( int comm )
 int MainInterface::OnCommitCommand( const char * str )
 {
 	return Command::getInstance().CommitCommand(str);
+}
+
+void MainInterface::OnTreeLockChange( bool toLock )
+{
+	parentview->GetMainFrame()->LockTreeChange(toLock);
 }
 
 void MainInterface::OnRebuildLayerTree( GObject * changebase, GObject * activeitem )
@@ -696,6 +704,11 @@ void MainInterface::OnClearReDo(int ndelete)
 	parentview->GetMainFrame()->ClearLaterHistory(ndelete);
 }
 
+void MainInterface::OnClearUnDo(int ndelete)
+{
+	parentview->GetMainFrame()->ClearPreviousHistory(ndelete);
+}
+
 void MainInterface::OnClearPreviousHistory( int ndelete/*=1*/ )
 {
 	parentview->GetMainFrame()->ClearPreviousHistory(ndelete);
@@ -728,4 +741,9 @@ void MainInterface::CallUnDoReDo( int step )
 //			Command::getInstance().DoReDo(step);
 		}
 	}
+}
+
+void MainInterface::OnChangeMouseCursor( HWND hwnd, int mousecursor/*=-1*/ )
+{
+	MouseCursorManager::getInstance().ChangeCursor(hwnd, mousecursor);
 }

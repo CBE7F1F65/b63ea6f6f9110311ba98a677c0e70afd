@@ -8,11 +8,16 @@
 #include "ColorManager.h"
 #include "IconManager.h"
 #include "GObjectManager.h"
+#include "MouseCursorManager.h"
 
 #include "Main.h"
 
 #define _LAYERLIST_ICONSIZE	ICMSIZE_SMALL
 #define _LAYERLIST_LINECOLORSIZE	6
+
+
+#define _LAYERLIST_MARQUEESTATE_MOUSEDOWN	-2
+#define _LAYERLIST_MARQUEESTATE_MOUSEUP		-1
 
 // UILayerListCtrl
 
@@ -31,9 +36,11 @@ IMPLEMENT_DYNAMIC(UILayerListCtrl, CListCtrl)
 
 UILayerListCtrl::UILayerListCtrl()
 {
+	bTreeLocked = true;
 	bDragging = false;
 	pDragDropAfter = NULL;
 	pDragDropLayer = NULL;
+	firstMarqueeSelected = _LAYERLIST_MARQUEESTATE_MOUSEUP;
 }
 
 UILayerListCtrl::~UILayerListCtrl()
@@ -57,11 +64,14 @@ BEGIN_MESSAGE_MAP(UILayerListCtrl, CListCtrl)
 	ON_WM_KEYDOWN()
 	ON_NOTIFY_REFLECT(LVN_BEGINDRAG, &UILayerListCtrl::OnLvnBegindrag)
 	ON_WM_LBUTTONUP()
+	ON_WM_LBUTTONDOWN()
+	ON_WM_NCLBUTTONUP()
 END_MESSAGE_MAP()
 
 void UILayerListCtrl::RebuildTree( GObject * changebase, GObject * activeitem )
 {
 	SetRedraw(FALSE);
+	bTreeLocked = true;
 
 	DeleteItemsUnderObj(changebase);
 //	DeleteAllItems();
@@ -92,6 +102,7 @@ void UILayerListCtrl::RebuildTree( GObject * changebase, GObject * activeitem )
 	{
 		ASSERT(true);
 	}
+	bTreeLocked = false;
 	Invalidate();
 	SetRedraw();
 }
@@ -215,14 +226,7 @@ void UILayerListCtrl::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
-
-	int newSelected = pNMItemActivate->iItem;
-
-	if (pNMItemActivate->iSubItem == IDLBC_TREE)
-	{
-//		DeSelectParadox(newSelected);
-	}
-	Invalidate();
+	//Invalidate();
 	*pResult = 0;
 }
 
@@ -232,6 +236,10 @@ void UILayerListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 	NMLVCUSTOMDRAW *pCD = (NMLVCUSTOMDRAW*)pNMHDR;
 	// By default set the return value to do the default behavior.
 	*pResult = CDRF_DODEFAULT;
+	if (bTreeLocked)
+	{
+		return;
+	}
 
 	//obtain row and column of item
 	int nowDrawingItem = pCD->nmcd.dwItemSpec;
@@ -291,7 +299,7 @@ void UILayerListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 					}
 				}
 			}
-
+			
 			*pResult =  CDRF_NOTIFYPOSTPAINT;
 
 			//
@@ -322,7 +330,7 @@ void UILayerListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 				DWORD col = 0xffffff;
 				if (pObj)
 				{
-					col = pObj->getLineColor()&0xffffff;
+					col = (pcm->ARGBToABGR(pObj->getLineColor()))&0xffffff;
 				}
 
 				dc.FillSolidRect(rect, col);
@@ -335,7 +343,11 @@ void UILayerListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 				DWORD col = 0xffffff;
 				if (pObj)
 				{
-					col = pObj->GetLayer()->getLineColor()&0xffffff;
+					GObject * pLayer = pObj->GetLayer();
+					if (pLayer)
+					{
+						col = (pcm->ARGBToABGR(pLayer->getLineColor()))&0xffffff;
+					}
 				}
 
 				dc.FillSolidRect(rect, col);
@@ -394,7 +406,7 @@ void UILayerListCtrl::AddSelect( int index )
 	SetItemState(index, LVIS_SELECTED, LVIS_SELECTED);
 	SetSelectionMark(index);
 
-	DeSelectParadox(index);
+	DeSelectParadox(index, index);
 }
 
 void UILayerListCtrl::DeSelect( int index/*=-1*/ )
@@ -439,7 +451,7 @@ int UILayerListCtrl::GetItemIndent( int index )
 	return -1;
 }
 
-void UILayerListCtrl::DeSelectParadox( int index )
+bool UILayerListCtrl::DeSelectParadox( int index, int nowselecting )
 {
 	if (index < 0)
 	{
@@ -453,13 +465,18 @@ void UILayerListCtrl::DeSelectParadox( int index )
 		selindex = GetNextItem(selindex, LVNI_SELECTED);
 		if (selindex < 0)
 		{
-			return;
+			break;
 		}
 		if (GetItemIndent(selindex) != selindent)
 		{
 			DeSelect(selindex);
 		}
 	}
+	if ((firstMarqueeSelected>=0) && GetItemIndent(nowselecting) != selindent)
+	{
+		return false;
+	}
+	return true;
 }
 
 
@@ -469,11 +486,23 @@ void UILayerListCtrl::OnLvnItemchanging(NMHDR *pNMHDR, LRESULT *pResult)
 	// TODO: 在此添加控件通知处理程序代码
 	*pResult = 0;
 	
+	if (!(GetKeyState(VK_LBUTTON) & 0x8000))
+	{
+		firstMarqueeSelected = _LAYERLIST_MARQUEESTATE_MOUSEUP;
+	}
+
 	if (pNMLV->uChanged & LVIF_STATE)
 	{
 		if (pNMLV->uNewState & LVIS_SELECTED)
 		{
-			DeSelectParadox(pNMLV->iItem);
+			if (firstMarqueeSelected == _LAYERLIST_MARQUEESTATE_MOUSEDOWN)
+			{
+				firstMarqueeSelected = pNMLV->iItem;
+			}
+			if (!DeSelectParadox(firstMarqueeSelected, pNMLV->iItem))
+			{
+				*pResult = 1;
+			}
 		}
 	}
 	
@@ -665,18 +694,6 @@ void UILayerListCtrl::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 BOOL UILayerListCtrl::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
-// 	if (pMsg->message == WMUSER_REBUILDTREE)
-// 	{
-// 		RebuildTree((GObject *)pMsg->wParam, (GObject *)pMsg->lParam);
-// 	}
-// 	else if (pMsg->message == WM_KEYDOWN)
-// 	{
-// 		if (pMsg->wParam == VK_DELETE)
-// 		{
-// 			MainInterface::getInstance().OnCommand(COMM_DELETEITEM);
-// 		}
-// 	}
-
 
 	return CListCtrl::PreTranslateMessage(pMsg);
 }
@@ -686,14 +703,14 @@ void UILayerListCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 
-// 	if (nChar == VK_DELETE)
-// 	{
-//		MainInterface::getInstance().OnCommand(COMM_DELETEITEM);
-// 	}
-// 	if (nChar == VK_INSERT)
-// 	{
-//		MainInterface::getInstance().OnCommand(COMM_NEWLAYER);
-// 	}
+ 	if (nChar == VK_DELETE)
+ 	{
+		MainInterface::getInstance().OnCommand(COMM_DELETEITEM);
+ 	}
+ 	if (nChar == VK_INSERT)
+ 	{
+		MainInterface::getInstance().OnCommand(COMM_NEWLAYER);
+ 	}
 	CListCtrl::OnKeyDown(nChar, nRepCnt, nFlags);
 }
 
@@ -702,44 +719,48 @@ void UILayerListCtrl::OnLvnBegindrag(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
-//	bDragging = true;
-//	SetCapture();
+	bDragging = true;
+	MainInterface::getInstance().OnChangeMouseCursor(GetSafeHwnd(), MCHCURSOR_GRAB);
 	*pResult = 0;
 }
 
 void UILayerListCtrl::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-
+	if (bDragging)
+	{
+	}
 	CListCtrl::OnMouseMove(nFlags, point);
 }
 
 void UILayerListCtrl::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-// 	if (bDragging)
-// 	{
-// 		bDragging = false;
-// 		ReleaseCapture();
-// 
-// 		UINT uFlags = 0;
-// 		int droppedindex = HitTest(point, &uFlags);
-// 		if (droppedindex >= 0)
-// 		{
-// 			GObject * touchedobj = GetObjectByIndex(droppedindex);
-// 			if (touchedobj->isLayer())
-// 			{
-// 				pDragDropLayer = (GLayer *)touchedobj;
-// 				pDragDropAfter = NULL;
-// 			}
-// 			else
-// 			{
-// 				pDragDropLayer = (GLayer *)touchedobj->GetLayer();
-// 				pDragDropAfter = touchedobj;
-// 			}
-// 			MainInterface::getInstance().OnCommand(COMM_REPARENT);
-// 		}
-// 	}
+	firstMarqueeSelected = _LAYERLIST_MARQUEESTATE_MOUSEUP;
+	if (bDragging)
+	{
+		bDragging = false;
+		MainInterface::getInstance().OnChangeMouseCursor(GetSafeHwnd(), MCHCURSOR_POINTER);
+//		ReleaseCapture();
+
+		UINT uFlags = 0;
+		int droppedindex = HitTest(point, &uFlags);
+		if (droppedindex >= 0)
+		{
+			GObject * touchedobj = GetObjectByIndex(droppedindex);
+			if (touchedobj->isLayer())
+			{
+				pDragDropLayer = (GLayer *)touchedobj;
+				pDragDropAfter = NULL;
+			}
+			else
+			{
+				pDragDropLayer = (GLayer *)touchedobj->GetLayer();
+				pDragDropAfter = touchedobj;
+			}
+			MainInterface::getInstance().OnCommand(COMM_REPARENT);
+		}
+	}
 	CListCtrl::OnLButtonUp(nFlags, point);
 }
 
@@ -880,4 +901,34 @@ GObject * UILayerListCtrl::FindNextNode( int index, int * outindex/*=NULL */ )
 		*/
 	}
 	return NULL;
+}
+
+void UILayerListCtrl::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	firstMarqueeSelected = _LAYERLIST_MARQUEESTATE_MOUSEDOWN;
+//	SetCapture();
+	CListCtrl::OnLButtonDown(nFlags, point);
+}
+
+
+void UILayerListCtrl::OnNcLButtonUp(UINT nHitTest, CPoint point)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+	CListCtrl::OnNcLButtonUp(nHitTest, point);
+}
+
+void UILayerListCtrl::LockTreeChange( bool toLock )
+{
+	if (toLock)
+	{
+//		SetRedraw(FALSE);
+		bTreeLocked=true;
+	}
+	else
+	{
+//		SetRedraw(TRUE);
+		bTreeLocked=false;
+	}
 }
