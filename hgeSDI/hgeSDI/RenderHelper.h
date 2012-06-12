@@ -13,21 +13,13 @@ enum{
 class RenderHelper
 {
 public:
-	static RenderHelper& getInstance()
-	{
-		static RenderHelper instance;
-		// Guaranteed to be destroyed. Instantiated on first use.
-		return instance;
-	}
+	static RenderHelper& getInstance() { static RenderHelper instance; return instance; }
 
 private:
 	RenderHelper();
 	~RenderHelper();
-	// Don't forget to declare these two.
 	RenderHelper(RenderHelper const&);
-	// Don't Implement
 	void operator=(RenderHelper const&);
-	// Don't implement
 
 public:
 

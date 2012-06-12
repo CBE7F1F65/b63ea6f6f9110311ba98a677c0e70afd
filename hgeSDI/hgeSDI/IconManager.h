@@ -14,21 +14,13 @@ enum{
 class IconManager
 {
 public:
-	static IconManager& getInstance()
-	{
-		static IconManager instance;
-		// Guaranteed to be destroyed. Instantiated on first use.
-		return instance;
-	}
+	static IconManager& getInstance() { static IconManager instance; return instance; }
 
 private:
 	IconManager();
 	~IconManager();
-	// Don't forget to declare these two.
 	IconManager(IconManager const&);
-	// Don't Implement
 	void operator=(IconManager const&);
-	// Don't implement
 
 public:
 
@@ -44,6 +36,7 @@ public:
 	int GetLBLineSelectIcon( bool toSelect );
 	int GetCMDDeleteItemIcon( int state );
 	int GetCMDSnapShotIcon( int state );
+	int GetCMDDuplicateIcon( int state );
 	int GetCMDNewLayerIcon( int state );
 	int GetCMDNewSubLayerIcon( int state );
 	int GetBlankIcon();

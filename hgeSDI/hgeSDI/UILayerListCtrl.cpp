@@ -653,8 +653,15 @@ void UILayerListCtrl::OnLvnEndlabeledit(NMHDR *pNMHDR, LRESULT *pResult)
 		if (pDispInfo->item.pszText && strlen(pDispInfo->item.pszText))
 		{
 			GObject * pObj = GetObjectByIndex(pDispInfo->item.iItem);
-			pObj->setDisplayName(pDispInfo->item.pszText);
-			SetItemText(pDispInfo->item.iItem, IDLBC_TREE, pDispInfo->item.pszText);
+			MainInterface::getInstance().OnCommandWithParam(
+				COMM_SETNODENAME,
+				CCCWPARAM_I(pObj->getID()),
+				CCCWPARAM_S(pDispInfo->item.pszText),
+				NULL
+				);
+//			pObj->setDisplayName(pDispInfo->item.pszText);
+//			SetItemText(pDispInfo->item.iItem, IDLBC_TREE, pDispInfo->item.pszText);
+
 		}
 	}
 
@@ -941,4 +948,14 @@ void UILayerListCtrl::LockTreeChange( bool toLock )
 //		SetRedraw(TRUE);
 		bTreeLocked=false;
 	}
+}
+
+void UILayerListCtrl::ChangeNode( GObject * pObj )
+{
+	int index = FindItemByData(pObj);
+	if (index < 0)
+	{
+		return;
+	}
+	RebuildTree(pObj->getParent(), pObj);
 }

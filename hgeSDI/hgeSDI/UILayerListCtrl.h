@@ -24,6 +24,7 @@ public:
 	void RebuildTree( GObject * changebase, GObject * activeitem );
 	void BuildChildren(GObject * nowbase, int & nowindex, int indentlevel);
 	void DeleteItemsUnderObj(GObject * obj);
+	void ChangeNode( GObject * pObj );
 
 	void AddSelect(int index=-1);
 	void DeSelect(int index=-1);

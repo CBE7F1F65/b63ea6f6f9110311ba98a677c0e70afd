@@ -15,7 +15,7 @@
 // UILayerDockablePane
 
 
-#define _UILBBUTTONCOUNT	3
+#define _UILBBUTTONCOUNT	4
 
 IMPLEMENT_DYNAMIC(UILayerDockablePane, CDockablePane)
 
@@ -32,6 +32,7 @@ BEGIN_MESSAGE_MAP(UILayerDockablePane, CDockablePane)
 	ON_WM_CLOSE()
 	ON_WM_SIZE()
 	ON_UPDATE_COMMAND_UI_RANGE(ID_UI_BUTTON_LAYER_BEGIN, ID_UI_BUTTON_LAYER_END, &UILayerDockablePane::OnUpdateUIButtons)
+	ON_BN_CLICKED(ID_UI_BUTTON_LAYER_DUPLICATE, OnDuplicateButtonClicked)
 	ON_BN_CLICKED(ID_UI_BUTTON_LAYER_NEWLAYER, OnNewLayerButtonClicked)
 	ON_BN_CLICKED(ID_UI_BUTTON_LAYER_NEWSUBLAYER, OnNewSubLayerButtonClicked)
 	ON_BN_CLICKED(ID_UI_BUTTON_LAYER_DELETEITEM, OnDeleteItemButtonClicked)
@@ -65,6 +66,13 @@ int UILayerDockablePane::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 	m_wndFakeButtonR.SetButtonEnable(false);
 	IconManager * picm = &IconManager::getInstance();
+
+	if (!m_wndDuplicateButton.DCreate(ID_UI_BUTTON_LAYER_DUPLICATE, this, 
+		StringManager::getInstance().GetCommandDescriptionName(COMM_DUPLICATE), 
+		_LAYERBUTTON_ICONSIZE, picm->GetCMDDuplicateIcon(ICMSTATE_NORMAL), picm->GetCMDDuplicateIcon(ICMSTATE_DISABLED)))
+	{
+		return -1;
+	}
 
 	if (!m_wndNewLayerButton.DCreate(ID_UI_BUTTON_LAYER_NEWLAYER, this, 
 		StringManager::getInstance().GetCommandDescriptionName(COMM_NEWLAYER), 
@@ -110,11 +118,13 @@ void UILayerDockablePane::OnSize(UINT nType, int cx, int cy)
 
 	m_wndFakeButtonL.SetWindowPos(NULL, 0, ybegin, fakelwidth, a, 
 		SWP_NOACTIVATE | SWP_NOZORDER);
-	m_wndNewLayerButton.SetWindowPos(NULL, fakelwidth, ybegin, a, a, 
+	m_wndDuplicateButton.SetWindowPos(NULL, fakelwidth, ybegin, a, a, 
 		SWP_NOACTIVATE | SWP_NOZORDER);
-	m_wndNewSubLayerButton.SetWindowPos(NULL, fakelwidth+a, ybegin, a, a, 
+	m_wndNewLayerButton.SetWindowPos(NULL, fakelwidth+a, ybegin, a, a, 
 		SWP_NOACTIVATE | SWP_NOZORDER);
-	m_wndDeleteItemButton.SetWindowPos(NULL, fakelwidth+2*a, ybegin, a, a, 
+	m_wndNewSubLayerButton.SetWindowPos(NULL, fakelwidth+2*a, ybegin, a, a, 
+		SWP_NOACTIVATE | SWP_NOZORDER);
+	m_wndDeleteItemButton.SetWindowPos(NULL, fakelwidth+3*a, ybegin, a, a, 
 		SWP_NOACTIVATE | SWP_NOZORDER);
 	m_wndFakeButtonR.SetWindowPos(NULL, fakelwidth+_UILBBUTTONCOUNT*a, ybegin, a, a, 
 		SWP_NOACTIVATE | SWP_NOZORDER);
@@ -158,6 +168,11 @@ void UILayerDockablePane::OnUpdateUIButtons(CCmdUI *pCmdUI)
 	}
 }
 
+void UILayerDockablePane::OnDuplicateButtonClicked()
+{
+	MainInterface::getInstance().OnCommand(COMM_DUPLICATE);
+}
+
 void UILayerDockablePane::OnNewLayerButtonClicked()
 {
 	MainInterface::getInstance().OnCommand(COMM_NEWLAYER);
@@ -181,4 +196,9 @@ void UILayerDockablePane::CallReparentSelectedNodes( int op )
 void UILayerDockablePane::LockTreeChange( bool toLock )
 {
 	m_wndListCtrl.LockTreeChange(toLock);
+}
+
+void UILayerDockablePane::ChangeNode( GObject * pObj )
+{
+	m_wndListCtrl.ChangeNode(pObj);
 }

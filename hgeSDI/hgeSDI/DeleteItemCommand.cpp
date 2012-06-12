@@ -64,15 +64,6 @@ void DeleteItemCommand::OnProcessCommand()
 		}
 		else
 		{
-			int index = pcommand->GetParamI(CSP_DELETEITEM_I_INDEXES);
-			/*
-			GObject * pObj = pgm->FindObjectByID(index);
-			if (!pgm->CanDeleteItem(pObj))
-			{
-				pcommand->StepTo(CSI_TERMINAL);
-				return;
-			}
-			*/
 			pcommand->SetParamI(CSP_DELETEITEM_I_INDEXES+1, -1, CWP_INDEX);
 		}
 	}

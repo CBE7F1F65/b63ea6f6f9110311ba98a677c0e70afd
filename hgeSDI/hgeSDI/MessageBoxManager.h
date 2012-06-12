@@ -8,22 +8,14 @@ enum{
 class MessageBoxManager
 {
 public:
-	static MessageBoxManager& getInstance()
-	{
-		static MessageBoxManager instance;
-		// Guaranteed to be destroyed. Instantiated on first use.
-		return instance;
-	}
+	static MessageBoxManager& getInstance() { static MessageBoxManager instance; return instance; }
 
 private:
 	MessageBoxManager();
 	~MessageBoxManager();
-	// Don't forget to declare these two.
 	MessageBoxManager(MessageBoxManager const&);
-	// Don't Implement
 	void operator=(MessageBoxManager const&);
-	// Don't implement
-
+	
 
 public:
 	bool DoOKCancelBox(int type);

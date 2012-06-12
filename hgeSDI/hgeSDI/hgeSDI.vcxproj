@@ -134,6 +134,7 @@
     <ClInclude Include="CommandDefines.h" />
     <ClInclude Include="CommandTemplate.h" />
     <ClInclude Include="DeleteItemCommand.h" />
+    <ClInclude Include="DuplicateCommand.h" />
     <ClInclude Include="GBaseNode.h" />
     <ClInclude Include="GLayer.h" />
     <ClInclude Include="GLine.h" />
@@ -166,6 +167,7 @@
     <ClInclude Include="ReparentCommand.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceCustomIDs.h" />
+    <ClInclude Include="SetNodeNameCommand.h" />
     <ClInclude Include="SetWorkingLayerCommand.h" />
     <ClInclude Include="SnapshotManager.h" />
     <ClInclude Include="stdafx.h" />
@@ -189,6 +191,7 @@
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="CommandGetTemplate.cpp" />
     <ClCompile Include="DeleteItemCommand.cpp" />
+    <ClCompile Include="DuplicateCommand.cpp" />
     <ClCompile Include="GBaseNode.cpp" />
     <ClCompile Include="MessageBoxManager.cpp" />
     <ClCompile Include="MouseCursorManager.cpp" />
@@ -220,6 +223,7 @@
     <ClCompile Include="RenderHelper.cpp" />
     <ClCompile Include="RenderTargetManager.cpp" />
     <ClCompile Include="ReparentCommand.cpp" />
+    <ClCompile Include="SetNodeNameCommand.cpp" />
     <ClCompile Include="SetWorkingLayerCommand.cpp" />
     <ClCompile Include="SnapshotManager.cpp" />
     <ClCompile Include="stdafx.cpp">

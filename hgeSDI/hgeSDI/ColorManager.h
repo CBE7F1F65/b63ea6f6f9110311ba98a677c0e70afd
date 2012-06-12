@@ -46,21 +46,13 @@ public:
 class ColorManager
 {
 public:
-	static ColorManager& getInstance()
-	{
-		static ColorManager instance;
-		// Guaranteed to be destroyed. Instantiated on first use.
-		return instance;
-	}
+	static ColorManager& getInstance() { static ColorManager instance; return instance; }
 
 private:
 	ColorManager();
 	~ColorManager();
-	// Don't forget to declare these two.
 	ColorManager(ColorManager const&);
-	// Don't Implement
 	void operator=(ColorManager const&);
-	// Don't implement
 
 public:
 

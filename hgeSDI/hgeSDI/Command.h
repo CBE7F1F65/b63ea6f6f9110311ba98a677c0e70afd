@@ -83,6 +83,10 @@ public:
 #define COMMITTEDCOMMANDTYPE_STRING			0x40
 #define F_COMMITTEDCOMMANDTYPE_STRING			0xff
 
+#define CCCWPARAM_F(FVAL)	COMMITTEDCOMMANDTYPE_FLOAT, (FVAL)
+#define CCCWPARAM_I(IVAL)	COMMITTEDCOMMANDTYPE_INT, (IVAL)
+#define CCCWPARAM_S(SVAL)	COMMITTEDCOMMANDTYPE_STRING, (SVAL)
+
 class CommittedCommand
 {
 public:
@@ -132,21 +136,13 @@ public:
 class Command
 {
 public:
-	static Command& getInstance()
-	{
-		static Command instance;
-		// Guaranteed to be destroyed. Instantiated on first use.
-		return instance;
-	}
+	static Command& getInstance() { static Command instance; return instance; }
 
 private:
 	Command();
 	~Command();
-	// Don't forget to declare these two.
 	Command(Command const&);
-	// Don't Implement
 	void operator=(Command const&);
-	// Don't implement
 
 public:
 

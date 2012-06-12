@@ -16,6 +16,8 @@
 
 #include "Resource.h"
 
+#include <sstream>
+
 #define MV_ACTIVEDELAY	10
 
 MainInterface::MainInterface()
@@ -370,9 +372,75 @@ void MainInterface::CallAppendCommandLogText( const char * text, bool bNewLine/*
 	parentview->GetMainFrame()->AppendCommandLogText(text, bNewLine);
 }
 
+void MainInterface::CallChangeNode( GObject * pObj )
+{
+	parentview->GetMainFrame()->ChangeNode(pObj);
+}
+
 int MainInterface::OnCommand( int comm )
 {
 	return Command::getInstance().CreateCommandCommit(comm);
+}
+
+int MainInterface::OnCommandWithParam( int comm, int firsttype, ... )
+{
+	va_list	ap;
+	va_start(ap, firsttype);
+
+	Command * pcommand = &Command::getInstance();
+	OnCommand(comm);
+
+	va_start(ap, firsttype);
+	int vait = firsttype;
+
+	list<string>strlist;
+
+	while (true)
+	{
+		if (!vait)
+		{
+			break;
+		}
+		switch (vait)
+		{
+		case COMMITTEDCOMMANDTYPE_FLOAT:
+			{
+				float vaif = (float)va_arg(ap, float);
+				stringstream ss;
+				ss << vaif;
+				strlist.push_back(ss.str());
+			}
+			break;
+		case COMMITTEDCOMMANDTYPE_INT:
+			{
+				int vaii = (int)va_arg(ap, int);
+				stringstream ss;
+				ss << vaii;
+				strlist.push_back(ss.str());
+			}
+			break;
+		case COMMITTEDCOMMANDTYPE_STRING:
+			{
+				char * vais = (char *)va_arg(ap, char *);
+				ASSERT(vais);
+				stringstream ss;
+				ss << "\"" << vais << "\"";
+				strlist.push_back(ss.str());
+			}
+			break;
+		default:
+			ASSERT(true);
+		}
+		vait = (int)va_arg(ap, int);
+	}
+	va_end(ap);
+
+	for (list<string>::iterator it=strlist.begin(); it!=strlist.end(); ++it)
+	{
+		pcommand->CommitCommand(it->c_str());
+	}
+
+	return pcommand->ccomm.command;
 }
 
 int MainInterface::OnCommitCommand( const char * str )

@@ -212,6 +212,7 @@ void CommandTemplate::PushRevertable( CommittedCommand * first, ... )
 		_rc.PushCommand(vai);
 		vai = (CommittedCommand*)va_arg(ap, CommittedCommand*);
 	}
+	va_end(ap);
 
 	pcommand->PushRevertable(&_rc);
 
@@ -235,6 +236,7 @@ void CommandTemplate::CommitFrontCommand( CommittedCommand * first, ... )
 		listfc.push_front(vai);
 		vai = (CommittedCommand *)va_arg(ap, CommittedCommand *);
 	}
+	va_end(ap);
 
 	for (list<CommittedCommand*>::iterator it=listfc.begin(); it!=listfc.end(); ++it)
 	{

@@ -98,6 +98,12 @@ int IconManager::GetCMDDeleteItemIcon( int state )
 	return 0;
 }
 
+int IconManager::GetCMDDuplicateIcon( int state )
+{
+	// ToDo!!
+	return 0;
+}
+
 int IconManager::GetCMDNewLayerIcon( int state )
 {
 	// ToDo!!

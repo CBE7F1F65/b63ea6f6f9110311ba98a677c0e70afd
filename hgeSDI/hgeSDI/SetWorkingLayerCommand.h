@@ -6,21 +6,13 @@ class SetWorkingLayerCommand :
 	public CommandTemplate
 {
 public:
-	static SetWorkingLayerCommand& getInstance()
-	{
-		static SetWorkingLayerCommand instance;
-		// Guaranteed to be destroyed. Instantiated on first use.
-		return instance;
-	}
+	static SetWorkingLayerCommand& getInstance() { static SetWorkingLayerCommand instance; return instance; }
 
 private:
 	SetWorkingLayerCommand();
 	~SetWorkingLayerCommand();
-	// Don't forget to declare these two.
 	SetWorkingLayerCommand(SetWorkingLayerCommand const&);
-	// Don't Implement
 	void operator=(SetWorkingLayerCommand const&);
-	// Don't implement
 
 public:
 	

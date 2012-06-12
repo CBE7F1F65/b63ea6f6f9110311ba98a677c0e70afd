@@ -59,21 +59,13 @@ public:
 class MathHelper
 {
 public:
-	static MathHelper& getInstance()
-	{
-		static MathHelper instance;
-		// Guaranteed to be destroyed. Instantiated on first use.
-		return instance;
-	}
+	static MathHelper& getInstance() { static MathHelper instance; return instance; }
 
 private:
 	MathHelper();
 	~MathHelper();
-	// Don't forget to declare these two.
 	MathHelper(MathHelper const&);
-	// Don't Implement
 	void operator=(MathHelper const&);
-	// Don't implement
 
 public:
 

@@ -31,21 +31,13 @@ public:
 class SnapshotManager
 {
 public:
-	static SnapshotManager& getInstance()
-	{
-		static SnapshotManager instance;
-		// Guaranteed to be destroyed. Instantiated on first use.
-		return instance;
-	}
+	static SnapshotManager& getInstance() { static SnapshotManager instance; return instance; }
 
 private:
 	SnapshotManager();
 	~SnapshotManager();
-	// Don't forget to declare these two.
 	SnapshotManager(SnapshotManager const&);
-	// Don't Implement
 	void operator=(SnapshotManager const&);
-	// Don't implement
 
 public:
 	void OnDeleteUnDo(int maxsize);

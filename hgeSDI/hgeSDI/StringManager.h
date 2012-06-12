@@ -90,21 +90,13 @@ public:
 class StringManager
 {
 public:
-	static StringManager& getInstance()
-	{
-		static StringManager instance;
-		// Guaranteed to be destroyed. Instantiated on first use.
-		return instance;
-	}
+	static StringManager& getInstance() { static StringManager instance; return instance; }
 
 private:
 	StringManager();
 	~StringManager();
-	// Don't forget to declare these two.
 	StringManager(StringManager const&);
-	// Don't Implement
 	void operator=(StringManager const&);
-	// Don't implement
 
 public:
 

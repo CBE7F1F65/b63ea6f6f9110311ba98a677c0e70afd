@@ -455,6 +455,11 @@ void CMainFrame::SetActiveLayer_Internal( GLayer * pLayer )
 	return m_wndUILayerPane.SetActiveLayer_Internal(pLayer);
 }
 
+void CMainFrame::ChangeNode( GObject * pObj )
+{
+	m_wndUILayerPane.ChangeNode(pObj);
+}
+
 void CMainFrame::OnClose()
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值

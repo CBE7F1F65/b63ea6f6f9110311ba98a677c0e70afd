@@ -43,6 +43,7 @@ public:
 	bool ChangeCurrentHistory(int step);
 	bool ClearLaterHistory(int ndelete);
 	bool ClearPreviousHistory(int ndelete);
+	void ChangeNode( GObject * pObj );
 
 	void LockTreeChange( bool toLock );
 	bool RebuildLayerTree(GObject * changebase, GObject * activeitem);

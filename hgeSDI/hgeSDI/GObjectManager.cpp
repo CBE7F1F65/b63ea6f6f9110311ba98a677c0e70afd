@@ -276,6 +276,10 @@ bool GObjectManager::CanReparentItem( GObject * pObj, int newparentindex )
 		if (newparentindex >= 0)
 		{
 			GObject * pNewPlaceAfter = FindObjectByID(newparentindex);
+			if (!pNewPlaceAfter)
+			{
+				return false;
+			}
 			if (pNewPlaceAfter->isAttributeNode())
 			{
 				return false;
@@ -290,6 +294,15 @@ bool GObjectManager::CanReparentItem( GObject * pObj, int newparentindex )
 		{
 			return true;
 		}
+	}
+	return false;
+}
+
+bool GObjectManager::CanDuplicateItem( GObject * pObj )
+{
+	if (pObj->getParent())
+	{
+		return true;
 	}
 	return false;
 }

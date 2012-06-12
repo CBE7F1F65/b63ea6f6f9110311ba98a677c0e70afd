@@ -13,21 +13,13 @@
 class MainInterface
 {
 public:
-	static MainInterface& getInstance()
-	{
-		static MainInterface instance;
-		// Guaranteed to be destroyed. Instantiated on first use.
-		return instance;
-	}
+	static MainInterface& getInstance() { static MainInterface instance; return instance; }
 
 private:
 	MainInterface();
 	~MainInterface();
-	// Don't forget to declare these two.
 	MainInterface(MainInterface const&);
-	// Don't Implement
 	void operator=(MainInterface const&);
-	// Don't implement
 
 public:
 
@@ -49,6 +41,7 @@ public:
 		COMM_LINE,
 	};
 	int OnCommand(int comm);
+	int OnCommandWithParam(int comm, int firsttype, ...);
 	int OnCommitCommand(const char * str);
 
 	void OnPushRevertable(const char * desc, const char * commandstr, int command);
@@ -69,6 +62,7 @@ public:
 	void CallContextMenu(float x, float y);
 	void CallUpdateStatusBarText(int id, const char * text);
 	void CallAppendCommandLogText(const char * text, bool bNewLine=true);
+	void CallChangeNode( GObject * pObj );
 
 	// To Command
 	void CallUnDoReDo(int step);

@@ -10,21 +10,13 @@ enum
 class GUICursor
 {
 public:
-	static GUICursor& getInstance()
-	{
-		static GUICursor instance;
-		// Guaranteed to be destroyed. Instantiated on first use.
-		return instance;
-	}
+	static GUICursor& getInstance() { static GUICursor instance; return instance; }
 
 private:
 	GUICursor();
 	~GUICursor();
-	// Don't forget to declare these two.
 	GUICursor(GUICursor const&);
-	// Don't Implement
 	void operator=(GUICursor const&);
-	// Don't implement
 
 public:
 

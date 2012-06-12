@@ -41,6 +41,8 @@ enum{
 	// Node
 	COMM_DELETEITEM,
 	COMM_REPARENT,
+	COMM_SETNODENAME,
+	COMM_DUPLICATE,
 
 	// Layers
 	COMM_NEWLAYER,		// new layer
@@ -152,10 +154,23 @@ enum{
 enum{
 	CSP_DELETEITEM_I_INDEXES=0,
 };
-
+//////////////////////////////////////////////////////////////////////////
 enum{
 	CSI_DELETEITEM_DUMMY=0,
 	CSI_DELETEITEM_WANTINDEXES,
+};
+
+/************************************************************************/
+/* DUPLICATE                                                            */
+/************************************************************************/
+
+enum{
+	CSP_DUPLICATE_I_INDEXES=0,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_DUPLICATE_DUMMY=0,
+	CSI_DUPLICATE_WANTINDEXES,
 };
 
 /************************************************************************/
@@ -170,6 +185,21 @@ enum{
 	CSI_NEWLAYER_DUMMY=0,
 	CSI_NEWLAYER_WANTNAME,
 	CSI_NEWLAYER_WANTINDEX,
+};
+
+/************************************************************************/
+/* SETNODENAME                                                         */
+/************************************************************************/
+
+enum{
+	CSP_SETNODENAME_I_S_INDEX_NEWNAME,
+	CSP_SETNODENAME_S_OLDNAME,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_SETNODENAME_DUMMY=0,
+	CSI_SETNODENAME_WANTINDEX,
+	CSI_SETNODENAME_WANTNEWNAME,
 };
 
 /************************************************************************/

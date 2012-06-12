@@ -10,20 +10,12 @@ enum {
 class GUICoordinate
 {
 public:
-	static GUICoordinate& getInstance()
-	{
-		static GUICoordinate instance;
-		// Guaranteed to be destroyed. Instantiated on first use.
-		return instance;
-	}
+	static GUICoordinate& getInstance() { static GUICoordinate instance; return instance; }
 private:
 	GUICoordinate();
 	~GUICoordinate();
-	// Don't forget to declare these two.
 	GUICoordinate(GUICoordinate const&);
-	// Don't Implement
 	void operator=(GUICoordinate const&);
-	// Don't implement
 
 public:
 

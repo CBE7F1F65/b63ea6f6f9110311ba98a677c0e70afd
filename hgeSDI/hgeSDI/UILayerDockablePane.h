@@ -22,15 +22,18 @@ public:
 	GObject * GetActiveNodes( int * pnextfromIndex );
 	bool GetDragDropNodes( GLayer ** pLayerNode, GObject ** pAfterNode );
 	void SetActiveLayer_Internal( GLayer * pLayer );
+	void ChangeNode( GObject * pObj );
 
 	UILayerListCtrl m_wndListCtrl;
 
 	UIDockablePaneButton m_wndFakeButtonL;
 	UIDockablePaneButton m_wndFakeButtonR;
+	UIDockablePaneButton m_wndDuplicateButton;
 	UIDockablePaneButton m_wndNewLayerButton;
 	UIDockablePaneButton m_wndNewSubLayerButton;
 	UIDockablePaneButton m_wndDeleteItemButton;
 
+	void OnDuplicateButtonClicked();
 	void OnNewLayerButtonClicked();
 	void OnNewSubLayerButtonClicked();
 	void OnDeleteItemButtonClicked();

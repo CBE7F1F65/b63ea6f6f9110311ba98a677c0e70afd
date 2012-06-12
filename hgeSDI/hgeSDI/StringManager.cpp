@@ -98,6 +98,9 @@ void StringManager::FillSCInfo()
 
 	_BSET(	COMM_REPARENT,	"REPARENT",	"",	"Reparent Item",	"");
 	_BSET(	COMM_DELETEITEM,	"DELETE",	"DEL",	"Delete Item",	""	);
+	_BSET(	COMM_SETNODENAME,	"SETNODENAME",	"",	"Set Display Name",	""	);
+	_BSET(	COMM_DUPLICATE,	"DUPLICATE",	"DUP",	"Duplicate Item",	""	);
+
 	_BSET(	COMM_SETWORKINGLAYER,	"SETWORKINGLAYER",	"",	"Set Working Layer",	""	);
 	_BSET(	COMM_NEWLAYER,	"NEWLAYER", "NL",	"New Layer",	""	);
 	_BSET(	COMM_NEWSUBLAYER,	"NEWSUBLAYER",	"NSL",	"New Sub Layer", "");

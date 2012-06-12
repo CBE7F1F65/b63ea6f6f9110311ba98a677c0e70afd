@@ -320,7 +320,10 @@ int GObject::ReparentAfterObject( GObject * newparent, GObject * afterobj )
 	ASSERT(newparent != NULL);
 	GObject * _pParent = pParent;
 	_RemoveFromParent(false);
-	this->setLineColor(0);
+	if (!isLayer())
+	{
+		setLineColor(0);
+	}
 	int ret = newparent->AddChildAfterObj(this, afterobj);
 	_CallTreeChanged(_pParent, _pParent);
 	_CallTreeChanged(newparent, this);

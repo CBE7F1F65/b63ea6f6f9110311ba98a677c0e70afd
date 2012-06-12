@@ -11,21 +11,13 @@ class GObjectManager
 	friend class GObject;
 
 public:
-	static GObjectManager& getInstance()
-	{
-		static GObjectManager instance;
-		// Guaranteed to be destroyed. Instantiated on first use.
-		return instance;
-	}
+	static GObjectManager& getInstance() { static GObjectManager instance; return instance; }
 
 private:
 	GObjectManager();
 	~GObjectManager();
-	// Don't forget to declare these two.
 	GObjectManager(GObjectManager const&);
-	// Don't Implement
 	void operator=(GObjectManager const&);
-	// Don't implement
 
 public:
 
@@ -45,6 +37,7 @@ public:
 
 	bool CanDeleteItem( GObject * pObj );
 	bool CanReparentItem( GObject * pObj, int newparentindex );
+	bool CanDuplicateItem( GObject * pObj );
 
 	GObject * FindObjectByID(int id);
 

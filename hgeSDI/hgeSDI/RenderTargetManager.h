@@ -21,21 +21,13 @@ struct RenderTargetInfo
 class RenderTargetManager
 {
 public:
-	static RenderTargetManager& getInstance()
-	{
-		static RenderTargetManager instance;
-		// Guaranteed to be destroyed. Instantiated on first use.
-		return instance;
-	}
+	static RenderTargetManager& getInstance() { static RenderTargetManager instance; return instance; }
 
 private:
 	RenderTargetManager();
 	~RenderTargetManager();
-	// Don't forget to declare these two.
 	RenderTargetManager(RenderTargetManager const&);
-	// Don't Implement
 	void operator=(RenderTargetManager const&);
-	// Don't implement
 
 public:
 

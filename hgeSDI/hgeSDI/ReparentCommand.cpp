@@ -127,6 +127,7 @@ void ReparentCommand::OnProcessCommand()
 		}
 		else
 		{
+			/*
 			int newparentindex = pcommand->GetParamI(CSP_REPARENT_I_NEWPARENTINDEX);
 			int afterindex = pcommand->GetParamI(CSP_REPARENT_I_AFTERINDEX);
 			int oldindex = pcommand->GetParamI(CSP_REPARENT_I_OLDINDEXES);
@@ -147,6 +148,7 @@ void ReparentCommand::OnProcessCommand()
 				pcommand->StepTo(CSI_TERMINAL);
 				return;
 			}
+			*/
 			pcommand->SetParamI(CSP_REPARENT_I_OLDINDEXES+1, -1, CWP_INDEX);
 		}
 	}
@@ -188,14 +190,15 @@ void ReparentCommand::OnDoneCommand()
 		GObject * pOriParent = pObj->getParent();
 		GObject * pOAfter = pObj->getYoungerSibling();
 
-		GBaseNode tempHoldingPlace;
-		pObj->Reparent(&tempHoldingPlace);
-
 		newparentindex = pNewParent->getID();
 		if (!pgm->CanReparentItem(pObj, newparentindex))
 		{
 			continue;
 		}
+
+		GBaseNode tempHoldingPlace;
+		pObj->Reparent(&tempHoldingPlace);
+
 		pObj->ReparentAfterObject(pNewParent, pNewPlaceAfter);
 
 		int oparentindex = pOriParent->getID();

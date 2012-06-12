@@ -9,6 +9,8 @@
 #include "DeleteItemCommand.h"
 #include "ReparentCommand.h"
 #include "OutputCommand.h"
+#include "SetNodeNameCommand.h"
+#include "DuplicateCommand.h"
 
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
@@ -22,6 +24,10 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 		return &ReparentCommand::getInstance();
 	case COMM_DELETEITEM:
 		return &DeleteItemCommand::getInstance();
+	case COMM_SETNODENAME:
+		return &SetNodeNameCommand::getInstance();
+	case COMM_DUPLICATE:
+		return &DuplicateCommand::getInstance();
 
 	case COMM_NEWLAYER:
 	case COMM_NEWSUBLAYER:

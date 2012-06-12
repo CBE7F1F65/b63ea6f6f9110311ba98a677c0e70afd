@@ -624,7 +624,7 @@ int Command::CreateCommandCommit( int command, int iparam/*=1*/ )
 
 bool _CheckCharToBreak(char ch)
 {
-	if (ch >= 'a' && ch <= 'z' || ch == '_' || ch >= 'A' && ch <= 'Z' || ch >= '0' && ch <= '9' || ch == '-' || ch == '+' || ch == '.' || ch < 0)
+	if (ch >= 'a' && ch <= 'z' || ch == '\"' || ch == '\'' || ch == '_' || ch >= 'A' && ch <= 'Z' || ch >= '0' && ch <= '9' || ch == '-' || ch == '+' || ch == '.' || ch < 0)
 	{
 		return false;
 	}
@@ -730,7 +730,7 @@ int Command::_FindNextSubStr( const char * str, CommittedCommand * cc, int maxns
 	}
 	if (!cc->type)
 	{
-		if (_CheckCharQuote(ch[0]))
+		if (checkquote)
 		{
 			cc->type = COMMITTEDCOMMANDTYPE_STRING;
 		}
@@ -911,13 +911,14 @@ void Command::EnableSubCommand( bool bdisplay, int first, ... )
 		return;
 	}
 
-	va_list ap;
-	va_start(ap, first);
-	int vai = first;
-	if (!vai)
+	if (!first)
 	{
 		return;
 	}
+
+	va_list ap;
+	va_start(ap, first);
+	int vai = first;
 
 	if (pendingparam.type)
 	{
@@ -939,6 +940,8 @@ void Command::EnableSubCommand( bool bdisplay, int first, ... )
 		}
 		vai = (int)va_arg(ap, int);
 	}
+	va_end(ap);
+
 	if (bdisplay)
 	{
 		LogDisplaySubCommandEnd();
@@ -1062,7 +1065,7 @@ bool Command::canReDoDone()
 	}
 	return false;
 }
-#include <sstream>
+
 int Command::CreateUnDoCommandCommit( int step/*=1*/ )
 {
 	ASSERT(step>=0);
