@@ -4,6 +4,7 @@
 
 #include "GObjectManager.h"
 #include "Command.h"
+#include "MessageBoxManager.h"
 
 
 SnapshotManager::SnapshotManager(void)
@@ -121,9 +122,13 @@ bool SnapshotManager::RevertToSnapshot( int nSnapshot )
 	{
 		if (i==nSnapshot)
 		{
+			Command::getInstance().StepTo(CSI_TERMINAL);
 			if (!it->isValid())
 			{
-				LoadNode(&(it->savednode));
+				if (MessageBoxManager::getInstance().DoOKCancelBox(MSGBM_OKCANCEL_SNAPSHOT_RECOVERFROMINVALID))
+				{
+					LoadNode(&(it->savednode));
+				}
 			}
 			else
 			{

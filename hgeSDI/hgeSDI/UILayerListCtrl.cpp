@@ -694,6 +694,24 @@ void UILayerListCtrl::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 BOOL UILayerListCtrl::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		if (pMsg->wParam == VK_INSERT)
+		{
+			if (GetKeyState(VK_SHIFT) & 0x8000)
+			{
+				MainInterface::getInstance().OnCommand(COMM_NEWSUBLAYER);
+			}
+			else
+			{
+				MainInterface::getInstance().OnCommand(COMM_NEWLAYER);
+			}
+		}
+		else if (pMsg->wParam == VK_DELETE)
+		{
+			MainInterface::getInstance().OnCommand(COMM_DELETEITEM);
+		}
+	}
 
 	return CListCtrl::PreTranslateMessage(pMsg);
 }
@@ -703,14 +721,6 @@ void UILayerListCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 
- 	if (nChar == VK_DELETE)
- 	{
-		MainInterface::getInstance().OnCommand(COMM_DELETEITEM);
- 	}
- 	if (nChar == VK_INSERT)
- 	{
-		MainInterface::getInstance().OnCommand(COMM_NEWLAYER);
- 	}
 	CListCtrl::OnKeyDown(nChar, nRepCnt, nFlags);
 }
 

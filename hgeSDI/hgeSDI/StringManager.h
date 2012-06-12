@@ -66,6 +66,8 @@ public:
 #define INIS_NODENAME		"NodeName"
 #define INIS_COMMANDLOG		"CommandLog"
 
+#define INIS_MESSAGEBOX		"MessageBox"
+
 #define INIS_TOOLTIP		"ToolTip"
 #define INIS_DEFAULTSTR		"DefaultString"
 
@@ -234,6 +236,15 @@ public:
 	_SMTOOLTIPDEF(	Delete,	"Delete"	);
 
 #undef _SMTOOLTIPDEF
+
+#define _SMMBDEF(STRNAME, DEF)	\
+	_SMFDEF(MB##STRNAME, INIS_MESSAGEBOX, DEF)
+
+	_SMMBDEF(Warning, "Warning");
+	_SMMBDEF(WRecoverFromInvalidSnapshot, "This action will clear all UNDO steps and is inrevertable.\r\nDo you want to continue?");
+	_SMMBDEF(Error, "Error");
+
+#undef	_SMMBDEF
 
 #undef _SMFDEF
 };
