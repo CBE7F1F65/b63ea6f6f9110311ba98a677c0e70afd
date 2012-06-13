@@ -90,13 +90,13 @@ void GStraightLine::OnUpdate()
 	GObject::OnUpdate();
 }
 
-void GStraightLine::OnRender()
+void GStraightLine::OnRender( bool bHighlight/*=false*/ )
 {
 	if (plbegin && plend)
 	{
-		RenderHelper::getInstance().RenderLine(plbegin->x, plbegin->y, plend->x, plend->y, getLineColor());
+		DWORD col = getLineColor(bHighlight);
+		RenderHelper::getInstance().RenderLine(plbegin->x, plbegin->y, plend->x, plend->y, col);
 	}
-	GObject::OnRender();
 }
 
 bool GStraightLine::Clone( GObject * pNewParent )
@@ -110,4 +110,45 @@ bool GStraightLine::Clone( GObject * pNewParent )
 	++it;
 	_node->pmid = (GPoint *)*it;
 	return true;
+}
+
+bool GStraightLine::CheckNearTo( float px, float py, float r, float *plx, float *ply )
+{
+	if (!plbegin || !plend)
+	{
+		return false;
+	}
+	float xl, yt, xr, yb;
+	GetBoundingBox(&xl, &yt, &xr, &yb);
+	if (!MathHelper::getInstance().PointInRect(px, py, xl-r, yt-r, xr-xl+2*r, yb-yt+2*r))
+	{
+		return false;
+	}
+	float nx, ny;
+	float dist = MathHelper::getInstance().NearestPointOnLine(px, py, plbegin->x, plbegin->y, plend->x, plend->y, &nx, &ny);
+	if (plx)
+	{
+		*plx = nx;
+	}
+	if (ply)
+	{
+		*ply = ny;
+	}
+	if (dist < r)
+	{
+		return true;
+	}
+	return false;
+}
+
+void GStraightLine::GetBoundingBox( float *xl, float *yt, float *xr, float * yb )
+{
+	if (!xl || !yt || !xr || !yb || !plbegin || !plend)
+	{
+		return;
+	}
+	*xl = min(plbegin->getX(), plend->getX());
+	*xr = max(plbegin->getX(), plend->getX());
+	*yt = min(plbegin->getY(), plend->getY());
+	*yb = max(plbegin->getY(), plend->getY());
 }

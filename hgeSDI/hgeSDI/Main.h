@@ -72,10 +72,7 @@ public:
 	void DoResizeWindow();
 	void DoUpdateFPS();
 	void DoUpdateStatusInfo();
-
-	bool DoPickPoint(int restrict=0);
-	bool UpdatePickPoint();
-
+	
 	void DoCheckFloatCommand();
 
 	bool HGEThreadFunc();
@@ -109,12 +106,6 @@ public:
 	int cursorrightkeyindex;
 
 	bool manageloop;
-
-	int pickstate;
-	int pickrestrict;
-	float pickx;
-	float picky;
-	int pickid;
 
 	float precision;
 	bool bActive;

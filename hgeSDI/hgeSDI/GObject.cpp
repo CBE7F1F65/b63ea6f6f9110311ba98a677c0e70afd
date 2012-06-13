@@ -3,6 +3,7 @@
 
 #include "GObjectManager.h"
 #include "StringManager.h"
+#include "ColorManager.h"
 
 
 GObject * GObject::pTreeBase=NULL;
@@ -12,8 +13,6 @@ GObject::GObject(void)
 {
 	pParent = NULL;
 	bModified = false;
-	bModifyParent = true;
-	bAttributeNode = false;
 	nNonAttributeChildrenCount = 0;
 
 	bDisplayFolded = false;
@@ -81,7 +80,7 @@ int GObject::_ActualAddChildAfterObj( GObject * child, GObject * afterobj )
 			}
 		}
 
-		if (!child->bAttributeNode)
+		if (!child->isAttributeNode())
 		{
 			_ModifyNonAttributeChildrenCount(1);
 		}
@@ -95,7 +94,7 @@ int GObject::_ActualAddChildAfterObj( GObject * child, GObject * afterobj )
 
 list<GObject *>::iterator GObject::_ActualRemoveChild( list<GObject *>::iterator it, bool bRelease )
 {
-	if (!(*it)->bAttributeNode)
+	if (!(*it)->isAttributeNode())
 	{
 		_ModifyNonAttributeChildrenCount(-1);
 	}
@@ -279,7 +278,7 @@ void GObject::OnUpdate()
 {
 }
 
-void GObject::OnRender()
+void GObject::OnRender( bool bHighlight/*=false*/ )
 {
 }
 
@@ -297,11 +296,6 @@ void GObject::OnModify()
 void GObject::OnClearModify()
 {
 	bModified = false;
-}
-
-void GObject::setMotifyParent( bool bToModify )
-{
-	bModifyParent = bToModify;
 }
 
 int GObject::Reparent( GObject * newparent )
@@ -337,19 +331,6 @@ const char * GObject::getDisplayName()
 		return strDisplayName.c_str();
 	}
 	return StringManager::getInstance().GetNNObjectName();
-}
-
-void GObject::setIsAttributeNode( bool bToAttribute/*=true*/ )
-{
-	if (bToAttribute && !bAttributeNode)
-	{
-		_ModifyNonAttributeChildrenCount(1);
-	}
-	else if (!bToAttribute && bAttributeNode)
-	{
-		_ModifyNonAttributeChildrenCount(-1);
-	}
-	bAttributeNode = bToAttribute;
 }
 
 void GObject::_ModifyNonAttributeChildrenCount( int countchange )
@@ -514,11 +495,11 @@ void GObject::OnParentToggleDisplayLocked( bool toDisplayLock )
 
 }
 
-void GObject::CallRender()
+void GObject::CallRender( bool bHighlight/*=false*/ )
 {
-	if (canRender())
+	if (canRender() || bHighlight)
 	{
-		OnRender();
+		OnRender(bHighlight);
 		if (!listChildren.empty())
 		{
 			FOREACH_GOBJ_CHILDREN_IT()
@@ -547,7 +528,7 @@ void GObject::CallUpdate()
 void GObject::CallModify()
 {
 	OnModify();
-	if (bModifyParent && pParent)
+	if (isModifyParent() && pParent)
 	{
 		pParent->CallModify();
 	}
@@ -762,4 +743,13 @@ void GObject::Independ()
 // 		}
 // 	}
 	nNonAttributeChildrenCount = 0;
+}
+
+DWORD GObject::getLineColor( bool bHighlight/*=false*/ )
+{
+	if (bHighlight)
+	{
+		return ColorManager::getInstance().Highlight(dwLineColor);
+	}
+	return dwLineColor;
 }

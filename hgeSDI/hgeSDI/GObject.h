@@ -70,7 +70,16 @@ public:
 	virtual int Reparent(GObject * newparent);
 	virtual int ReparentAfterObject( GObject * newparent, GObject * afterobj );
 
+	// Should be derived:
 	virtual bool isLayer(){return false;};
+	// A point represent the position
+	virtual bool isRepresentablePoint(){return false;};
+	virtual bool isRepresentableLine(){return false;};
+	virtual float getX(){DASSERT(true); return 0;};
+	virtual float getY(){DASSERT(true); return 0;};
+	virtual bool isAttributeNode(){return false;};
+	virtual bool isModifyParent(){return true;};
+
 	virtual GObject * GetLayer(bool bIncludingSelf=true);
 	virtual GObject * GetContainerLayer(){return GetLayer(false);};
 	virtual GObject * GetBase();
@@ -85,12 +94,12 @@ public:
 	virtual void OnModify();
 	virtual void OnClearModify();	// Post-Update
 	virtual void OnUpdate();
-	virtual void OnRender();
+	virtual void OnRender(bool bHighlight=false);
 
 	virtual void CallModify();
 	virtual void CallClearModify();
 	virtual void CallUpdate();
-	virtual void CallRender();
+	virtual void CallRender(bool bHighlight=false);
 
 	virtual void OnParentToggleDisplayVisible(bool toDisplayVisible);
 	virtual void OnParentToggleDisplayLocked(bool toDisplayLock);
@@ -105,7 +114,6 @@ public:
 	};
 
 public:
-	void setMotifyParent(bool bToModify);
 	bool isModified(){return bModified;};
 	GObject * getParent(){return pParent;};
 	int getID(){return nID;};
@@ -123,12 +131,9 @@ public:
 	GObject * getNewestChild(){if(!getChildrenCount()){ return NULL;} return listChildren.front();};
 	GObject * getOldestChild(){if(!getChildrenCount()){ return NULL;} return listChildren.back();};
 	int getNonAttributeChildrenCount(){return nNonAttributeChildrenCount;};
-	bool isAttributeNode(){return bAttributeNode;};
 
 	bool isRecDisplayFolded();
-
-	void setIsAttributeNode(bool bToAttribute=true);
-
+	
 	bool isDisplayFolded(){return bDisplayFolded;};
 	void setDisplayFold(bool toDisplayFold);
 
@@ -144,7 +149,7 @@ public:
 	// Can only be called by UI
 	void setDisplayLock(bool toDisplayLock);
 
-	DWORD getLineColor(){return dwLineColor;};
+	DWORD getLineColor(bool bHighlight=false);;
 
 	// Can only be called by Layer
 	virtual void setLineColor(DWORD col);
@@ -158,7 +163,6 @@ public:
 		}
 	};
 protected:
-	bool bAttributeNode;
 	int nNonAttributeChildrenCount;
 
 	string strDisplayName;
@@ -170,7 +174,6 @@ protected:
 	int nID;
 	GObject * pParent;
 	bool bModified;
-	bool bModifyParent;
 
 	list<GObject*> listChildren;
 

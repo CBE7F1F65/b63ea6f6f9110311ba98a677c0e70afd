@@ -77,6 +77,18 @@ public:
 	HTARGET targrid;
 	HGE * hge;
 
+	inline float StoCs(float s)
+	{
+		CheckScale();
+		return s/scale;
+	};
+	inline float CtoSs(float s)
+	{
+		CheckScale();
+		return s*scale;
+	};
+
+
 	inline float StoCx(float x)
 	{
 		CheckScale();

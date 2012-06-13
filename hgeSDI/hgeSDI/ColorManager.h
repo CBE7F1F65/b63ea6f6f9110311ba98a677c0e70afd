@@ -146,4 +146,9 @@ public:
 #undef _CMFDEF
 
 	DWORD ARGBToABGR(DWORD col);
+	DWORD Highlight( DWORD col );
+
+	void ARGBToAHSL(DWORD col, float *a, float *h, float *s, float *l);
+	DWORD AHSLToARGB(float a, float h, float s, float l);
+	float HueToRGB(float p, float q, float t);
 };

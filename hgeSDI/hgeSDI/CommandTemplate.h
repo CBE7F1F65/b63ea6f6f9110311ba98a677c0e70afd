@@ -6,6 +6,7 @@
 #include "Command.h"
 #include "GLayer.h"
 #include "GObjectManager.h"
+#include "GObjectPicker.h"
 
 class CommandTemplate
 {
@@ -50,6 +51,7 @@ public:
 	MainInterface * pmain;
 	Command * pcommand;
 	GObjectManager * pgm;
+	GObjectPicker * pgp;
 	list<CommittedCommand*> madecctodelete;
 
 	int comm;

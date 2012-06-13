@@ -13,6 +13,7 @@
 #include "CommandTemplate.h"
 #include "MouseCursorManager.h"
 #include "SnapshotManager.h"
+#include "GObjectPicker.h"
 
 #include "Resource.h"
 
@@ -40,7 +41,6 @@ MainInterface::MainInterface()
 	manageloop = false;
 	bActive = false;
 
-	pickstate = 0;
 	precision = 0.5f;
 }
 
@@ -99,6 +99,9 @@ bool MainInterface::Render()
 	GObjectManager::getInstance().Render();
 	// Render Command Floating
 	Command::getInstance().Render();
+	// Render Snap
+	GObjectPicker::getInstance().Render();
+
 
 	// Render Coord
 	GUICoordinate::getInstance().RenderCoordinate();
@@ -181,7 +184,7 @@ bool MainInterface::Frame()
 	}
 	if (IsMainViewActive())
 	{
-		UpdatePickPoint();
+		GObjectPicker::getInstance().UpdatePickPoint();
 	}
 	/*
 	if (hge->Input_GetDIKey(DIK_SPACE))
@@ -323,6 +326,7 @@ bool MainInterface::OnInit(void * parent, int w, int h)
 	Command::getInstance().OnInit();
 	GUICoordinate::getInstance().SetGrid(GUICG_METRIC, 0, 0);
 	GObjectManager::getInstance().Init();
+	GObjectPicker::getInstance().Init();
 	return manageloop;
 
 //	HANDLE hThread = (HANDLE)_beginthread(_HGEThreadFunc, 0, NULL);
@@ -510,47 +514,6 @@ void MainInterface::DoUpdateStatusInfo()
 	GUICoordinate * pguic = &GUICoordinate::getInstance();
 	sprintf_s(statusstr, M_STRMAX, "%.4f, %.4f, %.4f", pguic->cursorx_c, pguic->cursory_c, pguic->scale);
 	CallUpdateStatusBarText(IDS_STATUS_PANE1, statusstr);
-}
-
-#define _PICKSTATE_NULL					0
-#define _PICKSTATE_REQUIREUPDATE		1
-#define _PICKSTATE_AFTERUPDATE			2
-#define _PICKSTATE_READY				3
-
-bool MainInterface::DoPickPoint( int restrict/*=0*/ )
-{
-	if (pickstate == _PICKSTATE_NULL)
-	{
-		pickrestrict = restrict;
-		pickstate = _PICKSTATE_REQUIREUPDATE;
-	}
-	else if (pickstate == _PICKSTATE_AFTERUPDATE)
-	{
-		pickstate = _PICKSTATE_REQUIREUPDATE;
-	}
-	else if (pickstate == _PICKSTATE_READY)
-	{
-		pickstate = _PICKSTATE_NULL;
-		return true;
-	}
-	return false;
-}
-
-bool MainInterface::UpdatePickPoint()
-{
-	if (pickstate != _PICKSTATE_REQUIREUPDATE)
-	{
-		return false;
-	}
-	pickstate = _PICKSTATE_AFTERUPDATE;
-	if (hge->Input_GetDIMouseKey(cursorleftkeyindex, DIKEY_UP))
-	{
-		pickx = mousex;
-		picky = mousey;
-		pickstate = _PICKSTATE_READY;
-		return true;
-	}
-	return false;
 }
 
 bool MainInterface::IsMainViewActive()

@@ -145,7 +145,7 @@ bool MathHelper::RectIntersectRect( float xl1, float yt1, float xr1, float yb1, 
 	return true;
 }
 
-bool MathHelper::CalculateCatmullRom( PointF2D p1, PointF2D p2, PointF2D p3, PointF2D p4, float s, PointF2D * pq )
+bool MathHelper::CalculateCatmullRom( const PointF2D &p1, const PointF2D &p2, const PointF2D &p3, const PointF2D &p4, float s, PointF2D * pq )
 {
 	if (s < 0 || s > 1)
 	{
@@ -161,7 +161,7 @@ bool MathHelper::CalculateCatmullRom( PointF2D p1, PointF2D p2, PointF2D p3, Poi
 	return false;
 }
 
-bool MathHelper::CalculateBezier( PointF2D p1, PointF2D p2, PointF2D p3, PointF2D p4, float s, PointF2D * pq )
+bool MathHelper::CalculateBezier( const PointF2D &p1, const PointF2D &p2, const PointF2D &p3, const PointF2D &p4, float s, PointF2D * pq )
 {
 	if (pq)
 	{
@@ -171,7 +171,7 @@ bool MathHelper::CalculateBezier( PointF2D p1, PointF2D p2, PointF2D p3, PointF2
 	return false;
 }
 
-float MathHelper::LineSegmentLength( PointF2D p1, PointF2D p2 )
+float MathHelper::LineSegmentLength( const PointF2D &p1, const PointF2D &p2 )
 {
 	float l = LineSegmentLengthPow2(p1, p2);
 	if (l == 0.0f)
@@ -181,7 +181,56 @@ float MathHelper::LineSegmentLength( PointF2D p1, PointF2D p2 )
 	return sqrtf(l);
 }
 
-float MathHelper::LineSegmentLengthPow2( PointF2D p1, PointF2D p2 )
+float MathHelper::LineSegmentLengthPow2( const PointF2D &p1, const PointF2D &p2 )
 {
 	return powf(p1.x-p2.x, 2)+powf(p1.y-p2.y, 2);
+}
+
+bool MathHelper::PointInRect( float px, float py, float xl, float yt, float w, float h )
+{
+	return px > xl && px < xl+w && py > yt && py < yt+h;
+}
+
+bool MathHelper::PointInCircle( float px, float py, float cx, float cy, float r )
+{
+	if (!PointInRect(px, py, cx-r, cy-r, 2*r, 2*r))
+	{
+		return false;
+	}
+	return powf(px-cx, 2)+powf(py-cy, 2) < r*r;
+}
+
+float MathHelper::NearestPointOnLine( float px, float py, float lx1, float ly1, float lx2, float ly2, float * nx, float * ny )
+{
+	PointF2D v(lx1, ly1);
+	PointF2D w(lx2, ly2);
+	PointF2D p(px, py);
+
+	if (v.Equals(w))
+	{
+		if (nx) { *nx = lx1; }
+		if (ny) { *ny = ly1; }
+		return LineSegmentLength(v, p);
+	}
+
+	float length2 = LineSegmentLengthPow2(v, w);
+	float t = (p-v).Dot(w-v)/length2;
+	if (t < 0.0f)
+	{
+		if (nx) { *nx = lx1; }
+		if (ny) { *ny = ly1; }
+		return LineSegmentLength(v, p);
+	}
+	else if (t > 1.0f)
+	{
+		if (nx) { *nx = lx2; }
+		if (ny) { *ny = ly2; }
+		return LineSegmentLength(w, p);
+	}
+	
+	PointF2D proj = v+(w-v)*t;
+	if (nx) { *nx = proj.x; }
+	if (ny) { *ny = proj.y; }
+	return LineSegmentLength(proj, p);
+
 }

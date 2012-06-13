@@ -49,7 +49,7 @@ DWORD ColorManager::GetLayerLineColor( int layer )
 	*/
 	switch (layer%24)
 	{
-	case 0: return 0xffffffff;	// White
+	case 0: return 0xffafafaf;	// White
 	case 1: return 0xffff4f4f;	// Light Red
 	case 2: return 0xff4fff4f;	// Green
 	case 3: return 0xffff4fff;	// Magenta
@@ -122,4 +122,108 @@ DWORD ColorManager::ARGBToABGR( DWORD col )
 
 void ColorManager::Init()
 {
+}
+
+DWORD ColorManager::Highlight( DWORD col )
+{
+	float a, h, s, l;
+	ARGBToAHSL(col, &a, &h, &s, &l);
+	a = 1;
+	l += 0.2f;
+	s += 0.2f;
+	if (l > 1)
+	{
+		l = 1;
+	}
+	if (s > 1)
+	{
+		s = 1;
+	}
+	return AHSLToARGB(a, h, s, l);
+}
+
+void ColorManager::ARGBToAHSL( DWORD col, float *a, float *h, float *s, float *l )
+{
+	float r = GETR(col)/255.0f;
+	float g = GETG(col)/255.0f;
+	float b = GETB(col)/255.0f;
+	if (a)
+	{
+		*a = GETA(col)/255.0f;
+	}
+
+	float fmax = max(max(r, g), b);
+	float fmin = min(min(r, g), b);
+	float fmid = (fmax+fmin)/2.0f;
+
+	float hf;
+	float sf;
+	float lf = fmid;
+	float diff = fmax-fmin;
+
+	if (fmax == fmin)
+	{
+		hf = sf = 0;
+	}
+	else
+	{
+		sf = (lf > 0.5f) ? (diff / (2-fmax-fmin)) : (diff / (fmax + fmin));
+	}
+
+	if (fmax == r)
+	{
+		hf = (g-b)/diff + (g<b?6:0);
+	}
+	else if (fmax == g)
+	{
+		hf = (b-r)/diff + 2;
+	}
+	else
+	{
+		hf = (r-g)/diff + 4;
+	}
+	hf/=6.0f;
+
+	if (h)
+	{
+		*h = hf;
+	}
+	if (s)
+	{
+		*s = sf;
+	}
+	if (l)
+	{
+		*l = lf;
+	}
+}
+
+DWORD ColorManager::AHSLToARGB( float a, float h, float s, float l )
+{
+	float r, g, b;
+	if (s == 0.0f)
+	{
+		r=g=b=l;
+	}
+	else
+	{       
+		float q = (l < 0.5) ? (l * (1 + s)) : (l + s - l * s);
+		float p = 2 * l - q;
+		r = HueToRGB(p, q, h + 1/3.0f);
+		g = HueToRGB(p, q, h);
+		b = HueToRGB(p, q, h - 1/3.0f);
+	}
+
+	return ARGB(a*255, r*255, g*255, b*255);
+}
+
+float ColorManager::HueToRGB( float p, float q, float t )
+{       
+	if(t < 0) t += 1;
+	if(t > 1) t -= 1;
+	if(t < 1/6.0f) return p + (q - p) * 6 * t;
+	if(t < 1/2.0f) return q;
+	if(t < 2/3.0f) return p + (q - p) * (2/3.0f - t) * 6;
+	return p;
+
 }

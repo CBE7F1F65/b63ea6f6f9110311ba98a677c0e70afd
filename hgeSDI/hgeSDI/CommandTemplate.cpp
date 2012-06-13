@@ -13,6 +13,7 @@ CommandTemplate::CommandTemplate(void)
 	pmain = &MainInterface::getInstance();
 	pcommand = &Command::getInstance();
 	pgm = &GObjectManager::getInstance();
+	pgp = &GObjectPicker::getInstance();
 	comm = COMM_NULL;
 	workinglayerID = 0;
 }

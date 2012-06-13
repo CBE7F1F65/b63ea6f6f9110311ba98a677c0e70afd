@@ -61,6 +61,12 @@ void LineCommand::OnProcessCommand()
 	}
 	else if (step == CSI_LINE_WANTX2)
 	{
+		if (!pgp->isBeginPtSet())
+		{
+			float bx, by;
+			pcommand->GetParamXY(CSP_LINE_XY_B, &bx, &by);
+			pgp->SetBeginPt(bx, by);
+		}
 		ret = pcommand->ProcessPending(
 			CSP_LINE_XY_N, COMMPARAMFLAG_X, CWP_X_N,	// Fill in Param
 			CSI_LINE_WANTY2, CWP_Y_N					// Step to with want
@@ -118,7 +124,7 @@ void LineCommand::OnProcessCommand()
 		// Routine
 		if (step > CSI_INIT)
 		{
-			if (pmain->DoPickPoint())
+			if (pgp->PickPoint())
 			{
 				if (!pcommand->IsInternalProcessing())
 				{
@@ -127,8 +133,8 @@ void LineCommand::OnProcessCommand()
 					{
 						tosetpindex = CSP_LINE_XY_N;
 					}
-					pcommand->SetParamX(tosetpindex, pguic->StoCx(pmain->pickx));
-					pcommand->SetParamY(tosetpindex, pguic->StoCy(pmain->picky));
+					pcommand->SetParamX(tosetpindex, pgp->GetPickX_C());
+					pcommand->SetParamY(tosetpindex, pgp->GetPickY_C());
 					if (step < CSI_LINE_WANTX2)
 					{
 						pcommand->StepTo(
@@ -173,10 +179,10 @@ void LineCommand::RenderToTarget()
 		float x1, y1;
 		pcommand->GetParamXY(CSP_LINE_XY_B, &x1, &y1);
 
-		float x2 = MainInterface::getInstance().mousex;
-		float y2 = MainInterface::getInstance().mousey;
-		x2 = GUICoordinate::getInstance().StoCx(x2);
-		y2 = GUICoordinate::getInstance().StoCy(y2);
+		float x2 = pgp->GetPickX_C();//MainInterface::getInstance().mousex;
+		float y2 = pgp->GetPickY_C();//MainInterface::getInstance().mousey;
+//		x2 = GUICoordinate::getInstance().StoCx(x2);
+//		y2 = GUICoordinate::getInstance().StoCy(y2);
 
 		HTARGET tar = RenderTargetManager::getInstance().UpdateTarget(RTID_COMMAND);
 
