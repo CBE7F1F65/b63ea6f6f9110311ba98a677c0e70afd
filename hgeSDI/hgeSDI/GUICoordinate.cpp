@@ -194,7 +194,7 @@ void GUICoordinate::OnProcessPanCommand()
 		}
 		if (hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex) && !hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_DOWN))
 		{
-			DoPan(pmain->mousex-pmain->lastmousex, pmain->mousey-pmain->lastmousey);
+			DoPan(pmain->GetMouseXForCoord()-pmain->GetLastMouseXForCoord(), pmain->GetMouseYForCoord()-pmain->GetLastMouseYForCoord());
 		}
 		else if (panwillterminate && !hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex))
 		{

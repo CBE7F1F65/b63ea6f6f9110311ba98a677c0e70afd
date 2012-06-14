@@ -28,9 +28,30 @@ public:
 		return 0;
 	};
 
+	virtual bool isLine(){return true;};
+
+
+	virtual GObject * getPiece()
+	{
+		GObject * pObj = pParent;
+		while (pObj)
+		{
+			if (pObj->isPiece())
+			{
+				return pObj;
+			}
+			pObj = pObj->getParent();
+		}
+		return NULL;
+	};
+
+	virtual void OnUpdate();
+	virtual bool MoveTo(float newx, float newy, bool bTry);
+
 	virtual void SetBeginEnd(float xb, float yb, float xe, float ye);
 	virtual void UpdateMidPoint() = 0;
 	virtual bool CheckNearTo(float px, float py, float r, float *plx, float *ply) = 0;
+	virtual bool CheckIntersectWithRect(float xl, float yt, float xr, float yb) = 0;
 
 	virtual const char * getDisplayName();
 
@@ -65,11 +86,13 @@ public:
 
 	virtual void UpdateMidPoint();
 
+	virtual bool canMove(){return true;};
+
 	virtual void OnInit();
-	virtual void OnUpdate();
-	virtual void OnRender(bool bHighlight=false);
+	virtual void OnRender(int iHighlightLevel=0);
 
 	virtual bool CheckNearTo(float px, float py, float r, float *plx, float *ply);
+	virtual bool CheckIntersectWithRect(float xl, float yt, float xr, float yb);
 	virtual void GetBoundingBox(float *xl, float *yt, float *xr, float * yb);
 
 	virtual bool Clone( GObject * pNewParent );

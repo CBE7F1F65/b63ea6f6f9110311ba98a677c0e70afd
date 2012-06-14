@@ -83,7 +83,7 @@ public:
 #define COMMITTEDCOMMANDTYPE_STRING			0x40
 #define F_COMMITTEDCOMMANDTYPE_STRING			0xff
 
-#define CCCWPARAM_F(FVAL)	COMMITTEDCOMMANDTYPE_FLOAT, (FVAL)
+#define CCCWPARAM_F(FVAL)	COMMITTEDCOMMANDTYPE_FLOAT, (float)(FVAL)
 #define CCCWPARAM_I(IVAL)	COMMITTEDCOMMANDTYPE_INT, (IVAL)
 #define CCCWPARAM_S(SVAL)	COMMITTEDCOMMANDTYPE_STRING, (SVAL)
 
@@ -105,11 +105,11 @@ public:
 		sval = "";
 	};
 
+	string sval;
 	int type;
 	float fval;
 	int ival;
 	int csub;
-	string sval;
 };
 
 class RevertableCommand
@@ -124,6 +124,14 @@ public:
 		{
 			commandlist.push_back(*cc);
 		}
+	};
+	void Clear()
+	{
+		commandlist.clear();
+	};
+	int GetSize()
+	{
+		return (int)commandlist.size();
 	};
 
 	list<CommittedCommand> commandlist;
@@ -153,6 +161,7 @@ public:
 private:
 	int CreateCommand(int comm, int iparam=1);
 public:
+	void UpdateProcessCommand();
 	void ProcessCommand();
 	void ProcessUnDoCommandCommit(RevertableCommand * rc);
 	void ProcessUnDoCommandParam(int command, RevertableCommand * rc);
@@ -240,7 +249,7 @@ public:
 	bool DoReDoReparentNode(int objid, int oparentid, int afterid);
 
 	bool IsUnDoReDoing(){return undoredoflag!=0;};
-	bool canReDoDone();
+	bool canCommandDone();
 	int undoredoflag;
 	int undostepmax;
 
@@ -248,6 +257,8 @@ public:
 	int PullCommand();
 
 	void PushRevertable(RevertableCommand * rc);
+	RevertableCommand rcbuffer;
+	void DoPushRevertable();
 	list<RevertableCommand> undolist;
 	list<RevertableCommand> redolist;
 
@@ -303,7 +314,7 @@ public:
 	{
 		if (command < 0)
 		{
-			command = ccomm.command;
+			command = GetCurrentCommand();
 		}
 		if (command >= COMMANDINDEXMAX)
 		{
@@ -315,7 +326,7 @@ public:
 	{
 		if (command < 0)
 		{
-			command = ccomm.command;
+			command = GetCurrentCommand();
 		}
 		if (command >= COMMANDINDEXMAX)
 		{
@@ -327,7 +338,7 @@ public:
 	{
 		if (command < 0)
 		{
-			command = ccomm.command;
+			command = GetCurrentCommand();
 		}
 		if (command >= COMMANDINDEXMAX)
 		{
@@ -339,7 +350,7 @@ public:
 	{
 		if (command < 0)
 		{
-			command = ccomm.command;
+			command = GetCurrentCommand();
 		}
 		if (command >= COMMANDINDEXMAX)
 		{
@@ -376,4 +387,5 @@ public:
 	float tarx;
 	float tary;
 	void SetRenderTarget(HTARGET tar, float x=0, float y=0);
+	int GetCurrentCommand();
 };

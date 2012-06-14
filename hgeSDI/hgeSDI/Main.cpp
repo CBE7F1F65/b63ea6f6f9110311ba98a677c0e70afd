@@ -14,6 +14,7 @@
 #include "MouseCursorManager.h"
 #include "SnapshotManager.h"
 #include "GObjectPicker.h"
+#include "MarqueeSelect.h"
 
 #include "Resource.h"
 
@@ -102,6 +103,8 @@ bool MainInterface::Render()
 	// Render Snap
 	GObjectPicker::getInstance().Render();
 
+	// Render MarqueeSelect
+	MarqueeSelect::getInstance().Render();
 
 	// Render Coord
 	GUICoordinate::getInstance().RenderCoordinate();
@@ -136,7 +139,13 @@ bool MainInterface::Frame()
 
 	if (hge->Input_IsMouseOver() && bActive)
 	{
-		SetFocus(hge->System_GetState(HGE_HWND));
+		HWND hwnd = hge->System_GetState(HGE_HWND);
+		if (GetFocus() != hwnd)
+		{
+			SetFocus(hwnd);
+			hge->Input_ClearLastDIKeyState();
+			hge->Input_ClearLastDIMouseState();
+		}
 	}
 
 	if (IsMainViewActive())
@@ -177,7 +186,7 @@ bool MainInterface::Frame()
 		{
 			pcommand->TerminalInternalProcess();
 		}
-		if (pcommand->ccomm.command)
+		if (pcommand->GetCurrentCommand())
 		{
 			pcommand->StepTo(CSI_TERMINAL);
 		}
@@ -185,29 +194,13 @@ bool MainInterface::Frame()
 	if (IsMainViewActive())
 	{
 		GObjectPicker::getInstance().UpdatePickPoint();
+		MarqueeSelect::getInstance().Update();
 	}
-	/*
-	if (hge->Input_GetDIKey(DIK_SPACE))
-	{
-		if (hge->Input_GetDIKey(DIK_SPACE, DIKEY_DOWN))
-		{
-			GUICursor::getInstance().ChangeCursor(GUIC_HAND);
-		}
-		if (hge->Input_GetDIMouseKey(1) && !hge->Input_GetDIMouseKey(1, DIKEY_DOWN))
-		{
-			pguic->DoPan(mousex-lastmousex, mousey-lastmousey);
-		}
-	}
-	if (hge->Input_GetDIKey(DIK_SPACE, DIKEY_UP))
-	{
-		GUICursor::getInstance().ChangeCursor();
-	}
-	*/
 
 	pguic->SetCursorPosition(mousex, mousey);
 
 	GObjectManager::getInstance().Update();
-	pcommand->ProcessCommand();
+	pcommand->UpdateProcessCommand();//ProcessCommand();
 
 	GObjectManager::getInstance().Delete();
 	DoUpdateFPS();
@@ -409,9 +402,9 @@ int MainInterface::OnCommandWithParam( int comm, int firsttype, ... )
 		{
 		case COMMITTEDCOMMANDTYPE_FLOAT:
 			{
-				float vaif = (float)va_arg(ap, float);
+				float vaif = (float)va_arg(ap, double);
 				stringstream ss;
-				ss << vaif;
+				ss << fixed << vaif;
 				strlist.push_back(ss.str());
 			}
 			break;
@@ -444,7 +437,7 @@ int MainInterface::OnCommandWithParam( int comm, int firsttype, ... )
 		pcommand->CommitCommand(it->c_str());
 	}
 
-	return pcommand->ccomm.command;
+	return pcommand->GetCurrentCommand();
 }
 
 int MainInterface::OnCommitCommand( const char * str )
@@ -512,7 +505,7 @@ void MainInterface::DoUpdateStatusInfo()
 	// No Command (internal process)
 	char statusstr[M_STRMAX];
 	GUICoordinate * pguic = &GUICoordinate::getInstance();
-	sprintf_s(statusstr, M_STRMAX, "%.4f, %.4f, %.4f", pguic->cursorx_c, pguic->cursory_c, pguic->scale);
+	sprintf_s(statusstr, M_STRMAX, "%.4f, %.4f, %.4f", pguic->GetCursorX_C(), pguic->GetCursorY_C(), pguic->GetScale());
 	CallUpdateStatusBarText(IDS_STATUS_PANE1, statusstr);
 }
 
@@ -777,4 +770,24 @@ void MainInterface::CallUnDoReDo( int step )
 void MainInterface::OnChangeMouseCursor( HWND hwnd, int mousecursor/*=-1*/ )
 {
 	MouseCursorManager::getInstance().ChangeCursor(hwnd, mousecursor);
+}
+
+float MainInterface::GetMouseX_S()
+{
+	return GUICoordinate::getInstance().GetCursorX_S();
+}
+
+float MainInterface::GetMouseY_S()
+{
+	return GUICoordinate::getInstance().GetCursorY_S();
+}
+
+float MainInterface::GetMouseX_C()
+{
+	return GUICoordinate::getInstance().GetCursorX_C();
+}
+
+float MainInterface::GetMouseY_C()
+{
+	return GUICoordinate::getInstance().GetCursorY_C();
 }

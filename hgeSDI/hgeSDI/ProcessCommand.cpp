@@ -77,7 +77,7 @@ int Command::ProcessCommittedCommand()
 {
 	if (inputcommandlist.empty() || pendingparam.type)
 	{
-		return ccomm.command;
+		return GetCurrentCommand();
 	}
 
 	list<CommittedCommand>::iterator it = inputcommandlist.begin();
@@ -93,23 +93,23 @@ int Command::ProcessCommittedCommand()
 			int comm = it->ival;
 			inputcommandlist.pop_front();
 			CreateCommand(comm);
-			return ccomm.command;
+			return GetCurrentCommand();
 		}
 		else
 		{
-			if (!ccomm.command)
+			if (!GetCurrentCommand())
 			{
 				CreateCommand(it->ival);
 			}
 			else if (!((it->type) & COMMITTEDCOMMANDTYPE_COMMANDSHORT))
 			{
-				if (ccomm.command)
+				if (GetCurrentCommand())
 				{
 					TerminalCommand();
 				}
 				CreateCommand(it->ival);
 			}
-			else if (ccomm.command && ((it->type) & COMMITTEDCOMMANDTYPE_SUBCOMMAND))
+			else if (GetCurrentCommand() && ((it->type) & COMMITTEDCOMMANDTYPE_SUBCOMMAND))
 			{
 				pendingparam = (*it);
 			}
@@ -117,7 +117,7 @@ int Command::ProcessCommittedCommand()
 	}
 	else
 	{
-		if (ccomm.command)
+		if (GetCurrentCommand())
 		{
 			pendingparam = (*it);
 		}
@@ -128,7 +128,13 @@ int Command::ProcessCommittedCommand()
 	}
 
 	inputcommandlist.pop_front();
-	return ccomm.command;
+	return GetCurrentCommand();
+}
+
+void Command::UpdateProcessCommand()
+{
+	ProcessCommand();
+	DoPushRevertable();
 }
 
 void Command::ProcessCommand()
@@ -137,12 +143,12 @@ void Command::ProcessCommand()
 	{
 		ProcessCommittedCommand();
 
-		if (!ccomm.command)
+		if (!GetCurrentCommand())
 		{
 			return;
 		}
 
-		switch (ccomm.command)
+		switch (GetCurrentCommand())
 		{
 		case COMM_PAN:
 			GUICoordinate::getInstance().OnProcessPanCommand();
@@ -151,7 +157,7 @@ void Command::ProcessCommand()
 			GUICoordinate::getInstance().OnProcessZoomCommand();
 			break;
 		default:
-			CommandTemplate * pct = CommandTemplate::GetTemplateByCommand(ccomm.command);
+			CommandTemplate * pct = CommandTemplate::GetTemplateByCommand(GetCurrentCommand());
 			ASSERT(pct);
 			pct->CallProcessCommand();
 		}
@@ -161,6 +167,7 @@ void Command::ProcessCommand()
 			break;
 		}
 	}
+//	DoPushRevertable();
 }
 
 

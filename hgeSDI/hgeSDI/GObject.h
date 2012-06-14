@@ -25,6 +25,13 @@
 	_GOBJ_CLONE_POST_NORET();	\
 	return true;
 
+#define GOBJTRYSTATE_MOVE_NULL			0x00
+#define GOBJTRYSTATE_MOVE_REQUIREUPDATE	0x01
+#define GOBJTRYSTATE_MOVE_AFTERUPDATE	0x02
+
+#define HIGHLIGHTLEVEL_NONE		0
+#define HIGHLIGHTLEVEL_SELECTED	1
+#define HIGHLIGHTLEVEL_PICKED	2
 
 class GObject
 {
@@ -71,18 +78,31 @@ public:
 	virtual int ReparentAfterObject( GObject * newparent, GObject * afterobj );
 
 	// Should be derived:
+	virtual bool canMove(){return false;};
+	virtual bool MoveTo(float newx, float newy, bool bTry){return false;};
+	virtual bool MoveByOffset(float xoffset, float yoffset, bool bTry){return MoveTo(getX()+xoffset, getY()+yoffset, bTry);};
+
 	virtual bool isLayer(){return false;};
+	virtual bool isLine(){return false;};
+	virtual bool isPoint(){return false;};
+	virtual bool isPiece(){return false;};
+	virtual GObject * getLine(){return NULL;};
+	virtual GObject * getPiece(){return NULL;};
 	// A point represent the position
 	virtual bool isRepresentablePoint(){return false;};
 	virtual bool isRepresentableLine(){return false;};
+	virtual bool isRepresentablePiece(){return false;};
 	virtual float getX(){DASSERT(true); return 0;};
 	virtual float getY(){DASSERT(true); return 0;};
 	virtual bool isAttributeNode(){return false;};
 	virtual bool isModifyParent(){return true;};
+	virtual bool isSlaveToLine(){return false;};
+	virtual bool isSlaveToPiece(){return false;};
 
 	virtual GObject * GetLayer(bool bIncludingSelf=true);
 	virtual GObject * GetContainerLayer(){return GetLayer(false);};
 	virtual GObject * GetBase();
+	virtual GObject * GetNonAttributeObj();
 	// ToDo!!
 	virtual bool isSelected(){return false;};
 
@@ -94,18 +114,22 @@ public:
 	virtual void OnModify();
 	virtual void OnClearModify();	// Post-Update
 	virtual void OnUpdate();
-	virtual void OnRender(bool bHighlight=false);
+	virtual void OnRender(int iHighlightLevel=0);
 
 	virtual void CallModify();
 	virtual void CallClearModify();
 	virtual void CallUpdate();
-	virtual void CallRender(bool bHighlight=false);
+	virtual void CallRender(int iHighlightLevel=0);
 
 	virtual void OnParentToggleDisplayVisible(bool toDisplayVisible);
 	virtual void OnParentToggleDisplayLocked(bool toDisplayLock);
 
 	virtual bool canRender();
 	virtual bool canUpdate();
+
+protected:
+	virtual void ToggleTryMoveState(bool bTry);
+public:
 
 
 	bool operator < (const GObject &right) const
@@ -149,7 +173,7 @@ public:
 	// Can only be called by UI
 	void setDisplayLock(bool toDisplayLock);
 
-	DWORD getLineColor(bool bHighlight=false);;
+	DWORD getLineColor(int iHighlightLevel=0);;
 
 	// Can only be called by Layer
 	virtual void setLineColor(DWORD col);
@@ -174,6 +198,10 @@ protected:
 	int nID;
 	GObject * pParent;
 	bool bModified;
+
+	int nTryState;
+	float fTryMove_bx;
+	float fTryMove_by;
 
 	list<GObject*> listChildren;
 

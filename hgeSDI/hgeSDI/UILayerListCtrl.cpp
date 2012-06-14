@@ -952,6 +952,7 @@ void UILayerListCtrl::LockTreeChange( bool toLock )
 
 void UILayerListCtrl::ChangeNode( GObject * pObj )
 {
+	pObj = pObj->GetNonAttributeObj();
 	int index = FindItemByData(pObj);
 	if (index < 0)
 	{

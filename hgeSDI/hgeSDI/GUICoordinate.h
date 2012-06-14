@@ -43,10 +43,14 @@ public:
 
 	void UpdateScreenMeasure();
 
+private:
 	int measuretype;
 	float originx_s;
 	float originy_s;
 	float scale;
+public:
+	float GetScale(){return scale;};
+private:
 
 	float lboundary_c;
 	float rboundary_c;
@@ -54,15 +58,27 @@ public:
 	float bboundary_c;
 	float scrw_s;
 	float scrh_s;
+public:
+	float GetScreenWidth_S(){return scrw_s;};
+	float GetScreenHeight_S(){return scrh_s;};
+private:
 
 	float subgridspace_c;
 	float subgridspace_s;
+public:
+	float GetSubgirdSpace_C(){return subgridspace_c;};
+	float GetSubgirdSpace_S(){return subgridspace_s;};
+private:
 	int nsubgrid;
-
 	float cursorx_s;
 	float cursory_s;
 	float cursorx_c;
 	float cursory_c;
+public:
+	float GetCursorX_S(){return cursorx_s;};
+	float GetCursorY_S(){return cursory_s;};
+	float GetCursorX_C(){return cursorx_c;};
+	float GetCursorY_C(){return cursory_c;};
 
 	struct GridInfo
 	{

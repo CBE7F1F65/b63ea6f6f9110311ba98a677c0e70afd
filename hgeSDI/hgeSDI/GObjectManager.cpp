@@ -7,6 +7,7 @@
 #include "ColorManager.h"
 #include <sstream>
 #include "CommandTemplate.h"
+#include "MarqueeSelect.h"
 
 GObjectManager::GObjectManager()
 {
@@ -89,6 +90,7 @@ void GObjectManager::AddNodeToDelete( GObject * node )
 	if (node)
 	{
 		nodetodelete.push_back(node);
+		MarqueeSelect::getInstance().OnDeleteNode(node);
 	}
 }
 

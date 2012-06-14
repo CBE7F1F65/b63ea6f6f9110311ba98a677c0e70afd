@@ -79,8 +79,6 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 					DoUnDoCommandParam(command, &rct);
 				}
 			}
-			SnapshotManager::getInstance().OnUnDo();
-			MainInterface::getInstance().OnUnDo();
 		}
 		else if (internalcommand == COMM_I_ADDNODE)
 		{
@@ -112,6 +110,8 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 			DoUnDoReparentNode(objid, oparentid, afterid);
 		}
 	}
+	SnapshotManager::getInstance().OnUnDo();
+	MainInterface::getInstance().OnUnDo();
 	undoredoflag = CUNDOREDO_NULL;
 
 	undolist.pop_back();
@@ -222,6 +222,11 @@ bool Command::DoReDo( int redostep/*=1*/ )
 			DoReDoReparentNode(objid, oparentid, afterid);
 		}
 	}
+	// Must process rcbuffer
+	DoPushRevertable();
+
+	SnapshotManager::getInstance().OnReDo();
+	MainInterface::getInstance().OnReDo();
 	// Clear redoflag when push revertable
 //	undoredoflag = CUNDOREDO_NULL;
 
@@ -263,15 +268,13 @@ bool Command::DoReDoCommandSingle( RevertableCommand * rc )
 	ProcessCommand();
 
 	// To Finish last step
-	while (!canReDoDone())
+	while (!canCommandDone())
 	{
 		ProcessCommand();
 	}
 	ProcessCommand();
 
 	pendingparam = tp;
-	SnapshotManager::getInstance().OnReDo();
-	MainInterface::getInstance().OnReDo();
 	return true;
 }
 

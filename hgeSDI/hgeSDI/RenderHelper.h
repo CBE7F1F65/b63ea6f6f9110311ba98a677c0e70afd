@@ -31,6 +31,7 @@ public:
 	void EndRenderTar();
 
 #define _CTOSP(X, Y)	pguic->CtoSx(X), pguic->CtoSy(Y)
+#define _CTOSS(S)		pguic->CtoSs(S)
 
 	void BaseRenderPoint_S(float x, float y, DWORD col=0);
 	void RenderPoint_S(float x, float y, DWORD col=0);
@@ -45,7 +46,7 @@ public:
 	void RenderLineR_S(float x, float y, float length, DWORD col=0);
 	void RenderLineB_S(float x, float y, float length, DWORD col=0);
 	void RenderSquare_S(float x, float y, float a, DWORD col=0);
-	void RenderRect_S(float x, float y, float a, float b, DWORD col=0);
+	void RenderRect_S(float x, float y, float w, float h, DWORD col=0);
 
 	void RenderLine(float x1, float y1, float x2, float y2, DWORD col=0)
 	{
@@ -53,19 +54,19 @@ public:
 	};
 	void RenderLineR(float x, float y, float length, DWORD col=0)
 	{
-		RenderLineR_S(_CTOSP(x, y), length, col);
+		RenderLineR_S(_CTOSP(x, y), _CTOSS(length), col);
 	};
 	void RenderLineB(float x, float y, float length, DWORD col=0)
 	{
-		RenderLineB_S(_CTOSP(x, y), length, col);
+		RenderLineB_S(_CTOSP(x, y), _CTOSS(length), col);
 	};
 	void RenderSquare(float x, float y, float a, DWORD col=0)
 	{
-		RenderSquare_S(_CTOSP(x, y), a, col);
+		RenderSquare_S(_CTOSP(x, y), _CTOSS(a), col);
 	};
-	void RenderRect(float x, float y, float a, float b, DWORD col=0)
+	void RenderRect(float x, float y, float w, float h, DWORD col=0)
 	{
-		RenderRect_S(_CTOSP(x, y), a, b, col);
+		RenderRect_S(_CTOSP(x, y), _CTOSS(w), _CTOSS(h), col);
 	};
 
 	void RenderArrow_S(float x, float y, int angle, float length, float arrowsize, DWORD col=0);

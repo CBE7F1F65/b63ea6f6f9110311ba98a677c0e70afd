@@ -11,12 +11,45 @@ public:
 
 	virtual float getX(){return x;};
 	virtual float getY(){return y;};
-
+public:
 	void SetPosition(float x, float y);
+public:
+	virtual bool canMove(){return true;};
+
+	virtual bool MoveTo( float newx, float newy, bool bTry );
+	virtual bool isPoint(){return true;};
+
+	virtual GObject * getLine()
+	{
+		GObject * pObj = pParent;
+		while (pObj)
+		{
+			if (pObj->isLine())
+			{
+				return pObj;
+			}
+			pObj = pObj->getParent();
+		}
+		return NULL;
+	};
+	virtual GObject * getPiece()
+	{
+		GObject * pObj = pParent;
+		while (pObj)
+		{
+			if (pObj->isPiece())
+			{
+				return pObj;
+			}
+			pObj = pObj->getParent();
+		}
+		return NULL;
+	};
 
 	virtual const char * getDisplayName();
 
 	virtual bool Clone( GObject * pNewParent );
+
 	float x;
 	float y;
 };
@@ -31,7 +64,7 @@ public:
 //	virtual bool isAttributeNode(){return false;};
 	virtual bool isRepresentablePoint(){return true;};
 
-	virtual void OnRender(bool bHighlight/* =false */);
+	virtual void OnRender(int iHighlightLevel=0);
 };
 
 class GAttributePoint :
@@ -44,7 +77,7 @@ public:
 	virtual bool isAttributeNode(){return true;};
 	virtual bool isRepresentablePoint(){return true;};
 
-	virtual void OnRender(bool bHighlight/* =false */);
+	virtual void OnRender(int iHighlightLevel=0);
 };
 
 class GVirtualPoint :
@@ -57,7 +90,7 @@ public:
 	virtual bool isRepresentablePoint(){return false;};
 	virtual bool isModifyParent(){return false;};
 
-	virtual void OnRender(bool bHighlight/* =false */);
+	virtual void OnRender(int iHighlightLevel=0);
 };
 
 class GEndPoint : public GAttributePoint
@@ -79,6 +112,8 @@ public:
 	~GMidPoint();
 	
 	virtual bool isModifyParent(){return false;};
+	virtual bool isSlaveToLine(){return true;};
+	virtual bool canMove(){return false;};
 
 	virtual const char * getDisplayName();
 	virtual bool Clone( GObject * pNewParent );

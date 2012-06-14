@@ -225,6 +225,16 @@ bool CALL HGE_Impl::Input_SetDIKey(int key, bool set)
 	return true;
 }
 
+bool CALL HGE_Impl::Input_ClearLastDIKeyState()
+{
+	if (!bUseDInput)
+	{
+		return true;
+	}
+	ZeroMemory(lastKeyState, sizeof(BYTE)*256);
+	return true;
+}
+
 bool CALL HGE_Impl::Input_GetDIMouseKey(int key, BYTE stateType /* = DIKEY_PRESSED */)
 {
 	if (!bUseDInput)
@@ -347,6 +357,18 @@ bool CALL HGE_Impl::Input_SetDIMouseAxis(int axis, LONG value, bool relative/* =
 	return true;
 }
 
+bool CALL HGE_Impl::Input_ClearLastDIMouseState()
+{
+	if (!bUseDInput)
+	{
+		return true;
+	}
+#ifdef __WIN32
+	ZeroMemory(&lastMouseState, sizeof(DIMOUSESTATE2));
+#endif
+	return true;
+}
+
 bool CALL HGE_Impl::Input_GetDIJoy(int joy, BYTE stateType /* = DIKEY_PRESSED */, int joydevice/* =0 */)
 {
 	if (!bUseDInput)
@@ -461,6 +483,19 @@ bool CALL HGE_Impl::Input_GetDIJoy(int joy, BYTE stateType /* = DIKEY_PRESSED */
 #endif
 	return false;
 }
+
+bool CALL HGE_Impl::Input_ClearLastDIJoyState( int joydevice/*=0*/ )
+{
+	if (!bUseDInput)
+	{
+		return true;
+	}
+#ifdef __WIN32
+	ZeroMemory(&(lastJoyState[joydevice]), sizeof(DIJOYSTATE));
+#endif
+	return true;
+}
+
 // end
 
 void HGE_Impl::_UpdateMouse()

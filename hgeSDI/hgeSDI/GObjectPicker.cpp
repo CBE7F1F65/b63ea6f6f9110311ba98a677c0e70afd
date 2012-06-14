@@ -8,11 +8,6 @@
 #include "ColorManager.h"
 #include "GLine.h"
 
-#define _PICKSTATE_NULL					0
-#define _PICKSTATE_REQUIREUPDATE		1
-#define _PICKSTATE_AFTERUPDATE			2
-#define _PICKSTATE_READY				3
-
 #define _PICKHAVEBEGIN_NONE		0
 #define _PICKHAVEBEGIN_PT		1
 #define _PICKHAVEBEGIN_ANGLE	2
@@ -20,7 +15,7 @@
 
 GObjectPicker::GObjectPicker(void)
 {
-	state = _PICKSTATE_NULL;
+	state = PICKSTATE_NULL;
 }
 
 GObjectPicker::~GObjectPicker(void)
@@ -29,26 +24,29 @@ GObjectPicker::~GObjectPicker(void)
 
 void GObjectPicker::Init()
 {
-	state = _PICKSTATE_NULL;
+	state = PICKSTATE_NULL;
 	havebeginstate = _PICKHAVEBEGIN_NONE;
+	pfilterfunc = NULL;
 	SetSnapTo(GOPSNAP_GEOMETRY|GOPSNAP_COORD|GOPSNAP_CONTINUITY);
 	SetSnapRange(25.0f);
 }
 
-bool GObjectPicker::PickPoint( int restrict/*=0*/ )
+int GObjectPicker::PickPoint( PickFilterCallback pfunc/*=NULL*/ )
 {
-	if (state == _PICKSTATE_NULL)
+	pfilterfunc = pfunc;
+	if (state == PICKSTATE_NULL)
 	{
-		restrict = restrict;
-		state = _PICKSTATE_REQUIREUPDATE;
+		mousestate = GOPMOUSE_NONE;
+		state = PICKSTATE_REQUIREUPDATE;
+		ClearSet();
 	}
-	else if (state == _PICKSTATE_AFTERUPDATE)
+	else if (state == PICKSTATE_AFTERUPDATE)
 	{
-		state = _PICKSTATE_REQUIREUPDATE;
+		state = PICKSTATE_REQUIREUPDATE;
 	}
-	else if (state == _PICKSTATE_READY)
+	else if (state == PICKSTATE_READY)
 	{
-		state = _PICKSTATE_NULL;
+		state = PICKSTATE_NULL;
 		havebeginstate = _PICKHAVEBEGIN_NONE;
 		return true;
 	}
@@ -59,19 +57,25 @@ bool GObjectPicker::UpdatePickPoint()
 {
 	snappedstate = GOPSNAP_NONE;
 
-	if (state != _PICKSTATE_REQUIREUPDATE)
+	if (state != PICKSTATE_REQUIREUPDATE)
 	{
-		return false;
+		return mousestate|state;
 	}
-	state = _PICKSTATE_AFTERUPDATE;
+	state = PICKSTATE_AFTERUPDATE;
 
 	MainInterface * pmain = &MainInterface::getInstance();
-	pickx_s = pmain->mousex;
-	picky_s = pmain->mousey;
+	if (pmain->hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_DOWN))
+	{
+		ClearSet();
+	}
 
+
+	
 	GUICoordinate * pguic = &GUICoordinate::getInstance();
-	pickx_c = pguic->StoCx(pickx_s);
-	picky_c = pguic->StoCy(picky_s);
+	pickx_s = pguic->GetCursorX_S();
+	picky_s = pguic->GetCursorY_S();
+	pickx_c = pguic->GetCursorX_C();
+	picky_c = pguic->GetCursorY_C();
 
 	snaprange_c = pguic->StoCs(snaprange_s);
 
@@ -103,12 +107,23 @@ bool GObjectPicker::UpdatePickPoint()
 		bSnapped = CheckSnapGrid();
 	}
 
+	if (pmain->hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_DOWN))
+	{
+		mousedownx_c = pickx_c;
+		mousedowny_c = picky_c;
+		mousedownx_s = GetPickX_S();
+		mousedowny_s = GetPickY_S();
+		mousedownPickObj = pickObj;
+		mousedownPickEntityObj = pickEntityObj;
+		mousestate = GOPMOUSE_DOWN;
+	}
+
 	if (pmain->hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_UP))
 	{
-		state = _PICKSTATE_READY;
-		return true;
+		mousestate = GOPMOUSE_UP;
+		state = PICKSTATE_READY;
 	}
-	return false;
+	return mousestate|state;
 }
 
 bool GObjectPicker::IsInSnapRangePoint_C( float x, float y )
@@ -155,19 +170,19 @@ void GObjectPicker::Render()
 	{
 		DWORD col = pcm->GetGridXAxisColor();
 		col = SETA(col, _GOP_RENDER_ALPHA);
-		prh->RenderLineR_S(0, ys, pguic->scrw_s, col);
+		prh->RenderLineR_S(0, ys, pguic->GetScreenWidth_S(), col);
 	}
 	else if (snappedstate & GOPSNAPPED_YAXIS)
 	{
 		DWORD col = pcm->GetGridYAxisColor();
 		col = SETA(col, _GOP_RENDER_ALPHA);
-		prh->RenderLineB_S(xs, 0, pguic->scrh_s, col);
+		prh->RenderLineB_S(xs, 0, pguic->GetScreenHeight_S(), col);
 	}
 	if (snappedstate & GOPSNAPPED_OBJ)
 	{
 		if (pickEntityObj)
 		{
-			pickEntityObj->CallRender(true);
+			pickEntityObj->CallRender(HIGHLIGHTLEVEL_PICKED);
 		}
 	}
 	if (snappedstate/* & GOPSNAPPED_POINT*/)
@@ -189,16 +204,24 @@ bool GObjectPicker::CheckSnapGeometryPoint( GObject * pObj )
 		float objy = pObj->getY();
 		if (IsInSnapRangePoint_C(objx, objy))
 		{
-			snappedstate = GOPSNAPPED_POINT|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
-			pickObj = pObj;
-			pickEntityObj = pObj->getParent();
-			if (pickEntityObj->isLayer())
+			bool bret = true;
+			if (pfilterfunc)
 			{
-				pickEntityObj = pObj;
+				bret = pfilterfunc(pObj);
 			}
-			pickx_c = objx;
-			picky_c = objy;
-			return true;
+			if (bret)
+			{
+				snappedstate = GOPSNAPPED_POINT|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
+				pickObj = pObj;
+				pickEntityObj = pObj->getParent();
+				if (pickEntityObj->isLayer())
+				{
+					pickEntityObj = pObj;
+				}
+				pickx_c = objx;
+				picky_c = objy;
+				return true;
+			}
 		}
 	}
 	for (list<GObject *>::iterator it=pObj->getChildren()->begin(); it!=pObj->getChildren()->end(); ++it)
@@ -219,10 +242,24 @@ bool GObjectPicker::CheckSnapGeometryLine( GObject * pObj )
 		float neartoy;
 		if (((GLine *)pObj)->CheckNearTo(pickx_c, picky_c, snaprange_c, &neartox, &neartoy))
 		{
-			snappedstate = GOPSNAPPED_LINE|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
-			pickx_c = neartox;
-			picky_c = neartoy;
-			return true;
+			bool bret = true;
+			if (pfilterfunc)
+			{
+				bret = pfilterfunc(pObj);
+			}
+			if (bret)
+			{
+				snappedstate = GOPSNAPPED_LINE|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
+				pickObj = pObj;
+				pickEntityObj = pObj->getParent();
+				if (pickEntityObj->isLayer())
+				{
+					pickEntityObj = pObj;
+				}
+				pickx_c = neartox;
+				picky_c = neartoy;
+				return true;
+			}
 		}
 	}
 	for (list<GObject *>::iterator it=pObj->getChildren()->begin(); it!=pObj->getChildren()->end(); ++it)
@@ -240,7 +277,7 @@ bool GObjectPicker::CheckSnapGrid()
 {
 	GUICoordinate * pguic = &GUICoordinate::getInstance();
 
-	float subspace = pguic->subgridspace_c;
+	float subspace = pguic->GetSubgirdSpace_C();
 	int ixindex = (int)(pickx_c/subspace+0.5f);
 	int iyindex = (int)(picky_c/subspace+0.5f);
 	float fnx = ixindex*subspace;
@@ -301,4 +338,48 @@ bool GObjectPicker::isBeginPtSet()
 bool GObjectPicker::isBeginAngleSet()
 {
 	return (havebeginstate & _PICKHAVEBEGIN_ANGLE);
+}
+
+GObject * GObjectPicker::GetPickedObj()
+{
+	if (snappedstate & GOPSNAPPED_OBJ)
+	{
+		return pickObj;
+	}
+	return NULL;
+}
+
+GObject * GObjectPicker::GetPickedEntityObj()
+{
+	if (snappedstate & GOPSNAPPED_OBJ)
+	{
+		return pickEntityObj;
+	}
+	return NULL;
+}
+
+GObject * GObjectPicker::GetMDownPickedObj()
+{
+	if (mousestate != GOPMOUSE_NONE)
+	{
+		return mousedownPickObj;
+	}
+	return NULL;
+}
+
+GObject * GObjectPicker::GetMDownPickedEntityObj()
+{
+	if (mousestate != GOPMOUSE_NONE)
+	{
+		return mousedownPickEntityObj;
+	}
+	return NULL;
+}
+
+void GObjectPicker::ClearSet()
+{
+	pickObj = NULL;
+	pickEntityObj = NULL;
+	mousedownPickObj = NULL;
+	mousedownPickEntityObj = NULL;
 }

@@ -84,7 +84,7 @@ void RenderHelper::BaseRenderLine_S( float x1, float y1, float x2, float y2, DWO
 
 void RenderHelper::RenderPoint_S( float x, float y, DWORD col/*=0*/ )
 {
-	if (x >= 0 && x <= pguic->scrw_s && y >= 0 && y <= pguic->scrh_s)
+	if (x >= 0 && x <= pguic->GetScreenWidth_S() && y >= 0 && y <= pguic->GetScreenHeight_S())
 	{
 		BaseRenderPoint_S(x, y, col);
 	}
@@ -92,7 +92,7 @@ void RenderHelper::RenderPoint_S( float x, float y, DWORD col/*=0*/ )
 
 void RenderHelper::RenderLine_S( float x1, float y1, float x2, float y2, DWORD col/*=0*/ )
 {
-	if (MathHelper::getInstance().LinePartialInRect(x1, y1, x2, y2, 0, 0, pguic->scrw_s, pguic->scrh_s, true))
+	if (MathHelper::getInstance().LinePartialInRect(x1, y1, x2, y2, 0, 0, pguic->GetScreenWidth_S(), pguic->GetScreenHeight_S(), true))
 	{
 		BaseRenderLine_S(x1, y1, x2, y2, col);
 //		hge->Gfx_RenderLine(x1, y1, x2, y2, col);
@@ -114,12 +114,12 @@ void RenderHelper::RenderSquare_S( float x, float y, float a, DWORD col/*=0*/ )
 	RenderRect_S(x, y, a, a, col);
 }
 
-void RenderHelper::RenderRect_S( float x, float y, float a, float b, DWORD col/*=0*/ )
+void RenderHelper::RenderRect_S( float x, float y, float w, float h, DWORD col/*=0*/ )
 {
-	RenderLine_S(x, y, x+a, y, col);
-	RenderLine_S(x+a, y, x+a, y+b, col);
-	RenderLine_S(x+a, y+b, x, y+b, col);
-	RenderLine_S(x, y+b, x, y, col);
+	RenderLine_S(x, y, x+w, y, col);
+	RenderLine_S(x+w, y, x+w, y+h, col);
+	RenderLine_S(x+w, y+h, x, y+h, col);
+	RenderLine_S(x, y+h, x, y, col);
 }
 
 void RenderHelper::RenderArrow_S( float x, float y, int angle, float length, float arrowsize, DWORD col/*=0*/ )

@@ -315,7 +315,7 @@ void CommandTemplate::InstantProcessCommand()
 
 void CommandTemplate::CallProcessCommand()
 {
-	comm = pcommand->ccomm.command;
+	comm = pcommand->GetCurrentCommand();
 	OnProcessCommand();
 }
 

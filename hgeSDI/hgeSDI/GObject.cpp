@@ -5,6 +5,9 @@
 #include "StringManager.h"
 #include "ColorManager.h"
 
+#include "Main.h"
+#include "Command.h"
+
 
 GObject * GObject::pTreeBase=NULL;
 
@@ -18,6 +21,10 @@ GObject::GObject(void)
 	bDisplayFolded = false;
 	nDisplayState = GOBJ_DISPSTATE_NORMAL;
 	dwLineColor = 0;
+
+	nTryState = 0;
+	fTryMove_bx = 0;
+	fTryMove_by = 0;
 
 	_SetID();
 	OnInit();
@@ -42,11 +49,8 @@ int GObject::_ActualAddChildAfterObj( GObject * child, GObject * afterobj )
 	if (child)
 	{
 		ASSERT(child != this);
-		if (child == this)
-		{
-			MessageBeep(-1);
-		}
 		ASSERT(child != afterobj);
+		ASSERT(!child->isAncestorOf(this));
 
 		child->_SetParent(this);
 		child->OnEnter();
@@ -276,9 +280,39 @@ void GObject::OnEnter()
 
 void GObject::OnUpdate()
 {
+
+	if (nTryState)
+	{
+		if (nTryState == GOBJTRYSTATE_MOVE_REQUIREUPDATE)
+		{
+			nTryState = GOBJTRYSTATE_MOVE_AFTERUPDATE;
+		}
+		else if (nTryState == GOBJTRYSTATE_MOVE_AFTERUPDATE)
+		{
+			// Add Command
+			float tx = getX();
+			float ty = getY();
+			MoveTo(fTryMove_bx, fTryMove_by, false);
+			MainInterface::getInstance().OnCommandWithParam(
+				COMM_MOVENODE,
+				CCCWPARAM_I(nID),
+				CCCWPARAM_F(tx),
+				CCCWPARAM_F(ty),
+				NULL
+				);
+			Command * pcommand = &Command::getInstance();
+			while (!pcommand->canCommandDone())
+			{
+				pcommand->ProcessCommand();
+			}
+			pcommand->ProcessCommand();
+			nTryState = GOBJTRYSTATE_MOVE_NULL;
+		}
+	}
+
 }
 
-void GObject::OnRender( bool bHighlight/*=false*/ )
+void GObject::OnRender( int iHighlightLevel/*=0*/ )
 {
 }
 
@@ -495,16 +529,16 @@ void GObject::OnParentToggleDisplayLocked( bool toDisplayLock )
 
 }
 
-void GObject::CallRender( bool bHighlight/*=false*/ )
+void GObject::CallRender( int iHighlightLevel/*=0*/ )
 {
-	if (canRender() || bHighlight)
+	if (iHighlightLevel || canRender())
 	{
-		OnRender(bHighlight);
+		OnRender(iHighlightLevel);
 		if (!listChildren.empty())
 		{
 			FOREACH_GOBJ_CHILDREN_IT()
 			{
-				(*it)->CallRender();
+				(*it)->CallRender(iHighlightLevel);
 			}
 		}
 	}
@@ -574,6 +608,20 @@ GObject * GObject::GetBase()
 		pobj = pobj->pParent;
 	}
 	return pobj;
+}
+
+GObject * GObject::GetNonAttributeObj()
+{
+	GObject * pobj = this;
+	while (pobj)
+	{
+		if (!isAttributeNode())
+		{
+			return pobj;
+		}
+		pobj = pobj->pParent;
+	}
+	return NULL;
 }
 
 bool GObject::isRecDisplayFolded()
@@ -745,11 +793,24 @@ void GObject::Independ()
 	nNonAttributeChildrenCount = 0;
 }
 
-DWORD GObject::getLineColor( bool bHighlight/*=false*/ )
+DWORD GObject::getLineColor( int iHighlightLevel/*=0*/ )
 {
-	if (bHighlight)
+	if (iHighlightLevel)
 	{
-		return ColorManager::getInstance().Highlight(dwLineColor);
+		return ColorManager::getInstance().Highlight(dwLineColor, iHighlightLevel);
 	}
 	return dwLineColor;
+}
+
+void GObject::ToggleTryMoveState( bool bTry )
+{
+	if (!nTryState && bTry)
+	{
+		fTryMove_bx = getX();
+		fTryMove_by = getY();
+	}
+	if (bTry)
+	{
+		nTryState = GOBJTRYSTATE_MOVE_REQUIREUPDATE;
+	}
 }

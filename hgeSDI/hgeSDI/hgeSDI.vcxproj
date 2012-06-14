@@ -157,9 +157,11 @@
     <ClInclude Include="Main.h" />
     <ClInclude Include="MainDependency.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="MarqueeSelect.h" />
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="MessageBoxManager.h" />
     <ClInclude Include="MouseCursorManager.h" />
+    <ClInclude Include="MoveNodeCommand.h" />
     <ClInclude Include="NewLayerCommand.h" />
     <ClInclude Include="OutputCommand.h" />
     <ClInclude Include="RenderHelper.h" />
@@ -193,8 +195,10 @@
     <ClCompile Include="DeleteItemCommand.cpp" />
     <ClCompile Include="DuplicateCommand.cpp" />
     <ClCompile Include="GBaseNode.cpp" />
+    <ClCompile Include="MarqueeSelect.cpp" />
     <ClCompile Include="MessageBoxManager.cpp" />
     <ClCompile Include="MouseCursorManager.cpp" />
+    <ClCompile Include="MoveNodeCommand.cpp" />
     <ClCompile Include="OutputCommand.cpp" />
     <ClCompile Include="ProcessCommand.cpp" />
     <ClCompile Include="CommandTemplate.cpp" />

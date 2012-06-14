@@ -77,6 +77,8 @@ public:
 
 	bool HGEThreadFunc();
 
+
+
 	bool Render();
 	bool Frame();
 	bool FocusLost();
@@ -93,10 +95,23 @@ public:
 	HGE * hge;
 	int resizewindow_w;
 	int resizewindow_h;
+private:
 	float mousex;
 	float mousey;
 	float lastmousex;
 	float lastmousey;
+public:
+
+	float GetMouseXForCoord(){return mousex;};
+	float GetMouseYForCoord(){return mousey;};
+	float GetLastMouseXForCoord(){return lastmousex;};
+	float GetLastMouseYForCoord(){return lastmousey;};
+
+	float GetMouseX_S();
+	float GetMouseY_S();
+	float GetMouseX_C();
+	float GetMouseY_C();
+
 	int lastmousewheel;
 	int mousewheel;
 

@@ -168,7 +168,7 @@ void ChgeSDIView::OnInitialUpdate()
 
 	if (!manageloop)
 	{
-		SetTimer(NULL, 1, NULL);
+		SetTimer(NULL, 0, NULL);
 	}
 }
 

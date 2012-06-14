@@ -921,14 +921,17 @@ public:
 	virtual LPDIRECTINPUT8 CALL Input_GetDevice() = 0;
 	virtual bool		CALL	Input_GetDIKey(int key, BYTE stateType = DIKEY_PRESSED) = 0;
 	virtual bool		CALL	Input_SetDIKey(int key, bool set = true) = 0;
-
+	virtual bool		CALL	Input_ClearLastDIKeyState() = 0;
+	
 	virtual bool		CALL	Input_GetDIMouseKey(int key, BYTE stateType = DIKEY_PRESSED) = 0;
 	virtual bool		CALL	Input_SetDIMouseKey(int key, bool set = true) = 0;
 	virtual LONG		CALL	Input_GetDIMouseAxis(int axis, bool relative=false) = 0;
 	virtual bool		CALL	Input_SetDIMouseAxis(int axis, LONG value, bool relative=false) = 0;
+	virtual bool		CALL	Input_ClearLastDIMouseState() = 0;
 
 	virtual bool		CALL	Input_GetDIJoy(int joy, BYTE stateType = DIKEY_PRESSED, int joydevice=0) = 0;
 	virtual bool		CALL	Input_HaveJoy(int joydevice=0) = 0;
+	virtual bool		CALL	Input_ClearLastDIJoyState(int joydevice=0) = 0;
 
 	virtual bool		CALL	Input_IsTouchDown(int touch) = 0;
 	virtual bool		CALL	Input_IsTouchOn(int touch) = 0;

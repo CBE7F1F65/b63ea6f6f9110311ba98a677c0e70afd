@@ -45,8 +45,8 @@ void BezierCommand::RenderToTarget()
 	PointF2D p2(150, 150);
 	PointF2D p4(400, 100);
 
-	float x4 = MainInterface::getInstance().mousex;
-	float y4 = MainInterface::getInstance().mousey;
+	float x4 = MainInterface::getInstance().GetMouseX_S();
+	float y4 = MainInterface::getInstance().GetMouseY_S();
 	x4 = GUICoordinate::getInstance().StoCx(x4);
 	y4 = GUICoordinate::getInstance().StoCy(y4);
 	PointF2D p3(x4, y4);

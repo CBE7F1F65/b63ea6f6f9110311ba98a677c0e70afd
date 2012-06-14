@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "ColorManager.h"
+#include "GObject.h"
 
 ColorManager::ColorManager(void)
 {
@@ -124,21 +125,48 @@ void ColorManager::Init()
 {
 }
 
-DWORD ColorManager::Highlight( DWORD col )
+DWORD ColorManager::Highlight( DWORD col, int iHighlightLevel )
 {
 	float a, h, s, l;
 	ARGBToAHSL(col, &a, &h, &s, &l);
-	a = 1;
-	l += 0.2f;
-	s += 0.2f;
-	if (l > 1)
+
+	switch (iHighlightLevel)
 	{
-		l = 1;
+	case HIGHLIGHTLEVEL_NONE:
+		break;
+	case HIGHLIGHTLEVEL_SELECTED:
+		a = 1;
+		h += 0.2f;
+//		l += 0.2f;
+		s += 0.2f;
+		if (h > 1)
+		{
+			h -= 1;
+		}
+		if (l > 1)
+		{
+			l = 1;
+		}
+		if (s > 1)
+		{
+			s = 1;
+		}
+		break;
+	case HIGHLIGHTLEVEL_PICKED:
+		a = 1;
+		l += 0.2f;
+		s += 0.2f;
+		if (l > 1)
+		{
+			l = 1;
+		}
+		if (s > 1)
+		{
+			s = 1;
+		}
+		break;
 	}
-	if (s > 1)
-	{
-		s = 1;
-	}
+
 	return AHSLToARGB(a, h, s, l);
 }
 
@@ -168,21 +196,22 @@ void ColorManager::ARGBToAHSL( DWORD col, float *a, float *h, float *s, float *l
 	else
 	{
 		sf = (lf > 0.5f) ? (diff / (2-fmax-fmin)) : (diff / (fmax + fmin));
+
+		if (fmax == r)
+		{
+			hf = (g-b)/diff + (g<b?6:0);
+		}
+		else if (fmax == g)
+		{
+			hf = (b-r)/diff + 2;
+		}
+		else
+		{
+			hf = (r-g)/diff + 4;
+		}
+		hf/=6.0f;
 	}
 
-	if (fmax == r)
-	{
-		hf = (g-b)/diff + (g<b?6:0);
-	}
-	else if (fmax == g)
-	{
-		hf = (b-r)/diff + 2;
-	}
-	else
-	{
-		hf = (r-g)/diff + 4;
-	}
-	hf/=6.0f;
 
 	if (h)
 	{

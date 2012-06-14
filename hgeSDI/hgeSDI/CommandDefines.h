@@ -43,6 +43,7 @@ enum{
 	COMM_REPARENT,
 	COMM_SETNODENAME,
 	COMM_DUPLICATE,
+	COMM_MOVENODE,
 
 	// Layers
 	COMM_NEWLAYER,		// new layer
@@ -193,13 +194,27 @@ enum{
 
 enum{
 	CSP_SETNODENAME_I_S_INDEX_NEWNAME,
-	CSP_SETNODENAME_S_OLDNAME,
 };
 //////////////////////////////////////////////////////////////////////////
 enum{
 	CSI_SETNODENAME_DUMMY=0,
 	CSI_SETNODENAME_WANTINDEX,
 	CSI_SETNODENAME_WANTNEWNAME,
+};
+
+/************************************************************************/
+/* MOVENODE                                                             */
+/************************************************************************/
+
+enum{
+	CSP_MOVENODE_I_XY_INDEX_NEWPOS,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_MOVENODE_DUMMY=0,
+	CSI_MOVENODE_WANTINDEX,
+	CSI_MOVENODE_WANTX,
+	CSI_MOVENODE_WANTY,
 };
 
 /************************************************************************/

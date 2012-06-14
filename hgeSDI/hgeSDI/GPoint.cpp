@@ -4,10 +4,13 @@
 #include "ColorManager.h"
 #include "GUICoordinate.h"
 #include "RenderHelper.h"
+#include "Main.h"
+#include "Command.h"
 
 GPoint::GPoint()
 {
 }
+
 GPoint::GPoint( float _x, float _y )
 {
 	SetPosition(_x, _y);
@@ -39,6 +42,20 @@ bool GPoint::Clone( GObject * pNewParent )
 	_GOBJ_CLONE_POST();
 }
 
+bool GPoint::MoveTo( float newx, float newy, bool bTry )
+{
+	if (!canMove())
+	{
+		return false;
+	}
+	
+	ToggleTryMoveState(bTry);
+
+	x = newx;
+	y = newy;
+	CallModify();
+	return true;
+}
 GEndPoint::GEndPoint()
 {
 }
@@ -97,20 +114,20 @@ bool GMidPoint::Clone( GObject * pNewParent )
 	_GOBJ_CLONE_POST();
 }
 
-void GAttributePoint::OnRender( bool bHighlight/* =false */ )
+void GAttributePoint::OnRender( int iHighlightLevel/*=0*/ )
 {
 #define _GATTRPT_RENDER_A	5
-	DWORD col = getLineColor(bHighlight);
+	DWORD col = getLineColor(iHighlightLevel);
 	GUICoordinate * pguic = &GUICoordinate::getInstance();
 	float xs = pguic->CtoSx(x);
 	float ys = pguic->CtoSy(y);
 	RenderHelper::getInstance().RenderSquare_S(xs-_GATTRPT_RENDER_A, ys-_GATTRPT_RENDER_A, _GATTRPT_RENDER_A*2, col);
 }
 
-void GSubstantivePoint::OnRender( bool bHighlight/* =false */ )
+void GSubstantivePoint::OnRender( int iHighlightLevel/*=0*/ )
 {
 #define _GSUBSPT_RENDER_L	5
-	DWORD col = getLineColor(bHighlight);
+	DWORD col = getLineColor(iHighlightLevel);
 	GUICoordinate * pguic = &GUICoordinate::getInstance();
 	float xs = pguic->CtoSx(x);
 	float ys = pguic->CtoSy(y);

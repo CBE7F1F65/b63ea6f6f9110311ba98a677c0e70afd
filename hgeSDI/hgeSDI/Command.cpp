@@ -31,7 +31,7 @@ void Command::Init()
 
 void Command::LogCreate()
 {
-	if (!IsCommandNoLog(ccomm.command))
+	if (!IsCommandNoLog(GetCurrentCommand()))
 	{
 		string strlog;
 //		sprintf_s(strlog, M_STRMAX, "%s: %s"
@@ -44,7 +44,7 @@ void Command::LogCreate()
 
 void Command::LogFinish()
 {
-	if (!IsCommandNoLog(ccomm.command))
+	if (!IsCommandNoLog(GetCurrentCommand()))
 	{
 		string strlog;
 //		sprintf_s(strlog, M_STRMAX, "%s: %s"
@@ -57,7 +57,7 @@ void Command::LogFinish()
 
 void Command::LogTerminal()
 {
-	if (!IsCommandNoLog(ccomm.command))
+	if (!IsCommandNoLog(GetCurrentCommand()))
 	{
 		string strlog;
 //		sprintf_s(strlog, M_STRMAX, "%s: %s"
@@ -70,7 +70,7 @@ void Command::LogTerminal()
 
 void Command::_LogParam( int index, int useflag, int cwp/*=-1 */ )
 {
-	if (!IsCommandNoLog(ccomm.command))
+	if (!IsCommandNoLog(GetCurrentCommand()))
 	{
 //		char strlog[M_STRMAX*4];
 //		char paramstr[M_STRMAX];
@@ -123,7 +123,7 @@ void Command::LogWantNext()
 	{
 		return;
 	}
-	if (!IsCommandNoLog(ccomm.command))
+	if (!IsCommandNoLog(GetCurrentCommand()))
 	{
 		string strlog;
 //		sprintf_s(strlog, M_STRMAX, "%s: %s: %s: ",
@@ -180,7 +180,7 @@ void Command::LogError( const char * str )
 {
 	string strlog;
 //	char strlog[M_STRMAX*4];
-	if (ccomm.command && ccomm.wantprompt)
+	if (GetCurrentCommand() && ccomm.wantprompt)
 	{
 		strlog = "(";
 		strlog += GetCommandStr();
@@ -222,12 +222,12 @@ int Command::CreateCommand( int comm, int iparam/*=1*/ )
 	if (comm == COMM_UNDO)
 	{
 		DoUnDo(iparam);
-		return ccomm.command;
+		return GetCurrentCommand();
 	}
 	else if (comm == COMM_REDO)
 	{
 		DoReDo(iparam);
-		return ccomm.command;
+		return GetCurrentCommand();
 	}
 	if (IsCommandPush(comm))
 	{
@@ -244,7 +244,7 @@ int Command::CreateCommand( int comm, int iparam/*=1*/ )
 		ccomm.command = comm;
 //	}
 	LogCreate();
-	return ccomm.command;
+	return GetCurrentCommand();
 }
 
 int Command::FinishCommand()
@@ -253,7 +253,7 @@ int Command::FinishCommand()
 
 	for (list<CommandStepInfo>::iterator it = histcomm.begin(); it!=histcomm.end();)
 	{
-		if (it->command == ccomm.command)
+		if (it->command == GetCurrentCommand())
 		{
 			it = histcomm.erase(it);
 		}
@@ -262,7 +262,7 @@ int Command::FinishCommand()
 			++it;
 		}
 	}
-	if (IsCommandPush(ccomm.command))
+	if (IsCommandPush(GetCurrentCommand()))
 	{
 		return PullCommand();
 	}
@@ -278,7 +278,7 @@ int Command::TerminalCommand()
 
 	for (list<CommandStepInfo>::iterator it = histcomm.begin(); it!=histcomm.end();)
 	{
-		if (it->command == ccomm.command)
+		if (it->command == GetCurrentCommand())
 		{
 			it = histcomm.erase(it);
 		}
@@ -287,7 +287,7 @@ int Command::TerminalCommand()
 			++it;
 		}
 	}
-	if (IsCommandPush(ccomm.command))
+	if (IsCommandPush(GetCurrentCommand()))
 	{
 		return PullCommand();
 	}
@@ -299,7 +299,7 @@ int Command::TerminalCommand()
 
 int Command::PushCommand()
 {
-	if (ccomm.command)
+	if (GetCurrentCommand())
 	{
 		StepTo(CSI_PAUSE);
 		ProcessCommand();
@@ -317,20 +317,20 @@ int Command::PullCommand()
 	}
 	SetCurrentCommand(&(pushedcomm.back()));
 	pushedcomm.pop_back();
-	if (ccomm.command)
+	if (GetCurrentCommand())
 	{
 		StepTo(CSI_RESUME);
 		ProcessCommand();
 		StepBack();
 	}
-	return ccomm.command;
+	return GetCurrentCommand();
 }
 
 int Command::ClearCurrentCommand(bool callterminal /*=false*/)
 {
 //	inputcommandlist.clear();
 	pendingparam.ClearSet();
-	if (ccomm.command && callterminal)
+	if (GetCurrentCommand() && callterminal)
 	{
 		StepTo(CSI_TERMINAL);
 		ProcessCommand();
@@ -363,7 +363,7 @@ int Command::SetParamXY( int index, float x, float y )
 	ccomm.params[index].y = y;
 	ccomm.params[index].useflag |= COMMPARAMFLAG_XY;
 	LogParam(index, COMMPARAMFLAG_XY);
-	return ccomm.command;
+	return GetCurrentCommand();
 }
 */
 int Command::SetParamX( int index, float x, int cwp/*=-1*/ )
@@ -376,7 +376,7 @@ int Command::SetParamX( int index, float x, int cwp/*=-1*/ )
 	ccomm.params[index].x = x;
 	ccomm.params[index].useflag |= COMMPARAMFLAG_X;
 	_LogParam(index, COMMPARAMFLAG_X, cwp);
-	return ccomm.command;
+	return GetCurrentCommand();
 }
 
 int Command::SetParamY( int index, float y, int cwp/*=-1*/ )
@@ -389,7 +389,7 @@ int Command::SetParamY( int index, float y, int cwp/*=-1*/ )
 	ccomm.params[index].y = y;
 	ccomm.params[index].useflag |= COMMPARAMFLAG_Y;
 	_LogParam(index, COMMPARAMFLAG_Y, cwp);
-	return ccomm.command;
+	return GetCurrentCommand();
 }
 
 int Command::SetParamF( int index, float fval, int cwp/*=-1*/ )
@@ -402,7 +402,7 @@ int Command::SetParamF( int index, float fval, int cwp/*=-1*/ )
 	ccomm.params[index].fval = fval;
 	ccomm.params[index].useflag |= COMMPARAMFLAG_F;
 	_LogParam(index, COMMPARAMFLAG_F, cwp);
-	return ccomm.command;
+	return GetCurrentCommand();
 }
 
 int Command::SetParamI( int index, int ival, int cwp/*=-1*/ )
@@ -415,7 +415,7 @@ int Command::SetParamI( int index, int ival, int cwp/*=-1*/ )
 	ccomm.params[index].ival = ival;
 	ccomm.params[index].useflag |= COMMPARAMFLAG_I;
 	_LogParam(index, COMMPARAMFLAG_I, cwp);
-	return ccomm.command;
+	return GetCurrentCommand();
 }
 
 int Command::SetParamS( int index, const char * sval, int cwp/*=-1*/ )
@@ -429,7 +429,7 @@ int Command::SetParamS( int index, const char * sval, int cwp/*=-1*/ )
 //	strcpy_s(ccomm.params[index].sval, M_STRMAX, sval);
 	ccomm.params[index].useflag |= COMMPARAMFLAG_S;
 	_LogParam(index, COMMPARAMFLAG_S, cwp);
-	return ccomm.command;
+	return GetCurrentCommand();
 }
 
 int Command::SetParamG( int index, int flag, int cwp/*=-1*/ )
@@ -442,7 +442,7 @@ int Command::SetParamG( int index, int flag, int cwp/*=-1*/ )
 	ccomm.params[index].flag = flag;
 	ccomm.params[index].useflag |= COMMPARAMFLAG_G;
 	_LogParam(index, COMMPARAMFLAG_G, cwp);
-	return ccomm.command;
+	return GetCurrentCommand();
 }
 
 bool Command::GetParamXY( int index, float * x, float * y )
@@ -517,7 +517,7 @@ int Command::GetIvalFromRC( RevertableCommand * rc, int csp )
 {
 	if (rc)
 	{
-		if ((int)(rc->commandlist.size()) >= csp)
+		if ((int)(rc->GetSize()) >= csp)
 		{
 			list<CommittedCommand>::reverse_iterator it = rc->commandlist.rbegin();
 			for (int i=0; i<csp; i++)
@@ -535,7 +535,7 @@ float Command::GetFvalFromRC( RevertableCommand * rc, int csp )
 {
 	if (rc)
 	{
-		if ((int)(rc->commandlist.size()) >= csp)
+		if ((int)(rc->GetSize()) >= csp)
 		{
 			list<CommittedCommand>::reverse_iterator it = rc->commandlist.rbegin();
 			for (int i=0; i<csp; i++)
@@ -554,7 +554,7 @@ const char * Command::GetSvalFromRC( RevertableCommand * rc, int csp )
 {
 	if (rc)
 	{
-		if ((int)(rc->commandlist.size()) >= csp)
+		if ((int)(rc->GetSize()) >= csp)
 		{
 			list<CommittedCommand>::reverse_iterator it = rc->commandlist.rbegin();
 			for (int i=0; i<csp; i++)
@@ -573,7 +573,7 @@ int Command::GetCSubFromRC( RevertableCommand * rc, int csp )
 {
 	if (rc)
 	{
-		if ((int)(rc->commandlist.size()) >= csp)
+		if ((int)(rc->GetSize()) >= csp)
 		{
 			list<CommittedCommand>::reverse_iterator it = rc->commandlist.rbegin();
 			for (int i=0; i<csp; i++)
@@ -606,7 +606,7 @@ int Command::CommitCommand( const char * str )
 			break;
 		}
 	}
-	return ccomm.command;
+	return GetCurrentCommand();
 }
 
 int Command::CreateCommandCommit( int command, int iparam/*=1*/ )
@@ -619,7 +619,7 @@ int Command::CreateCommandCommit( int command, int iparam/*=1*/ )
 	inputcommandlist.push_back(_cc);
 	*/
 	return CreateCommand(command, iparam);
-//	return ccomm.command;
+//	return GetCurrentCommand();
 }
 
 bool _CheckCharToBreak(char ch)
@@ -831,7 +831,7 @@ int Command::FindCommandByStr( const char * str, bool * isshort/*=0*/ )
 
 int Command::FindSubCommandByStr( const char * str )
 {
-	if (!ccomm.command || ccomm.enabledsubcommand.empty())
+	if (!GetCurrentCommand() || ccomm.enabledsubcommand.empty())
 	{
 		return 0;
 	}
@@ -858,7 +858,7 @@ int Command::StepBack()
 	{
 		for (list<CommandStepInfo>::reverse_iterator it = histcomm.rbegin(); it!= histcomm.rend(); ++it)
 		{
-			if (it->command == ccomm.command)
+			if (it->command == GetCurrentCommand())
 			{
 				StepTo(it->step, it->wantprompt, false);
 				histcomm.erase(--(it.base()));
@@ -906,7 +906,7 @@ void Command::TerminalInternalProcess()
 
 void Command::EnableSubCommand( bool bdisplay, int first, ... )
 {
-	if (!ccomm.command)
+	if (!GetCurrentCommand())
 	{
 		return;
 	}
@@ -951,7 +951,7 @@ void Command::EnableSubCommand( bool bdisplay, int first, ... )
 
 void Command::ClearEnabledSubCommand()
 {
-	if (ccomm.command)
+	if (GetCurrentCommand())
 	{
 		ccomm.ClearEnabledSubCommand();
 	}
@@ -968,8 +968,13 @@ void Command::FinishPendingSubCommand()
 	}
 }
 
-void Command::PushRevertable( RevertableCommand * rc )
+void Command::DoPushRevertable()
 {
+	RevertableCommand * rc = &rcbuffer;
+	if (!rc->GetSize())
+	{
+		return;
+	}
 	if (rc)
 	{
 		undolist.push_back(*rc);
@@ -984,11 +989,18 @@ void Command::PushRevertable( RevertableCommand * rc )
 	if (!IsUnDoReDoing())
 	{
 		ClearReDo();
+
+		string strcomm;
+		bool pushed=false;
+		int firstcomm = 0;
+		int firstusefulcomm = 0;
+		bool multicomm = false;
+
 		for (list<CommittedCommand>::iterator it=rc->commandlist.begin(); it!= rc->commandlist.end(); ++it)
 		{
 			if (IsCCTypeCommand(it->type) && IsInternalCommand_Command(it->ival))
 			{
-				string strcomm;
+				pushed = true;
 				int pcount = CI_GETPCOUNT(it->csub);
 				int ucount = CI_GETUCOUNT(it->csub);
 				++it;	// working layer
@@ -1009,17 +1021,54 @@ void Command::PushRevertable( RevertableCommand * rc )
 							strcomm += ", ";
 						}
 					}
-					strcomm += ");";
-					SnapshotManager::getInstance().OnPushRevertable();
-					MainInterface::getInstance().OnPushRevertable(GetCommandDescriptionStr(comm), strcomm.c_str(), comm);
+					strcomm += "); ";
+					if (!firstcomm)
+					{
+						firstcomm = comm;
+					}
+					if (comm != COMM_SETWORKINGLAYER)
+					{
+						if (!firstusefulcomm)
+						{
+							firstusefulcomm = comm;
+						}
+						else
+						{
+							multicomm = true;
+						}
+					}
 				}
 			}
+		}
+		if (pushed)
+		{
+			SnapshotManager::getInstance().OnPushRevertable();
+			int comm = firstusefulcomm?firstusefulcomm:firstcomm;
+			string descstr = GetCommandDescriptionStr(comm);
+			if (multicomm)
+			{
+				descstr += "...";
+			}
+			MainInterface::getInstance().OnPushRevertable(descstr.c_str(), strcomm.c_str(), comm);
 		}
 	}
 	if (undoredoflag == CUNDOREDO_REDOING)
 	{
 		undoredoflag = CUNDOREDO_NULL;
 	}
+	rcbuffer.Clear();
+}
+
+void Command::PushRevertable( RevertableCommand * rc )
+{
+	if (rc)
+	{
+		for (list<CommittedCommand>::iterator it=rc->commandlist.begin(); it!=rc->commandlist.end(); ++it)
+		{
+			rcbuffer.PushCommand(&(*it));
+		}
+	}
+
 }
 
 void Command::ClearReDo()
@@ -1057,7 +1106,7 @@ void Command::OnInit()
 	CreateCommand(COMM_INITIAL);
 }
 
-bool Command::canReDoDone()
+bool Command::canCommandDone()
 {
 	if (ccomm.step == CSI_FINISH || ccomm.step == CSI_FINISHCONTINUE || ccomm.step == CSI_TERMINAL)
 	{
@@ -1080,7 +1129,7 @@ int Command::CreateUnDoCommandCommit( int step/*=1*/ )
 // 	cc.sval = ss.str();
 // 	CommitFrontCommand(cc);
 	CreateCommandCommit(COMM_UNDO, step);
-	return ccomm.command;
+	return GetCurrentCommand();
 }
 
 int Command::CreateReDoCommandCommit( int step/*=1*/ )
@@ -1097,5 +1146,10 @@ int Command::CreateReDoCommandCommit( int step/*=1*/ )
 // 	cc.sval = ss.str();
 // 	CommitFrontCommand(cc);
 	CreateCommandCommit(COMM_REDO, step);
+	return GetCurrentCommand();
+}
+
+int Command::GetCurrentCommand()
+{
 	return ccomm.command;
 }

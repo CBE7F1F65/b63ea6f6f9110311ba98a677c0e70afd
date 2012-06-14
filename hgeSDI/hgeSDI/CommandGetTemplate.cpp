@@ -11,6 +11,7 @@
 #include "OutputCommand.h"
 #include "SetNodeNameCommand.h"
 #include "DuplicateCommand.h"
+#include "MoveNodeCommand.h"
 
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
@@ -28,6 +29,8 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 		return &SetNodeNameCommand::getInstance();
 	case COMM_DUPLICATE:
 		return &DuplicateCommand::getInstance();
+	case COMM_MOVENODE:
+		return &MoveNodeCommand::getInstance();
 
 	case COMM_NEWLAYER:
 	case COMM_NEWSUBLAYER:

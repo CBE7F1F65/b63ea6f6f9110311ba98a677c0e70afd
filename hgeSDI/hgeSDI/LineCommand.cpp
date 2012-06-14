@@ -83,37 +83,16 @@ void LineCommand::OnProcessCommand()
 	if (!ret/* || nowstep == CSI_FINISHCONTINUE*/)
 	{
 		// Pending Processed
+		/*
 		nowstep = pcommand->GetStep();
 		if (nowstep == CSI_LINE_WANTX2)
 		{
 			float x1, y1;
 			pcommand->GetParamXY(CSP_LINE_XY_B, &x1, &y1);
-			/*
-			PushRevertable(
-				CCMake_C(COMM_I_COMMAND, 3),
-				CCMake_C(COMM_LINE),
-				CCMake_F(x1),
-				CCMake_F(y1),
-				NULL
-				);
-				*/
 		}
-		/*else if (nowstep == CSI_FINISHCONTINUE)
-		{
-			float x1, y1, x2, y2;
-			pcommand->GetParamXY(CSP_LINE_B_XY, &x1, &y1);
-			pcommand->GetParamXY(CSP_LINE_N_XY, &x2, &y2);
-			PushRevertable(
-				CCMake_C(COMM_LINE),
-				CCMake_F(x1),
-				CCMake_F(y1),
-				CCMake_F(x2),
-				CCMake_F(y2),
-				NULL
-				);
-		}*/
+		*/
 	}
-	if (ret > 0)
+	else if (ret > 0)
 	{
 		// Dispatch Subcommand
 		DispatchNormalSubCommand(ret);
@@ -181,8 +160,6 @@ void LineCommand::RenderToTarget()
 
 		float x2 = pgp->GetPickX_C();//MainInterface::getInstance().mousex;
 		float y2 = pgp->GetPickY_C();//MainInterface::getInstance().mousey;
-//		x2 = GUICoordinate::getInstance().StoCx(x2);
-//		y2 = GUICoordinate::getInstance().StoCy(y2);
 
 		HTARGET tar = RenderTargetManager::getInstance().UpdateTarget(RTID_COMMAND);
 

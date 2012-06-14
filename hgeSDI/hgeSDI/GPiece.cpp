@@ -24,3 +24,8 @@ bool GPiece::Clone( GObject * pNewParent )
 	_GOBJ_CLONE_PRE(GPiece);
 	_GOBJ_CLONE_POST();
 }
+
+void GPiece::MovePiece( float movedx_c, float movedy_c, bool trymode )
+{
+	//ToDo!!
+}

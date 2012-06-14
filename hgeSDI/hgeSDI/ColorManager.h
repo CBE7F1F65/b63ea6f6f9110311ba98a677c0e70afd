@@ -124,6 +124,7 @@ public:
 	_CMFDEF(	GridYAxis,	0xff236e26	);
 	_CMFDEF(	Coord,	0xffffffff	);
 	_CMFDEF(	Cursor,	0xffffffff	);
+	_CMFDEF(	MarqueeLine,	0xffffffff	);
 
 	// ToDo!!
 	void RestoreDefault();
@@ -146,7 +147,7 @@ public:
 #undef _CMFDEF
 
 	DWORD ARGBToABGR(DWORD col);
-	DWORD Highlight( DWORD col );
+	DWORD Highlight( DWORD col, int iHighlightLevel );
 
 	void ARGBToAHSL(DWORD col, float *a, float *h, float *s, float *l);
 	DWORD AHSLToARGB(float a, float h, float s, float l);

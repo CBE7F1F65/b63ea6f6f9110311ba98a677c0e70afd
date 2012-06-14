@@ -4,6 +4,8 @@
 #include "RenderHelper.h"
 #include "RenderTargetManager.h"
 #include "ColorManager.h"
+#include "Main.h"
+#include "Command.h"
 
 GLine::GLine(void)
 {
@@ -27,11 +29,11 @@ void GLine::SetBeginEnd( float xb, float yb, float xe, float ye )
 {
 	if (plbegin)
 	{
-		plbegin->SetPosition(xb, yb);
+		plbegin->MoveTo(xb, yb, false);
 	}
 	if (plend)
 	{
-		plend->SetPosition(xe, ye);
+		plend->MoveTo(xe, ye, false);
 	}
 }
 
@@ -42,6 +44,34 @@ const char * GLine::getDisplayName()
 		return strDisplayName.c_str();
 	}
 	return StringManager::getInstance().GetNNLineName();
+}
+
+void GLine::OnUpdate()
+{
+	UpdateMidPoint();
+	GObject::OnUpdate();
+}
+
+bool GLine::MoveTo( float newx, float newy, bool bTry )
+{
+	if (!canMove())
+	{
+		return false;
+	}
+	float xoffset = newx - getX();
+	float yoffset = newy - getY();
+
+	ToggleTryMoveState(bTry);
+
+	bool bret;
+	bret = plbegin->MoveByOffset(xoffset, yoffset, false);
+	if (!bret)
+	{
+		return false;
+	}
+	bret = plend->MoveByOffset(xoffset, yoffset, false);
+	UpdateMidPoint();
+	return bret;
 }
 
 GStraightLine::GStraightLine()
@@ -81,20 +111,12 @@ void GStraightLine::UpdateMidPoint()
 	}
 }
 
-void GStraightLine::OnUpdate()
-{
-	if (bModified)
-	{
-		UpdateMidPoint();
-	}
-	GObject::OnUpdate();
-}
 
-void GStraightLine::OnRender( bool bHighlight/*=false*/ )
+void GStraightLine::OnRender( int iHighlightLevel/*=0*/ )
 {
 	if (plbegin && plend)
 	{
-		DWORD col = getLineColor(bHighlight);
+		DWORD col = getLineColor(iHighlightLevel);
 		RenderHelper::getInstance().RenderLine(plbegin->x, plbegin->y, plend->x, plend->y, col);
 	}
 }
@@ -114,10 +136,6 @@ bool GStraightLine::Clone( GObject * pNewParent )
 
 bool GStraightLine::CheckNearTo( float px, float py, float r, float *plx, float *ply )
 {
-	if (!plbegin || !plend)
-	{
-		return false;
-	}
 	float xl, yt, xr, yb;
 	GetBoundingBox(&xl, &yt, &xr, &yb);
 	if (!MathHelper::getInstance().PointInRect(px, py, xl-r, yt-r, xr-xl+2*r, yb-yt+2*r))
@@ -143,7 +161,7 @@ bool GStraightLine::CheckNearTo( float px, float py, float r, float *plx, float 
 
 void GStraightLine::GetBoundingBox( float *xl, float *yt, float *xr, float * yb )
 {
-	if (!xl || !yt || !xr || !yb || !plbegin || !plend)
+	if (!xl || !yt || !xr || !yb)
 	{
 		return;
 	}
@@ -151,4 +169,9 @@ void GStraightLine::GetBoundingBox( float *xl, float *yt, float *xr, float * yb 
 	*xr = max(plbegin->getX(), plend->getX());
 	*yt = min(plbegin->getY(), plend->getY());
 	*yb = max(plbegin->getY(), plend->getY());
+}
+
+bool GStraightLine::CheckIntersectWithRect( float xl, float yt, float xr, float yb )
+{
+	return MathHelper::getInstance().LinePartialInRect(plbegin->x, plbegin->y, plend->x, plend->y, xl, yt, xr, yb);
 }

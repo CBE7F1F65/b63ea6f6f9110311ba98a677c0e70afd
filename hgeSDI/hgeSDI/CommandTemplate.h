@@ -14,38 +14,38 @@ public:
 	CommandTemplate(void);
 	~CommandTemplate(void);
 
-	virtual void CallProcessCommand();
+	void CallProcessCommand();
 	virtual void OnProcessCommand()=0;
-	virtual void InstantProcessCommand();
+	void InstantProcessCommand();
 	virtual void OnDoneCommand()=0;
-	virtual void CallDoneCommand();
+	void CallDoneCommand();
 	virtual void OnProcessUnDoCommand(RevertableCommand * rc);
-	virtual void CallProcessUnDoCommand(int comm, RevertableCommand * rc);
+	void CallProcessUnDoCommand(int comm, RevertableCommand * rc);
 
 	virtual int OnNormalProcessCommand(int cursorindex=-1);
-	virtual void DispatchNormalSubCommand(int subcommand);
-	virtual void UpdateLastStep();
-	virtual bool IsStepped();
+	void DispatchNormalSubCommand(int subcommand);
+	void UpdateLastStep();
+	bool IsStepped();
 
-	virtual void PushRevertable(CommittedCommand * first, ...);
-	virtual void CommitFrontCommand(CommittedCommand * first, ...);
+	void PushRevertable(CommittedCommand * first, ...);
+	void CommitFrontCommand(CommittedCommand * first, ...);
 
-	virtual void ProtectPendingFinishCommand();
+	void ProtectPendingFinishCommand();
 
 	virtual void RenderToTarget();
-	virtual void ReleaseTarget();
+	void ReleaseTarget();
 
-	virtual CommittedCommand * CCMake_C(int command, int paramcount=0, int undocount=0);
-	virtual CommittedCommand * CCMake_CI(int command, int ival);
-	virtual CommittedCommand * CCMake_F(float fval);
-	virtual CommittedCommand * CCMake_I(int ival);
-	virtual CommittedCommand * CCMake_D(int ival){return CCMake_I(ival);};
-	virtual CommittedCommand * CCMake_S(const char * sval);
-	virtual CommittedCommand * CCMake_Sub(int subcommand);
-	virtual void DeleteCC();
+	CommittedCommand * CCMake_C(int command, int paramcount=0, int undocount=0);
+	CommittedCommand * CCMake_CI(int command, int ival);
+	CommittedCommand * CCMake_F(float fval);
+	CommittedCommand * CCMake_I(int ival);
+	CommittedCommand * CCMake_D(int ival){return CCMake_I(ival);};
+	CommittedCommand * CCMake_S(const char * sval);
+	CommittedCommand * CCMake_Sub(int subcommand);
+	void DeleteCC();
 
-	virtual bool DoUnDo(int undostep=1);
-	virtual bool DoReDo(int redostep=1);
+	bool DoUnDo(int undostep=1);
+	bool DoReDo(int redostep=1);
 
 	GUICoordinate * pguic;
 	MainInterface * pmain;
