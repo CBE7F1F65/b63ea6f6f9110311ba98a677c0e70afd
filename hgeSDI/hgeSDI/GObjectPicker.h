@@ -121,4 +121,5 @@ private:
 public:
 	int PickPoint(PickFilterCallback pfunc=NULL);
 	bool UpdatePickPoint();
+	void OnDeleteNode( GObject * node );
 };

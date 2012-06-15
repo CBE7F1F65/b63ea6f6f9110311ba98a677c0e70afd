@@ -28,7 +28,7 @@ public:
 	void Delete();
 
 	void OnTreeWillChange();
-	void OnTreeChanged(GObject * changingbase, GObject * activeitem);
+	void OnTreeChanged(GObject * changingbase, GObject * activeitem, bool bSetActiveLayer=true);
 
 	void AddNodeToDelete(GObject * node);
 
@@ -45,25 +45,30 @@ public:
 	GLayer * NewSubLayer(GObject * node, const char * layername, int layerIndex=-1);
 
 	GMainBaseNode * pBaseNode;
+private:
+	GObject * pLastToSetActiveNode;
 	list<GObject*> nodetodelete;
 
-	bool bReleasing;
+	int nLockTreeChangeState;
+public:
+	void SetLockTreeChange();
 
 	GBaseNode undobasenode;
 	int stackedLayerIndex;
 	string defaultLayerName;
-
 private:
-	GLayer * workinglayer;
+	GLayer * pActiveLayer;
+
+//	GLayer * pActiveLayer;
 	GLayer * lastworkinglayer;
 public:
-	GLayer * getWorkingLayer(){return workinglayer;};
+	GLayer * getWorkingLayer(){return pActiveLayer;};
 	GLayer * getLastWorkingLayer(){return lastworkinglayer;};
-	void OnInternalActiveLayerSetDone();
+	GLayer * GetActiveLayerFromUI();
 	void UpdateWorkingLayer(GLayer * pLayer=NULL, bool bothtoactive=false);
 
 	GLayer * GetActiveLayer();
-	void SetActiveLayer_Internal(GObject * pObj=NULL);
+	void SetActiveLayer_Internal(GObject * pObj=NULL, bool bCallUI=true);
 	const char * GetDefaultLayerName( int layerIndex=-1 );
 	list<GObject*> * GetSelectedNodes();
 	GLayer * GetDragDroppedLayerNode();

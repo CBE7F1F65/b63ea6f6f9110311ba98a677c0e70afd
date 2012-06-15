@@ -35,6 +35,7 @@ void GLine::SetBeginEnd( float xb, float yb, float xe, float ye )
 	{
 		plend->MoveTo(xe, ye, false);
 	}
+	UpdateMidPoint();
 }
 
 const char * GLine::getDisplayName()
@@ -44,12 +45,6 @@ const char * GLine::getDisplayName()
 		return strDisplayName.c_str();
 	}
 	return StringManager::getInstance().GetNNLineName();
-}
-
-void GLine::OnUpdate()
-{
-	UpdateMidPoint();
-	GObject::OnUpdate();
 }
 
 bool GLine::MoveTo( float newx, float newy, bool bTry )

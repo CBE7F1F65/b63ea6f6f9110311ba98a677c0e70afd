@@ -624,7 +624,7 @@ int Command::CreateCommandCommit( int command, int iparam/*=1*/ )
 
 bool _CheckCharToBreak(char ch)
 {
-	if (ch >= 'a' && ch <= 'z' || ch == '\"' || ch == '\'' || ch == '_' || ch >= 'A' && ch <= 'Z' || ch >= '0' && ch <= '9' || ch == '-' || ch == '+' || ch == '.' || ch < 0)
+	if (ch >= 'a' && ch <= 'z' || ch == '\"' || ch == '\'' || ch == '_' || ch >= 'A' && ch <= 'Z' || ch >= '0' && ch <= '9' || ch == '-' || ch == '+' || ch == '.' || ch == ';' || ch < 0)
 	{
 		return false;
 	}
@@ -1054,7 +1054,7 @@ void Command::DoPushRevertable()
 	}
 	if (undoredoflag == CUNDOREDO_REDOING)
 	{
-		undoredoflag = CUNDOREDO_NULL;
+		ExitReDo();
 	}
 	rcbuffer.Clear();
 }

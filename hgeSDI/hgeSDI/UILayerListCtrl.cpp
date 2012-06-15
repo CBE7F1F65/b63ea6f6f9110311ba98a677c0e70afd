@@ -538,6 +538,16 @@ void UILayerListCtrl::OnLvnItemchanged(NMHDR *pNMHDR, LRESULT *pResult)
 		{
 		}
 	}
+	/*
+	if (!bTreeLocked)
+	{
+		int index = GetNextItem(-1, LVNI_SELECTED);
+		if (index >= 0)
+		{
+			MainInterface::getInstance().OnSetActiveLayerFromUI();
+		}
+	}
+	*/
 	*pResult = 0;
 }
 
@@ -595,7 +605,7 @@ void UILayerListCtrl::SetActiveLayer_Internal( GLayer * pLayer )
 //	ASSERT(index>=0);
 	DeSelect();
 	AddSelect(index);
-	MainInterface::getInstance().OnInternalActiveLayerSetDone();
+//	MainInterface::getInstance().OnSetActiveLayerFromUI();
 }
 
 

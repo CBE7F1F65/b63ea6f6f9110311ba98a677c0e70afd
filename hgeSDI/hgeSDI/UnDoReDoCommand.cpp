@@ -7,12 +7,31 @@
 #include "CommandTemplate.h"
 #include "SnapshotManager.h"
 
+
+void Command::EnterUnDo()
+{
+	undoredoflag = CUNDOREDO_UNDOING;
+	GObjectManager::getInstance().SetLockTreeChange();
+}
+
+void Command::EnterReDo()
+{
+	undoredoflag = CUNDOREDO_REDOING;
+	GObjectManager::getInstance().SetLockTreeChange();
+}
+
+void Command::ExitUnDo()
+{
+	undoredoflag = CUNDOREDO_NULL;
+}
+
+void Command::ExitReDo()
+{
+	undoredoflag = CUNDOREDO_NULL;
+}
+
 bool Command::DoUnDo( int undostep/*=1*/ )
 {
-	if (undostep > 1)
-	{
-		DoUnDo(undostep-1);
-	}
 	if (undolist.size()<=1 || undostep < 1)
 	{
 		MainInterface::getInstance().MBeep();
@@ -26,7 +45,7 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 	RevertableCommand rc = undolist.back();
 
 	// Dispatch
-	undoredoflag = CUNDOREDO_UNDOING;
+	EnterUnDo();
 	for (list<CommittedCommand>::iterator it=rc.commandlist.begin(); it!=rc.commandlist.end(); ++it)
 	{
 		DASSERT(IsCCTypeCommand(it->type));
@@ -112,7 +131,7 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 	}
 	SnapshotManager::getInstance().OnUnDo();
 	MainInterface::getInstance().OnUnDo();
-	undoredoflag = CUNDOREDO_NULL;
+	ExitUnDo();
 
 	undolist.pop_back();
 	redolist.push_back(rc);
@@ -123,21 +142,22 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 		GObjectManager::getInstance().SetActiveLayer_Internal();
 	}
 
+	if (undostep > 1)
+	{
+		DoUnDo(undostep-1);
+	}
+
 	return true;
 }
 
 bool Command::DoReDo( int redostep/*=1*/ )
 {
-	if (redostep > 1)
-	{
-		DoReDo(redostep-1);
-	}
-	LogReDo();
 	if (redolist.empty() || redostep < 1)
 	{
 		MainInterface::getInstance().MBeep();
 		return false;
 	}
+	LogReDo();
 
 	SetRenderTarget(0);
 	ClearCurrentCommand(true);
@@ -145,7 +165,7 @@ bool Command::DoReDo( int redostep/*=1*/ )
 	RevertableCommand rc = redolist.back();
 
 	// Dispatch
-	undoredoflag = CUNDOREDO_REDOING;
+	EnterReDo();
 	for (list<CommittedCommand>::iterator it=rc.commandlist.begin(); it!=rc.commandlist.end(); ++it)
 	{
 		DASSERT(IsCCTypeCommand(it->type));
@@ -235,6 +255,12 @@ bool Command::DoReDo( int redostep/*=1*/ )
 	// All ReDo should done by command
 //	undolist.push_back(rc);
 	CommandTemplate::CallOnUnDo();
+
+	if (redostep > 1)
+	{
+		DoReDo(redostep-1);
+	}
+
 	return true;
 }
 

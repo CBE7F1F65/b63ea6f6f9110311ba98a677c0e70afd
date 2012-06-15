@@ -83,6 +83,8 @@ public:
 #define COMMITTEDCOMMANDTYPE_STRING			0x40
 #define F_COMMITTEDCOMMANDTYPE_STRING			0xff
 
+#define COMMITTEDCOMMANDTYPE_SKIPCOMMAND	0x50
+
 #define CCCWPARAM_F(FVAL)	COMMITTEDCOMMANDTYPE_FLOAT, (float)(FVAL)
 #define CCCWPARAM_I(IVAL)	COMMITTEDCOMMANDTYPE_INT, (IVAL)
 #define CCCWPARAM_S(SVAL)	COMMITTEDCOMMANDTYPE_STRING, (SVAL)
@@ -170,6 +172,11 @@ public:
 	void CommitFrontCommand(CommittedCommand &cc);
 	void ClearReDo();
 	void ClearUnDo();
+
+	void EnterUnDo();
+	void EnterReDo();
+	void ExitUnDo();
+	void ExitReDo();
 
 	inline bool IsCCTypeCommand(int type)
 	{

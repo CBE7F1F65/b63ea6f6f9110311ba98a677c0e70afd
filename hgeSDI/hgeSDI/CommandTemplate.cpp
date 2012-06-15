@@ -274,11 +274,11 @@ void CommandTemplate::ProtectPendingFinishCommand()
 
 void CommandTemplate::CallDoneCommand()
 {
-	GLayer * activeLayer = pgm->GetActiveLayer();
 	if (!pcommand->IsUnDoReDoing())
 	{
+		GLayer * activeUILayer = pgm->GetActiveLayerFromUI();
 		GLayer * workinglayer = pgm->getWorkingLayer();
-		if (workinglayer != activeLayer)
+		if (workinglayer != activeUILayer)
 		{
 			if (workinglayer)
 			{
@@ -287,15 +287,15 @@ void CommandTemplate::CallDoneCommand()
 					CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayer->getID()),
 					CCMake_C(COMM_SETWORKINGLAYER),
 //					CCMake_I(workingLayer->getID()),
-					CCMake_I(activeLayer->getID()),
+					CCMake_I(activeUILayer->getID()),
 					CCMake_C(COMM_I_UNDO_PARAM, 1),
 					CCMake_I(workinglayer->getID()),
 					NULL
 					);
 			}
 		}
+		pgm->UpdateWorkingLayer(activeUILayer);
 	}
-	pgm->UpdateWorkingLayer(activeLayer);
 	workinglayerID = pgm->getWorkingLayer()->getID();
 	OnDoneCommand();
 }

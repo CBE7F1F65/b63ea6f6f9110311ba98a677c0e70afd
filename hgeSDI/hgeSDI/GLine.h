@@ -45,7 +45,6 @@ public:
 		return NULL;
 	};
 
-	virtual void OnUpdate();
 	virtual bool MoveTo(float newx, float newy, bool bTry);
 
 	virtual void SetBeginEnd(float xb, float yb, float xe, float ye);

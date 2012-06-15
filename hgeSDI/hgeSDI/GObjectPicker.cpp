@@ -383,3 +383,17 @@ void GObjectPicker::ClearSet()
 	mousedownPickObj = NULL;
 	mousedownPickEntityObj = NULL;
 }
+
+void GObjectPicker::OnDeleteNode( GObject * node )
+{
+#define _NULLIFYNODE_IF_DELETED(NODE, DELETEDNODE)	\
+	if (NODE == DELETEDNODE)	\
+	{	\
+		NODE = NULL;	\
+	}
+
+	_NULLIFYNODE_IF_DELETED(pickObj, node);
+	_NULLIFYNODE_IF_DELETED(pickEntityObj, node);
+	_NULLIFYNODE_IF_DELETED(mousedownPickObj, node);
+	_NULLIFYNODE_IF_DELETED(mousedownPickEntityObj, node);
+}

@@ -9,11 +9,15 @@
 #include "CommandTemplate.h"
 #include "MarqueeSelect.h"
 
+#define GMLOCKTREESTATE_NULL			0x00
+#define GMLOCKTREESTATE_REQUIRELOCK		0x01
+#define GMLOCKTREESTATE_AFTERLOCK		0x02
+
 GObjectManager::GObjectManager()
 {
 	// Put all to Release
 	pBaseNode = NULL;
-	bReleasing = false;
+	nLockTreeChangeState = GMLOCKTREESTATE_NULL;
 	Release();
 }
 GObjectManager::~GObjectManager()
@@ -25,25 +29,25 @@ void GObjectManager::Init()
 	Release();
 	pBaseNode = &GMainBaseNode::getInstance();//new GLayer(0, ColorManager::getInstance().GetLayerLineColor(0), "");
 	GLayer * pLayer = NewLayer(NULL, GetDefaultLayerName(stackedLayerIndex));
-	workinglayer = pLayer;
+	pActiveLayer = pLayer;
 	lastworkinglayer = pLayer;
 }
 
 void GObjectManager::Release()
 {
-	bReleasing = true;
+	nLockTreeChangeState = GMLOCKTREESTATE_REQUIRELOCK;
 	if (pBaseNode)
 	{
 		pBaseNode->RemoveAllChildren(true);
 	}
 	undobasenode.RemoveAllChildren(true);
-	OnTreeChanged(pBaseNode, pBaseNode);
+	OnTreeChanged(pBaseNode, pBaseNode, false);
 	Delete();
 	stackedLayerIndex = 0;
 	tarObjs = NULL;
-	workinglayer = NULL;
+	pActiveLayer = NULL;
 	lastworkinglayer = NULL;
-	bReleasing = false;
+//	bLockTreeChange = false;
 }
 
 void GObjectManager::Update()
@@ -60,6 +64,17 @@ void GObjectManager::Update()
 		RenderHelper::getInstance().EndRenderTar();
 	}
 	pBaseNode->CallClearModify();
+
+	if (nLockTreeChangeState == GMLOCKTREESTATE_REQUIRELOCK)
+	{
+		nLockTreeChangeState = GMLOCKTREESTATE_AFTERLOCK;
+	}
+	else if (nLockTreeChangeState == GMLOCKTREESTATE_AFTERLOCK)
+	{
+		nLockTreeChangeState = GMLOCKTREESTATE_NULL;
+		OnTreeWillChange();
+		OnTreeChanged(pBaseNode, NULL);
+	}
 }
 
 void GObjectManager::Render()
@@ -91,6 +106,7 @@ void GObjectManager::AddNodeToDelete( GObject * node )
 	{
 		nodetodelete.push_back(node);
 		MarqueeSelect::getInstance().OnDeleteNode(node);
+		GObjectPicker::getInstance().OnDeleteNode(node);
 	}
 }
 
@@ -112,19 +128,45 @@ void GObjectManager::OnTreeWillChange()
 	MainInterface::getInstance().OnTreeLockChange(true);
 }
 
-void GObjectManager::OnTreeChanged( GObject * changingbase, GObject * activeitem )
+void GObjectManager::OnTreeChanged( GObject * changingbase, GObject * activeitem, bool bSetActiveLayer/*=true*/ )
 {
-	MainInterface::getInstance().OnTreeLockChange(false);
-	if (bReleasing)
+	if (!changingbase || !pBaseNode)
 	{
 		return;
 	}
+
+	MainInterface::getInstance().OnTreeLockChange(false);
 	if (changingbase->GetBase() == (GObject *)pBaseNode)
 	{
 		pBaseNode->CallResetID();
-		if (!activeitem->isAttributeNode())
+//		ASSERT(activeitem != NULL);
+		if (!activeitem)
 		{
-			if (!activeitem->isRecDisplayFolded())
+			activeitem = pLastToSetActiveNode;
+		}
+		ASSERT(activeitem);
+		if (bSetActiveLayer)
+		{
+			if (activeitem)
+			{
+				pActiveLayer = (GLayer *)activeitem->GetLayer();
+				ASSERT(pActiveLayer);
+			}
+		}
+		if (nLockTreeChangeState)
+		{
+			if (activeitem)
+			{
+				if (!activeitem->isAttributeNode() && !activeitem->isRecDisplayFolded())
+				{
+					pLastToSetActiveNode = activeitem;
+				}
+			}
+			return;
+		}
+		if (activeitem)
+		{
+			if (!activeitem->isAttributeNode() && !activeitem->isRecDisplayFolded())
 			{
 				MainInterface::getInstance().OnRebuildLayerTree(changingbase, activeitem);
 			}
@@ -186,12 +228,15 @@ GLayer * GObjectManager::NewSubLayer( GObject * node, const char * layername, in
 
 GLayer * GObjectManager::GetActiveLayer()
 {
+	/*
 	GLayer * pActiveLayer = MainInterface::getInstance().OnGetActiveLayer();
 	if (!pActiveLayer)
 	{
 		pActiveLayer = (GLayer *)pBaseNode->getNewestChild();
 	}
 //	ASSERT(pActiveLayer);
+	*/
+	ASSERT(pActiveLayer);
 	return pActiveLayer;
 }
 
@@ -212,11 +257,11 @@ GObject * GObjectManager::FindObjectByID( int id )
 	return pBaseNode->FindNodeByID(id);
 }
 
-void GObjectManager::SetActiveLayer_Internal( GObject * pObj/*=NULL*/ )
+void GObjectManager::SetActiveLayer_Internal( GObject * pObj/*=NULL*/, bool bCallUI/*=true*/ )
 {
 	if (!pObj)
 	{
-		pObj = workinglayer;
+		pObj = pActiveLayer;
 	}
 	DASSERT(pObj);
 	if (pObj)
@@ -225,9 +270,15 @@ void GObjectManager::SetActiveLayer_Internal( GObject * pObj/*=NULL*/ )
 		DASSERT(pLayer);
 		if (pLayer)
 		{
-			MainInterface::getInstance().OnSetActiveLayer_Internal(pLayer);
+//			pActiveLayer = pLayer;
+			if (bCallUI)
+			{
+				MainInterface::getInstance().OnSetActiveLayer_Internal(pLayer);
+			}
 		}
-	}	
+		UpdateWorkingLayer(pLayer);
+	}
+
 }
 
 list<GObject*> * GObjectManager::GetSelectedNodes()
@@ -309,9 +360,27 @@ bool GObjectManager::CanDuplicateItem( GObject * pObj )
 	return false;
 }
 
-void GObjectManager::OnInternalActiveLayerSetDone()
+GLayer * GObjectManager::GetActiveLayerFromUI()
 {
-	UpdateWorkingLayer();
+	GetSelectedNodes();
+	GLayer * pLayer = NULL;
+	for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end(); ++it)
+	{
+		pLayer = (GLayer *)(*it)->GetLayer();
+		if (pLayer)
+		{
+			return pLayer;
+//			break;
+		}
+	}
+	ASSERT(pActiveLayer);
+	return pActiveLayer;
+	/*
+	if (pLayer)
+	{
+		SetActiveLayer_Internal(pLayer, false);
+	}
+	*/
 }
 
 void GObjectManager::UpdateWorkingLayer( GLayer * pLayer/*=NULL*/, bool bothtoactive/*=false*/ )
@@ -326,9 +395,9 @@ void GObjectManager::UpdateWorkingLayer( GLayer * pLayer/*=NULL*/, bool bothtoac
 	}
 	else
 	{
-		lastworkinglayer = workinglayer;
+		lastworkinglayer = pActiveLayer;
 	}
-	workinglayer = pLayer;
+	pActiveLayer = pLayer;
 	
 }
 
@@ -352,4 +421,9 @@ GObject * GObjectManager::GetDragDroppedAfterNode()
 		return pAfterNode;
 	}
 	return NULL;
+}
+
+void GObjectManager::SetLockTreeChange()
+{
+	nLockTreeChangeState = GMLOCKTREESTATE_REQUIRELOCK;
 }

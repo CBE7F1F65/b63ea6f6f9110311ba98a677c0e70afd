@@ -24,24 +24,24 @@ void NewLayerCommand::OnProcessCommand()
 	{
 		pcommand->StepTo(
 			CSI_NEWLAYER_WANTNAME,
-			CWP_NULL);
+			CWP_NAME);
 	}
 	else if (step == CSI_NEWLAYER_WANTNAME)
 	{
 		ret = pcommand->ProcessPending(
-			CSP_NEWLAYER_S_I_NAME_INDEX, COMMPARAMFLAG_S, CWP_NULL,
+			CSP_NEWLAYER_S_I_NAME_INDEX, COMMPARAMFLAG_S, CWP_INDEX,
 			CSI_NEWLAYER_WANTINDEX
 			);
 		if (ret<0)
 		{
-			pcommand->SetParamS(CSP_NEWLAYER_S_I_NAME_INDEX, pgm->GetDefaultLayerName());
-			pcommand->StepTo(CSI_NEWLAYER_WANTINDEX);
+			pcommand->SetParamS(CSP_NEWLAYER_S_I_NAME_INDEX, pgm->GetDefaultLayerName(), CWP_NAME);
+			pcommand->StepTo(CSI_NEWLAYER_WANTINDEX, CWP_INDEX);
 		}
 	}
 	else if (step == CSI_NEWLAYER_WANTINDEX)
 	{
 		ret = pcommand->ProcessPending(
-			CSP_NEWLAYER_S_I_NAME_INDEX, COMMPARAMFLAG_I, CWP_NULL,
+			CSP_NEWLAYER_S_I_NAME_INDEX, COMMPARAMFLAG_I, CWP_INDEX,
 			CSI_FINISH
 			);
 		if (ret<0)

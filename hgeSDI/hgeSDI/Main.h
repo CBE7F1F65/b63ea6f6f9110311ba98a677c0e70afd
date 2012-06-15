@@ -56,7 +56,7 @@ public:
 	GObject * OnGetSelectedNodes( int * pnextfromIndex );
 	bool OnGetDragDroppedNodes( GLayer ** pLayerNode, GObject ** pAfterNode );
 	void OnSetActiveLayer_Internal( GLayer * pLayer );
-	void OnInternalActiveLayerSetDone();
+	void OnSetActiveLayerFromUI();
 
 	// To Frame
 	void CallContextMenu(float x, float y);

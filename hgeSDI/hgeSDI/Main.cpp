@@ -487,9 +487,9 @@ void MainInterface::DoResizeWindow()
 	}
 }
 
-void MainInterface::OnInternalActiveLayerSetDone()
+void MainInterface::OnSetActiveLayerFromUI()
 {
-	GObjectManager::getInstance().OnInternalActiveLayerSetDone();
+	GObjectManager::getInstance().GetActiveLayerFromUI();
 }
 
 void MainInterface::DoUpdateFPS()
