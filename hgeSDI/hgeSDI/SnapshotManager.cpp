@@ -148,14 +148,15 @@ void SnapshotManager::LoadNode( GObject * node )
 	ASSERT(node);
 	GObjectManager * pgm = &GObjectManager::getInstance();
 	list<GObject *>dellist;
-	for (list<GObject *>::iterator it=pgm->pBaseNode->getChildren()->begin(); it!=pgm->pBaseNode->getChildren()->end(); ++it)
+	GMainBaseNode * pMainBaseNode = pgm->GetMainBaseNode();
+	for (list<GObject *>::iterator it=pMainBaseNode->getChildren()->begin(); it!=pMainBaseNode->getChildren()->end(); ++it)
 	{
 		dellist.push_back(*it);
 	}
-	pgm->pBaseNode->CopyBaseFrom((GBaseNode *)node);
+	pMainBaseNode->CopyBaseFrom((GBaseNode *)node);
 	for (list<GObject *>::iterator it=dellist.begin(); it!=dellist.end(); ++it)
 	{
-		pgm->pBaseNode->RemoveChild(*it, true);
+		pMainBaseNode->RemoveChild(*it, true);
 	}
 	Command::getInstance().StepTo(CSI_TERMINAL);
 	Command::getInstance().ClearUnDo();
@@ -183,7 +184,7 @@ bool SnapshotInfo::SaveNode(GBaseNode * pBaseNode/* =NULL */)
 {
 	if (!pBaseNode)
 	{
-		pBaseNode = GObjectManager::getInstance().pBaseNode;
+		pBaseNode = GObjectManager::getInstance().GetMainBaseNode();
 	}
 	if (pBaseNode)
 	{

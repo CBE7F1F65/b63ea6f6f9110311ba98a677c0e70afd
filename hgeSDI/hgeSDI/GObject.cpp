@@ -5,8 +5,8 @@
 #include "StringManager.h"
 #include "ColorManager.h"
 
-#include "Main.h"
-#include "Command.h"
+//#include "Main.h"
+//#include "Command.h"
 
 
 GObject * GObject::pTreeBase=NULL;
@@ -20,7 +20,6 @@ GObject::GObject(void)
 
 	bDisplayFolded = false;
 	nDisplayState = GOBJ_DISPSTATE_NORMAL;
-	dwLineColor = 0;
 
 	nTryState = 0;
 	fTryMove_bx = 0;
@@ -264,16 +263,16 @@ void GObject::OnEnter()
 {
 	ASSERT(pParent != NULL);
 
-	if (!dwLineColor)
+	if (!lsLineColorSet.IsColorSet())
 	{
 		GObject * pLayer = GetLayer();
 		if (pLayer)
 		{
-			setLineColor(pLayer->dwLineColor);
+			setLineColor(pLayer->lsLineColorSet);
 		}
 		else
 		{
-			setLineColor(pParent->dwLineColor);
+			setLineColor(pParent->lsLineColorSet);
 		}
 	}
 }
@@ -293,6 +292,8 @@ void GObject::OnUpdate()
 			float tx = getX();
 			float ty = getY();
 			MoveTo(fTryMove_bx, fTryMove_by, false);
+			GObjectManager::getInstance().PushMoveNodeByOffsetForBatchCommand(this, tx-fTryMove_bx, ty-fTryMove_by);
+			/*
 			MainInterface::getInstance().OnCommandWithParam(
 				COMM_MOVENODE,
 				CCCWPARAM_I(nID),
@@ -306,6 +307,7 @@ void GObject::OnUpdate()
 				pcommand->ProcessCommand();
 			}
 			pcommand->ProcessCommand();
+			*/
 			nTryState = GOBJTRYSTATE_MOVE_NULL;
 		}
 	}
@@ -350,7 +352,7 @@ int GObject::ReparentAfterObject( GObject * newparent, GObject * afterobj )
 	_RemoveFromParent(false);
 	if (!isLayer())
 	{
-		setLineColor(0);
+		clearLineColor();
 	}
 	int ret = newparent->AddChildAfterObj(this, afterobj);
 	_CallTreeChanged(_pParent, _pParent);
@@ -487,12 +489,21 @@ bool GObject::isRecDisplayLocked()
 	return false;
 }
 
-void GObject::setLineColor( DWORD col )
+void GObject::setLineColor( LineColorSet ls )
 {
-	dwLineColor = col;
+	lsLineColorSet = ls;
 	FOREACH_GOBJ_CHILDREN_IT()
 	{
-		(*it)->setLineColor(col);
+		(*it)->setLineColor(ls);
+	}
+}
+
+void GObject::clearLineColor()
+{
+	lsLineColorSet.ClearSet();
+	FOREACH_GOBJ_CHILDREN_IT()
+	{
+		(*it)->clearLineColor();
 	}
 }
 
@@ -795,11 +806,13 @@ void GObject::Independ()
 
 DWORD GObject::getLineColor( int iHighlightLevel/*=0*/ )
 {
+	/*
 	if (iHighlightLevel)
 	{
 		return ColorManager::getInstance().Highlight(dwLineColor, iHighlightLevel);
 	}
-	return dwLineColor;
+	*/
+	return lsLineColorSet.GetColor(iHighlightLevel);
 }
 
 void GObject::ToggleTryMoveState( bool bTry )

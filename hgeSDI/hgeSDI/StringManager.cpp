@@ -101,6 +101,8 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_SETNODENAME,	"SETNODENAME",	"",	"Set Display Name",	""	);
 	_BSET(	COMM_DUPLICATE,	"DUPLICATE",	"DUP",	"Duplicate Item",	""	);
 	_BSET(	COMM_MOVENODE,	"MOVE",	"M",	"Move Node",	""	);
+	_BSET(	COMM_MOVENODEBYOFFSET,	"MOVEBYOFFSET",	"MOFF",	"Move Node Offset",	""	);
+	_BSET(	COMM_MOVENODEBYOFFSET_BATCH,	"MOVEBYOFFSET_BATCH",	"MOFF_BATCH",	"Move Node Offset Batch",	""	);
 
 	_BSET(	COMM_SETWORKINGLAYER,	"SETWORKINGLAYER",	"",	"Set Working Layer",	""	);
 	_BSET(	COMM_NEWLAYER,	"NEWLAYER", "NL",	"New Layer",	""	);
@@ -134,6 +136,8 @@ void StringManager::FillWPInfo()
 	_PSET(	CWP_XY_E,	"END X, Y"	);
 	_PSET(	CWP_XOFFSET,	"X OFFSET"	);
 	_PSET(	CWP_YOFFSET,	"Y OFFSET"	);
+	_PSET(	CWP_HANDLEX,	"HANDLE X"	);
+	_PSET(	CWP_HANDLEY,	"HANDLE Y"	);
 	_PSET(	CWP_SCALE,	"SCALE"	);
 	_PSET(	CWP_STEP,	"STEP"	);
 	_PSET(	CWP_INDEX,	"INDEX"	);

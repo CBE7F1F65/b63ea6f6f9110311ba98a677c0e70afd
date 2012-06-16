@@ -20,7 +20,7 @@ void OutputCommand::OnProcessCommand()
 void OutputCommand::OnDoneCommand()
 {
 
-	OutputNodeStructure(pgm->pBaseNode);
+	OutputNodeStructure(pgm->GetMainBaseNode());
 
 }
 

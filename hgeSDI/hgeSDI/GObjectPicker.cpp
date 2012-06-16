@@ -34,6 +34,7 @@ void GObjectPicker::Init()
 int GObjectPicker::PickPoint( PickFilterCallback pfunc/*=NULL*/ )
 {
 	pfilterfunc = pfunc;
+	int retstate = 0;
 	if (state == PICKSTATE_NULL)
 	{
 		mousestate = GOPMOUSE_NONE;
@@ -46,14 +47,16 @@ int GObjectPicker::PickPoint( PickFilterCallback pfunc/*=NULL*/ )
 	}
 	else if (state == PICKSTATE_READY)
 	{
+		retstate = PICKSTATE_READY;
 		state = PICKSTATE_NULL;
 		havebeginstate = _PICKHAVEBEGIN_NONE;
-		return true;
+//		return true;
 	}
-	return false;
+//	return false;
+	return mousestate|retstate;
 }
 
-bool GObjectPicker::UpdatePickPoint()
+int GObjectPicker::UpdatePickPoint()
 {
 	snappedstate = GOPSNAP_NONE;
 
@@ -84,7 +87,7 @@ bool GObjectPicker::UpdatePickPoint()
 	if (!bSnapped && (snaptoflag & GOPSNAP_GEOMETRY))
 	{
 		GObjectManager * pgm = &GObjectManager::getInstance();
-		GObject * pNode = pgm->pBaseNode;
+		GObject * pNode = pgm->GetMainBaseNode();
 		bSnapped = CheckSnapGeometryPoint(pNode);
 		if (!bSnapped)
 		{
@@ -182,7 +185,7 @@ void GObjectPicker::Render()
 	{
 		if (pickEntityObj)
 		{
-			pickEntityObj->CallRender(HIGHLIGHTLEVEL_PICKED);
+			pickEntityObj->CallRender(LINECOLOR_HIGHLIGHT);
 		}
 	}
 	if (snappedstate/* & GOPSNAPPED_POINT*/)
@@ -396,4 +399,18 @@ void GObjectPicker::OnDeleteNode( GObject * node )
 	_NULLIFYNODE_IF_DELETED(pickEntityObj, node);
 	_NULLIFYNODE_IF_DELETED(mousedownPickObj, node);
 	_NULLIFYNODE_IF_DELETED(mousedownPickEntityObj, node);
+}
+
+bool GObjectPicker::IsPickReady( int iret/*=-1*/ )
+{
+	if (iret < 0)
+	{
+		return state & PICKSTATE_READY;
+	}
+	return iret & PICKSTATE_READY;
+}
+
+bool GObjectPicker::IsMouseDownReady()
+{
+	return mousestate & GOPMOUSE_DOWN;
 }

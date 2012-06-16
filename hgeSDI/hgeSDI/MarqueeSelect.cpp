@@ -257,16 +257,15 @@ void MarqueeSelect::Update()
 		{
 			marqueestate = MARQSTATE_NONE;
 			DeSelectAll();
-			GObject * pObj = GObjectManager::getInstance().pBaseNode;
-			if (beginx_c > endx_c || beginy_c > endy_c)
-			{
-				float tx = beginx_c;
-				float ty = beginy_c;
-				beginx_c = endx_c;
-				beginy_c = endy_c;
-				endx_c = tx;
-				endy_c = ty;
-			}
+			GObject * pObj = GObjectManager::getInstance().GetMainBaseNode();
+			float lx = beginx_c < endx_c ? beginx_c : endx_c;
+			float ty = beginy_c < endy_c ? beginy_c : endy_c;
+			float rx = beginx_c > endx_c ? beginx_c : endx_c;
+			float by = beginy_c > endy_c ? beginy_c : endy_c;
+			beginx_c = lx;
+			beginy_c = ty;
+			endx_c = rx;
+			endy_c = by;
 			if (pmain->hge->Input_GetDIKey(DIK_LSHIFT) || pmain->hge->Input_GetDIKey(DIK_RSHIFT))
 			{
 				CheckMarqueeSelect_Pt(pObj);
@@ -289,7 +288,7 @@ void MarqueeSelect::Render()
 	CheckValid();
 	for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end(); ++it)
 	{
-		(*it)->CallRender(HIGHLIGHTLEVEL_SELECTED);
+		(*it)->CallRender(LINECOLOR_ACTIVE);
 	}
 	if (marqueestate == MARQSTATE_BEGAN)
 	{
@@ -465,7 +464,7 @@ void MarqueeSelect::DoMovePiece( GPiece * pPiece, float movedx_c, float movedy_c
 
 void MarqueeSelect::CheckValid()
 {
-	GObject * pObj = GObjectManager::getInstance().pBaseNode;
+	GObject * pObj = GObjectManager::getInstance().GetMainBaseNode();
 	for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end();)
 	{
 		if (!pObj->isAncestorOf(*it))

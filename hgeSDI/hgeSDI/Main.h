@@ -42,6 +42,12 @@ public:
 	};
 	int OnCommand(int comm);
 	int OnCommandWithParam(int comm, int firsttype, ...);
+
+	int OnCommandSingleParamI(int ival);
+	int OnCommandSingleParamF(float fval);
+	int OnCommandSingleParamS(const char * sval);
+	int OnCommandSingleParamSubCommand(int ssc);
+
 	int OnCommitCommand(const char * str);
 
 	void OnPushRevertable(const char * desc, const char * commandstr, int command);
@@ -52,7 +58,6 @@ public:
 	void OnClearPreviousHistory(int ndelete=1);
 	void OnTreeLockChange( bool toLock );
 	void OnRebuildLayerTree(GObject * changebase, GObject * activeitem);
-	GLayer * OnGetActiveLayer();
 	GObject * OnGetSelectedNodes( int * pnextfromIndex );
 	bool OnGetDragDroppedNodes( GLayer ** pLayerNode, GObject ** pAfterNode );
 	void OnSetActiveLayer_Internal( GLayer * pLayer );

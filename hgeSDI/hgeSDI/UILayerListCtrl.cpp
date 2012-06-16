@@ -551,20 +551,6 @@ void UILayerListCtrl::OnLvnItemchanged(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 }
 
-GLayer * UILayerListCtrl::GetActiveLayer()
-{
-	int index = GetNextItem(-1, LVNI_SELECTED);
-	if (index < 0)
-	{
-		return NULL;
-//		index = 0;
-	}
-	GObject * pobj = GetObjectByIndex(index);//(GObject *)GetItemData(index);
-	GLayer * pLayer = (GLayer *)pobj->GetLayer();
-//	ASSERT(pLayer);
-	return pLayer;
-}
-
 GObject * UILayerListCtrl::GetActiveNodes( int * pnextfromIndex )
 {
 	ASSERT(pnextfromIndex);

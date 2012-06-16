@@ -8,6 +8,7 @@
 #include <sstream>
 #include "CommandTemplate.h"
 #include "MarqueeSelect.h"
+#include "Command.h"
 
 #define GMLOCKTREESTATE_NULL			0x00
 #define GMLOCKTREESTATE_REQUIRELOCK		0x01
@@ -30,7 +31,7 @@ void GObjectManager::Init()
 	pBaseNode = &GMainBaseNode::getInstance();//new GLayer(0, ColorManager::getInstance().GetLayerLineColor(0), "");
 	GLayer * pLayer = NewLayer(NULL, GetDefaultLayerName(stackedLayerIndex));
 	pActiveLayer = pLayer;
-	lastworkinglayer = pLayer;
+	pLastActiveLayer = pLayer;
 }
 
 void GObjectManager::Release()
@@ -46,13 +47,18 @@ void GObjectManager::Release()
 	stackedLayerIndex = 0;
 	tarObjs = NULL;
 	pActiveLayer = NULL;
-	lastworkinglayer = NULL;
+	pLastActiveLayer = NULL;
+	pushedmovenodebyoffset.clear();
 //	bLockTreeChange = false;
 }
 
 void GObjectManager::Update()
 {
 	pBaseNode->CallUpdate();
+	if (!pushedmovenodebyoffset.empty())
+	{
+		DoMoveNodeByOffsetBatch();
+	}
 
 	bool tarupdated=false;
 	HTARGET tar = RenderTargetManager::getInstance().UpdateTarget(RTID_GOBJECTS, &tarupdated);
@@ -105,6 +111,7 @@ void GObjectManager::AddNodeToDelete( GObject * node )
 	if (node)
 	{
 		nodetodelete.push_back(node);
+		GObjectManager::getInstance().OnDeleteNode(node);
 		MarqueeSelect::getInstance().OnDeleteNode(node);
 		GObjectPicker::getInstance().OnDeleteNode(node);
 	}
@@ -218,7 +225,7 @@ GLayer * GObjectManager::NewSubLayer( GObject * node, const char * layername, in
 		layerIndex = stackedLayerIndex;
 		stackedLayerIndex++;
 	}
-	GLayer * pLayer = new GLayer(layerIndex, ColorManager::getInstance().GetLayerLineColor(layerIndex), layername);
+	GLayer * pLayer = new GLayer(layerIndex, layername);
 	ASSERT(pLayer != NULL);
 	node->AddChild(pLayer);
 
@@ -276,7 +283,7 @@ void GObjectManager::SetActiveLayer_Internal( GObject * pObj/*=NULL*/, bool bCal
 				MainInterface::getInstance().OnSetActiveLayer_Internal(pLayer);
 			}
 		}
-		UpdateWorkingLayer(pLayer);
+		UpdateActiveLayer(pLayer);
 	}
 
 }
@@ -383,7 +390,7 @@ GLayer * GObjectManager::GetActiveLayerFromUI()
 	*/
 }
 
-void GObjectManager::UpdateWorkingLayer( GLayer * pLayer/*=NULL*/, bool bothtoactive/*=false*/ )
+void GObjectManager::UpdateActiveLayer( GLayer * pLayer/*=NULL*/, bool bothtoactive/*=false*/ )
 {
 	if (!pLayer)
 	{
@@ -391,11 +398,11 @@ void GObjectManager::UpdateWorkingLayer( GLayer * pLayer/*=NULL*/, bool bothtoac
 	}
 	if (bothtoactive)
 	{
-		lastworkinglayer = pLayer;
+		pLastActiveLayer = pLayer;
 	}
 	else
 	{
-		lastworkinglayer = pActiveLayer;
+		pLastActiveLayer = pActiveLayer;
 	}
 	pActiveLayer = pLayer;
 	
@@ -426,4 +433,104 @@ GObject * GObjectManager::GetDragDroppedAfterNode()
 void GObjectManager::SetLockTreeChange()
 {
 	nLockTreeChangeState = GMLOCKTREESTATE_REQUIRELOCK;
+}
+
+int GObjectManager::PushMoveNodeByOffsetForBatchCommand( GObject* pObj, float xoffset, float yoffset )
+{
+	bool dobatch = false;
+	if (!pushedmovenodebyoffset.empty())
+	{
+		list<MoveNodeByOffsetInfo>::iterator it=pushedmovenodebyoffset.begin();
+		if (!(it->IsSameOffset(xoffset, yoffset)))
+		{
+			dobatch = true;
+		}
+		if (!dobatch)
+		{
+			for (; it!=pushedmovenodebyoffset.end(); ++it)
+			{
+				if (it->IsDescendantOf(pObj))
+				{
+					dobatch = true;
+					break;
+				}
+			}
+		}
+	}
+	if (dobatch)
+	{
+		DoMoveNodeByOffsetBatch();
+	}
+	MoveNodeByOffsetInfo _mnboi(pObj, xoffset, yoffset);
+	pushedmovenodebyoffset.push_back(_mnboi);
+	return pushedmovenodebyoffset.size();
+}
+
+void GObjectManager::DoMoveNodeByOffsetBatch()
+{
+	if (pushedmovenodebyoffset.empty())
+	{
+		return;
+	}
+	list<MoveNodeByOffsetInfo>::iterator it=pushedmovenodebyoffset.begin();
+	float xoffset = it->GetXOffset();
+	float yoffset = it->GetYOffset();
+
+	MainInterface::getInstance().OnCommandWithParam(
+		COMM_MOVENODEBYOFFSET_BATCH,
+		CCCWPARAM_F(xoffset),
+		CCCWPARAM_F(yoffset),
+		NULL
+		);
+
+	for (; it!=pushedmovenodebyoffset.end(); ++it)
+	{
+		GObject * pObj = it->GetObj();
+		ASSERT(pObj);
+		MainInterface::getInstance().OnCommandSingleParamI(pObj->getID());
+		/*
+		MainInterface::getInstance().OnCommandWithParam(
+			COMM_MOVENODE,
+			CCCWPARAM_I(pObj->getID()),
+			CCCWPARAM_F(pObj->getX()+xoffset),
+			CCCWPARAM_F(pObj->getY()+yoffset),
+			NULL
+			);
+		Command * pcommand = &Command::getInstance();
+		while (!pcommand->canCommandDone())
+		{
+			pcommand->ProcessCommand();
+		}
+		pcommand->ProcessCommand();
+		*/
+	}
+	MainInterface::getInstance().OnCommandSingleParamI(-1);
+	pushedmovenodebyoffset.clear();
+
+	Command * pcommand = &Command::getInstance();
+	while (!pcommand->canCommandDone())
+	{
+		pcommand->ProcessCommand();
+	}
+	pcommand->ProcessCommand();
+
+}
+
+void GObjectManager::OnDeleteNode( GObject * node )
+{
+	if (pushedmovenodebyoffset.empty())
+	{
+		return;
+	}
+	for (list<MoveNodeByOffsetInfo>::iterator it=pushedmovenodebyoffset.begin(); it!=pushedmovenodebyoffset.end();)
+	{
+		if (it->GetObj() == node)
+		{
+			it = pushedmovenodebyoffset.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
 }

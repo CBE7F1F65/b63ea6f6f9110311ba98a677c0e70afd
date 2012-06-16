@@ -35,7 +35,7 @@ void GLine::SetBeginEnd( float xb, float yb, float xe, float ye )
 	{
 		plend->MoveTo(xe, ye, false);
 	}
-	UpdateMidPoint();
+//	UpdateMidPoint();
 }
 
 const char * GLine::getDisplayName()
@@ -65,8 +65,14 @@ bool GLine::MoveTo( float newx, float newy, bool bTry )
 		return false;
 	}
 	bret = plend->MoveByOffset(xoffset, yoffset, false);
-	UpdateMidPoint();
+//	UpdateMidPoint();
 	return bret;
+}
+
+void GLine::OnModify()
+{
+	UpdateMidPoint();
+	GObject::OnModify();
 }
 
 GStraightLine::GStraightLine()

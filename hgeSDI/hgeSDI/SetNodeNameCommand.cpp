@@ -89,7 +89,8 @@ void SetNodeNameCommand::OnDoneCommand()
 
 	string oldname = pObj->getDisplayName();
 	pObj->setDisplayName(newname.c_str());
-	MainInterface::getInstance().CallChangeNode(pObj);
+	pgm->OnTreeChanged(pObj->getParent(), pObj);
+//	MainInterface::getInstance().CallChangeNode(pObj);
 
 	PushRevertable(
 		CCMake_C(COMM_I_COMMAND, 3, 1),
@@ -115,6 +116,7 @@ void SetNodeNameCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 	GObject * pObj = pgm->FindObjectByID(index);
 	ASSERT(pObj);
 	pObj->setDisplayName(oldname.c_str());
-	MainInterface::getInstance().CallChangeNode(pObj);
+	pgm->OnTreeChanged(pObj->getParent(), pObj);
+//	MainInterface::getInstance().CallChangeNode(pObj);
 
 }

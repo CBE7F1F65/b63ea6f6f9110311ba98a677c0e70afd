@@ -54,6 +54,7 @@ public:
 
 	virtual const char * getDisplayName();
 
+	virtual void OnModify();
 	GPoint * plbegin;
 	GPoint * plend;
 	GPoint * pmid;

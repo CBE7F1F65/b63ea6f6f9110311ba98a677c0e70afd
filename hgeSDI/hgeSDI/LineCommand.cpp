@@ -80,17 +80,8 @@ void LineCommand::OnProcessCommand()
 			);
 	}
 
-	if (!ret/* || nowstep == CSI_FINISHCONTINUE*/)
+	if (!ret)
 	{
-		// Pending Processed
-		/*
-		nowstep = pcommand->GetStep();
-		if (nowstep == CSI_LINE_WANTX2)
-		{
-			float x1, y1;
-			pcommand->GetParamXY(CSP_LINE_XY_B, &x1, &y1);
-		}
-		*/
 	}
 	else if (ret > 0)
 	{
@@ -103,7 +94,8 @@ void LineCommand::OnProcessCommand()
 		// Routine
 		if (step > CSI_INIT)
 		{
-			if (pgp->PickPoint())
+			int iret = pgp->PickPoint();
+			if (pgp->IsPickReady(iret))
 			{
 				if (!pcommand->IsInternalProcessing())
 				{
@@ -127,7 +119,6 @@ void LineCommand::OnProcessCommand()
 							);
 					}
 
-					ret = true;
 				}
 			}
 		}
@@ -173,7 +164,7 @@ void LineCommand::RenderToTarget()
 
 void LineCommand::OnDoneCommand()
 {
-	GStraightLine * line = new GStraightLine(pgm->getWorkingLayer()/*pgm->GetActiveLayer()*/);
+	GStraightLine * line = new GStraightLine(pgm->GetActiveLayer()/*pgm->GetActiveLayer()*/);
 	float xb, yb, xe, ye;
 	pcommand->GetParamXY(CSP_LINE_XY_B, &xb, &yb);
 	pcommand->GetParamXY(CSP_LINE_XY_N, &xe, &ye);

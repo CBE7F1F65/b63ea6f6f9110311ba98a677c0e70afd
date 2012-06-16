@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ColorManager.h"
+
 #define GOBJ_DISPSTATE_NORMAL				0x00
 #define GOBJ_DISPSTATE_INVISIBLE			0x01
 #define GOBJ_DISPSTATE_LOCKED				0x02
@@ -28,10 +30,6 @@
 #define GOBJTRYSTATE_MOVE_NULL			0x00
 #define GOBJTRYSTATE_MOVE_REQUIREUPDATE	0x01
 #define GOBJTRYSTATE_MOVE_AFTERUPDATE	0x02
-
-#define HIGHLIGHTLEVEL_NONE		0
-#define HIGHLIGHTLEVEL_SELECTED	1
-#define HIGHLIGHTLEVEL_PICKED	2
 
 class GObject
 {
@@ -79,7 +77,7 @@ public:
 
 	// Should be derived:
 	virtual bool canMove(){return false;};
-	virtual bool MoveTo(float newx, float newy, bool bTry){return false;};
+	virtual bool MoveTo(float newx, float newy, bool bTry){DASSERT(true); return false;};
 	virtual bool MoveByOffset(float xoffset, float yoffset, bool bTry){return MoveTo(getX()+xoffset, getY()+yoffset, bTry);};
 
 	virtual bool isLayer(){return false;};
@@ -176,7 +174,8 @@ public:
 	DWORD getLineColor(int iHighlightLevel=0);;
 
 	// Can only be called by Layer
-	virtual void setLineColor(DWORD col);
+	virtual void setLineColor(LineColorSet ls);
+	virtual void clearLineColor();
 
 	virtual const char * getDisplayName();
 	void setDisplayName(const char * str)
@@ -193,7 +192,7 @@ protected:
 	int nDisplayState;
 
 	bool bDisplayFolded;
-	DWORD dwLineColor;
+	LineColorSet lsLineColorSet;
 
 	int nID;
 	GObject * pParent;

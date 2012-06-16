@@ -301,3 +301,18 @@ void RenderHelper::SetLineStyle( int _style/*=0*/ )
 {
 	style = _style;
 }
+
+void RenderHelper::RenderAttributePoint_S( float x, float y, DWORD col )
+{
+#define _GATTRPT_RENDER_A	5
+	RenderHelper::getInstance().RenderSquare_S(x-_GATTRPT_RENDER_A, y-_GATTRPT_RENDER_A, _GATTRPT_RENDER_A*2, col);
+
+}
+
+void RenderHelper::RenderSubstantivePoint_S( float x, float y, DWORD col )
+{
+#define _GSUBSPT_RENDER_L	5
+	RenderHelper::getInstance().RenderLine_S(x-_GSUBSPT_RENDER_L, y-_GSUBSPT_RENDER_L, x+_GSUBSPT_RENDER_L, y+_GSUBSPT_RENDER_L, col);
+	RenderHelper::getInstance().RenderLine_S(x+_GSUBSPT_RENDER_L, y-_GSUBSPT_RENDER_L, x-_GSUBSPT_RENDER_L, y+_GSUBSPT_RENDER_L, col);
+
+}

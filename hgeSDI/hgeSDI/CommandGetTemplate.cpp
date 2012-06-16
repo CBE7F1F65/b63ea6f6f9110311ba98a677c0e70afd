@@ -12,6 +12,7 @@
 #include "SetNodeNameCommand.h"
 #include "DuplicateCommand.h"
 #include "MoveNodeCommand.h"
+#include "MoveNodeBatchCommand.h"
 
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
@@ -30,7 +31,10 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 	case COMM_DUPLICATE:
 		return &DuplicateCommand::getInstance();
 	case COMM_MOVENODE:
+	case COMM_MOVENODEBYOFFSET:
 		return &MoveNodeCommand::getInstance();
+	case COMM_MOVENODEBYOFFSET_BATCH:
+		return &MoveNodeBatchCommand::getInstance();
 
 	case COMM_NEWLAYER:
 	case COMM_NEWSUBLAYER:

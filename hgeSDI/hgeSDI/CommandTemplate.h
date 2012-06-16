@@ -7,6 +7,14 @@
 #include "GLayer.h"
 #include "GObjectManager.h"
 #include "GObjectPicker.h"
+#include "RenderHelper.h"
+
+enum{
+	PUSHREVERTABLESTATE_BEGIN,
+	PUSHREVERTABLESTATE_CONTINUE,
+	PUSHREVERTABLESTATE_END,
+};
+
 
 class CommandTemplate
 {
@@ -28,6 +36,10 @@ public:
 	bool IsStepped();
 
 	void PushRevertable(CommittedCommand * first, ...);
+
+	RevertableCommand rcbatch;
+	void PushRevertableBatch(int revertstate, CommittedCommand * first, ...);
+
 	void CommitFrontCommand(CommittedCommand * first, ...);
 
 	void ProtectPendingFinishCommand();
@@ -52,6 +64,7 @@ public:
 	Command * pcommand;
 	GObjectManager * pgm;
 	GObjectPicker * pgp;
+	RenderHelper * prh;
 	list<CommittedCommand*> madecctodelete;
 
 	int comm;

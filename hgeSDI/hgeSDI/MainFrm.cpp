@@ -435,11 +435,6 @@ bool CMainFrame::RebuildLayerTree( GObject * changebase, GObject * activeitem )
 	return true;
 }
 
-GLayer * CMainFrame::GetActiveLayer()
-{
-	return m_wndUILayerPane.GetActiveLayer();
-}
-
 GObject * CMainFrame::GetActiveNodes( int * pnextfromIndex )
 {
 	return m_wndUILayerPane.GetActiveNodes(pnextfromIndex);

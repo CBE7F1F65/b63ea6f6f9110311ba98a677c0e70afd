@@ -127,6 +127,13 @@ public:
 			commandlist.push_back(*cc);
 		}
 	};
+	void PushEndMark()
+	{
+		CommittedCommand cc;
+		cc.type = COMMITTEDCOMMANDTYPE_COMMAND;
+		cc.ival = COMM_I_COMMAND_ENDMARK;
+		commandlist.push_back(cc);
+	};
 	void Clear()
 	{
 		commandlist.clear();
@@ -197,6 +204,10 @@ public:
 	inline bool IsInternalCommand_CommandAuto(int comm)
 	{
 		return comm == COMM_I_COMMAND_AUTO;
+	};
+	inline bool IsInternalCommand_CommandEndMark(int comm)
+	{
+		return comm == COMM_I_COMMAND_ENDMARK;
 	};
 	inline bool IsCommandNoLog(int comm)
 	{

@@ -48,6 +48,7 @@ DWORD ColorManager::GetLayerLineColor( int layer )
 
 	ffffff	White
 	*/
+	/*
 	switch (layer%24)
 	{
 	case 0: return 0xffafafaf;	// White
@@ -75,7 +76,28 @@ DWORD ColorManager::GetLayerLineColor( int layer )
 	case 22: return 0xff660066;	// Purple
 	case 23: return 0xff808080;	// Gray
 	}
+	*/
 	return 0xffffffff;
+}
+
+DWORD ColorManager::GetLayerLineHighlightColor( int layer )
+{
+	return 0xff4fff4f;	// Green
+}
+
+DWORD ColorManager::GetLayerLineActiveColor( int layer )
+{
+	return 0xffff4f4f;	// Light Red
+}
+
+LineColorSet ColorManager::GetLayerLineColorSetByIndex( int layerID )
+{
+	LineColorSet ls;
+	ls.SetColor(LINECOLOR_NORMAL, GetLayerLineColor(layerID));
+	ls.SetColor(LINECOLOR_ACTIVE, GetLayerLineActiveColor(layerID));
+	ls.SetColor(LINECOLOR_HIGHLIGHT, GetLayerLineHighlightColor(layerID));
+
+	return ls;
 }
 
 DWORD ColorManager::GetTextColor( int type, int state )
@@ -124,7 +146,7 @@ DWORD ColorManager::ARGBToABGR( DWORD col )
 void ColorManager::Init()
 {
 }
-
+/*
 DWORD ColorManager::Highlight( DWORD col, int iHighlightLevel )
 {
 	float a, h, s, l;
@@ -169,7 +191,7 @@ DWORD ColorManager::Highlight( DWORD col, int iHighlightLevel )
 
 	return AHSLToARGB(a, h, s, l);
 }
-
+*/
 void ColorManager::ARGBToAHSL( DWORD col, float *a, float *h, float *s, float *l )
 {
 	float r = GETR(col)/255.0f;

@@ -48,7 +48,6 @@ public:
 	void LockTreeChange( bool toLock );
 	bool RebuildLayerTree(GObject * changebase, GObject * activeitem);
 
-	GLayer * GetActiveLayer();
 	GObject * GetActiveNodes( int * pnextfromIndex );
 	bool GetDragDropNodes( GLayer ** pLayerNode, GObject ** pAfterNode );
 	void SetActiveLayer_Internal( GLayer * pLayer );

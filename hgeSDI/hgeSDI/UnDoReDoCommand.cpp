@@ -58,6 +58,7 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 		{
 			ASSERT(pcount != 0);
 			RevertableCommand rct;
+			RevertableCommand rctundo;
 			int command = COMM_NULL;
 			++it;	//working layer
 			for (int i=0; i<pcount; i++)
@@ -69,8 +70,11 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 					DASSERT(IsNormalCommand(it->ival));
 					command = it->ival;
 				}
+				else
+				{
+					rct.PushCommand(&(*it));
+				}
 				DASSERT(it!=rc.commandlist.end());
-//				rct.PushCommand(&(*it));
 			}
 			for (int j=0; j<ucount; j++)
 			{
@@ -79,20 +83,25 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 				DASSERT(IsInternalCommand(it->ival));
 
 				int usubcount = CI_GETPCOUNT(it->csub);
-				DASSERT(usubcount != 0);
+				
 
 				int undocommand = it->ival;
 				for (int i=0; i<usubcount; i++)
 				{
 					++it;
 					DASSERT(it!=rc.commandlist.end());
-					rct.PushCommand(&(*it));
+					rctundo.PushCommand(&(*it));
 				}
 				if (undocommand == COMM_I_UNDO_COMMIT)
 				{
-					DoUnDoCommandCommit(&rct);
+					DoUnDoCommandCommit(&rctundo);
 				}
 				else if (undocommand == COMM_I_UNDO_PARAM)
+				{
+					ASSERT(command);
+					DoUnDoCommandParam(command, &rctundo);
+				}
+				else if (undocommand == COMM_I_UNDO_PARAMFROMCOMMAND)
 				{
 					ASSERT(command);
 					DoUnDoCommandParam(command, &rct);

@@ -14,6 +14,7 @@ CommandTemplate::CommandTemplate(void)
 	pcommand = &Command::getInstance();
 	pgm = &GObjectManager::getInstance();
 	pgp = &GObjectPicker::getInstance();
+	prh = &RenderHelper::getInstance();
 	comm = COMM_NULL;
 	workinglayerID = 0;
 }
@@ -220,6 +221,31 @@ void CommandTemplate::PushRevertable( CommittedCommand * first, ... )
 	DeleteCC();
 }
 
+void CommandTemplate::PushRevertableBatch( int revertstate, CommittedCommand * first, ... )
+{
+	if (revertstate == PUSHREVERTABLESTATE_BEGIN)
+	{
+		rcbatch.Clear();
+	}
+
+	va_list ap;
+	va_start(ap, first);
+	CommittedCommand * vai = first;
+	while (vai)
+	{
+		rcbatch.PushCommand(vai);
+		vai = (CommittedCommand*)va_arg(ap, CommittedCommand*);
+	}
+	va_end(ap);
+
+	if (revertstate == PUSHREVERTABLESTATE_END)
+	{
+		pcommand->PushRevertable(&rcbatch);
+		rcbatch.Clear();
+		DeleteCC();
+	}
+}
+
 void CommandTemplate::CommitFrontCommand( CommittedCommand * first, ... )
 {
 	if (!first)
@@ -277,7 +303,7 @@ void CommandTemplate::CallDoneCommand()
 	if (!pcommand->IsUnDoReDoing())
 	{
 		GLayer * activeUILayer = pgm->GetActiveLayerFromUI();
-		GLayer * workinglayer = pgm->getWorkingLayer();
+		GLayer * workinglayer = pgm->GetActiveLayer();
 		if (workinglayer != activeUILayer)
 		{
 			if (workinglayer)
@@ -294,9 +320,9 @@ void CommandTemplate::CallDoneCommand()
 					);
 			}
 		}
-		pgm->UpdateWorkingLayer(activeUILayer);
+		pgm->UpdateActiveLayer(activeUILayer);
 	}
-	workinglayerID = pgm->getWorkingLayer()->getID();
+	workinglayerID = pgm->GetActiveLayer()->getID();
 	OnDoneCommand();
 }
 
@@ -333,5 +359,5 @@ void CommandTemplate::OnProcessUnDoCommand( RevertableCommand * rc )
 void CommandTemplate::CallOnUnDo()
 {
 	// lastworkinglayer can be dangerous
-	GObjectManager::getInstance().UpdateWorkingLayer(NULL, true);
+	GObjectManager::getInstance().UpdateActiveLayer(NULL, true);
 }

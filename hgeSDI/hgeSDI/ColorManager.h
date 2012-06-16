@@ -1,5 +1,6 @@
 #pragma once
 
+// No include Objs!
 #include "MainDependency.h"
 #include "StringManager.h"
 
@@ -20,6 +21,46 @@ enum{
 
 	_COLORMS_ENDINDEX,
 };
+
+enum{
+	LINECOLOR_NORMAL=0,
+	LINECOLOR_ACTIVE,			// Selected
+	LINECOLOR_HIGHLIGHT,		// Picking
+
+	_LINECOLOR_ENDINDEX
+};
+
+class LineColorSet
+{
+public:
+	LineColorSet(){ClearSet();};
+	~LineColorSet(){};
+
+	void ClearSet()
+	{
+		for (int i=0; i<_LINECOLOR_ENDINDEX; i++)
+		{
+			dwColors[i] = 0;
+		}
+		bColorSet = false;
+	};
+	bool IsColorSet()
+	{
+		return bColorSet;
+	};
+	void SetColor(int index, DWORD col)
+	{
+		dwColors[index] = col;
+		bColorSet = true;
+	};
+	DWORD GetColor( int iHighlightLevel )
+	{
+		return dwColors[iHighlightLevel];
+	};
+	DWORD dwColors[_LINECOLOR_ENDINDEX];
+	bool bColorSet;
+};
+
 
 class UIColor
 {
@@ -143,11 +184,14 @@ public:
 	DWORD GetTextBkColor(int type, int state);
 
 	DWORD GetLayerLineColor(int layer);
+	DWORD GetLayerLineHighlightColor(int layer);
+	DWORD GetLayerLineActiveColor(int layer);
+	LineColorSet GetLayerLineColorSetByIndex( int layerID );
 
 #undef _CMFDEF
 
 	DWORD ARGBToABGR(DWORD col);
-	DWORD Highlight( DWORD col, int iHighlightLevel );
+//	DWORD Highlight( DWORD col, int iHighlightLevel );
 
 	void ARGBToAHSL(DWORD col, float *a, float *h, float *s, float *l);
 	DWORD AHSLToARGB(float a, float h, float s, float l);

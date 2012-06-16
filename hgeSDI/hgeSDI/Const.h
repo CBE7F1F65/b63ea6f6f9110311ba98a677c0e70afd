@@ -8,6 +8,8 @@
 
 #define M_STRMAX	256
 
+#define M_FLOATEPS	0.00001f
+
 #define ANGLEBASE_90	90000
 #define ARC(X)		((X) * 0.00001745329251994329f)
 #define ANGLE(X)	(int)((X) * 57295.77951308232f)

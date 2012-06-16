@@ -3,6 +3,7 @@
 
 #include "StringManager.h"
 #include <sstream>
+#include "ColorManager.h"
 
 
 GLayer::GLayer(void)
@@ -10,15 +11,15 @@ GLayer::GLayer(void)
 	layerID = 0;
 }
 
-GLayer::GLayer( int _layerID, DWORD linecolor, const char * layername )
+GLayer::GLayer( int _layerID, const char * layername )
 {
-	setInitial(_layerID, linecolor, layername);
+	setInitial(_layerID, layername);
 }
 
-void GLayer::setInitial( int _layerID, DWORD linecolor, const char * layername )
+void GLayer::setInitial( int _layerID, const char * layername )
 {
 	layerID = _layerID;
-	setLineColor(linecolor);
+	setLineColor(ColorManager::getInstance().GetLayerLineColorSetByIndex(layerID));
 	setDisplayName(layername);
 }
 
@@ -45,6 +46,6 @@ const char * GLayer::getDisplayName()
 bool GLayer::Clone( GObject * pNewParent )
 {
 	_GOBJ_CLONE_PRE(GLayer);
-	_node->setInitial(layerID, dwLineColor, strDisplayName.c_str());
+	_node->setInitial(layerID, strDisplayName.c_str());
 	_GOBJ_CLONE_POST();
 }

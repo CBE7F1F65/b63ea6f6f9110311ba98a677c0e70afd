@@ -34,7 +34,7 @@ void SetWorkingLayerCommand::OnProcessCommand()
 			);
 		if (ret<0)
 		{
-			pcommand->SetParamI(CSP_SETWORKINGLAYER_I_NEWINDEX, pgm->getWorkingLayer()->getID());
+			pcommand->SetParamI(CSP_SETWORKINGLAYER_I_NEWINDEX, pgm->GetActiveLayer()->getID());
 			pcommand->StepTo(CSI_SETWORKINGLAYER_WANTLASTINDEX);
 		}
 	}
@@ -46,7 +46,7 @@ void SetWorkingLayerCommand::OnProcessCommand()
 			);
 		if (ret<0)
 		{
-			pcommand->SetParamI(CSP_SETWORKINGLAYER_I_LASTINDEX, pgm->getLastWorkingLayer()->getID());
+			pcommand->SetParamI(CSP_SETWORKINGLAYER_I_LASTINDEX, pgm->GetLastActiveLayer()->getID());
 			pcommand->StepTo(CSI_FINISH);
 		}
 	}

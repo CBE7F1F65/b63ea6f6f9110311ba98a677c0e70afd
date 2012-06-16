@@ -44,6 +44,8 @@ enum{
 	COMM_SETNODENAME,
 	COMM_DUPLICATE,
 	COMM_MOVENODE,
+	COMM_MOVENODEBYOFFSET,
+	COMM_MOVENODEBYOFFSET_BATCH,
 
 	// Layers
 	COMM_NEWLAYER,		// new layer
@@ -59,8 +61,10 @@ enum{
 
 	COMM_I_COMMAND,
 	COMM_I_COMMAND_AUTO,
+	COMM_I_COMMAND_ENDMARK,
 	COMM_I_UNDO_COMMIT,
 	COMM_I_UNDO_PARAM,
+	COMM_I_UNDO_PARAMFROMCOMMAND,
 	COMM_I_ADDNODE,
 	COMM_I_DELETENODE,
 	COMM_I_REPARENTNODE,
@@ -218,6 +222,21 @@ enum{
 };
 
 /************************************************************************/
+/* MOVENODE_BATCH                                                       */
+/************************************************************************/
+
+enum{
+	CSP_MOVENODE_BATCH_I_XY_INDEXES_NEWPOS,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_MOVENODE_BATCH_DUMMY=0,
+	CSI_MOVENODE_BATCH_WANTX,
+	CSI_MOVENODE_BATCH_WANTY,
+	CSI_MOVENODE_BATCH_WANTINDEXES,
+};
+
+/************************************************************************/
 /* SETWORKINGLAYER                                                      */
 /************************************************************************/
 
@@ -241,16 +260,39 @@ enum{
 /************************************************************************/
 
 enum{
+	CSP_LINE_XY_B = 0,
+	CSP_LINE_XY_N,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
 	CSI_LINE_DUMMY=0,
 	CSI_LINE_WANTX1,
 	CSI_LINE_WANTY1,
 	CSI_LINE_WANTX2,
 	CSI_LINE_WANTY2,
 };
+
+/************************************************************************/
+/* BEZIER                                                               */
+/************************************************************************/
+
+enum{
+	CSP_BEZIER_XY_BA=0,
+	CSP_BEZIER_XY_BH,
+	CSP_BEZIER_XY_NA,
+	CSP_BEZIER_XY_NH,
+};
 //////////////////////////////////////////////////////////////////////////
 enum{
-	CSP_LINE_XY_B = 0,
-	CSP_LINE_XY_N,
+	CSI_BEZIER_DUMMY=0,
+	CSI_BEZIER_WANTBAX,
+	CSI_BEZIER_WANTBAY,
+	CSI_BEZIER_WANTBHX,
+	CSI_BEZIER_WANTBHY,
+	CSI_BEZIER_WANTNAX,
+	CSI_BEZIER_WANTNAY,
+	CSI_BEZIER_WANTNHX,
+	CSI_BEZIER_WANTNHY,
 };
 
 
@@ -279,6 +321,8 @@ enum{
 	CWP_XY_N,
 	CWP_XOFFSET,
 	CWP_YOFFSET,
+	CWP_HANDLEX,
+	CWP_HANDLEY,
 	CWP_SCALE,
 	CWP_STEP,
 	CWP_INDEX,

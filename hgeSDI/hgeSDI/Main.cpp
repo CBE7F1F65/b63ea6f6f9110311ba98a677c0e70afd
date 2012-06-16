@@ -390,7 +390,7 @@ int MainInterface::OnCommandWithParam( int comm, int firsttype, ... )
 	va_start(ap, firsttype);
 	int vait = firsttype;
 
-	list<string>strlist;
+//	list<string>strlist;
 
 	while (true)
 	{
@@ -403,26 +403,44 @@ int MainInterface::OnCommandWithParam( int comm, int firsttype, ... )
 		case COMMITTEDCOMMANDTYPE_FLOAT:
 			{
 				float vaif = (float)va_arg(ap, double);
-				stringstream ss;
-				ss << fixed << vaif;
-				strlist.push_back(ss.str());
+				OnCommandSingleParamF(vaif);
+// 				stringstream ss;
+// 				ss << fixed << vaif;
+// 				strlist.push_back(ss.str());
 			}
 			break;
 		case COMMITTEDCOMMANDTYPE_INT:
 			{
 				int vaii = (int)va_arg(ap, int);
-				stringstream ss;
-				ss << vaii;
-				strlist.push_back(ss.str());
+				OnCommandSingleParamI(vaii);
+// 				stringstream ss;
+// 				ss << vaii;
+// 				strlist.push_back(ss.str());
 			}
 			break;
 		case COMMITTEDCOMMANDTYPE_STRING:
 			{
 				char * vais = (char *)va_arg(ap, char *);
 				ASSERT(vais);
-				stringstream ss;
-				ss << "\"" << vais << "\"";
-				strlist.push_back(ss.str());
+				OnCommandSingleParamS(vais);
+// 				stringstream ss;
+// 				ss << "\"" << vais << "\"";
+// 				strlist.push_back(ss.str());
+			}
+			break;
+		case COMMITTEDCOMMANDTYPE_SUBCOMMAND:
+			{
+				int vaii = (int)va_arg(ap, int);
+				OnCommandSingleParamSubCommand(vaii);
+// 				const char * sstr = Command::getInstance().GetSubCommandStr(vaii);
+// 				if (strlen(sstr))
+// 				{
+// 					strlist.push_back(sstr);
+// 				}
+// 				else
+// 				{
+// 					DASSERT(true);
+// 				}
 			}
 			break;
 		default:
@@ -432,12 +450,45 @@ int MainInterface::OnCommandWithParam( int comm, int firsttype, ... )
 	}
 	va_end(ap);
 
-	for (list<string>::iterator it=strlist.begin(); it!=strlist.end(); ++it)
-	{
-		pcommand->CommitCommand(it->c_str());
-	}
+// 	for (list<string>::iterator it=strlist.begin(); it!=strlist.end(); ++it)
+// 	{
+// 		pcommand->CommitCommand(it->c_str());
+// 	}
 
 	return pcommand->GetCurrentCommand();
+}
+
+int MainInterface::OnCommandSingleParamI( int ival )
+{
+	stringstream ss;
+	ss << ival;
+	return OnCommitCommand(ss.str().c_str());
+}
+
+int MainInterface::OnCommandSingleParamF( float fval )
+{
+	stringstream ss;
+	ss << fixed << fval;
+	return OnCommitCommand(ss.str().c_str());
+}
+
+int MainInterface::OnCommandSingleParamS( const char * sval )
+{
+	return OnCommitCommand(sval);
+}
+
+int MainInterface::OnCommandSingleParamSubCommand( int ssc )
+{
+	const char * sstr = Command::getInstance().GetSubCommandStr(ssc);
+	if (strlen(sstr))
+	{
+		return OnCommitCommand(sstr);
+	}
+	else
+	{
+		DASSERT(true);
+	}
+	return 0;
 }
 
 int MainInterface::OnCommitCommand( const char * str )
@@ -453,11 +504,6 @@ void MainInterface::OnTreeLockChange( bool toLock )
 void MainInterface::OnRebuildLayerTree( GObject * changebase, GObject * activeitem )
 {
 	parentview->GetMainFrame()->RebuildLayerTree(changebase, activeitem);
-}
-
-GLayer * MainInterface::OnGetActiveLayer()
-{
-	return parentview->GetMainFrame()->GetActiveLayer();
 }
 
 GObject * MainInterface::OnGetSelectedNodes( int * pnextfromIndex )

@@ -29,6 +29,8 @@ void MoveNodeCommand::OnProcessCommand()
 	UpdateLastStep();
 
 	int ret = -1;
+	int cwpx = (comm == COMM_MOVENODE)?CWP_X:CWP_XOFFSET;
+	int cwpy = (comm == COMM_MOVENODE)?CWP_Y:CWP_YOFFSET;
 
 	if (step == CSI_INIT)
 	{
@@ -40,20 +42,20 @@ void MoveNodeCommand::OnProcessCommand()
 	{
 		ret = pcommand->ProcessPending(
 			CSP_MOVENODE_I_XY_INDEX_NEWPOS, COMMPARAMFLAG_I, CWP_INDEX,
-			CSI_MOVENODE_WANTX, CWP_X
+			CSI_MOVENODE_WANTX, cwpx
 			);
 	}
 	else if (step == CSI_MOVENODE_WANTX)
 	{
 		ret = pcommand->ProcessPending(
-			CSP_MOVENODE_I_XY_INDEX_NEWPOS, COMMPARAMFLAG_X, CWP_X,
-			CSI_MOVENODE_WANTY, CWP_Y
+			CSP_MOVENODE_I_XY_INDEX_NEWPOS, COMMPARAMFLAG_X, cwpx,
+			CSI_MOVENODE_WANTY, cwpy
 			);
 	}
 	else if (step == CSI_MOVENODE_WANTY)
 	{
 		ret = pcommand->ProcessPending(
-			CSP_MOVENODE_I_XY_INDEX_NEWPOS, COMMPARAMFLAG_Y, CWP_Y,
+			CSP_MOVENODE_I_XY_INDEX_NEWPOS, COMMPARAMFLAG_Y, cwpy,
 			CSI_FINISH
 			);
 	}
@@ -65,13 +67,16 @@ void MoveNodeCommand::OnProcessCommand()
 	}
 	else if (ret < 0)
 	{
-		if (pgp->PickPoint())
+		if (step >= CSI_MOVENODE_WANTX)
 		{
-			if (!pcommand->IsInternalProcessing())
+			if (pgp->PickPoint())
 			{
-				pcommand->SetParamX(CSP_MOVENODE_I_XY_INDEX_NEWPOS, pgp->GetPickX_C());
-				pcommand->SetParamY(CSP_MOVENODE_I_XY_INDEX_NEWPOS, pgp->GetPickY_C());
-				pcommand->StepTo(CSI_FINISH);
+				if (!pcommand->IsInternalProcessing())
+				{
+					pcommand->SetParamX(CSP_MOVENODE_I_XY_INDEX_NEWPOS, pgp->GetPickX_C());
+					pcommand->SetParamY(CSP_MOVENODE_I_XY_INDEX_NEWPOS, pgp->GetPickY_C());
+					pcommand->StepTo(CSI_FINISH);
+				}
 			}
 		}
 	}
@@ -88,17 +93,26 @@ void MoveNodeCommand::OnDoneCommand()
 	float newx, newy;
 	pcommand->GetParamXY(CSP_MOVENODE_I_XY_INDEX_NEWPOS, &newx, &newy);
 
+	float tox = newx;
+	float toy = newy;
 	float oldx = pObj->getX();
 	float oldy = pObj->getY();
-
-	if (pObj->MoveTo(newx, newy, false))
+	if (comm == COMM_MOVENODEBYOFFSET)
 	{
-		MainInterface::getInstance().CallChangeNode(pObj);
+		tox += oldx;
+		toy += oldy;
+	}
+
+
+	if (pObj->MoveTo(tox, toy, false))
+	{
+		pgm->OnTreeChanged(pObj->getParent(), pObj);
+//		MainInterface::getInstance().CallChangeNode(pObj);
 
 		PushRevertable(
 			CCMake_C(COMM_I_COMMAND, 4, 1),
 			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
-			CCMake_C(COMM_MOVENODE),
+			CCMake_C(comm),
 			CCMake_I(index),
 			CCMake_F(newx),
 			CCMake_F(newy),
@@ -123,5 +137,6 @@ void MoveNodeCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 	GObject * pObj = pgm->FindObjectByID(index);
 	ASSERT(pObj);
 	pObj->MoveTo(oldx, oldy, false);
-	MainInterface::getInstance().CallChangeNode(pObj);
+	pgm->OnTreeChanged(pObj->getParent(), pObj);
+//	MainInterface::getInstance().CallChangeNode(pObj);
 }

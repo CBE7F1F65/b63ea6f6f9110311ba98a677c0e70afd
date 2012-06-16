@@ -140,11 +140,6 @@ void UILayerDockablePane::RebuildTree( GObject * changebase, GObject * activeite
 	m_wndListCtrl.RebuildTree(changebase, activeitem);
 }
 
-GLayer * UILayerDockablePane::GetActiveLayer()
-{
-	return m_wndListCtrl.GetActiveLayer();
-}
-
 void UILayerDockablePane::SetActiveLayer_Internal( GLayer * pLayer )
 {
 	return m_wndListCtrl.SetActiveLayer_Internal(pLayer);

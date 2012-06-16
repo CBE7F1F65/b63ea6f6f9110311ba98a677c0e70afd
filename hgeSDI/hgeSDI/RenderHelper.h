@@ -77,6 +77,17 @@ public:
 
 	void RenderBezier(PointF2D p1, PointF2D p2, PointF2D p3, PointF2D p4, DWORD col=0, float precisemul=1.0f);
 
+	void RenderAttributePoint_S(float x, float y, DWORD col);
+	void RenderSubstantivePoint_S(float x, float y, DWORD col);
+	void RenderAttributePoint(float x, float y, DWORD col)
+	{
+		RenderAttributePoint_S(_CTOSP(x, y), col);
+	};
+	void RenderSubstantivePoint(float x, float y, DWORD col)
+	{
+		RenderSubstantivePoint_S(_CTOSP(x, y), col);
+	};
+
 #undef _CTOSP
 
 	void TargetQuadRender_S(HTARGET tar, float x, float y, DWORD col=0);

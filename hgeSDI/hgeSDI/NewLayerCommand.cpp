@@ -60,11 +60,11 @@ void NewLayerCommand::OnDoneCommand()
 
 	if (comm == COMM_NEWLAYER)
 	{
-		pLayer = pgm->NewLayer(pgm->getWorkingLayer(), layername, layerIndex);
+		pLayer = pgm->NewLayer(pgm->GetActiveLayer(), layername, layerIndex);
 	}
 	else
 	{
-		pLayer = pgm->NewSubLayer(pgm->getWorkingLayer(), layername, layerIndex);
+		pLayer = pgm->NewSubLayer(pgm->GetActiveLayer(), layername, layerIndex);
 	}
 
 	if (layerIndex < 0)

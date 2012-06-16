@@ -53,6 +53,7 @@ bool GPoint::MoveTo( float newx, float newy, bool bTry )
 
 	x = newx;
 	y = newy;
+
 	CallModify();
 	return true;
 }
@@ -116,22 +117,12 @@ bool GMidPoint::Clone( GObject * pNewParent )
 
 void GAttributePoint::OnRender( int iHighlightLevel/*=0*/ )
 {
-#define _GATTRPT_RENDER_A	5
 	DWORD col = getLineColor(iHighlightLevel);
-	GUICoordinate * pguic = &GUICoordinate::getInstance();
-	float xs = pguic->CtoSx(x);
-	float ys = pguic->CtoSy(y);
-	RenderHelper::getInstance().RenderSquare_S(xs-_GATTRPT_RENDER_A, ys-_GATTRPT_RENDER_A, _GATTRPT_RENDER_A*2, col);
+	RenderHelper::getInstance().RenderAttributePoint(x, y, col);
 }
 
 void GSubstantivePoint::OnRender( int iHighlightLevel/*=0*/ )
 {
-#define _GSUBSPT_RENDER_L	5
 	DWORD col = getLineColor(iHighlightLevel);
-	GUICoordinate * pguic = &GUICoordinate::getInstance();
-	float xs = pguic->CtoSx(x);
-	float ys = pguic->CtoSy(y);
-	RenderHelper::getInstance().RenderLine_S(xs-_GSUBSPT_RENDER_L, ys-_GSUBSPT_RENDER_L, xs+_GSUBSPT_RENDER_L, ys+_GSUBSPT_RENDER_L, col);
-	RenderHelper::getInstance().RenderLine_S(xs+_GSUBSPT_RENDER_L, ys-_GSUBSPT_RENDER_L, xs-_GSUBSPT_RENDER_L, ys+_GSUBSPT_RENDER_L, col);
-
+	RenderHelper::getInstance().RenderSubstantivePoint(x, y, col);
 }

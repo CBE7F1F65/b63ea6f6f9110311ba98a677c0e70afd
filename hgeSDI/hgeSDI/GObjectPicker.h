@@ -120,6 +120,9 @@ private:
 
 public:
 	int PickPoint(PickFilterCallback pfunc=NULL);
-	bool UpdatePickPoint();
+	int UpdatePickPoint();
 	void OnDeleteNode( GObject * node );
+
+	bool IsPickReady(int iret=-1);
+	bool IsMouseDownReady();
 };

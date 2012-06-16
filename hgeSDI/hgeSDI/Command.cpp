@@ -977,7 +977,36 @@ void Command::DoPushRevertable()
 	}
 	if (rc)
 	{
-		undolist.push_back(*rc);
+		list<RevertableCommand> rclist;
+		RevertableCommand rv;
+		rclist.push_front(rv);
+		for (list<CommittedCommand>::iterator it=rc->commandlist.begin(); it!=rc->commandlist.end(); ++it)
+		{
+
+			if (IsCCTypeCommand(it->type) && IsInternalCommand_CommandEndMark(it->ival))
+			{
+				RevertableCommand rvt;
+				rclist.push_front(rvt);
+			}
+			else
+			{
+				rclist.front().PushCommand(&(*it));
+			}
+		}
+		if (rclist.front().commandlist.empty())
+		{
+			rclist.pop_front();
+		}
+		RevertableCommand rvundo;
+		for (list<RevertableCommand>::iterator it=rclist.begin(); it!=rclist.end(); ++it)
+		{
+			for (list<CommittedCommand>::iterator jt=it->commandlist.begin(); jt!=it->commandlist.end(); ++jt)
+			{
+				rvundo.PushCommand(&(*jt));
+			}
+		}
+		undolist.push_back(rvundo);
+//		undolist.push_back(*rc);
 		while ((int)undolist.size() > undostepmax)
 		{
 			undolist.pop_front();
@@ -1067,6 +1096,7 @@ void Command::PushRevertable( RevertableCommand * rc )
 		{
 			rcbuffer.PushCommand(&(*it));
 		}
+		rcbuffer.PushEndMark();
 	}
 
 }

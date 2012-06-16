@@ -7,11 +7,11 @@ class GLayer :
 protected:
 	GLayer(void);
 public:
-	GLayer(int layerID, DWORD linecolor, const char * layername);
+	GLayer(int layerID, const char * layername);
 	~GLayer(void);
 
 private:
-	virtual void setInitial(int layerID, DWORD linecolor, const char * layername);
+	virtual void setInitial(int layerID, const char * layername);
 public:
 
 	virtual const char * getDisplayName();

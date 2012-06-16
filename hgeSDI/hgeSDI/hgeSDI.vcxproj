@@ -161,6 +161,7 @@
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="MessageBoxManager.h" />
     <ClInclude Include="MouseCursorManager.h" />
+    <ClInclude Include="MoveNodeBatchCommand.h" />
     <ClInclude Include="MoveNodeCommand.h" />
     <ClInclude Include="NewLayerCommand.h" />
     <ClInclude Include="OutputCommand.h" />
@@ -198,6 +199,7 @@
     <ClCompile Include="MarqueeSelect.cpp" />
     <ClCompile Include="MessageBoxManager.cpp" />
     <ClCompile Include="MouseCursorManager.cpp" />
+    <ClCompile Include="MoveNodeBatchCommand.cpp" />
     <ClCompile Include="MoveNodeCommand.cpp" />
     <ClCompile Include="OutputCommand.cpp" />
     <ClCompile Include="ProcessCommand.cpp" />
