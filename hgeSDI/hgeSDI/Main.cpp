@@ -42,7 +42,7 @@ MainInterface::MainInterface()
 	manageloop = false;
 	bActive = false;
 
-	precision = 0.5f;
+	precision = 0.25f;
 }
 
 MainInterface::~MainInterface()

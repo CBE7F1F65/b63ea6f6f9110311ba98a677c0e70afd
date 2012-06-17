@@ -6,7 +6,7 @@ class GBaseNode :
 {
 public:
 	GBaseNode(void);
-	~GBaseNode(void);
+	virtual ~GBaseNode(void);
 
 	void CopyBaseFrom( GBaseNode * pFrom );
 	void CopyBaseTo( GBaseNode * pTo );
@@ -22,7 +22,7 @@ public:
 
 private:
 	GMainBaseNode();
-	~GMainBaseNode();
+	virtual ~GMainBaseNode();
 	GMainBaseNode(GMainBaseNode const&);
 	void operator=(GMainBaseNode const&);
 

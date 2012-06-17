@@ -5,7 +5,7 @@ class GPiece :
 {
 public:
 	GPiece(void);
-	~GPiece(void);
+	virtual ~GPiece(void);
 
 	virtual bool isPiece(){return true;};
 

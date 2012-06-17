@@ -9,6 +9,7 @@
 #include "Command.h"
 #include "GObjectManager.h"
 #include "GUICursor.h"
+#include "GLine.h"
 
 BezierCommand::BezierCommand(void)
 {
@@ -215,6 +216,39 @@ void BezierCommand::OnProcessCommand()
 
 void BezierCommand::OnDoneCommand()
 {
+	float xb, yb, xe, ye;
+	float xbh, ybh, xeh, yeh;
+
+	pcommand->GetParamXY(CSP_BEZIER_XY_BA, &xb, &yb);
+	pcommand->GetParamXY(CSP_BEZIER_XY_BH, &xbh, &ybh);
+	pcommand->GetParamXY(CSP_BEZIER_XY_NA, &xe, &ye);
+	pcommand->GetParamXY(CSP_BEZIER_XY_NH, &xeh, &yeh);
+
+	GBezierLine * line = new GBezierLine(pgm->GetActiveLayer(), PointF2D(xb, yb), PointF2D(xbh, ybh), PointF2D(xeh, yeh), PointF2D(xe, ye));
+
+	PushRevertable(
+		CCMake_C(COMM_I_ADDNODE, 2),
+		CCMake_I(line->getID()),
+		CCMake_I(line->getParent()->getID()),
+		CCMake_C(COMM_I_COMMAND, 9, 1),
+		CCMake_CI(COMM_I_COMM_WORKINGLAYER, workinglayerID),
+		CCMake_C(COMM_BEZIER),
+		CCMake_F(xb),
+		CCMake_F(yb),
+		CCMake_F(xbh),
+		CCMake_F(ybh),
+		CCMake_F(xe),
+		CCMake_F(ye),
+		CCMake_F(xeh),
+		CCMake_F(yeh),
+		CCMake_C(COMM_I_UNDO_COMMIT, 5),
+		CCMake_C(COMM_BEZIER),
+		CCMake_F(xb),
+		CCMake_F(yb),
+		CCMake_F(xbh),
+		CCMake_F(ybh),
+		NULL
+		);
 }
 
 void BezierCommand::RenderToTarget()
@@ -269,7 +303,6 @@ void BezierCommand::RenderToTarget()
 
 		HTARGET tar = RenderTargetManager::getInstance().UpdateTarget(RTID_COMMAND);
 		prh->BeginRenderTar(tar);
-
 		// BA-BH Line
 		float minxb = 2*xb-bhx;
 		float minyb = 2*yb-bhy;
@@ -277,12 +310,14 @@ void BezierCommand::RenderToTarget()
 		prh->RenderLine(xb, yb, bhx, bhy, col);
 		prh->RenderLine(xb, yb, minxb, minyb, col);
 		prh->RenderAttributePoint(xb, yb, col);
-		prh->RenderAttributePoint(bhx, bhy, col);
-		prh->RenderAttributePoint(minxb, minyb, col);
+		prh->RenderHandlePoint(bhx, bhy, col);
+		prh->RenderHandlePoint(minxb, minyb, col);
 
 		if (linebezier)
 		{
-			prh->RenderBezier(PointF2D(xb, yb), PointF2D(bhx, bhy), PointF2D(nhx, nhy), PointF2D(xn, yn), col, pmain->GetPrecision());
+			BezierSublinesInfo bsinfo;
+			bsinfo.ResetPoints(PointF2D(xb, yb), PointF2D(bhx, bhy), PointF2D(nhx, nhy), PointF2D(xn, yn), pmain->GetPrecision());
+			prh->RenderBezierByInfo(&bsinfo, col);
 		}
 		if (linenh)
 		{
@@ -291,8 +326,8 @@ void BezierCommand::RenderToTarget()
 			prh->RenderLine(xn, yn, nhx, nhy, col);
 			prh->RenderLine(xn, yn, minxn, minyn, col);
 			prh->RenderAttributePoint(xn, yn, col);
-			prh->RenderAttributePoint(nhx, nhy, col);
-			prh->RenderAttributePoint(minxn, minyn, col);
+			prh->RenderHandlePoint(nhx, nhy, col);
+			prh->RenderHandlePoint(minxn, minyn, col);
 		}
 
 		RenderHelper::getInstance().EndRenderTar();

@@ -20,7 +20,7 @@ class CommandTemplate
 {
 public:
 	CommandTemplate(void);
-	~CommandTemplate(void);
+	virtual ~CommandTemplate(void);
 
 	void CallProcessCommand();
 	virtual void OnProcessCommand()=0;

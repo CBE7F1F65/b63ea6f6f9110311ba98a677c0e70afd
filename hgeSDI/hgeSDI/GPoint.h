@@ -1,13 +1,15 @@
 #pragma once
 #include "GObject.h"
-
+#include "MathHelper.h"
+/************************************************************************/
+/* GPoint                                                               */
+/************************************************************************/
 class GPoint :
 	public GObject
 {
 public:
 	GPoint();
-	GPoint(float x, float y);
-	~GPoint();
+	virtual ~GPoint();
 
 	virtual float getX(){return x;};
 	virtual float getY(){return y;};
@@ -50,66 +52,65 @@ public:
 
 	virtual bool Clone( GObject * pNewParent );
 
+	PointF2D GetPointF2D(){return PointF2D(x, y);};
+
 	float x;
 	float y;
 };
-
+/************************************************************************/
+/* GSubstantivePoint                                                    */
+/************************************************************************/
 class GSubstantivePoint :
 	public GPoint
 {
 public:
 	GSubstantivePoint();
-	~GSubstantivePoint();
+	virtual ~GSubstantivePoint();
 
 //	virtual bool isAttributeNode(){return false;};
 	virtual bool isRepresentablePoint(){return true;};
 
 	virtual void OnRender(int iHighlightLevel=0);
 };
-
+/************************************************************************/
+/* GAttributePoint                                                      */
+/************************************************************************/
 class GAttributePoint :
 	public GPoint
 {
 public:
 	GAttributePoint(){};
-	~GAttributePoint(){};
+	virtual ~GAttributePoint(){};
 
 	virtual bool isAttributeNode(){return true;};
 	virtual bool isRepresentablePoint(){return true;};
 
 	virtual void OnRender(int iHighlightLevel=0);
 };
-
+/************************************************************************/
+/* GVirtualPoint                                                        */
+/************************************************************************/
 class GVirtualPoint :
 	public GAttributePoint
 {
 public:
 	GVirtualPoint();
-	~GVirtualPoint();
+	virtual ~GVirtualPoint();
 
 	virtual bool isRepresentablePoint(){return false;};
 	virtual bool isModifyParent(){return false;};
 
 	virtual void OnRender(int iHighlightLevel=0);
 };
-
-class GEndPoint : public GAttributePoint
-{
-public:
-	GEndPoint();
-	GEndPoint(float x, float y);
-	~GEndPoint();
-
-	virtual const char * getDisplayName();
-	virtual bool Clone( GObject * pNewParent );
-};
-
+/************************************************************************/
+/* GMidPoint                                                            */
+/************************************************************************/
 class GMidPoint : public GAttributePoint
 {
 public:
 	GMidPoint();
-	GMidPoint(float x, float y);
-	~GMidPoint();
+	GMidPoint(GObject * parent);
+	virtual ~GMidPoint();
 	
 	virtual bool isModifyParent(){return false;};
 	virtual bool isSlaveToLine(){return true;};
@@ -117,4 +118,42 @@ public:
 
 	virtual const char * getDisplayName();
 	virtual bool Clone( GObject * pNewParent );
+};
+/************************************************************************/
+/* GHandlePoint                                                         */
+/************************************************************************/
+class GHandlePoint : public GAttributePoint
+{
+public:
+	GHandlePoint();
+	GHandlePoint(GObject * parent, float x, float y);
+	virtual ~GHandlePoint();
+
+	virtual void OnRender(int iHighlightLevel/* =0 */);
+	GObject * GetAnchor(){return getParent();};
+	virtual bool isHandlePoint(){return true;};
+
+	virtual const char * getDisplayName();
+	virtual bool Clone( GObject * pNewParent );
+};
+/************************************************************************/
+/* GAnchorPoint                                                         */
+/************************************************************************/
+class GAnchorPoint : public GAttributePoint
+{
+public:
+	GAnchorPoint();
+	GAnchorPoint(GObject * parent, float x, float y);
+	virtual ~GAnchorPoint();
+
+	virtual bool MoveTo( float newx, float newy, bool bTry );
+	virtual const char * getDisplayName();
+	virtual bool Clone( GObject * pNewParent );
+	virtual bool isAnchorPoint(){return true;};
+
+	GHandlePoint * GetHandle(){return phandle;};
+	void SetHandlePosition( float x, float y );
+	bool isHandleIdentical();
+protected:
+	GHandlePoint * phandle;
 };

@@ -78,12 +78,24 @@ void MarqueeSelect::AddSelect( GObject * pObj )
 	{
 		return;
 	}
-
-	for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end(); ++it)
+	
+	for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end();)
 	{
 		if ((*it) == pObj)
 		{
 			return;
+		}
+		if (pObj->isAnchorPoint() && ((GAnchorPoint *)pObj)->GetHandle() == (*it))
+		{
+			it = selectednodes.erase(it);
+		}
+		else if (pObj->isHandlePoint() && ((GHandlePoint *)pObj)->GetAnchor() == (*it))
+		{
+			it = selectednodes.erase(it);
+		}
+		else
+		{
+			++it;
 		}
 	}
 	selectednodes.push_back(pObj);
@@ -328,7 +340,10 @@ void MarqueeSelect::CheckMarqueeSelect_Pt( GObject * pObj )
 	{
 		if (MathHelper::getInstance().PointInRect(pObj->getX(), pObj->getY(), beginx_c, beginy_c, endx_c-beginx_c, endy_c-beginy_c))
 		{
-			selectednodes.push_back(pObj);
+			if (!pObj->isHandlePoint())
+			{
+				selectednodes.push_back(pObj);
+			}
 		}
 	}
 	for (list<GObject *>::iterator it=pObj->getChildren()->begin(); it!=pObj->getChildren()->end(); ++it)

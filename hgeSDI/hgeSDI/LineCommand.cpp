@@ -155,6 +155,7 @@ void LineCommand::RenderToTarget()
 		HTARGET tar = RenderTargetManager::getInstance().UpdateTarget(RTID_COMMAND);
 
 		RenderHelper::getInstance().BeginRenderTar(tar);
+		RenderHelper::getInstance().RenderLineMeasureMark(x1, y1, x2, y2, pgm->GetActiveLayer()->getLineColor());
 		RenderHelper::getInstance().RenderLine(x1, y1, x2, y2, pgm->GetActiveLayer()->getLineColor());
 		RenderHelper::getInstance().EndRenderTar();
 
@@ -164,11 +165,10 @@ void LineCommand::RenderToTarget()
 
 void LineCommand::OnDoneCommand()
 {
-	GStraightLine * line = new GStraightLine(pgm->GetActiveLayer()/*pgm->GetActiveLayer()*/);
 	float xb, yb, xe, ye;
 	pcommand->GetParamXY(CSP_LINE_XY_B, &xb, &yb);
 	pcommand->GetParamXY(CSP_LINE_XY_N, &xe, &ye);
-	line->SetBeginEnd(xb, yb, xe, ye);
+	GStraightLine * line = new GBezierLine(pgm->GetActiveLayer(), PointF2D(xb, yb), PointF2D(xe, ye));
 
 	PushRevertable(
 		CCMake_C(COMM_I_ADDNODE, 2),

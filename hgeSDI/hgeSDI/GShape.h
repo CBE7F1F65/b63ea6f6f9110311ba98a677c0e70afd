@@ -5,7 +5,7 @@ class GShape :
 {
 public:
 	GShape(void);
-	~GShape(void);
+	virtual ~GShape(void);
 
 	virtual const char * getDisplayName();
 

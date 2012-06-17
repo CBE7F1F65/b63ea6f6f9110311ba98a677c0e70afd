@@ -8,7 +8,7 @@ protected:
 	GLayer(void);
 public:
 	GLayer(int layerID, const char * layername);
-	~GLayer(void);
+	virtual ~GLayer(void);
 
 private:
 	virtual void setInitial(int layerID, const char * layername);

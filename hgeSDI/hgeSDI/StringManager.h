@@ -216,8 +216,9 @@ public:
 	_SMNNFDEF(	Piece,	"Piece"	);
 	_SMNNFDEF(	Line,	"Line"	);
 	_SMNNFDEF(	Point,	"Point"	);
-	_SMNNFDEF(	EndPoint,	"End Point"	);
+	_SMNNFDEF(	AnchorPoint,	"Anchor"	);
 	_SMNNFDEF(	MidPoint,	"Mid Point"	);
+	_SMNNFDEF(	HandlePoint,	"Handle"	);
 
 #undef _SMNNFDEF
 

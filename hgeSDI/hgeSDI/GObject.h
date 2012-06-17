@@ -35,7 +35,7 @@ class GObject
 {
 public:
 	GObject(void);
-	~GObject(void);
+	virtual ~GObject(void);
 
 public:
 	virtual bool Clone(GObject * pNewParent)=0;
@@ -96,6 +96,8 @@ public:
 	virtual bool isModifyParent(){return true;};
 	virtual bool isSlaveToLine(){return false;};
 	virtual bool isSlaveToPiece(){return false;};
+	virtual bool isHandlePoint(){return false;};
+	virtual bool isAnchorPoint(){return false;};
 
 	virtual GObject * GetLayer(bool bIncludingSelf=true);
 	virtual GObject * GetContainerLayer(){return GetLayer(false);};

@@ -2,6 +2,10 @@
 #include "RenderHelper.h"
 
 #include "MathHelper.h"
+#include "Main.h"
+
+#define _GATTRPT_RENDER_A	5
+#define _GSUBSPT_RENDER_L	5
 
 RenderHelper::RenderHelper(void)
 {
@@ -22,12 +26,12 @@ void RenderHelper::Release()
 	}
 }
 
-void RenderHelper::BaseRenderPoint_S( float x, float y, DWORD col/*=0*/ )
+void RenderHelper::BaseRenderPoint_S( float x, float y, DWORD col )
 {
 	hge->Gfx_RenderPoint(x, y, 0, col);
 }
 
-void RenderHelper::BaseRenderLine_S( float x1, float y1, float x2, float y2, DWORD col/*=0*/ )
+void RenderHelper::BaseRenderLine_S( float x1, float y1, float x2, float y2, DWORD col )
 {
 #define _RHDOTTEDLINE_SPACE	5
 #define _RHSLASHLINE_SPACE	10
@@ -82,7 +86,7 @@ void RenderHelper::BaseRenderLine_S( float x1, float y1, float x2, float y2, DWO
 	}
 }
 
-void RenderHelper::RenderPoint_S( float x, float y, DWORD col/*=0*/ )
+void RenderHelper::RenderPoint_S( float x, float y, DWORD col )
 {
 	if (x >= 0 && x <= pguic->GetScreenWidth_S() && y >= 0 && y <= pguic->GetScreenHeight_S())
 	{
@@ -90,7 +94,7 @@ void RenderHelper::RenderPoint_S( float x, float y, DWORD col/*=0*/ )
 	}
 }
 
-void RenderHelper::RenderLine_S( float x1, float y1, float x2, float y2, DWORD col/*=0*/ )
+void RenderHelper::RenderLine_S( float x1, float y1, float x2, float y2, DWORD col )
 {
 	if (MathHelper::getInstance().LinePartialInRect(x1, y1, x2, y2, 0, 0, pguic->GetScreenWidth_S(), pguic->GetScreenHeight_S(), true))
 	{
@@ -99,22 +103,22 @@ void RenderHelper::RenderLine_S( float x1, float y1, float x2, float y2, DWORD c
 	}
 }
 
-void RenderHelper::RenderLineR_S( float x, float y, float length, DWORD col/*=0*/ )
+void RenderHelper::RenderLineR_S( float x, float y, float length, DWORD col )
 {
 	RenderLine_S(x, y, x+length, y, col);
 }
 
-void RenderHelper::RenderLineB_S( float x, float y, float length, DWORD col/*=0*/ )
+void RenderHelper::RenderLineB_S( float x, float y, float length, DWORD col )
 {
 	RenderLine_S(x, y, x, y+length, col);
 }
 
-void RenderHelper::RenderSquare_S( float x, float y, float a, DWORD col/*=0*/ )
+void RenderHelper::RenderSquare_S( float x, float y, float a, DWORD col )
 {
 	RenderRect_S(x, y, a, a, col);
 }
 
-void RenderHelper::RenderRect_S( float x, float y, float w, float h, DWORD col/*=0*/ )
+void RenderHelper::RenderRect_S( float x, float y, float w, float h, DWORD col )
 {
 	RenderLine_S(x, y, x+w, y, col);
 	RenderLine_S(x+w, y, x+w, y+h, col);
@@ -122,9 +126,9 @@ void RenderHelper::RenderRect_S( float x, float y, float w, float h, DWORD col/*
 	RenderLine_S(x, y+h, x, y, col);
 }
 
-void RenderHelper::RenderArrow_S( float x, float y, int angle, float length, float arrowsize, DWORD col/*=0*/ )
+void RenderHelper::RenderArrow_S( float x, float y, int angle, float length, float arrowsize, DWORD col )
 {
-	angle = MathHelper::getInstance().AngleRestrict(angle);
+	angle = MathHelper::getInstance().RestrictAngle(angle);
 	if (angle == 0)
 	{
 		return RenderArrowR_S(x, y, length, arrowsize, col);
@@ -157,7 +161,7 @@ void RenderHelper::RenderArrow_S( float x, float y, int angle, float length, flo
 	RenderLine_S(arrowpointx, arrowpointy, arrowpointx+arrowsize*cosf(arcb), arrowpointy+arrowsize*sinf(arcb), col);
 }
 
-void RenderHelper::RenderArrowR_S( float x, float y, float length, float arrowsize, DWORD col/*=0*/ )
+void RenderHelper::RenderArrowR_S( float x, float y, float length, float arrowsize, DWORD col )
 {
 	if (length)
 	{
@@ -167,7 +171,7 @@ void RenderHelper::RenderArrowR_S( float x, float y, float length, float arrowsi
 	RenderLine_S(x+length, y, x+length-arrowsize, y+arrowsize, col);
 }
 
-void RenderHelper::RenderArrowB_S( float x, float y, float length, float arrowsize, DWORD col/*=0*/ )
+void RenderHelper::RenderArrowB_S( float x, float y, float length, float arrowsize, DWORD col )
 {
 	if (length)
 	{
@@ -177,7 +181,7 @@ void RenderHelper::RenderArrowB_S( float x, float y, float length, float arrowsi
 	RenderLine_S(x, y+length, x-arrowsize, y+length-arrowsize, col);
 }
 
-inline void RenderHelper::RenderArrowL_S( float x, float y, float length, float arrowsize, DWORD col/*=0*/ )
+inline void RenderHelper::RenderArrowL_S( float x, float y, float length, float arrowsize, DWORD col )
 {
 	if (length)
 	{
@@ -187,7 +191,7 @@ inline void RenderHelper::RenderArrowL_S( float x, float y, float length, float 
 	RenderLine_S(x-length, y, x-length+arrowsize, y+arrowsize, col);
 }
 
-void RenderHelper::RenderArrowT_S( float x, float y, float length, float arrowsize, DWORD col/*=0*/ )
+void RenderHelper::RenderArrowT_S( float x, float y, float length, float arrowsize, DWORD col )
 {
 	if (length)
 	{
@@ -197,7 +201,7 @@ void RenderHelper::RenderArrowT_S( float x, float y, float length, float arrowsi
 	RenderLine_S(x, y-length, x-arrowsize, y-length+arrowsize, col);
 }
 
-void RenderHelper::TargetQuadRender_S( HTARGET tar, float x, float y, DWORD col/*=0*/ )
+void RenderHelper::TargetQuadRender_S( HTARGET tar, float x, float y, DWORD col )
 {
 	if (!tar)
 	{
@@ -233,15 +237,19 @@ void RenderHelper::EndRenderTar()
 	hge->Gfx_EndScene();
 }
 
-void RenderHelper::RenderBezier( PointF2D p1, PointF2D p2, PointF2D p3, PointF2D p4, DWORD col/*=0*/, float precisemul/*=1.0f*/ )
+/*
+void RenderHelper::RenderBezier( PointF2D pb, PointF2D pbh, PointF2D peh, PointF2D pe, DWORD col/ *=0* /, float precisemul/ *=1.0f* / )
 {
+	ASSERT(true);
+	// Do Not Use
+
 	// Anchor: p1, p4
 	// Control: p2, p3
 
 	// Calculate proper section
-	float l23 = MathHelper::getInstance().LineSegmentLengthPow2(p2, p3);
-	float l12 = MathHelper::getInstance().LineSegmentLengthPow2(p1, p2);
-	float l34 = MathHelper::getInstance().LineSegmentLengthPow2(p3, p4);
+	float l23 = MathHelper::getInstance().LineSegmentLengthPow2(pbh, peh);
+	float l12 = MathHelper::getInstance().LineSegmentLengthPow2(pb, pbh);
+	float l34 = MathHelper::getInstance().LineSegmentLengthPow2(peh, pe);
 
 	float l = l23;
 	if (l12 + l34 > l23)
@@ -263,12 +271,12 @@ void RenderHelper::RenderBezier( PointF2D p1, PointF2D p2, PointF2D p3, PointF2D
 
 	int savedstyle = style;
 	style = RHLINESTYLE_LINE;
-	MathHelper::getInstance().CalculateBezier(p1, p2, p3, p4, s, &pq);
+	MathHelper::getInstance().CalculateBezier(pb, pbh, peh, pe, s, &pq);
 	for (int i=0; i<nseg; i++)
 	{
 		pqlast = pq;
 		s = (float)(i+1)/(float)nseg;
-		MathHelper::getInstance().CalculateBezier(p1, p2, p3, p4, s, &pq);
+		MathHelper::getInstance().CalculateBezier(pb, pbh, peh, pe, s, &pq);
 
 		switch (savedstyle)
 		{
@@ -295,7 +303,7 @@ void RenderHelper::RenderBezier( PointF2D p1, PointF2D p2, PointF2D p3, PointF2D
 		}
 	}
 	style = savedstyle;
-}
+}*/
 
 void RenderHelper::SetLineStyle( int _style/*=0*/ )
 {
@@ -304,15 +312,221 @@ void RenderHelper::SetLineStyle( int _style/*=0*/ )
 
 void RenderHelper::RenderAttributePoint_S( float x, float y, DWORD col )
 {
-#define _GATTRPT_RENDER_A	5
-	RenderHelper::getInstance().RenderSquare_S(x-_GATTRPT_RENDER_A, y-_GATTRPT_RENDER_A, _GATTRPT_RENDER_A*2, col);
+	RenderSquare_S(x-_GATTRPT_RENDER_A, y-_GATTRPT_RENDER_A, _GATTRPT_RENDER_A*2, col);
 
 }
 
 void RenderHelper::RenderSubstantivePoint_S( float x, float y, DWORD col )
 {
-#define _GSUBSPT_RENDER_L	5
-	RenderHelper::getInstance().RenderLine_S(x-_GSUBSPT_RENDER_L, y-_GSUBSPT_RENDER_L, x+_GSUBSPT_RENDER_L, y+_GSUBSPT_RENDER_L, col);
-	RenderHelper::getInstance().RenderLine_S(x+_GSUBSPT_RENDER_L, y-_GSUBSPT_RENDER_L, x-_GSUBSPT_RENDER_L, y+_GSUBSPT_RENDER_L, col);
+	RenderLine_S(x-_GSUBSPT_RENDER_L, y-_GSUBSPT_RENDER_L, x+_GSUBSPT_RENDER_L, y+_GSUBSPT_RENDER_L, col);
+	RenderLine_S(x+_GSUBSPT_RENDER_L, y-_GSUBSPT_RENDER_L, x-_GSUBSPT_RENDER_L, y+_GSUBSPT_RENDER_L, col);
 
+}
+
+void RenderHelper::RenderHandlePoint_S( float x, float y, DWORD col )
+{
+	for (int i=-_GATTRPT_RENDER_A; i<=_GATTRPT_RENDER_A; i++)
+	{
+		RenderLineR_S(x-_GATTRPT_RENDER_A, y+i, _GATTRPT_RENDER_A*2, col);
+	}
+}
+
+void RenderHelper::RenderBezierByInfo( BezierSublinesInfo * bsinfo, DWORD col )
+{
+	if (!bsinfo)
+	{
+		return;
+	}
+	int nseg = bsinfo->GetSubPointsCount()-1;
+	if (nseg <= 0)
+	{
+		return;
+	}
+
+	int savedstyle = style;
+	style = RHLINESTYLE_LINE;
+
+	switch (savedstyle)
+	{
+	case RHLINESTYLE_LINE:
+		for (int i=0; i<nseg; i++)
+		{
+			RenderLine(bsinfo->GetX(i), bsinfo->GetY(i), bsinfo->GetX(i+1), bsinfo->GetY(i+1), col);
+		}
+		break;
+	case RHLINESTYLE_DOTTEDLINE:
+		for (int i=0; i<nseg+1; i++)
+		{
+			RenderPoint(bsinfo->GetX(i), bsinfo->GetY(i), col);
+		}
+		break;
+	case RHLINESTYLE_SLASHLINE:
+		{
+			float fSpace=0;
+			float space_c = GUICoordinate::getInstance().StoCs(_RHSLASHLINE_SPACE);
+			for (int i=0; i<nseg-1; i++)
+			{
+				if (fSpace < space_c)
+				{
+					RenderLine(bsinfo->GetX(i), bsinfo->GetY(i), bsinfo->GetX(i+1), bsinfo->GetY(i+1), col);
+				}
+				float ofSpace = fSpace;
+				fSpace += bsinfo->GetLength(i);
+				if (fSpace >= space_c*2)
+				{
+					if (ofSpace < space_c)
+					{
+						fSpace = space_c;
+					}
+					else
+					{
+						fSpace = 0;
+					}
+				}
+			}
+			RenderLine(bsinfo->GetX(nseg-1), bsinfo->GetY(nseg-1), bsinfo->GetX(nseg), bsinfo->GetY(nseg), col);
+		}
+	}
+	style = savedstyle;
+
+}
+
+void RenderHelper::RenderArc_S( float x, float y, float r, int beginangle, int endangle, DWORD col )
+{
+	MathHelper * pmh = &MathHelper::getInstance();
+	if (beginangle > endangle)
+	{
+		int tangle = beginangle;
+		beginangle = endangle;
+		endangle = tangle;
+	}
+	pmh->RestrictAngle(&beginangle);
+	pmh->RestrictAngle(&endangle);
+	if (endangle < beginangle)
+	{
+		endangle += ANGLEBASE_360;
+	}
+
+	float fArcLength = ARC(endangle-beginangle)*r;
+	float fPrecision = MainInterface::getInstance().GetPrecision();
+	int nseg = (int)(fPrecision*fArcLength+1.0f);
+	int anglediff = endangle-beginangle;
+
+	float bx = x+r*cosf(ARC(beginangle));
+	float by = y+r*sinf(ARC(beginangle));
+
+	PointF2D pqlast(bx, by);
+	PointF2D pq(bx, by);
+
+	int savedstyle = style;
+	SetLineStyle();
+
+	switch (savedstyle)
+	{
+	case RHLINESTYLE_LINE:
+		{
+			for (int i=1; i<nseg; i++)
+			{
+				pqlast = pq;
+				float s = (float)i/(float)nseg;
+				int nowangle = anglediff*s+beginangle;
+				pq.x = x+r*cosf(ARC(nowangle));
+				pq.y = y+r*sinf(ARC(nowangle));
+				RenderLine_S(pqlast.x, pqlast.y, pq.x, pq.y, col);
+			}
+		}
+		break;
+	case RHLINESTYLE_DOTTEDLINE:
+		{
+			int angledotted = ANGLE((float)_RHDOTTEDLINE_SPACE)/r;
+			if (!angledotted)
+			{
+				DASSERT(true);
+				angledotted = 1;
+			}
+			RenderPoint_S(pqlast.x, pqlast.y, col);
+			for (int i=endangle; i>beginangle; i-=angledotted)
+			{
+				int nowangle = i;
+				pq.x = x+r*cosf(ARC(nowangle));
+				pq.y = y+r*sinf(ARC(nowangle));
+				RenderPoint_S(pq.x, pq.y, col);
+			}
+		}
+		break;
+	case RHLINESTYLE_SLASHLINE:
+		{
+			float fSpace = 0;
+			for (int i=1; i<nseg; i++)
+			{
+				pqlast = pq;
+				float s = (float)i/(float)nseg;
+				int nowangle = anglediff*s+beginangle;
+				pq.x = x+r*cosf(ARC(nowangle));
+				pq.y = y+r*sinf(ARC(nowangle));
+				if (fSpace < _RHSLASHLINE_SPACE)
+				{
+					RenderLine_S(pqlast.x, pqlast.y, pq.x, pq.y, col);
+				}
+				float ofSpace = fSpace;
+				fSpace += pmh->LineSegmentLength(pq, pqlast);
+				if (fSpace >= _RHSLASHLINE_SPACE*2)
+				{
+					if (ofSpace < _RHDOTTEDLINE_SPACE)
+					{
+						fSpace = 0;
+					}
+					else
+					{
+						fSpace = _RHDOTTEDLINE_SPACE;
+					}
+				}
+			}
+		}
+		break;
+	}
+	SetLineStyle(savedstyle);
+}
+
+void RenderHelper::RenderCircle_S( float x, float y, float r, DWORD col )
+{
+	RenderArc_S(x, y, r, 0, ANGLEBASE_360, col);
+}
+
+void RenderHelper::RenderLineMeasureMark( float x1, float y1, float x2, float y2, DWORD col )
+{
+#define _RHLINEMEASUREMARK_MARKERLENGTH	48
+	PointF2D pt1(x1, y1);
+	PointF2D pt2(x2, y2);
+	MathHelper * pmh = &MathHelper::getInstance();
+	PointF2D ptp1, ptp2;
+	float l = GUICoordinate::getInstance().StoCs(_RHLINEMEASUREMARK_MARKERLENGTH);
+
+	int angle = pmh->GetLineAngle(pt1, pt2);
+	int lineangle = angle;
+
+	angle += ANGLEBASE_90;
+	pmh->RestrictAngle(&angle);
+	if (angle >= 0)
+	{
+		angle += ANGLEBASE_180;
+	}
+	float xdiff = l*cosf(ARC(angle));
+	float ydiff = l*sinf(ARC(angle));
+
+	PointF2D ptdiff(xdiff, ydiff);
+	ptp1 = pt1+ptdiff;
+	ptp2 = pt2+ptdiff;
+
+	float linglength = pmh->LineSegmentLength(pt1, pt2);
+	PointF2D ptarcpoint(pt1.x+linglength, pt1.y);
+
+	int savedstyle = style;
+	SetLineStyle(RHLINESTYLE_DOTTEDLINE);
+	RenderLine(x1, y1, ptp1.x, ptp1.y, col);
+	RenderLine(x2, y2, ptp2.x, ptp2.y, col);
+	RenderLine(ptp1.x, ptp1.y, ptp2.x, ptp2.y, col);
+	RenderLine(pt1.x, pt1.y, ptarcpoint.x, ptarcpoint.y, col);
+	RenderArc(pt1.x, pt1.y, linglength, 0, lineangle, col);
+	SetLineStyle(savedstyle);
 }

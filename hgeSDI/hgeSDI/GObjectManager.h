@@ -34,7 +34,7 @@ public:
 	bool IsSameOffset( float _xoffset, float _yoffset )
 	{
 //		if (_xoffset == xoffset && _yoffset == yoffset)
-		if (_xoffset-xoffset < M_FLOATEPS && _yoffset-yoffset<M_FLOATEPS)
+		if (fabsf(_xoffset-xoffset) < M_FLOATEPS && fabsf(_yoffset-yoffset)<M_FLOATEPS)
 		{
 			return true;
 		}

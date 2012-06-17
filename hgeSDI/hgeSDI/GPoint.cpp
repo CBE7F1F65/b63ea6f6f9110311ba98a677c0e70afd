@@ -6,18 +6,18 @@
 #include "RenderHelper.h"
 #include "Main.h"
 #include "Command.h"
+/************************************************************************/
+/* GPOINT                                                               */
+/************************************************************************/
 
 GPoint::GPoint()
 {
+	x = 0;
+	y = 0;
 }
-
-GPoint::GPoint( float _x, float _y )
+GPoint::~GPoint()
 {
-	SetPosition(_x, _y);
-}
 
-GPoint::~GPoint(void)
-{
 }
 
 void GPoint::SetPosition( float _x, float _y )
@@ -57,33 +57,91 @@ bool GPoint::MoveTo( float newx, float newy, bool bTry )
 	CallModify();
 	return true;
 }
-GEndPoint::GEndPoint()
+
+/************************************************************************/
+/* GANCHORPOINT                                                         */
+/************************************************************************/
+
+GAnchorPoint::GAnchorPoint()
 {
+	phandle = NULL;
 }
 
-GEndPoint::GEndPoint( float _x, float _y )
+GAnchorPoint::GAnchorPoint(GObject * parent,  float _x, float _y )
 {
+	ASSERT(parent);
+
 	SetPosition(_x, _y);
+	phandle = new GHandlePoint(this, _x, _y);
+
+	parent->AddChild(this);
+	OnInit();
 }
 
-GEndPoint::~GEndPoint()
+GAnchorPoint::~GAnchorPoint()
 {
 }
 
-const char * GEndPoint::getDisplayName()
+const char * GAnchorPoint::getDisplayName()
 {
 	if (strDisplayName.length())
 	{
 		return strDisplayName.c_str();
 	}
-	return StringManager::getInstance().GetNNEndPointName();
+	return StringManager::getInstance().GetNNAnchorPointName();
 }
 
-bool GEndPoint::Clone( GObject * pNewParent )
+bool GAnchorPoint::Clone( GObject * pNewParent )
 {
-	_GOBJ_CLONE_PRE(GEndPoint);
+	_GOBJ_CLONE_PRE(GAnchorPoint);
 	_GOBJ_CLONE_POST();
+	list<GObject *>::reverse_iterator it=_node->listChildren.rbegin();
+	_node->phandle = (GHandlePoint *)*it;
 }
+
+void GAnchorPoint::SetHandlePosition( float _x, float _y )
+{
+	phandle->MoveTo(_x, _y, false);
+}
+
+bool GAnchorPoint::isHandleIdentical()
+{
+	if (fabsf(phandle->getX()-x) < M_FLOATEPS && fabsf(phandle->getY()-y) < M_FLOATEPS)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool GAnchorPoint::MoveTo( float newx, float newy, bool bTry )
+{
+	if (!canMove())
+	{
+		return false;
+	}
+
+	float xoffset = newx-x;
+	float yoffset = newy-y;
+
+	ToggleTryMoveState(bTry);
+
+	x = newx;
+	y = newy;
+
+	if (phandle)
+	{
+		return phandle->MoveByOffset(xoffset, yoffset, bTry);
+	}
+	else
+	{
+		CallModify();
+	}
+	return true;
+
+}
+/************************************************************************/
+/* GMIDPOINT                                                            */
+/************************************************************************/
 
 GMidPoint::GMidPoint()
 {
@@ -91,9 +149,13 @@ GMidPoint::GMidPoint()
 	setDisplayLock(true);
 }
 
-GMidPoint::GMidPoint( float _x, float _y )
+GMidPoint::GMidPoint( GObject * parent )
 {
-	SetPosition(_x, _y);
+	ASSERT(parent);
+	setDisplayVisible(false);
+	setDisplayLock(true);
+	parent->AddChild(this);
+	OnInit();
 }
 
 GMidPoint::~GMidPoint()
@@ -114,15 +176,64 @@ bool GMidPoint::Clone( GObject * pNewParent )
 	_GOBJ_CLONE_PRE(GMidPoint);
 	_GOBJ_CLONE_POST();
 }
-
+/************************************************************************/
+/* GAttributePoint                                                      */
+/************************************************************************/
 void GAttributePoint::OnRender( int iHighlightLevel/*=0*/ )
 {
 	DWORD col = getLineColor(iHighlightLevel);
 	RenderHelper::getInstance().RenderAttributePoint(x, y, col);
 }
-
+/************************************************************************/
+/* GSubstantivePoint                                                    */
+/************************************************************************/
 void GSubstantivePoint::OnRender( int iHighlightLevel/*=0*/ )
 {
 	DWORD col = getLineColor(iHighlightLevel);
 	RenderHelper::getInstance().RenderSubstantivePoint(x, y, col);
+}
+/************************************************************************/
+/* GHANDLEPOINT                                                         */
+/************************************************************************/
+GHandlePoint::GHandlePoint()
+{
+
+}
+
+GHandlePoint::GHandlePoint(GObject * parent, float x, float y)
+{
+	ASSERT(parent);
+	SetPosition(x, y);
+	parent->AddChild(this);
+	OnInit();
+}
+
+GHandlePoint::~GHandlePoint()
+{
+}
+
+const char * GHandlePoint::getDisplayName()
+{
+	if (strDisplayName.length())
+	{
+		return strDisplayName.c_str();
+	}
+	return StringManager::getInstance().GetNNHandlePointName();
+}
+
+bool GHandlePoint::Clone( GObject * pNewParent )
+{
+	_GOBJ_CLONE_PRE(GHandlePoint);
+	_GOBJ_CLONE_POST();
+}
+
+void GHandlePoint::OnRender( int iHighlightLevel/* =0 */ )
+{
+	GAnchorPoint * pAnchor = (GAnchorPoint*)GetAnchor();
+	if (!pAnchor->isHandleIdentical())
+	{
+		DWORD col = getLineColor(iHighlightLevel);
+		RenderHelper::getInstance().RenderHandlePoint(x, y, col);
+		RenderHelper::getInstance().RenderLine(x, y, pAnchor->x, pAnchor->y, col);
+	}
 }
