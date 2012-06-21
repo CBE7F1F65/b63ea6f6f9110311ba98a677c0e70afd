@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'qtui_glview.h'
 **
-** Created: Wed Jun 20 12:17:12 2012
+** Created: Wed Jun 20 20:28:51 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -24,7 +24,7 @@ static const uint qt_meta_data_QTUI_GLView[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       1,   14, // methods
+       2,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -33,12 +33,13 @@ static const uint qt_meta_data_QTUI_GLView[] = {
 
  // slots: signature, parameters, type, tag, flags
       13,   12,   12,   12, 0x0a,
+      28,   12,   12,   12, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_QTUI_GLView[] = {
-    "QTUI_GLView\0\0SIG_OnUpdate()\0"
+    "QTUI_GLView\0\0SIG_OnUpdate()\0OnFrame()\0"
 };
 
 void QTUI_GLView::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -48,6 +49,7 @@ void QTUI_GLView::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         QTUI_GLView *_t = static_cast<QTUI_GLView *>(_o);
         switch (_id) {
         case 0: _t->SIG_OnUpdate(); break;
+        case 1: _t->OnFrame(); break;
         default: ;
         }
     }
@@ -86,9 +88,9 @@ int QTUI_GLView::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 1)
+        if (_id < 2)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 1;
+        _id -= 2;
     }
     return _id;
 }

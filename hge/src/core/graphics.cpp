@@ -70,21 +70,23 @@ void CALL HGE_Impl::Gfx_Clear(DWORD color)
 			pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, color, 1.0f, 0 );
 		else
 			pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, color, 1.0f, 0 );
-#elif IF_RENDERSYS(HRENDERSYS_PSP)
-		sceGuDisable(GU_SCISSOR_TEST);
-		sceGuClearColor(color);
-		sceGuClear(GU_COLOR_BUFFER_BIT);
-		sceGuEnable(GU_SCISSOR_TEST);
+#endif
+	}
+
+#if IF_RENDERSYS(HRENDERSYS_PSP)
+	sceGuDisable(GU_SCISSOR_TEST);
+	sceGuClearColor(color);
+	sceGuClear(GU_COLOR_BUFFER_BIT);
+	sceGuEnable(GU_SCISSOR_TEST);
 
 #elif IF_RENDERSYS(HRENDERSYS_GLS)
 
-		glDisable(GL_SCISSOR_TEST);
-		glClearColor( (float)GETR(color)/255.0f, (float)GETG(color)/255.0f, (float)GETB(color)/255.0f, (float)GETA(color)/255.0f );
-		glClear( GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT );
-		glEnable(GL_SCISSOR_TEST);
+	glDisable(GL_SCISSOR_TEST);
+	glClearColor( (float)GETR(color)/255.0f, (float)GETG(color)/255.0f, (float)GETB(color)/255.0f, (float)GETA(color)/255.0f );
+	glClear( GL_COLOR_BUFFER_BIT );
+	glEnable(GL_SCISSOR_TEST);
 
 #endif
-	}
 }
 
 void CALL HGE_Impl::Gfx_SetClipping(int x, int y, int w, int h)
@@ -728,6 +730,12 @@ void CALL HGE_Impl::Gfx_RenderQuad(const hgeQuad *quad)
 			VertArray[i+beginindex].z = quad->v[j+beginindex].z;
 			VertArray[i+beginindex].col = _ARGBtoABGR(quad->v[j+beginindex].col);
 		}
+		for (int i=0; i<HGEPRIM_QUADS/2; i++)
+		{
+			float ty = VertArray[i+beginindex].y;
+			VertArray[i+beginindex].y = VertArray[i+beginindex+HGEPRIM_QUADS/2].y;
+			VertArray[i+beginindex+HGEPRIM_QUADS/2].y = ty;
+		}
  #else
 		memcpy(&VertArray[nPrim*HGEPRIM_QUADS], quad->v, sizeof(hgeVertex)*HGEPRIM_QUADS);
  #endif
@@ -1237,6 +1245,9 @@ int CALL HGE_Impl::Texture_GetWidth(HTEXTURE tex, bool bOriginal)
 #endif
 	CTextureList *texItem=textures;
 
+#if IF_RENDERSYS(HRENDERSYS_GLS)
+	bOriginal = true;
+#endif
 	if(bOriginal)
 	{
 		while(texItem)
@@ -1273,6 +1284,9 @@ int CALL HGE_Impl::Texture_GetHeight(HTEXTURE tex, bool bOriginal)
 #endif
 	CTextureList *texItem=textures;
 
+#if IF_RENDERSYS(HRENDERSYS_GLS)
+	bOriginal = true;
+#endif
 	if(bOriginal)
 	{
 		while(texItem)
@@ -1996,6 +2010,12 @@ void CALL HGE_Impl::Gfx_Resize(int width, int height)
 	if (!bOwnWindow)
 	{
 #if IF_RENDERSYS(HRENDERSYS_GLS)
+		nScreenWidth = width;
+		nScreenHeight = height;
+
+		_SetProjectionMatrix(nScreenHeight, nScreenWidth);
+		_GfxRestore();
+
 		glViewport(0, 0, nScreenWidth, nScreenHeight);
 		glEnable(GL_SCISSOR_TEST);
 		glScissor(0, 0, nScreenWidth, nScreenHeight);
@@ -2043,7 +2063,24 @@ void HGE_Impl::_GfxDone()
 		if(target->pTex) target->pTex->Release();
 		if(target->pDepth) target->pDepth->Release();
 #else
-		Target_Free((HTARGET)target);
+ #if IF_FRAMWORK(HFRAMEWORK_QT)
+		QGLFunctions funcs(QGLContext::currentContext());
+		if (funcs.hasOpenGLFeature(QGLFunctions::Framebuffers))
+		{
+			if (target->pFrameBuffer)
+			{
+				funcs.glDeleteFramebuffers(1, &target->pFrameBuffer);
+			}
+			else
+			{
+				// Error
+			}
+			if (target->pDepth)
+			{
+				funcs.glDeleteRenderbuffers(1, &target->pDepth);
+			}
+		}
+ #endif
 #endif
 		next_target=target->next;
 		delete target;

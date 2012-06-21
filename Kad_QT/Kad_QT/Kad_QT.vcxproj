@@ -77,10 +77,18 @@
       <AdditionalLibraryDirectories>../../hge/lib/vc;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>qtmain.lib;QtCore4.lib;QtGui4.lib;QtXml4.lib;QtOpenGL4.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <DelayLoadDLLs>hge_d.dll</DelayLoadDLLs>
+      <DelayLoadDLLs>hge.dll</DelayLoadDLLs>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BezierCommand.cpp" />
+    <ClCompile Include="ColorManager.cpp" />
+    <ClCompile Include="Command.cpp" />
+    <ClCompile Include="CommandGetTemplate.cpp" />
+    <ClCompile Include="CommandTemplate.cpp" />
+    <ClCompile Include="DeleteItemCommand.cpp" />
+    <ClCompile Include="DuplicateCommand.cpp" />
+    <ClCompile Include="GBaseNode.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_kad_qt.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -99,19 +107,74 @@
     <ClCompile Include="GeneratedFiles\Release\moc_qtui_glview.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="GLayer.cpp" />
+    <ClCompile Include="GLine.cpp" />
+    <ClCompile Include="GObject.cpp" />
+    <ClCompile Include="GObjectManager.cpp" />
+    <ClCompile Include="GObjectPicker.cpp" />
+    <ClCompile Include="GPiece.cpp" />
+    <ClCompile Include="GPoint.cpp" />
+    <ClCompile Include="GShape.cpp" />
+    <ClCompile Include="GUICoordinate.cpp" />
+    <ClCompile Include="GUICursor.cpp" />
+    <ClCompile Include="IconManager.cpp" />
     <ClCompile Include="InitDllLoader.cpp" />
+    <ClCompile Include="InitialCommand.cpp" />
     <ClCompile Include="kad_qt.cpp" />
+    <ClCompile Include="LineCommand.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainInterface.cpp" />
+    <ClCompile Include="MarqueeSelect.cpp" />
+    <ClCompile Include="MathHelper.cpp" />
+    <ClCompile Include="MessageBoxManager.cpp" />
+    <ClCompile Include="MouseCursorManager.cpp" />
+    <ClCompile Include="MoveNodeBatchCommand.cpp" />
+    <ClCompile Include="MoveNodeCommand.cpp" />
+    <ClCompile Include="NewLayerCommand.cpp" />
+    <ClCompile Include="OutputCommand.cpp" />
+    <ClCompile Include="ProcessCommand.cpp" />
     <ClCompile Include="qtui_glview.cpp" />
+    <ClCompile Include="RenderHelper.cpp" />
+    <ClCompile Include="RenderTargetManager.cpp" />
+    <ClCompile Include="ReparentCommand.cpp" />
+    <ClCompile Include="SetNodeNameCommand.cpp" />
+    <ClCompile Include="SetWorkingLayerCommand.cpp" />
+    <ClCompile Include="SnapshotManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="StringManager.cpp" />
+    <ClCompile Include="UnDoReDoCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BezierCommand.h" />
+    <ClInclude Include="ColorManager.h" />
+    <ClInclude Include="Command.h" />
+    <ClInclude Include="CommandDefines.h" />
+    <ClInclude Include="CommandTemplate.h" />
     <ClInclude Include="Const.h" />
+    <ClInclude Include="DeleteItemCommand.h" />
+    <ClInclude Include="DuplicateCommand.h" />
+    <ClInclude Include="GBaseNode.h" />
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h" />
+    <ClInclude Include="GLayer.h" />
+    <ClInclude Include="GLine.h" />
+    <ClInclude Include="GObject.h" />
+    <ClInclude Include="GObjectManager.h" />
+    <ClInclude Include="GObjectPicker.h" />
+    <ClInclude Include="GPiece.h" />
+    <ClInclude Include="GPoint.h" />
+    <ClInclude Include="GShape.h" />
+    <ClInclude Include="GUICoordinate.h" />
+    <ClInclude Include="GUICursor.h" />
+    <ClInclude Include="IconManager.h" />
+    <ClInclude Include="InitialCommand.h" />
+    <ClInclude Include="LineCommand.h" />
+    <ClInclude Include="MainInterface.h" />
     <ClInclude Include="MainDependency.h" />
+    <ClInclude Include="StringManager.h" />
+    <ClInclude Include="targetver.h" />
     <CustomBuild Include="qtui_glview.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing qtui_glview.h...</Message>
@@ -132,6 +195,22 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"   -DUNICODE -D__RELEASE -D__OPENGL -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_OPENGL_LIB  "-I." "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtOpenGL" "-I." "-I." "-I." "-I." "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp" "-fStdAfx.h" "-f../../kad_qt.h"</Command>
     </CustomBuild>
+    <ClInclude Include="MarqueeSelect.h" />
+    <ClInclude Include="MathHelper.h" />
+    <ClInclude Include="MessageBoxManager.h" />
+    <ClInclude Include="MouseCursorManager.h" />
+    <ClInclude Include="MoveNodeBatchCommand.h" />
+    <ClInclude Include="MoveNodeCommand.h" />
+    <ClInclude Include="NewLayerCommand.h" />
+    <ClInclude Include="OutputCommand.h" />
+    <ClInclude Include="RenderHelper.h" />
+    <ClInclude Include="RenderTargetManager.h" />
+    <ClInclude Include="ReparentCommand.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="ResourceCustomIDs.h" />
+    <ClInclude Include="SetNodeNameCommand.h" />
+    <ClInclude Include="SetWorkingLayerCommand.h" />
+    <ClInclude Include="SnapshotManager.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>

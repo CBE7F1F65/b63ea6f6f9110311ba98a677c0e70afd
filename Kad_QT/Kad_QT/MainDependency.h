@@ -46,4 +46,16 @@ using namespace std;
 #pragma comment(lib, "d3dx9.lib")
 #endif
 
+#ifndef ASSERT
+#define ASSERT(EXPR)	assert(EXPR)
+#endif
+
+#ifndef DASSERT
+ #ifdef _DEBUG
+  #define DASSERT(EXPR)	assert(EXPR)
+ #else
+  #define DASSERT(EXPR)
+ #endif
+#endif
+
 #endif

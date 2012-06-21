@@ -460,7 +460,7 @@ public:
 
 	BYTE				keyState[256];
 	BYTE				lastKeyState[256];
-#if IF_RENDERSYS(HRENDERSYS_DX)
+
 	LPDIRECTINPUT8		lpDInput;
 	LPDIRECTINPUTDEVICE8 lpDIKDevice;
 	LPDIRECTINPUTDEVICE8 lpDIJDevice[DIJOY_MAXDEVICE];
@@ -474,7 +474,6 @@ public:
 	DIMOUSESTATE2		offsetMouseState;
 	DWORD				nMouseAxes;
 	DWORD				nMouseButtons;
-#endif
 
 	int					_DIInit();
 	bool				_DIKInit();
@@ -485,7 +484,7 @@ public:
 	bool				_DIKUpdate();
 	bool				_DIJUpdate();
 	bool				_DIMUpdate();
-#if IF_RENDERSYS(HRENDERSYS_DX)
+#if IF_INPUTSYS(HINPUTSYS_DI)
 	static BOOL CALLBACK _EnumJoysticksCallback (const DIDEVICEINSTANCE * pdidInstance, VOID* pContext);
 #endif
 

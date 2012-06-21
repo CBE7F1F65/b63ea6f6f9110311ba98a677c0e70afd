@@ -12,6 +12,10 @@ public:
 	Kad_QT(QWidget *parent = 0, Qt::WFlags flags = 0);
 	~Kad_QT();
 
+protected:
+	virtual void closeEvent(QCloseEvent *event);
+
+
 private:
 	Ui::Kad_QTClass ui;
 };

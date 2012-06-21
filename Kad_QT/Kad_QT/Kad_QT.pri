@@ -7,10 +7,94 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./stdafx.h \
-    ./kad_qt.h
-SOURCES += ./stdafx.cpp \
+HEADERS += ./Const.h \
+    ./MainDependency.h \
+    ./stdafx.h \
+    ./qtui_glview.h \
+    ./kad_qt.h \
+    ./BezierCommand.h \
+    ./ColorManager.h \
+    ./Command.h \
+    ./CommandDefines.h \
+    ./CommandTemplate.h \
+    ./DeleteItemCommand.h \
+    ./DuplicateCommand.h \
+    ./GBaseNode.h \
+    ./GLayer.h \
+    ./GLine.h \
+    ./GObject.h \
+    ./GObjectManager.h \
+    ./GObjectPicker.h \
+    ./GPiece.h \
+    ./GPoint.h \
+    ./GShape.h \
+    ./GUICoordinate.h \
+    ./GUICursor.h \
+    ./IconManager.h \
+    ./InitialCommand.h \
+    ./LineCommand.h \
+    ./MainInterface.h \
+    ./MarqueeSelect.h \
+    ./MathHelper.h \
+    ./MessageBoxManager.h \
+    ./MouseCursorManager.h \
+    ./MoveNodeBatchCommand.h \
+    ./MoveNodeCommand.h \
+    ./NewLayerCommand.h \
+    ./OutputCommand.h \
+    ./RenderHelper.h \
+    ./RenderTargetManager.h \
+    ./ReparentCommand.h \
+    ./resource.h \
+    ./ResourceCustomIDs.h \
+    ./SetNodeNameCommand.h \
+    ./SetWorkingLayerCommand.h \
+    ./SnapshotManager.h \
+    ./StringManager.h \
+    ./targetver.h
+SOURCES += ./InitDllLoader.cpp \
+    ./kad_qt.cpp \
     ./main.cpp \
-    ./kad_qt.cpp
+    ./qtui_glview.cpp \
+    ./stdafx.cpp \
+    ./BezierCommand.cpp \
+    ./ColorManager.cpp \
+    ./Command.cpp \
+    ./CommandGetTemplate.cpp \
+    ./CommandTemplate.cpp \
+    ./DeleteItemCommand.cpp \
+    ./DuplicateCommand.cpp \
+    ./GBaseNode.cpp \
+    ./GLayer.cpp \
+    ./GLine.cpp \
+    ./GObject.cpp \
+    ./GObjectManager.cpp \
+    ./GObjectPicker.cpp \
+    ./GPiece.cpp \
+    ./GPoint.cpp \
+    ./GShape.cpp \
+    ./GUICoordinate.cpp \
+    ./GUICursor.cpp \
+    ./IconManager.cpp \
+    ./InitialCommand.cpp \
+    ./LineCommand.cpp \
+    ./MainInterface.cpp \
+    ./MarqueeSelect.cpp \
+    ./MathHelper.cpp \
+    ./MessageBoxManager.cpp \
+    ./MouseCursorManager.cpp \
+    ./MoveNodeBatchCommand.cpp \
+    ./MoveNodeCommand.cpp \
+    ./NewLayerCommand.cpp \
+    ./OutputCommand.cpp \
+    ./ProcessCommand.cpp \
+    ./RenderHelper.cpp \
+    ./RenderTargetManager.cpp \
+    ./ReparentCommand.cpp \
+    ./SetNodeNameCommand.cpp \
+    ./SetWorkingLayerCommand.cpp \
+    ./SnapshotManager.cpp \
+    ./StringManager.cpp \
+    ./UnDoReDoCommand.cpp
 FORMS += ./kad_qt.ui
 RESOURCES += kad_qt.qrc

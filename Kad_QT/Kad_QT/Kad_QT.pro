@@ -7,11 +7,12 @@ TARGET = Kad_QT
 DESTDIR = ../
 QT += core gui xml opengl
 CONFIG += debug
-DEFINES += QT_LARGEFILE_SUPPORT QT_XML_LIB QT_OPENGL_LIB
+DEFINES += __DEBUG __OPENGL QT_LARGEFILE_SUPPORT QT_XML_LIB QT_OPENGL_LIB
 INCLUDEPATH += ./GeneratedFiles \
     ./GeneratedFiles/Debug \
     .
-LIBS += -lopengl32 \
+LIBS += -L"./../../hge/lib/vc" \
+    -lopengl32 \
     -lglu32
 PRECOMPILED_HEADER = StdAfx.h
 DEPENDPATH += .
@@ -20,9 +21,3 @@ OBJECTS_DIR += debug
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(Kad_QT.pri)
-
-HEADERS += \
-    qtui_glview.h
-
-SOURCES += \
-    qtui_glview.cpp

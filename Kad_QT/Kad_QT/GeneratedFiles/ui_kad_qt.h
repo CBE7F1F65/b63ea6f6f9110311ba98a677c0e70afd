@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'kad_qt.ui'
 **
-** Created: Sun Jun 17 21:52:47 2012
+** Created: Wed Jun 20 21:43:05 2012
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!

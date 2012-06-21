@@ -24,12 +24,16 @@
 #define HFRAMEWORK_MFC	0x00100000
 #define HFRAMEWORK_QT	0x00200000
 
+#define HINPUTSYS_DI		0x00010000
+#define HINPUTSYS_NATIVE	0x00020000
+
 /************************************************************************/
 /* ToModify                                                             */
 /************************************************************************/
 #define HPLATFORM_DEFINE	HPLATFORM_WIN32
 #define HRENDERYSY_DEFINE	HRENDERSYS_GL
 #define HFRAMEWORK_DEFINE	HFRAMEWORK_QT
+#define HINPUTSYS_DEFINE	HINPUTSYS_NATIVE
 /************************************************************************/
 /* End                                                                  */
 /************************************************************************/
@@ -37,9 +41,11 @@
 #define IF_PLATFORM(PLAT)		((PLAT)&(HPLATFORM_DEFINE))
 #define IF_RENDERSYS(REND)		((REND)&(HRENDERYSY_DEFINE))
 #define IF_FRAMWORK(FRAM)		((FRAM)&(HFRAMEWORK_DEFINE))
+#define IF_INPUTSYS(INPU)		((INPU)&(HINPUTSYS_DEFINE))
 
 #define IFNOT_PLATFORM(PLAT)		(!IF_PLATFORM(PLAT))
 #define IFNOT_RENDERSYS(REND)		(!IF_RENDERSYS(REND))
 #define IFNOT_FRAMWORK(FRAM)		(!IF_FRAMWORK(FRAM))
+#define IFNOT_INPUTSYS(INPU)		(!IF_INPUTSYS(INPU))
 
 #endif

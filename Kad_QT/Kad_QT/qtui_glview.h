@@ -15,14 +15,26 @@ public:
 	virtual void paintGL();
 
 protected:
+	virtual void keyPressEvent(QKeyEvent * event);
+	virtual void keyReleaseEvent(QKeyEvent *event);
+	virtual void mouseMoveEvent(QMouseEvent *event);
+	virtual void mousePressEvent(QMouseEvent *event);
+	virtual void mouseReleaseEvent(QMouseEvent *event);
+	virtual void wheelEvent(QWheelEvent *event);
+	virtual void enterEvent(QEvent *event);
+	virtual void leaveEvent(QEvent *event);
 
 signals:
     
 public slots:
 	void SIG_OnUpdate();
-    
+	void OnFrame();
+
 private:
 	QTimer * updatetimer;
+
+	BYTE keyState[256];
+	void ClearKeyState();
 };
 
 #endif // QTUI_GLVIEW_H

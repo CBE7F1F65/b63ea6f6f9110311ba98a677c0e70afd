@@ -74,6 +74,31 @@ typedef QWORD ULONGLONG;
 
 #if IFNOT_PLATFORM(HPLATFORM_WIN)
  typedef void *	LPDIRECTINPUT8;
+ typedef void * LPDIRECTINPUTDEVICE8
+
+	 typedef struct DIJOYSTATE {
+		 LONG    lX;                     /* x-axis position              */
+		 LONG    lY;                     /* y-axis position              */
+		 LONG    lZ;                     /* z-axis position              */
+		 LONG    lRx;                    /* x-axis rotation              */
+		 LONG    lRy;                    /* y-axis rotation              */
+		 LONG    lRz;                    /* z-axis rotation              */
+		 LONG    rglSlider[2];           /* extra axes positions         */
+		 DWORD   rgdwPOV[4];             /* POV directions               */
+		 BYTE    rgbButtons[32];         /* 32 buttons                   */
+ } DIJOYSTATE, *LPDIJOYSTATE;
+ typedef struct _DIMOUSESTATE2 {
+	 LONG    lX;
+	 LONG    lY;
+	 LONG    lZ;
+	 BYTE    rgbButtons[8];
+ } DIMOUSESTATE2, *LPDIMOUSESTATE2;
+ typedef struct _GUID {
+	 unsigned long  Data1;
+	 unsigned short Data2;
+	 unsigned short Data3;
+	 unsigned char  Data4[ 8 ];
+ } GUID;
 #endif
 
 #ifndef NULL

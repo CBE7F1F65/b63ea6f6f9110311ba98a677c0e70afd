@@ -198,18 +198,22 @@ bool CALL HGE_Impl::System_Initiate()
 	}
 	else
 	{
+ #if IFNOT_FRAMWORK(HFRAMEWORK_QT)
 		hwnd = (HWND)1;
+ #endif
 	}
 
 	// Init subsystems
 
 	timeBeginPeriod(1);
 #else
+ #if IFNOT_FRAMWORK(HFRAMEWORK_QT)
 	hwnd = (HWND)1;
 	if (!bOwnWindow)
 	{
 		hwndParent = (HWND)1;
 	}
+ #endif
 
  #if IF_PLATFORM(HPLATFORM_PSP)
 	pspDebugScreenInit();
@@ -299,15 +303,20 @@ void CALL HGE_Impl::System_Shutdown()
 		//SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_TOOLWINDOW);
 		//ShowWindow(hwnd, SW_SHOW);
 #if IF_PLATFORM(HPLATFORM_WIN)
+ #if IFNOT_FRAMWORK(HFRAMEWORK_QT)
 		if (bOwnWindow)
 		{
 			DestroyWindow(hwnd);
 		}
+ #endif
 #endif
 		hwnd=0;
 	}
 #if IF_PLATFORM(HPLATFORM_WIN)
+
+ #if IFNOT_FRAMWORK(HFRAMEWORK_QT)
 	if(hInstance) UnregisterClass(WINDOW_CLASS_NAME, hInstance);
+ #endif
 #endif
 
 	System_Log("The End.");
@@ -464,7 +473,8 @@ void CALL HGE_Impl::System_SetStateHwnd(hgeHwndState state, HWND value)
 {
 	switch(state)
 	{
-		case HGE_HWNDPARENT:	if(!hwnd) hwndParent=value; break;
+	case HGE_HWND:			if(!hwnd) hwnd=value; break;
+	case HGE_HWNDPARENT:	if(!hwnd) hwndParent=value; break;
 	}
 }
 
