@@ -12,6 +12,12 @@
 #include "hge.h"
 #include "hgerect.h"
 
+/************************************************************************/
+/* This define is added by h5nc (h5nc@yahoo.com.cn)                     */
+/************************************************************************/
+// Texture Offset
+#define HGE_TEXTUREOFFSET	0.0f
+
 /*
 ** HGE Sprite class
 */

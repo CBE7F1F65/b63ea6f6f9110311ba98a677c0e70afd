@@ -8,59 +8,53 @@
 
 #include "hge_impl.h"
 
-#ifdef __PSP
+#if IF_PLATFORM(HPLATFORM_PSP)
 #include <psprtc.h>
-#endif // __PSP
+#endif // PSP
 
-#ifdef __IPHONE
+#if IF_PLATFORM(HPLATFORM_IOS)
 #include <mach/mach_time.h>
 #endif
 
 LONGLONG CALL HGE_Impl::Timer_GetCurrentSystemTime()
 {
-#ifdef __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	LARGE_INTEGER Counter;
 	QueryPerformanceCounter(&Counter);
 	return Counter.QuadPart;
-#else
 
-#ifdef __PSP
+#elif IF_PLATFORM(HPLATFORM_PSP)
 	u64 ticks;
 	sceRtcGetCurrentTick(&ticks);
 	return ticks;
-#endif // __PSP
-
-#ifdef __IPHONE
+#elif IF_PLATFORM(HPLATFORM_IOS)
 	return mach_absolute_time();
-#endif;
+#endif
 
-#endif // __WIN32
+	return 0;
 }
 
 LONGLONG CALL HGE_Impl::Timer_GetPerformanceFrequency()
 {
-#ifdef __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	LARGE_INTEGER Frequency;
 	QueryPerformanceFrequency(&Frequency);
 	return Frequency.QuadPart;
-#else
-
-#ifdef __PSP
+#elif IF_PLATFORM(HPLATFORM_PSP)
 	return sceRtcGetTickResolution();
-#endif // __PSP
 
-#ifdef __IPHONE
+#elif IF_PLATFORM(HPLATFORM_IOS)
 	mach_timebase_info_data_t info;
 	mach_timebase_info(&info);
 	return info.denom*1000000000/info.numer;
 #endif;
 
-#endif // __WIN32
+	return 1;
 }
 
 void CALL HGE_Impl::Timer_GetSystemTime(WORD *wYear, WORD *wMonth, WORD *wDayOfWeek, WORD *wDay, WORD *wHour, WORD *wMinute, WORD *wSecond, WORD *wMilliseconds)
 {
-#if defined __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	SYSTEMTIME systime;
 	GetLocalTime(&systime);
 	if (wYear)
@@ -95,7 +89,7 @@ void CALL HGE_Impl::Timer_GetSystemTime(WORD *wYear, WORD *wMonth, WORD *wDayOfW
 	{
 		*wMilliseconds = systime.wMilliseconds;
 	}
-#elif defined __PSP
+#elif IF_PLATFORM(HPLATFORM_PSP)
 	pspTime psptime;
 	u64 filetime;
 	sceRtcGetWin32FileTime(&psptime, &filetime);
@@ -131,7 +125,7 @@ void CALL HGE_Impl::Timer_GetSystemTime(WORD *wYear, WORD *wMonth, WORD *wDayOfW
 	{
 		*wMilliseconds = psptime.microseconds;
 	}
-#elif defined __IPHONE
+#elif IF_PLATFORM(HPLATFORM_IOS)
 
 	if (wYear)
 	{
@@ -205,23 +199,19 @@ void CALL HGE_Impl::Timer_GetSystemTime(WORD *wYear, WORD *wMonth, WORD *wDayOfW
 
 LONGLONG CALL HGE_Impl::Timer_GetFileTime()
 {
-#if defined __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	FILETIME filetime;
 	SYSTEMTIME systime;
 	GetLocalTime(&systime);
 	SystemTimeToFileTime(&systime, &filetime);
 	return (((ULONGLONG)filetime.dwHighDateTime)<<32)|(filetime.dwLowDateTime);
-#elif defined __PSP
+#elif IF_PLATFORM(HPLATFORM_OSO)
 	pspTime psptime;
 	u64 filetime;
 	sceRtcGetWin32FileTime(&psptime, &filetime);
 	return filetime;
-#elif defined __IPHONE
-	return 0;
-#else
-	return 0;
-
 #endif
+	return 0;
 }
 
 float CALL HGE_Impl::Timer_GetTime()

@@ -122,8 +122,6 @@ char* CALL HGE_Impl::Ini_GetString(const char *section, const char *name, const 
 	return szIniString;
 }
 
-#ifndef __WIN32
-#include <list>
 using namespace std;
 bool _IniStringCut(const char * line, char * prestr, char * poststr)
 {
@@ -288,11 +286,10 @@ typedef struct tag_IniLine
 	char line[256];
 }_IniLine;
 
-#endif // __WIN32
 
 DWORD HGE_Impl::_IniGetPrivateProfileString(const char * appname, const char * keyname, const char * defval, char * retstr, DWORD size, const char * filename)
 {
-#ifdef __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	return GetPrivateProfileString(appname, keyname, defval, retstr, size, filename);
 #else
 
@@ -348,12 +345,12 @@ DWORD HGE_Impl::_IniGetPrivateProfileString(const char * appname, const char * k
 	strcpy(retstr, defval);
 	return strlen(retstr);
 
-#endif // __WIN32
+#endif // WIN32
 }
 
 bool HGE_Impl::_IniWritePrivateProfileString(const char * appname, const char * keyname, const char * val, const char * filename)
 {
-#ifdef __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	return WritePrivateProfileString(appname, keyname, val, filename);
 #else
 
@@ -435,5 +432,5 @@ bool HGE_Impl::_IniWritePrivateProfileString(const char * appname, const char * 
 
 	return true;
 
-#endif // __WIN32
+#endif // WIN32
 }

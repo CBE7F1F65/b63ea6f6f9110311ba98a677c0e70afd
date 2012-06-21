@@ -19,9 +19,16 @@ struct CRenderTargetList
 {
 	int					width;
 	int					height;
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	IDirect3DTexture9*	pTex;
 	IDirect3DSurface9*	pDepth;
+#elif IF_RENDERSYS(HRENDERSYS_GLS)
+	GLuint		pTex;
+	GLuint		pDepth;
+	GLuint		pFrameBuffer;
+#else
+	int pTex;
+	int pDepth;
 #endif
 	CRenderTargetList*	next;
 };
@@ -266,6 +273,7 @@ public:
 
 	virtual HTEXTURE	CALL	Texture_Create(int width, int height);
 	virtual HTEXTURE	CALL	Texture_Load(const char *filename, DWORD size=0, bool bMipmap=false);
+	virtual bool		CALL	Texture_AddToList(HTEXTURE tex, int width, int height);
 	virtual void		CALL	Texture_Free(HTEXTURE tex);
 	virtual DWORD		CALL	Texture_GetTexture(HTEXTURE tex);
 	virtual int			CALL	Texture_GetWidth(HTEXTURE tex, bool bOriginal=false);
@@ -346,6 +354,8 @@ public:
 	bool				bManageLoop;
 	bool				bUseDInput;
 	bool				bNoWMPaint;
+	bool				bOwnWindow;
+	bool				bCallRender;
 	/************************************************************************/
 	/* These members are added by h5nc (h5nc@yahoo.com.cn)                  */
 	/************************************************************************/
@@ -355,19 +365,15 @@ public:
 	// end
 	HWND				hwndParent;
 
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	// Graphics
 	D3DPRESENT_PARAMETERS*  d3dpp;
 	IDirect3D9*				pD3D;
 	IDirect3DDevice9*		pD3DDevice;
 
 	D3DPRESENT_PARAMETERS   d3dppW;
-	RECT					rectW;
-	LONG					styleW;
 
 	D3DPRESENT_PARAMETERS   d3dppFS;
-	RECT					rectFS;
-	LONG					styleFS;
 
 	IDirect3DVertexBuffer9*	pVB;
 	IDirect3DIndexBuffer9*	pIB;
@@ -375,6 +381,11 @@ public:
 	IDirect3DSurface9*	pScreenSurf;
 	IDirect3DSurface9*	pScreenDepth;
 #endif
+
+	RECT					rectW;
+	LONG					styleW;
+	RECT					rectFS;
+	LONG					styleFS;
 
 	CRenderTargetList*	pTargets;
 	CRenderTargetList*	pCurTarget;
@@ -384,6 +395,9 @@ public:
 
 	CTextureList*		textures;
 	hgeVertex*			VertArray;
+#if IF_RENDERSYS(HRENDERSYS_GL)
+	hgeVertex			VecVertArray[VERTEX_BUFFER_SIZE];
+#endif
 
 	int					nPrim;
 	int					CurPrimType;
@@ -402,7 +416,7 @@ public:
 //	void				_Resize(int width, int height);
 	bool				_init_lost();
 	void				_render_batch(bool bEndScene=false);
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	int					_format_id(D3DFORMAT fmt);
 #endif
 	void				_SetBlendMode(int blend);
@@ -446,7 +460,7 @@ public:
 
 	BYTE				keyState[256];
 	BYTE				lastKeyState[256];
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	LPDIRECTINPUT8		lpDInput;
 	LPDIRECTINPUTDEVICE8 lpDIKDevice;
 	LPDIRECTINPUTDEVICE8 lpDIJDevice[DIJOY_MAXDEVICE];
@@ -471,7 +485,7 @@ public:
 	bool				_DIKUpdate();
 	bool				_DIJUpdate();
 	bool				_DIMUpdate();
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	static BOOL CALLBACK _EnumJoysticksCallback (const DIDEVICEINSTANCE * pdidInstance, VOID* pContext);
 #endif
 
@@ -501,7 +515,7 @@ public:
 	/************************************************************************/
 	char				szPackFirstFilename[_MAX_PATH];
 	CResourceList*		res;
-#ifdef __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	HANDLE				hSearch;
 	WIN32_FIND_DATA		SearchData;
 #endif

@@ -13,18 +13,18 @@
 
 #include "hge_impl.h"
 
-#ifdef __PSP
+#if IF_PLATFORM(HPLATFORM_PSP)
 #include <pspkernel.h>
 #include <pspdebug.h>
 #include <pspctrl.h>
-#endif // __PSP
+#endif // PSP
 
 /************************************************************************/
 /* These header files are added by h5nc (h5nc@yahoo.com.cn)             */
 /************************************************************************/
 //#include <objbase.h>
 
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 GUID HGE_Impl::joyGuid[DIJOY_MAXDEVICE];
 #endif
 
@@ -88,7 +88,7 @@ void CALL HGE_Impl::Input_GetMousePos(float *x, float *y)
 
 void CALL HGE_Impl::Input_SetMousePos(float x, float y)
 {
-#ifdef __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	POINT pt;
 	pt.x=(long)x; pt.y=(long)y;
 	ClientToScreen(hwnd, &pt);
@@ -112,7 +112,7 @@ bool CALL HGE_Impl::Input_GetKeyState(int key)
 	/************************************************************************/
 	/* This condition is added by h5nc (h5nc@yahoo.com.cn)                  */
 	/************************************************************************/
-#ifdef __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	if(bActive)
 		return ((GetKeyState(key) & 0x8000) != 0);
 #endif
@@ -158,7 +158,7 @@ int CALL HGE_Impl::Input_GetChar()
 
 void HGE_Impl::_InputInit()
 {
-#ifdef __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	POINT	pt;
 	GetCursorPos(&pt);
 	ScreenToClient(hwnd, &pt);
@@ -241,7 +241,7 @@ bool CALL HGE_Impl::Input_GetDIMouseKey(int key, BYTE stateType /* = DIKEY_PRESS
 	{
 		return false;
 	}
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	if(key >= 0 && key < nMouseButtons)
 	{
 		switch(stateType)
@@ -272,7 +272,7 @@ bool CALL HGE_Impl::Input_SetDIMouseKey(int key, bool set /* = true */)
 	{
 		return true;
 	}
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	if(key >=0 && key < nMouseButtons)
 	{
 		if(set)
@@ -290,7 +290,7 @@ LONG CALL HGE_Impl::Input_GetDIMouseAxis(int axis, bool relative/* =false */)
 	{
 		return 0;
 	}
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	if (axis >= 0 && axis < nMouseAxes)
 	{
 		switch (axis)
@@ -325,7 +325,7 @@ bool CALL HGE_Impl::Input_SetDIMouseAxis(int axis, LONG value, bool relative/* =
 	{
 		return true;
 	}
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	if (axis >= 0 && axis < nMouseAxes)
 	{
 		switch (axis)
@@ -363,7 +363,7 @@ bool CALL HGE_Impl::Input_ClearLastDIMouseState()
 	{
 		return true;
 	}
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	ZeroMemory(&lastMouseState, sizeof(DIMOUSESTATE2));
 #endif
 	return true;
@@ -375,7 +375,7 @@ bool CALL HGE_Impl::Input_GetDIJoy(int joy, BYTE stateType /* = DIKEY_PRESSED */
 	{
 		return false;
 	}
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	if(joy >=0 && joy < 32)
 	{
 		switch(stateType)
@@ -490,7 +490,7 @@ bool CALL HGE_Impl::Input_ClearLastDIJoyState( int joydevice/*=0*/ )
 	{
 		return true;
 	}
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	ZeroMemory(&(lastJoyState[joydevice]), sizeof(DIJOYSTATE));
 #endif
 	return true;
@@ -500,7 +500,7 @@ bool CALL HGE_Impl::Input_ClearLastDIJoyState( int joydevice/*=0*/ )
 
 void HGE_Impl::_UpdateMouse()
 {
-#if defined __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	POINT	pt;
 	RECT	rc;
 
@@ -512,13 +512,12 @@ void HGE_Impl::_UpdateMouse()
 		bMouseOver=true;
 	else
 		bMouseOver=false;
-#elif defined __IPHONE
 #endif
 }
 
 void HGE_Impl::_BuildEvent(int type, int key, int scan, int flags, int x, int y)
 {
-#ifdef __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	CInputEventList *last, *eptr=new CInputEventList;
 	unsigned char kbstate[256];
 	POINT pt;
@@ -633,7 +632,7 @@ void HGE_Impl::_ClearQueue()
 /* These functions are added by h5nc (h5nc@yahoo.com.cn)                */
 /************************************************************************/
 // begin
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 BOOL CALLBACK HGE_Impl::_EnumJoysticksCallback (const DIDEVICEINSTANCE * pdidInstance, VOID* pContext)
 {
 	int count = *(int*)pContext;
@@ -655,7 +654,7 @@ BOOL CALLBACK HGE_Impl::_EnumJoysticksCallback (const DIDEVICEINSTANCE * pdidIns
 
 LPDIRECTINPUT8 CALL HGE_Impl::Input_GetDevice()
 {
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	return lpDInput;
 #else
 	return NULL;
@@ -666,7 +665,7 @@ bool HGE_Impl::_DIKInit()
 {
 	ZeroMemory(keyState, sizeof(BYTE)*256);
 	ZeroMemory(lastKeyState, sizeof(BYTE)*256);
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	lpDIKDevice = NULL;
 
 	if (FAILED (lpDInput->CreateDevice(GUID_SysKeyboard, &lpDIKDevice, NULL)))
@@ -692,7 +691,7 @@ bool HGE_Impl::_DIKInit()
 bool HGE_Impl::_DIJInit()
 {
 	bool joyable = false;
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	int enumcount = 0;
 	for (int i=0; i<DIJOY_MAXDEVICE; i++)
 	{
@@ -809,7 +808,7 @@ bool HGE_Impl::_DIJInit()
 
 bool HGE_Impl::_DIMInit()
 {
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	ZeroMemory(&mouseState, sizeof(DIMOUSESTATE2));
 	ZeroMemory(&lastMouseState, sizeof(DIMOUSESTATE2));
 
@@ -881,7 +880,7 @@ int HGE_Impl::_DIInit()
 	{
 		return 0;
 	}
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	if (FAILED (DirectInput8Create (hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**) &lpDInput, NULL)))
 	{
 		return ERROR_NOKEYBOARD|ERROR_NOJOYSTICK|ERROR_NOMOUSE;
@@ -906,20 +905,17 @@ int HGE_Impl::_DIInit()
 		retval |= ERROR_NOMOUSE;
 	}
 
-#if defined __WIN32
 
-#elif defined __PSP
+#if IF_PLATFORM(HPLATFORM_PSP)
 	sceCtrlSetSamplingCycle(0);
 	sceCtrlSetSamplingMode(PSP_CTRL_MODE_ANALOG);
-#elif defined __IPHONE
-
 #endif
 	return retval;
 }
 
 bool HGE_Impl::Input_HaveJoy(int joydevice)
 {
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	return haveJoy[joydevice];
 #else
 	return false;
@@ -932,7 +928,7 @@ void HGE_Impl::_DIRelease()
 	{
 		return;
 	}
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	if(lpDIKDevice != NULL)
 	{
 		lpDIKDevice->Unacquire();
@@ -960,7 +956,7 @@ void HGE_Impl::_DIRelease()
 bool HGE_Impl::_DIKUpdate()
 {
 	memcpy(lastKeyState, keyState, sizeof(keyState));
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	if(lpDIKDevice == NULL)
 	{
 		_DIRelease();
@@ -994,7 +990,7 @@ bool HGE_Impl::_DIKUpdate()
 	/************************************************************************/
 	ZeroMemory(&keyState, sizeof(keyState));
 
-#if defined __PSP
+ #if IF_PLATFORM(HPLATFORM_PSP)
 	SceCtrlData pad;
 	sceCtrlPeekBufferPositive(&pad, 1);
 	//Analog pad.Lx, Pad.Ly
@@ -1005,10 +1001,9 @@ bool HGE_Impl::_DIKUpdate()
 			keyState[i] = 1<<7;
 		}
 	}
-#elif defined __IPHONE
-#endif // __PSP
+ #endif // PSP
 
-#endif // __WIN32
+#endif // WIN32
 
 	return true;
 }
@@ -1016,7 +1011,7 @@ bool HGE_Impl::_DIKUpdate()
 bool HGE_Impl::_DIJUpdate()
 {
 	bool joyable=false;
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	for (int i=0; i<DIJOY_MAXDEVICE; i++)
 	{
 		lastJoyState[i] = joyState[i];
@@ -1070,8 +1065,8 @@ bool HGE_Impl::_DIJUpdate()
 
 bool HGE_Impl::_DIMUpdate()
 {
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	lastMouseState = mouseState;
-#ifdef __WIN32
 	if(lpDIMDevice == NULL)
 	{
 		_DIRelease();

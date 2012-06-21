@@ -16,18 +16,15 @@
 /************************************************************************/
 #include "ZLIB/zip.h"
 
-#ifdef __PSP
+#if IF_PLATFORM(HPLATFORM_PSP)
 #include <pspiofilemgr.h>
-#endif // __PSP
+#endif // PSP
 
-#ifdef __IPHONE
-#include <unistd.h>
-#endif
-
-#ifndef strupr
-#ifndef __IPHONE
-char * strupr(char *str)
-{
+#if IF_PLATFORM(HPLATFORM_IOS)
+ #include <unistd.h>
+ #ifndef strupr
+  char * strupr(char *str)
+  {
 	if (str && strlen(str))
 	{
 		for (int i=0; i<strlen(str); i++) {
@@ -37,11 +34,11 @@ char * strupr(char *str)
 		}
 	}
 	return str;
-}
-#else
-#define strupr(str) (#str)
+  }
+//  #define strupr(str) (#str)
+ #endif
 #endif
-#endif
+
 
 #ifndef strcmpi
 int strcmpi(const char * s1, const char * s2)
@@ -300,14 +297,14 @@ char * CALL HGE_Impl::Resource_GetPackFirstFileName(const char * packfilename)
 
 void CALL HGE_Impl::Resource_DeleteFile(const char *filename)
 {
-#if defined __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	DeleteFile(Resource_MakePath(filename));
-#elif defined __PSP
+#elif IF_PLATFORM(HPLATFORM_PSP)
 	sceIoRemove(Resource_MakePath(filename));
-#elif defined __IPHONE
+#elif IF_PLATFORM(HPLATFORM_IOS)
 	unlink(Resource_MakePath(filename));
 
-#endif // __WIN32
+#endif // WIN32
 }
 
 DWORD CALL HGE_Impl::Resource_FileSize(const char *filename, FILE * file)
@@ -341,13 +338,11 @@ DWORD CALL HGE_Impl::Resource_FileSize(const char *filename, FILE * file)
 
 void CALL HGE_Impl::Resource_SetCurrentDirectory(const char *filename)
 {
-#if defined __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	SetCurrentDirectory(Resource_MakePath(filename));
-#elif defined __PSP
+#elif IF_PLATFORM(HPLATFORM_PSP)
 //	sceIoChdir(Resource_MakePath(filename));
-#elif defined __IPHONE
-
-#endif // __WIN32
+#endif // WIN32
 }
 
 /************************************************************************/
@@ -365,7 +360,7 @@ BYTE * CALL HGE_Impl::Resource_Load(const char *filename, DWORD *size)
 	unz_file_info file_info;
 	int done, i;
 	BYTE * ptr;
-#if defined __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	HANDLE hF;
 #else
 	FILE * hF;
@@ -436,7 +431,7 @@ BYTE * CALL HGE_Impl::Resource_Load(const char *filename, DWORD *size)
 
 	// Load from file
 _fromfile:
-#if defined __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	hF = CreateFile(Resource_MakePath(filename), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
 	if (hF == INVALID_HANDLE_VALUE)
 #else
@@ -446,12 +441,12 @@ _fromfile:
 	{
 		sprintf(szName, res_err, filename);
 		_PostError(szName);
-#ifdef __IPHONE
+#if IF_PLATFORM(HPLATFORM_IOS)
 		_PostError(Resource_MakePath(szName));
 #endif
 		return 0;
 	}
-#if defined __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	file_info.uncompressed_size = GetFileSize(hF, NULL);
 #else
 	file_info.uncompressed_size = Resource_FileSize(filename, hF);
@@ -459,7 +454,7 @@ _fromfile:
 	ptr = (BYTE *)malloc(file_info.uncompressed_size);
 	if(!ptr)
 	{
-#if defined __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 		CloseHandle(hF);
 #else
 		fclose(hF);
@@ -468,13 +463,13 @@ _fromfile:
 		_PostError(szName);
 		return 0;
 	}
-#if defined __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	if (ReadFile(hF, ptr, file_info.uncompressed_size, &file_info.uncompressed_size, NULL ) == 0)
 #else
 	if (fread(ptr, file_info.uncompressed_size, 1, hF) == 0)
 #endif
 	{
-#if defined __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 		CloseHandle(hF);
 #else
 		fclose(hF);
@@ -485,7 +480,7 @@ _fromfile:
 		return 0;
 	}
 
-#if defined __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	CloseHandle(hF);
 #else
 	fclose(hF);
@@ -552,9 +547,9 @@ char* CALL HGE_Impl::Resource_MakePath(const char *filename)
 	if(!filename)
 		strcpy(szTmpFilename, szResourcePath);
 	else if(filename[0]==M_FOLDER_SLASH || filename[0]==M_FOLDER_SLASH_WRONG || filename[1]==':'
-#ifndef __WIN32
+#if IFNOT_PLATFORM(HPLATFORM_WIN)
 		|| strlen(filename) >= strlen(szResourcePath) && !strncmp(filename, szResourcePath, strlen(szResourcePath))
-#endif // __WIN32
+#endif // WIN32
 		)
 	{
 		strcpy(szTmpFilename, filename);
@@ -590,7 +585,7 @@ char* CALL HGE_Impl::Resource_MakePath(const char *filename)
 
 char* CALL HGE_Impl::Resource_EnumFiles(const char *wildcard)
 {
-#if defined __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	if(wildcard)
 	{
 		if(hSearch) { FindClose(hSearch); hSearch=0; }
@@ -615,7 +610,7 @@ char* CALL HGE_Impl::Resource_EnumFiles(const char *wildcard)
 
 char* CALL HGE_Impl::Resource_EnumFolders(const char *wildcard)
 {
-#if defined __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	if(wildcard)
 	{
 		if(hSearch) { FindClose(hSearch); hSearch=0; }
@@ -644,7 +639,7 @@ char* CALL HGE_Impl::Resource_EnumFolders(const char *wildcard)
 
 bool CALL HGE_Impl::Resource_AccessFile(const char *filename)
 {
-#if defined __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	if (_access(Resource_MakePath(filename), 00) == -1)
 	{
 		return false;
@@ -658,17 +653,17 @@ bool CALL HGE_Impl::Resource_AccessFile(const char *filename)
 	}
 	fclose(file);
 
-#endif // __WIN32
+#endif // WIN32
 	return true;
 }
 
 bool CALL HGE_Impl::Resource_CreateDirectory(const char *filename)
 {
-#if defined __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 	return CreateDirectory(Resource_MakePath(filename), NULL);
-#elif defined __PSP
+#elif IF_PLATFORM(HPLATFORM_PSP)
 	return !sceIoMkdir(Resource_MakePath(filename), 0777);
-#elif defined __IPHONE
+#else
 	return false;
-#endif // __WIN32
+#endif // WIN32
 }

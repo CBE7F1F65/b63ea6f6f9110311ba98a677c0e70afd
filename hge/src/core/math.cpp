@@ -25,7 +25,7 @@ D3DXMATRIX * CALL HGE_Impl::Math_MatrixIdentity(D3DXMATRIX * pOut)
 	{
 		return NULL;
 	}
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	D3DXMatrixIdentity(pOut);
 #else
 
@@ -35,7 +35,7 @@ D3DXMATRIX * CALL HGE_Impl::Math_MatrixIdentity(D3DXMATRIX * pOut)
 	pOut->_33 = 1.0f;
 	pOut->_44 = 1.0f;
 
-#endif // __WIN32
+#endif // WIN32
 	return pOut;
 }
 
@@ -45,7 +45,7 @@ D3DXMATRIX * CALL HGE_Impl::Math_MatrixTranslation( D3DXMATRIX *pOut, float x, f
 	{
 		return NULL;
 	}
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	D3DXMatrixTranslation(pOut, x, y, z);
 #else
 
@@ -56,7 +56,7 @@ D3DXMATRIX * CALL HGE_Impl::Math_MatrixTranslation( D3DXMATRIX *pOut, float x, f
 	mul._43 = z;
 	Math_MatrixMultiply(pOut, pOut, &mul);
 
-#endif // __WIN32
+#endif // WIN32
 	return pOut;
 }
 
@@ -66,7 +66,7 @@ D3DXMATRIX * CALL HGE_Impl::Math_MatrixRotationX( D3DXMATRIX *pOut, float angle 
 	{
 		return NULL;
 	}
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	D3DXMatrixRotationX(pOut, angle);
 #else
 
@@ -81,7 +81,7 @@ D3DXMATRIX * CALL HGE_Impl::Math_MatrixRotationX( D3DXMATRIX *pOut, float angle 
 	mul._33 = cosval;
 	Math_MatrixMultiply(pOut, pOut, &mul);
 
-#endif // __WIN32
+#endif // WIN32
 	return pOut;
 }
 
@@ -91,7 +91,7 @@ D3DXMATRIX * CALL HGE_Impl::Math_MatrixRotationY( D3DXMATRIX *pOut, float angle 
 	{
 		return NULL;
 	}
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	D3DXMatrixRotationY(pOut, angle);
 #else
 
@@ -106,7 +106,7 @@ D3DXMATRIX * CALL HGE_Impl::Math_MatrixRotationY( D3DXMATRIX *pOut, float angle 
 	mul._33 = cosval;
 	Math_MatrixMultiply(pOut, pOut, &mul);
 
-#endif // __WIN32
+#endif // WIN32
 	return pOut;
 }
 
@@ -116,7 +116,7 @@ D3DXMATRIX * CALL HGE_Impl::Math_MatrixRotationZ( D3DXMATRIX *pOut, float angle 
 	{
 		return NULL;
 	}
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	D3DXMatrixRotationZ(pOut, angle);
 #else
 
@@ -131,7 +131,7 @@ D3DXMATRIX * CALL HGE_Impl::Math_MatrixRotationZ( D3DXMATRIX *pOut, float angle 
 	mul._22 = cosval;
 	Math_MatrixMultiply(pOut, pOut, &mul);
 
-#endif // __WIN32
+#endif // WIN32
 	return pOut;
 }
 
@@ -141,7 +141,7 @@ D3DXMATRIX * CALL HGE_Impl::Math_MatrixScaling( D3DXMATRIX *pOut, float sx, floa
 	{
 		return NULL;
 	}
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	D3DXMatrixScaling(pOut, sx, sy, sz);
 #else
 
@@ -152,7 +152,7 @@ D3DXMATRIX * CALL HGE_Impl::Math_MatrixScaling( D3DXMATRIX *pOut, float sx, floa
 	mul._33 = sz;
 	Math_MatrixMultiply(pOut, pOut, &mul);
 
-#endif // __WIN32
+#endif // WIN32
 	return pOut;
 }
 
@@ -162,7 +162,7 @@ D3DXMATRIX * CALL HGE_Impl::Math_MatrixMultiply( D3DXMATRIX *pOut, const D3DXMAT
 	{
 		return NULL;
 	}
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	D3DXMatrixMultiply(pOut, pM1, pM2);
 #else
 
@@ -186,7 +186,7 @@ D3DXMATRIX * CALL HGE_Impl::Math_MatrixMultiply( D3DXMATRIX *pOut, const D3DXMAT
 		}
 	}
 
-#endif // __WIN32
+#endif // WIN32
 	return pOut;
 }
 
@@ -196,7 +196,7 @@ D3DXMATRIX*	CALL HGE_Impl::Math_MatrixOrthoOffCenterLH(D3DXMATRIX *pOut, float l
 	{
 		return NULL;
 	}
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	D3DXMatrixOrthoOffCenterLH(pOut, l, r, b, t, zn, zf);
 #else
 
@@ -213,7 +213,7 @@ D3DXMATRIX*	CALL HGE_Impl::Math_MatrixOrthoOffCenterLH(D3DXMATRIX *pOut, float l
 	}
 	Math_MatrixMultiply(pOut, pOut, &mul);
 
-#endif // __WIN32
+#endif // WIN32
 	return pOut;
 }
 
@@ -249,7 +249,7 @@ float CALL HGE_Impl::Math_atof(const char * buffer)
 
 LONGLONG CALL HGE_Impl::Math_atoll(const char *buffer)
 {
-#ifdef __WIN32
+#if IF_RENDERSYS(HRENDERSYS_DX)
 	return _atoi64(buffer);
 #else
 
@@ -293,5 +293,5 @@ LONGLONG CALL HGE_Impl::Math_atoll(const char *buffer)
 	}
 	return llret;
 
-#endif // __WIN32
+#endif // WIN32
 }

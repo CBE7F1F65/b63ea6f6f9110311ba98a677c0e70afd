@@ -767,7 +767,7 @@ char *hgeFont::_get_line(char *file, char *line)
 	else return 0;
 }
 
-#ifdef __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN)
 bool hgeFont::CreateFontFileByInfo( int * charcode, int num, const char * fontfilename, HD3DFONT d3dfont, int fontscale /*=1*/ )
 {
 	if (num < 1 || !charcode || !fontfilename)

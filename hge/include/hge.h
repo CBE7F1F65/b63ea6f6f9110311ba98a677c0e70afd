@@ -15,9 +15,9 @@
 /* This header is added by h5nc (h5nc@yahoo.com.cn)                     */
 /************************************************************************/
 #ifdef __INTEL_COMPILER
-	#ifdef __USE_INTEL_MATH_LAB
-		#include <mathimf.h>
-	#endif
+ #ifdef __USE_INTEL_MATH_LAB
+  #include <mathimf.h>
+ #endif
 #endif
 
 /************************************************************************/
@@ -31,50 +31,49 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef __WIN32
-#ifdef WIN32
-#ifdef _DEBUG
-#include "../mmgr/mmgr.h"
-#endif // _DEBUG
-#endif // WIN32
-#endif // __WIN32
+#if IF_PLATFORM(HPLATFORM_WIN) && IFNOT_FRAMWORK(HFRAMEWORK_QT)
+ #if defined _DEBUG
+  #include "../mmgr/mmgr.h"
+ #endif
+#endif
 
-#ifdef __WIN32
 
-#include <windows.h>
-#include <io.h>
-#define DIRECTINPUT_VERSION 0x0800
+#if IF_FRAMWORK(HFRAMEWORK_QT)
+ #include <qgl.h>
+ #include <QGLFunctions>
+ #include <QGLFramebufferObject>
+#endif
 
-#include <dinput.h>			//add by Thor/h5nc
-#include <d3d9.h>			//add by Thor/h5nc
-#include <d3dx9.h>			//add by Thor/h5nc
-#pragma comment(lib,"dinput8.lib")
+#if IF_PLATFORM(HPLATFORM_WIN)
+ #include <windows.h>
+ #include <io.h>
+ #define DIRECTINPUT_VERSION 0x0800
 
+ #include <dinput.h>			//add by Thor/h5nc
+ #include <d3d9.h>			//add by Thor/h5nc
+ #include <d3dx9.h>			//add by Thor/h5nc
+ #pragma comment(lib,"dinput8.lib")
 #endif
 
 #define HGE_VERSION 0x180
 
 #ifdef HGEDLL
-#define EXPORT  __declspec(dllexport)
+ #define EXPORT  __declspec(dllexport)
 #else
-#define EXPORT
+ #define EXPORT
 #endif
 
-#ifdef __WIN32
-#define CALL  __stdcall
+#if IF_PLATFORM(HPLATFORM_WIN)
+ #define CALL  __stdcall
 #else
+ #define CALL
+#endif
 
-#ifdef __PSP
-#define CALL
-#endif // __PSP
-
-#ifdef __IPHONE
-#define CALL
-#include <ctype.h>
-#include <wchar.h>
+#if IF_PLATFORM(HPLATFORM_IOS)
+ #include <ctype.h>
+ #include <wchar.h>
 #endif // __IPHONE
 
-#endif // __WIN32
 
 #ifdef __BORLANDC__
  #define floorf (float)floor
@@ -88,124 +87,78 @@
 
 #endif
 #ifndef min
-#define min(x,y) ((x) < (y)) ? (x) : (y)
+ #define min(x,y) ((x) < (y)) ? (x) : (y)
 #endif
+
 #ifndef max
-#define max(x,y) ((x) > (y)) ? (x) : (y)
+ #define max(x,y) ((x) > (y)) ? (x) : (y)
 #endif
 
 #ifndef ZeroMemory
-#define ZeroMemory(Destination,Length) memset((Destination),0,(Length))
+ #define ZeroMemory(Destination,Length) memset((Destination),0,(Length))
 #endif
 
-#ifndef __WIN32
-typedef void *	LPDIRECTINPUT8;
-#endif
-
-/*
-** Common data types
-*/
-#ifndef DWORD
-#if defined __IPHONE
-typedef unsigned int       DWORD;
-#else
-typedef unsigned long       DWORD;
-#endif
-typedef unsigned short      WORD;
-typedef unsigned char       BYTE;
-#endif
-
-#ifndef QWORD
-#if defined __WIN32
-typedef unsigned __int64	QWORD;
-#elif defined __PSP
-typedef u64	QWORD;
-#elif defined __IPHONE
-typedef uint64_t QWORD;
-#endif // __WIN32
-#endif
-
-#ifndef LONGLONG
-#if defined __WIN32
-typedef __int64			LONGLONG;
-#elif __PSP
-typedef s64	LONGLONG;
-#elif __IPHONE
-typedef int64_t LONGLONG;
-
-#endif // __WIN32
-typedef QWORD ULONGLONG;
-#endif
-
-#ifndef NULL
-#define NULL	(0)
-#endif
 
 #ifndef isspace
-#define isspace(X) ((X)==0x20 || (X)>=0x09&&(X)<=0x0D)
+ #define isspace(X) ((X)==0x20 || (X)>=0x09&&(X)<=0x0D)
 #endif
 #ifndef iswspace
-#define iswspace	isspace
+ #define iswspace	isspace
 #endif
 
 #ifndef isdigit
-#define isdigit(X) ((X)>='0' && (X)<='9')
+ #define isdigit(X) ((X)>='0' && (X)<='9')
 #endif
 #ifndef iswdigit
-#define iswdigit	isdigit
+ #define iswdigit	isdigit
 #endif
 
 #ifndef islower
-#define islower(X) ((X)>='a' && (X)<='z')
+ #define islower(X) ((X)>='a' && (X)<='z')
 #endif
 #ifndef iswlower
-#define iswlower	islower
+ #define iswlower	islower
 #endif
 
 #ifndef isupper
-#define isupper(X) ((X)>='A' && (X)<='Z')
+ #define isupper(X) ((X)>='A' && (X)<='Z')
 #endif
 #ifndef iswupper
-#define iswupper	isupper
+ #define iswupper	isupper
 #endif
 /*
 ** Common math constants
 */
 #ifndef M_PI
-#define M_PI	3.14159265358979323846f
-#define M_PI_2	1.57079632679489661923f
-#define M_PI_4	0.785398163397448309616f
-#define M_1_PI	0.318309886183790671538f
-#define M_2_PI	0.636619772367581343076f
+ #define M_PI	3.14159265358979323846f
+ #define M_PI_2	1.57079632679489661923f
+ #define M_PI_4	0.785398163397448309616f
+ #define M_1_PI	0.318309886183790671538f
+ #define M_2_PI	0.636619772367581343076f
 #endif
 
 /************************************************************************/
 /* These defines are added by h5nc (h5nc@yahoo.com.cn)                  */
 /************************************************************************/
 #ifndef M_E
-#define M_E        2.71828182845904523536f
-#define M_LOG2E    1.44269504088896340736f
-#define M_LOG10E   0.434294481903251827651f
-#define M_LN2      0.693147180559945309417f
-#define M_LN10     2.30258509299404568402f
-#define M_2_SQRTPI 1.12837916709551257390f
-#define M_SQRT2    1.41421356237309504880f
-#define M_SQRT1_2  0.707106781186547524401f
+ #define M_E        2.71828182845904523536f
+ #define M_LOG2E    1.44269504088896340736f
+ #define M_LOG10E   0.434294481903251827651f
+ #define M_LN2      0.693147180559945309417f
+ #define M_LN10     2.30258509299404568402f
+ #define M_2_SQRTPI 1.12837916709551257390f
+ #define M_SQRT2    1.41421356237309504880f
+ #define M_SQRT1_2  0.707106781186547524401f
 #endif
 
-#ifndef __IPHONE
-#define M_FOLDER_SLASH			'\\'
-#define M_FOLDER_SLASH_WRONG	'/'
+#if IF_PLATFORM(HPLATFORM_IOS)
+ #define M_FOLDER_SLASH			'/'
+ #define M_FOLDER_SLASH_WRONG	'\\'
 #else
-#define M_FOLDER_SLASH			'/'
-#define M_FOLDER_SLASH_WRONG	'\\'
+ #define M_FOLDER_SLASH			'\\'
+ #define M_FOLDER_SLASH_WRONG	'/'
 #endif
 
-/************************************************************************/
-/* This define is added by h5nc (h5nc@yahoo.com.cn)                     */
-/************************************************************************/
-// Texture Offset
-#define HGE_TEXTUREOFFSET	0.0f
 
 /*
 ** HGE Handle types
@@ -308,12 +261,13 @@ typedef DWORD HD3DFONT;
 /*
 ** HGE Blending constants
 */
-#define	BLEND_COLORADD		1
-#define	BLEND_COLORMUL		0
-#define	BLEND_ALPHABLEND	2
-#define	BLEND_ALPHAADD		0
-#define	BLEND_ZWRITE		4
-#define	BLEND_NOZWRITE		0
+#define	BLEND_COLORADD		0x0001
+#define	BLEND_COLORMUL		0x0000
+#define	BLEND_ALPHABLEND	0x0002
+#define	BLEND_ALPHAADD		0x0000
+#define	BLEND_ZWRITE		0x0004
+#define	BLEND_NOZWRITE		0x0000
+#define BLEND_NULL			0xff00
 
 #define BLEND_DEFAULT		(BLEND_COLORMUL | BLEND_ALPHABLEND | BLEND_NOZWRITE)
 #define BLEND_DEFAULT_Z		(BLEND_COLORMUL | BLEND_ALPHABLEND | BLEND_ZWRITE)
@@ -351,6 +305,8 @@ enum hgeBoolState
 	HGE_MANAGELOOP		= 0x0108,	// bool		manage loop? (default: true)
 	HGE_USEDINPUT		= 0x0109,	// bool		use dinput? (default: true)
 	HGE_NOWMPAINT		= 0x010A,	// bool		no WM_PAINT render? (default: false)
+	HGE_OWNWINDOW		= 0x010B,	// bool		own window? (default: true)
+	HGE_CALLRENDER		= 0x010C,	// bool		call render? (default: true)
 
 	HGEBOOLSTATE_FORCE_DWORD = 0x7FFFFFFF
 };
@@ -453,20 +409,20 @@ struct hgeVertex
 	float			tx, ty;		// texture coordinates
 };
 
-#ifdef __PSP
-struct pspVertex
-{
-	unsigned int color;
-	float x,y,z;
-};
+#if IF_PLATFORM(HPLATFORM_PSP)
+ struct pspVertex
+ {
+ 	unsigned int color;
+ 	float x,y,z;
+ };
 
-struct pspVertexUV
-{
-	float u, v;
-	unsigned int color;
-	float x,y,z;
-};
-#endif // __PSP
+ struct pspVertexUV
+ {
+ 	float u, v;
+ 	unsigned int color;
+ 	float x,y,z;
+ };
+#endif
 
 /*
 ** HGE Triple structure
@@ -971,6 +927,7 @@ public:
 
 	virtual HTEXTURE	CALL	Texture_Create(int width, int height) = 0;
 	virtual HTEXTURE	CALL	Texture_Load(const char *filename, DWORD size=0, bool bMipmap=false) = 0;
+	virtual bool		CALL	Texture_AddToList(HTEXTURE tex, int width, int height) = 0;
 	virtual void		CALL	Texture_Free(HTEXTURE tex) = 0;
 	virtual DWORD		CALL	Texture_GetTexture(HTEXTURE tex) = 0;
 	virtual int			CALL	Texture_GetWidth(HTEXTURE tex, bool bOriginal=false) = 0;

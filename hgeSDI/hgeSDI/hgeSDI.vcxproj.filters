@@ -1,0 +1,512 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Main">
+      <UniqueIdentifier>{c0bc8a6c-9565-4531-927f-0dc3882a6268}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Core">
+      <UniqueIdentifier>{2c0bce8d-32b8-4297-aa7c-af653905becb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command">
+      <UniqueIdentifier>{6918c2c0-8a96-4c2e-ba31-51fd79f6d81b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Class">
+      <UniqueIdentifier>{38560854-45e2-4994-adaa-ba4bd0443108}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Helper">
+      <UniqueIdentifier>{ebf00479-540a-42a4-a80b-9d6e5ded2aee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\GObject">
+      <UniqueIdentifier>{40c78988-caa5-4ecf-b409-762e1a72dc40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Draw">
+      <UniqueIdentifier>{4d484b30-b36b-4248-95ca-7c2ed0532234}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Internal">
+      <UniqueIdentifier>{53f9e951-cff5-4a29-a77d-ea45ad4e54a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Layer">
+      <UniqueIdentifier>{8ea12b01-24db-419d-a85d-6323c61e25d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Template">
+      <UniqueIdentifier>{35d8b0f9-d1ec-4b14-b4c6-01971b4fc6bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UIControl">
+      <UniqueIdentifier>{4891ac1e-6c13-4d36-b234-167075716c9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\UnDoReDo">
+      <UniqueIdentifier>{f8eff250-8cee-4702-ad3b-4440d7896421}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Node">
+      <UniqueIdentifier>{a984d26f-074c-48f0-88af-7d89125220c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UIControl\CommandPanel">
+      <UniqueIdentifier>{4f8b79fe-2d92-4fa1-9662-00242ff8d6f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UIControl\HistoryPanel">
+      <UniqueIdentifier>{d0f38d13-1725-4f26-8fe9-7542bed68a6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UIControl\LayerPanel">
+      <UniqueIdentifier>{55050f02-1710-470e-b408-bca1cad6af87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UIControl\Popup">
+      <UniqueIdentifier>{f7cac6ab-b746-49eb-866a-99194ef5d1e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UIControl\Button">
+      <UniqueIdentifier>{16e3eca9-73a3-466c-abca-0f2e33404670}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UIControl\Floating">
+      <UniqueIdentifier>{6e2078cb-0a63-47cf-940a-f3bb487e9a40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\GObject\GObject">
+      <UniqueIdentifier>{1d321049-eebb-46bc-b5f4-d080ad869563}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\GObject\GLayer">
+      <UniqueIdentifier>{7d50a7d6-9aff-45cf-b720-9440992d496f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\GObject\Manager">
+      <UniqueIdentifier>{f13f04fa-7124-4e6f-a4cf-3d340494eaa1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\GObject\GBaseNode">
+      <UniqueIdentifier>{09de2a9b-6a26-475e-93dd-f644ccb125e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Output">
+      <UniqueIdentifier>{a745d122-bc5a-4967-9e7a-dff686ef2594}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Helper\Manager">
+      <UniqueIdentifier>{0598e861-255e-410d-93d6-7f7bc4e2da0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Helper\Helper">
+      <UniqueIdentifier>{1cf49da2-db85-4a97-91bf-865b54a6c1bb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+    <None Include="res\info.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\buttons.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\filelarge.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\filesmall.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\main.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\writelarge.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\writesmall.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ribbon.mfcribbon-ms">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\hgeSDI.rc2">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\hgeSDIDoc.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\hgeSDI.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\Toolbar.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\Toolbar256.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\UICommandIcons_32_0.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\UICommandIcons_32_1.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\UICommandIcons_16_0 .bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\UICommandIcons_16_1.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\UICommandIcons_24_0.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\UICommandIcons_24_1.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="hgeSDI.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="hgeSDIDoc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="hgeSDIView.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Const.h">
+      <Filter>Main\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="MainDependency.h">
+      <Filter>Main\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Main.h">
+      <Filter>Main\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Command.h">
+      <Filter>Main\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="GUICursor.h">
+      <Filter>Main\Class</Filter>
+    </ClInclude>
+    <ClInclude Include="GUICoordinate.h">
+      <Filter>Main\Class</Filter>
+    </ClInclude>
+    <ClInclude Include="GLine.h">
+      <Filter>Main\GObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GShape.h">
+      <Filter>Main\GObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GPiece.h">
+      <Filter>Main\GObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GPoint.h">
+      <Filter>Main\GObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GObjectPicker.h">
+      <Filter>Main\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="BezierCommand.h">
+      <Filter>Main\Command\Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="LineCommand.h">
+      <Filter>Main\Command\Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="InitialCommand.h">
+      <Filter>Main\Command\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="NewLayerCommand.h">
+      <Filter>Main\Command\Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandDefines.h">
+      <Filter>Main\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandTemplate.h">
+      <Filter>Main\Command\Template</Filter>
+    </ClInclude>
+    <ClInclude Include="SetWorkingLayerCommand.h">
+      <Filter>Main\Command\Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="UISplitterWnd.h">
+      <Filter>UIControl</Filter>
+    </ClInclude>
+    <ClInclude Include="DeleteItemCommand.h">
+      <Filter>Main\Command\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="UICommandLogEdit.h">
+      <Filter>UIControl\CommandPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="UICommandDockablePane.h">
+      <Filter>UIControl\CommandPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="UICommandEdit.h">
+      <Filter>UIControl\CommandPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="UIHistoryListCtrl.h">
+      <Filter>UIControl\HistoryPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="UIHistoryDockablePane.h">
+      <Filter>UIControl\HistoryPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="UILayerListCtrl.h">
+      <Filter>UIControl\LayerPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="UILayerDockablePane.h">
+      <Filter>UIControl\LayerPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPopupMenu.h">
+      <Filter>UIControl\Popup</Filter>
+    </ClInclude>
+    <ClInclude Include="UIDockablePaneButton.h">
+      <Filter>UIControl\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="UIFloatingEditBox.h">
+      <Filter>UIControl\Floating</Filter>
+    </ClInclude>
+    <ClInclude Include="GObject.h">
+      <Filter>Main\GObject\GObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GLayer.h">
+      <Filter>Main\GObject\GLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="GObjectManager.h">
+      <Filter>Main\GObject\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="UIHistorySnapShotListCtrl.h">
+      <Filter>UIControl\HistoryPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="ReparentCommand.h">
+      <Filter>Main\Command\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="GBaseNode.h">
+      <Filter>Main\GObject\GBaseNode</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceCustomIDs.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputCommand.h">
+      <Filter>Main\Command\Output</Filter>
+    </ClInclude>
+    <ClInclude Include="SetNodeNameCommand.h">
+      <Filter>Main\Command\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="DuplicateCommand.h">
+      <Filter>Main\Command\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="MarqueeSelect.h">
+      <Filter>Main\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorManager.h">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="IconManager.h">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageBoxManager.h">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseCursorManager.h">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTargetManager.h">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="SnapshotManager.h">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="StringManager.h">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderHelper.h">
+      <Filter>Main\Helper\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="MathHelper.h">
+      <Filter>Main\Helper\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveNodeCommand.h">
+      <Filter>Main\Command\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveNodeBatchCommand.h">
+      <Filter>Main\Command\Node</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="hgeSDI.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="hgeSDIDoc.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="hgeSDIView.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Main\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="InitDllLoader.cpp">
+      <Filter>Main\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Command.cpp">
+      <Filter>Main\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="GUICursor.cpp">
+      <Filter>Main\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="GUICoordinate.cpp">
+      <Filter>Main\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="GLine.cpp">
+      <Filter>Main\GObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GShape.cpp">
+      <Filter>Main\GObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GPiece.cpp">
+      <Filter>Main\GObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GPoint.cpp">
+      <Filter>Main\GObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GObjectPicker.cpp">
+      <Filter>Main\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="BezierCommand.cpp">
+      <Filter>Main\Command\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="LineCommand.cpp">
+      <Filter>Main\Command\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="InitialCommand.cpp">
+      <Filter>Main\Command\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcessCommand.cpp">
+      <Filter>Main\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="NewLayerCommand.cpp">
+      <Filter>Main\Command\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandTemplate.cpp">
+      <Filter>Main\Command\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandGetTemplate.cpp">
+      <Filter>Main\Command\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="SetWorkingLayerCommand.cpp">
+      <Filter>Main\Command\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="UISplitterWnd.cpp">
+      <Filter>UIControl</Filter>
+    </ClCompile>
+    <ClCompile Include="UnDoReDoCommand.cpp">
+      <Filter>Main\Command\UnDoReDo</Filter>
+    </ClCompile>
+    <ClCompile Include="DeleteItemCommand.cpp">
+      <Filter>Main\Command\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="UICommandDockablePane.cpp">
+      <Filter>UIControl\CommandPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="UICommandEdit.cpp">
+      <Filter>UIControl\CommandPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="UICommandLogEdit.cpp">
+      <Filter>UIControl\CommandPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="UIHistoryDockablePane.cpp">
+      <Filter>UIControl\HistoryPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="UIHistoryListCtrl.cpp">
+      <Filter>UIControl\HistoryPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="UILayerDockablePane.cpp">
+      <Filter>UIControl\LayerPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="UILayerListCtrl.cpp">
+      <Filter>UIControl\LayerPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPopupMenu.cpp">
+      <Filter>UIControl\Popup</Filter>
+    </ClCompile>
+    <ClCompile Include="UIDockablePaneButton.cpp">
+      <Filter>UIControl\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="UIFloatingEditBox.cpp">
+      <Filter>UIControl\Floating</Filter>
+    </ClCompile>
+    <ClCompile Include="GObject.cpp">
+      <Filter>Main\GObject\GObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GLayer.cpp">
+      <Filter>Main\GObject\GLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="GObjectManager.cpp">
+      <Filter>Main\GObject\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="UIHistorySnapShotListCtrl.cpp">
+      <Filter>UIControl\HistoryPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="ReparentCommand.cpp">
+      <Filter>Main\Command\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="GBaseNode.cpp">
+      <Filter>Main\GObject\GBaseNode</Filter>
+    </ClCompile>
+    <ClCompile Include="OutputCommand.cpp">
+      <Filter>Main\Command\Output</Filter>
+    </ClCompile>
+    <ClCompile Include="SetNodeNameCommand.cpp">
+      <Filter>Main\Command\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="DuplicateCommand.cpp">
+      <Filter>Main\Command\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="MarqueeSelect.cpp">
+      <Filter>Main\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorManager.cpp">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="IconManager.cpp">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageBoxManager.cpp">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="MouseCursorManager.cpp">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTargetManager.cpp">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="SnapshotManager.cpp">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="StringManager.cpp">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="MathHelper.cpp">
+      <Filter>Main\Helper\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderHelper.cpp">
+      <Filter>Main\Helper\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveNodeCommand.cpp">
+      <Filter>Main\Command\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveNodeBatchCommand.cpp">
+      <Filter>Main\Command\Node</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="hgeSDI.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

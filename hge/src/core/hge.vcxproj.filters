@@ -76,6 +76,7 @@
     <ClInclude Include="..\..\mmgr\mmgr.h">
       <Filter>mmgr</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\hge_platform_macro.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="zlib">
