@@ -1,16 +1,16 @@
 /****************************************************************************
-** Meta object code from reading C++ file 'kad_qt.h'
+** Meta object code from reading C++ file 'qtui_commanddockable.h'
 **
-** Created: Wed Jun 20 20:15:24 2012
+** Created: Thu Jun 21 22:32:13 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
 #include "StdAfx.h"
-#include "../../kad_qt.h"
+#include "../../qtui_commanddockable.h"
 #if !defined(Q_MOC_OUTPUT_REVISION)
-#error "The header file 'kad_qt.h' doesn't include <QObject>."
+#error "The header file 'qtui_commanddockable.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 63
 #error "This file was generated using the moc from 4.8.1. It"
 #error "cannot be used with the include files from this version of Qt."
@@ -18,7 +18,7 @@
 #endif
 
 QT_BEGIN_MOC_NAMESPACE
-static const uint qt_meta_data_Kad_QT[] = {
+static const uint qt_meta_data_QTUI_CommandDockable[] = {
 
  // content:
        6,       // revision
@@ -34,11 +34,11 @@ static const uint qt_meta_data_Kad_QT[] = {
        0        // eod
 };
 
-static const char qt_meta_stringdata_Kad_QT[] = {
-    "Kad_QT\0"
+static const char qt_meta_stringdata_QTUI_CommandDockable[] = {
+    "QTUI_CommandDockable\0"
 };
 
-void Kad_QT::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+void QTUI_CommandDockable::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     Q_UNUSED(_o);
     Q_UNUSED(_id);
@@ -46,35 +46,35 @@ void Kad_QT::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
     Q_UNUSED(_a);
 }
 
-const QMetaObjectExtraData Kad_QT::staticMetaObjectExtraData = {
+const QMetaObjectExtraData QTUI_CommandDockable::staticMetaObjectExtraData = {
     0,  qt_static_metacall 
 };
 
-const QMetaObject Kad_QT::staticMetaObject = {
-    { &QMainWindow::staticMetaObject, qt_meta_stringdata_Kad_QT,
-      qt_meta_data_Kad_QT, &staticMetaObjectExtraData }
+const QMetaObject QTUI_CommandDockable::staticMetaObject = {
+    { &QWidget::staticMetaObject, qt_meta_stringdata_QTUI_CommandDockable,
+      qt_meta_data_QTUI_CommandDockable, &staticMetaObjectExtraData }
 };
 
 #ifdef Q_NO_DATA_RELOCATION
-const QMetaObject &Kad_QT::getStaticMetaObject() { return staticMetaObject; }
+const QMetaObject &QTUI_CommandDockable::getStaticMetaObject() { return staticMetaObject; }
 #endif //Q_NO_DATA_RELOCATION
 
-const QMetaObject *Kad_QT::metaObject() const
+const QMetaObject *QTUI_CommandDockable::metaObject() const
 {
     return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
 }
 
-void *Kad_QT::qt_metacast(const char *_clname)
+void *QTUI_CommandDockable::qt_metacast(const char *_clname)
 {
     if (!_clname) return 0;
-    if (!strcmp(_clname, qt_meta_stringdata_Kad_QT))
-        return static_cast<void*>(const_cast< Kad_QT*>(this));
-    return QMainWindow::qt_metacast(_clname);
+    if (!strcmp(_clname, qt_meta_stringdata_QTUI_CommandDockable))
+        return static_cast<void*>(const_cast< QTUI_CommandDockable*>(this));
+    return QWidget::qt_metacast(_clname);
 }
 
-int Kad_QT::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+int QTUI_CommandDockable::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
-    _id = QMainWindow::qt_metacall(_c, _id, _a);
+    _id = QWidget::qt_metacall(_c, _id, _a);
     if (_id < 0)
         return _id;
     return _id;

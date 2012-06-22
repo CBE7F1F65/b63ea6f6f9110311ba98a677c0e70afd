@@ -18,6 +18,9 @@
 
 #include "Resource.h"
 
+#include "qtui_commandpanel_commandlog.h"
+#include "kad_qt.h"
+
 #include <sstream>
 
 #define MV_ACTIVEDELAY	10
@@ -368,6 +371,15 @@ void MainInterface::CallUpdateStatusBarText( int id, const char * text )
 
 void MainInterface::CallAppendCommandLogText( const char * text, bool bNewLine/*=true*/ )
 {
+	Kad_QT * pMQT = Kad_QT::pMainWindow;
+	if (pMQT)
+	{
+		QTUI_CommandPanel_CommandLog * p = pMQT->findChild<QTUI_CommandPanel_CommandLog*>();
+		if (p)
+		{
+			p->AppendCommandLogText(text, bNewLine);
+		}
+	}
 //	parentview->GetMainFrame()->AppendCommandLogText(text, bNewLine);
 }
 

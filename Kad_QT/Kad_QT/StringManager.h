@@ -190,6 +190,9 @@ public:
 	{	\
 		str##STRNAME##Name = DEF;	\
 		hge->Ini_SetString(SEC, #STRNAME, "");	\
+        if (bWrite) \
+        {   \
+        }   \
 	}
 
 	_SMFDEF(	SnapshotDefault,	INIS_DEFAULTSTR,	"Snapshot"	);

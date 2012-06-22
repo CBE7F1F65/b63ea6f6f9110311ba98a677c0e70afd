@@ -77,7 +77,7 @@ public:
 
 	// Should be derived:
 	virtual bool canMove(){return false;};
-	virtual bool MoveTo(float newx, float newy, bool bTry){DASSERT(true); return false;};
+    virtual bool MoveTo(float newx, float newy, bool bTry){DASSERT(true); return false;};
 	virtual bool MoveByOffset(float xoffset, float yoffset, bool bTry){return MoveTo(getX()+xoffset, getY()+yoffset, bTry);};
 
 	virtual bool isLayer(){return false;};

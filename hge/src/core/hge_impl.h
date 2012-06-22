@@ -23,9 +23,9 @@ struct CRenderTargetList
 	IDirect3DTexture9*	pTex;
 	IDirect3DSurface9*	pDepth;
 #elif IF_RENDERSYS(HRENDERSYS_GLS)
+	GLuint		pFrameBuffer;
 	GLuint		pTex;
 	GLuint		pDepth;
-	GLuint		pFrameBuffer;
 #else
 	int pTex;
 	int pDepth;

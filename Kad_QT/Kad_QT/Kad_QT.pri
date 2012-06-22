@@ -51,7 +51,10 @@ HEADERS += ./Const.h \
     ./SetWorkingLayerCommand.h \
     ./SnapshotManager.h \
     ./StringManager.h \
-    ./targetver.h
+    ./targetver.h \
+    ./qtui_commanddockable.h \
+    ./qtui_commandpanel_commandedit.h \
+    qtui_commandpanel_commandlog.h
 SOURCES += ./InitDllLoader.cpp \
     ./kad_qt.cpp \
     ./main.cpp \
@@ -95,6 +98,10 @@ SOURCES += ./InitDllLoader.cpp \
     ./SetWorkingLayerCommand.cpp \
     ./SnapshotManager.cpp \
     ./StringManager.cpp \
-    ./UnDoReDoCommand.cpp
-FORMS += ./kad_qt.ui
+    ./UnDoReDoCommand.cpp \
+    ./qtui_commanddockable.cpp \
+    ./qtui_commandpanel_commandedit.cpp \
+    qtui_commandpanel_commandlog.cpp
+FORMS += ./kad_qt.ui \
+    qtui_commanddockable.ui
 RESOURCES += kad_qt.qrc

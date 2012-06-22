@@ -15,14 +15,14 @@ public:
 	virtual void paintGL();
 
 protected:
-	virtual void keyPressEvent(QKeyEvent * event);
-	virtual void keyReleaseEvent(QKeyEvent *event);
-	virtual void mouseMoveEvent(QMouseEvent *event);
-	virtual void mousePressEvent(QMouseEvent *event);
-	virtual void mouseReleaseEvent(QMouseEvent *event);
-	virtual void wheelEvent(QWheelEvent *event);
-	virtual void enterEvent(QEvent *event);
-	virtual void leaveEvent(QEvent *event);
+    virtual void keyPressEvent(QKeyEvent * e);
+    virtual void keyReleaseEvent(QKeyEvent *e);
+    virtual void mouseMoveEvent(QMouseEvent *e);
+    virtual void mousePressEvent(QMouseEvent *e);
+    virtual void mouseReleaseEvent(QMouseEvent *e);
+    virtual void wheelEvent(QWheelEvent *e);
+    virtual void enterEvent(QEvent *e);
+    virtual void leaveEvent(QEvent *e);
 
 signals:
     

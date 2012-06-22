@@ -10,7 +10,9 @@ CONFIG += debug
 DEFINES += __DEBUG __OPENGL QT_LARGEFILE_SUPPORT QT_XML_LIB QT_OPENGL_LIB
 INCLUDEPATH += ./GeneratedFiles \
     ./GeneratedFiles/Debug \
+    "c:/Program Files (x86)/Microsoft DirectX SDK (February 2010)/Include" \
     .
+
 LIBS += -L"./../../hge/lib/vc" \
     -lopengl32 \
     -lglu32
@@ -21,3 +23,7 @@ OBJECTS_DIR += debug
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(Kad_QT.pri)
+
+HEADERS +=
+
+SOURCES +=

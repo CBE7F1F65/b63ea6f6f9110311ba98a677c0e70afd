@@ -941,11 +941,11 @@ HTARGET CALL HGE_Impl::Target_Create(int width, int height, bool zbuffer)
 	QGLFunctions funcs(QGLContext::currentContext());
 	if (funcs.hasOpenGLFeature(QGLFunctions::Framebuffers))
 	{
-		funcs.glGenFramebuffers(1, (unsigned int*)(&pTarget->pFrameBuffer));
+		funcs.glGenFramebuffers(1, (GLuint *)(&(pTarget->pFrameBuffer)));
 		funcs.glBindFramebuffer(GL_FRAMEBUFFER, pTarget->pFrameBuffer);
 		if (zbuffer)
 		{
-			funcs.glGenRenderbuffers(1, (unsigned int*)&(pTarget->pDepth));
+			funcs.glGenRenderbuffers(1, (GLuint*)&(pTarget->pDepth));
 			funcs.glBindRenderbuffer(GL_RENDERBUFFER, pTarget->pDepth);
 			funcs.glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
 			funcs.glBindRenderbuffer(GL_RENDERBUFFER, 0);

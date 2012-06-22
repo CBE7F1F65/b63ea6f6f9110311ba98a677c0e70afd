@@ -37,9 +37,9 @@ GUICoordinate::~GUICoordinate()
 void GUICoordinate::RenderGridReDraw()
 {
 	hge->Gfx_Clear(0);
-	for (vector<GridInfo>::iterator it=gridxs_s.begin(); it!=gridxs_s.end(); ++it)
+	for (list<GridInfo>::iterator it=gridxs_s.begin(); it!=gridxs_s.end(); ++it)
 	{
-		for (vector<GridInfo>::iterator jt=gridys_s.begin(); jt!=gridys_s.end(); ++jt)
+		for (list<GridInfo>::iterator jt=gridys_s.begin(); jt!=gridys_s.end(); ++jt)
 		{
 			DWORD col;
 			switch (it->mgridID)
@@ -137,6 +137,7 @@ void GUICoordinate::SetGrid( int _measuretype, float _originxpos, float _originy
 	measuretype = _measuretype;
 	originx_s = _originxpos;
 	originy_s = _originypos;
+
 	switch (measuretype)
 	{
 	case GUICG_METRIC:
@@ -146,7 +147,7 @@ void GUICoordinate::SetGrid( int _measuretype, float _originxpos, float _originy
 		nsubgrid = 4;
 		break;
 	}
-	DoZoom(0, 0, _scale);
+//	DoZoom(0, 0, _scale);
 }
 
 void GUICoordinate::OnProcessZoomCommand()

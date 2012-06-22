@@ -85,8 +85,8 @@ public:
 		float scrvalue;
 		int mgridID;
 	};
-	vector<GridInfo> gridxs_s;
-	vector<GridInfo> gridys_s;
+	list<GridInfo> gridxs_s;
+	list<GridInfo> gridys_s;
 
 	bool panwillterminate;
 

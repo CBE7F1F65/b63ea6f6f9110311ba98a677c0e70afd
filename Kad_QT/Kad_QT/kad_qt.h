@@ -16,8 +16,14 @@ protected:
 	virtual void closeEvent(QCloseEvent *event);
 
 
+private slots:
+    void on_action_Command_Line_triggered();
+
 private:
 	Ui::Kad_QTClass ui;
+
+public:
+	static Kad_QT * pMainWindow;
 };
 
 #endif // KAD_QT_H

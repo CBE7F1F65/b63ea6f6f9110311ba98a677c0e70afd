@@ -24,26 +24,30 @@ QTUI_GLView::~QTUI_GLView()
 
 void QTUI_GLView::initializeGL()
 {
+    QGLWidget::initializeGL();
+
 	MainInterface::getInstance().OnPreInit();
 	MainInterface::getInstance().OnInit(this, this->width(), this->height());
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_BLEND);
+//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//	glEnable(GL_BLEND);
 	if (!updatetimer)
 	{
 		updatetimer = new QTimer(this);
 		connect( updatetimer, SIGNAL(timeout()), SLOT(SIG_OnUpdate()) );
-		updatetimer->start( 4 );
-	}
+        updatetimer->start( 4 );
+    }
 }
 
 void QTUI_GLView::resizeGL( int w, int h )
 {
 	MainInterface::getInstance().OnResizeWindow(w, h);
+    QGLWidget::resizeGL(w, h);
 }
 
 void QTUI_GLView::paintGL()
 {
 	MainInterface::getInstance().Render();
+    QGLWidget::paintGL();
 }
 
 void QTUI_GLView::SIG_OnUpdate()
@@ -58,77 +62,103 @@ void QTUI_GLView::SIG_OnUpdate()
 	updateGL();
 
 	MainInterface::getInstance().OnUpdateTimer();
+	MainInterface::getInstance().hge->System_Log("s");
 //	ClearKeyState();
 }
 
-void QTUI_GLView::keyPressEvent( QKeyEvent * event )
+void QTUI_GLView::keyPressEvent( QKeyEvent * e )
 {
-	keyState[event->key()] = 1;
+    keyState[e->key()&0xff] = 1;
+
+    MainInterface * pmain = &MainInterface::getInstance();
+    if (e->modifiers() & Qt::ControlModifier)
+    {
+        if (e->key() == Key_Z)
+        {
+            pmain->OnUnDo();
+        }
+        else if (e->key() == Key_Y)
+        {
+            pmain->OnReDo();
+        }
+    }
+
+    QGLWidget::keyPressEvent(e);
 }
 
-void QTUI_GLView::keyReleaseEvent( QKeyEvent *event )
+void QTUI_GLView::keyReleaseEvent( QKeyEvent * e )
 {
-	keyState[event->key()] = 0;
+    keyState[e->key()&0xff] = 0;
+    QGLWidget::keyReleaseEvent(e);
 }
 
-void QTUI_GLView::mouseMoveEvent( QMouseEvent *event )
+void QTUI_GLView::mouseMoveEvent( QMouseEvent *e )
 {
 	if (hge)
 	{
-		hge->Input_SetMousePos(event->x(), event->y());
+        hge->Input_SetMousePos(e->x(), e->y());
 	}
+    QGLWidget::mouseMoveEvent(e);
 }
 
-void QTUI_GLView::mousePressEvent( QMouseEvent *event )
+void QTUI_GLView::mousePressEvent( QMouseEvent *e )
 {
 	setFocus();
 	if (hge)
 	{
-		hge->Input_SetDIMouseKey(event->button());
+        hge->Input_SetDIMouseKey(e->button());
 	}
+    QGLWidget::mousePressEvent(e);
 }
 
-void QTUI_GLView::mouseReleaseEvent( QMouseEvent *event )
+void QTUI_GLView::mouseReleaseEvent( QMouseEvent *e )
 {
 	if (hge)
 	{
-		hge->Input_SetDIMouseKey(event->button(), false);
+        hge->Input_SetDIMouseKey(e->button(), false);
 	}
+    QGLWidget::mouseReleaseEvent(e);
 
 }
 
-void QTUI_GLView::wheelEvent( QWheelEvent *event )
+void QTUI_GLView::wheelEvent( QWheelEvent *e )
 {
-
+    QGLWidget::wheelEvent(e);
 }
 
-void QTUI_GLView::enterEvent( QEvent *event )
+void QTUI_GLView::enterEvent( QEvent *e )
 {
-	setFocus();
-	QApplication::setOverrideCursor( QCursor( BlankCursor ) );
-	setMouseTracking(true);
+    setFocus();
+    QGLWidget::enterEvent(e);
 }
 
-void QTUI_GLView::leaveEvent( QEvent *event )
+void QTUI_GLView::leaveEvent( QEvent *e )
 {
-	QApplication::setOverrideCursor( QCursor( ArrowCursor ) );
-	setMouseTracking(false);
+    QGLWidget::leaveEvent(e);
 }
 
 void QTUI_GLView::OnFrame()
 {
-	if (QApplication::mouseButtons() & MouseButton::LeftButton)
+	if (QApplication::mouseButtons() & Qt::MouseButton::LeftButton)
 	{
 		hge->Input_SetDIMouseKey(0);
 	}
-	if (QApplication::mouseButtons() & MouseButton::RightButton)
+	if (QApplication::mouseButtons() & Qt::MouseButton::RightButton)
 	{
 		hge->Input_SetDIMouseKey(1);
 	}
-	if (keyState[Key_Space])
+    if (keyState[Key_Space&0xff])
 	{
 		hge->Input_SetDIKey(DIK_SPACE);
-	}
+    }
+    if (keyState[Key_Escape&0xff])
+    {
+        hge->Input_SetDIKey(DIK_ESCAPE);
+    }
+    if (keyState[Key_Enter&0xff])
+    {
+        hge->Input_SetDIKey(DIK_RETURN);
+    }
 }
 
 void QTUI_GLView::ClearKeyState()
