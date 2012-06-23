@@ -25,9 +25,12 @@ protected:
     virtual void leaveEvent(QEvent *e);
 
 signals:
+    void SIG_OnChar(QString);
     
 public slots:
-	void SIG_OnUpdate();
+    void SLT_OnUpdate();
+
+public:
 	void OnFrame();
 
 private:

@@ -56,7 +56,8 @@ HEADERS += ./Const.h \
     ./qtui_commandpanel_commandedit.h \
     qtui_commandpanel_commandlog.h \
     qtui_commandfloating_widget.h \
-    qtui_commandfloating_command.h
+    qtui_commandfloating_command.h \
+    qmaininterface.h
 SOURCES += ./InitDllLoader.cpp \
     ./kad_qt.cpp \
     ./main.cpp \
@@ -105,7 +106,8 @@ SOURCES += ./InitDllLoader.cpp \
     ./qtui_commandpanel_commandedit.cpp \
     qtui_commandpanel_commandlog.cpp \
     qtui_commandfloating_widget.cpp \
-    qtui_commandfloating_command.cpp
+    qtui_commandfloating_command.cpp \
+    qmaininterface.cpp
 FORMS += ./kad_qt.ui \
     qtui_commanddockable.ui \
     qtui_commandfloating_widget.ui

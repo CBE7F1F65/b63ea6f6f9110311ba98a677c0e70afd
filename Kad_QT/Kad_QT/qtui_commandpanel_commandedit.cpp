@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "qtui_commandpanel_commandedit.h"
 #include "MainInterface.h"
+#include "qmaininterface.h"
 
 QTUI_CommandPanel_CommandEdit::QTUI_CommandPanel_CommandEdit(QWidget *parent) :
     QPlainTextEdit(parent)
 {
+    QMainInterface::getInstance().SetPCommandEdit(this);
 }
 
 void QTUI_CommandPanel_CommandEdit::keyPressEvent(QKeyEvent *e)

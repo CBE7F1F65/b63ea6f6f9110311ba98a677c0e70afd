@@ -21,9 +21,6 @@ private slots:
 
 private:
 	Ui::Kad_QTClass ui;
-
-public:
-	static Kad_QT * pMainWindow;
 };
 
 #endif // KAD_QT_H

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "qtui_glview.h"
 #include "MainInterface.h"
+#include "qmaininterface.h"
 
 using namespace Qt;
 
@@ -9,6 +10,8 @@ HGE * hge=MainInterface::getInstance().hge;
 QTUI_GLView::QTUI_GLView(QWidget *parent)
 	: QGLWidget(parent)
 {
+    QMainInterface::getInstance().SetPGLView(this);
+
 	updatetimer = NULL;
 	ClearKeyState();
 }
@@ -33,7 +36,7 @@ void QTUI_GLView::initializeGL()
 	if (!updatetimer)
 	{
 		updatetimer = new QTimer(this);
-		connect( updatetimer, SIGNAL(timeout()), SLOT(SIG_OnUpdate()) );
+        connect( updatetimer, SIGNAL(timeout()), SLOT(SLT_OnUpdate()) );
         updatetimer->start( 4 );
     }
 }
@@ -50,7 +53,7 @@ void QTUI_GLView::paintGL()
     QGLWidget::paintGL();
 }
 
-void QTUI_GLView::SIG_OnUpdate()
+void QTUI_GLView::SLT_OnUpdate()
 {
 	if (hge)
 	{
@@ -68,21 +71,30 @@ void QTUI_GLView::SIG_OnUpdate()
 
 void QTUI_GLView::keyPressEvent( QKeyEvent * e )
 {
-    keyState[e->key()&0xff] = 1;
+    int ekey = e->key();
+
+    keyState[ekey&0xff] = 1;
 
     MainInterface * pmain = &MainInterface::getInstance();
     if (e->modifiers() & Qt::ControlModifier)
     {
-        if (e->key() == Key_Z)
+        if (ekey == Key_Z)
         {
             pmain->OnUnDo();
         }
-        else if (e->key() == Key_Y)
+        else if (ekey == Key_Y)
         {
             pmain->OnReDo();
         }
     }
 
+    if (ekey != Qt::Key_Backspace && ekey != Qt::Key_Delete && ekey != Qt::Key_Space && ekey != Qt::Key_Escape)
+    {
+        if (!e->text().isEmpty())
+        {
+            QMainInterface::getInstance().GetPCommandFloatingWidget()->OnReceiveTextFromGL(e->text());
+        }
+    }
     QGLWidget::keyPressEvent(e);
 }
 
