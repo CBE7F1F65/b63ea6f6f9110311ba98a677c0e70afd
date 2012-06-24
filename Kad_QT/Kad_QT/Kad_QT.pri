@@ -57,7 +57,10 @@ HEADERS += ./Const.h \
     qtui_commandpanel_commandlog.h \
     qtui_commandfloating_widget.h \
     qtui_commandfloating_command.h \
-    qmaininterface.h
+    qmaininterface.h \
+    qtui_history_dockablepane.h \
+    qtui_history_table.h \
+    qtui_history_snapshottable.h
 SOURCES += ./InitDllLoader.cpp \
     ./kad_qt.cpp \
     ./main.cpp \
@@ -107,8 +110,12 @@ SOURCES += ./InitDllLoader.cpp \
     qtui_commandpanel_commandlog.cpp \
     qtui_commandfloating_widget.cpp \
     qtui_commandfloating_command.cpp \
-    qmaininterface.cpp
+    qmaininterface.cpp \
+    qtui_history_dockablepane.cpp \
+    qtui_history_table.cpp \
+    qtui_history_snapshottable.cpp
 FORMS += ./kad_qt.ui \
     qtui_commanddockable.ui \
-    qtui_commandfloating_widget.ui
+    qtui_commandfloating_widget.ui \
+    qtui_history_dockablepane.ui
 RESOURCES += kad_qt.qrc

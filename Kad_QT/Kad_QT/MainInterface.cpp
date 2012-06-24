@@ -740,8 +740,8 @@ void MainInterface::DoCheckFloatCommand()
 		else if (dik == DIK_Y)
 		{
 			if (!balt && !bshift)
-			{
-				Command::getInstance().DoReDo();
+            {
+                Command::getInstance().CreateReDoCommandCommit();
 			}
 		}
 	}
@@ -764,31 +764,37 @@ void MainInterface::MBeep( int id/*=-1*/ )
 
 void MainInterface::OnPushRevertable( const char * desc, const char * commandstr, int command )
 {
+    QMainInterface::getInstance().GetPHistoryTable()->AddHistory(desc, commandstr, command);
 //	parentview->GetMainFrame()->AddHistory(desc, commandstr, command);
 }
 
 void MainInterface::OnUnDo( int step/*=1*/ )
 {
+    QMainInterface::getInstance().GetPHistoryTable()->ChangeCurrentHistory(-step);
 //	parentview->GetMainFrame()->ChangeCurrentHistory(-step);
 }
 
 void MainInterface::OnReDo( int step/*=1*/ )
 {
+    QMainInterface::getInstance().GetPHistoryTable()->ChangeCurrentHistory(step);
 //	parentview->GetMainFrame()->ChangeCurrentHistory(step);
 }
 
 void MainInterface::OnClearReDo(int ndelete)
 {
+    QMainInterface::getInstance().GetPHistoryTable()->ClearLaterHistory(ndelete);
 //	parentview->GetMainFrame()->ClearLaterHistory(ndelete);
 }
 
 void MainInterface::OnClearUnDo(int ndelete)
 {
+    QMainInterface::getInstance().GetPHistoryTable()->ClearPreviousHistory(ndelete);
 //	parentview->GetMainFrame()->ClearPreviousHistory(ndelete);
 }
 
 void MainInterface::OnClearPreviousHistory( int ndelete/*=1*/ )
 {
+    QMainInterface::getInstance().GetPHistoryTable()->ClearPreviousHistory(ndelete);
 //	parentview->GetMainFrame()->ClearPreviousHistory(ndelete);
 }
 

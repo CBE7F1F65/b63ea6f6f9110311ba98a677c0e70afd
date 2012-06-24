@@ -7,6 +7,7 @@
 #include "qtui_commandpanel_commandedit.h"
 #include "qtui_commandfloating_widget.h"
 #include "qtui_commandfloating_command.h"
+#include "qtui_history_table.h"
 
 class QMainInterface
 {
@@ -20,6 +21,8 @@ private:
     void operator=(QMainInterface const&);
 
 public:
+
+    void OnMainFrameSetupUIDone();
 
     /*
     Kad_QT * pMainWindow;
@@ -51,8 +54,11 @@ public:
     _QMWDEF(QTUI_GLView, GLView);
     _QMWDEF(QTUI_CommandPanel_CommandLog, CommandLog);
     _QMWDEF(QTUI_CommandPanel_CommandEdit, CommandEdit);
+    _QMWDEF(QTUI_CommandDockable, CommandDockable);
     _QMWDEF(QTUI_CommandFloating_Widget, CommandFloatingWidget);
     _QMWDEF(QTUI_CommandFloating_Command, CommandFloatingEdit);
+    _QMWDEF(QTUI_History_DockablePane, HistoryDockable);
+    _QMWDEF(QTUI_History_Table, HistoryTable);
 
 #undef _QMWDEF
 

@@ -40,7 +40,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1226</width>
+         <width>1145</width>
          <height>560</height>
         </rect>
        </property>
@@ -89,20 +89,23 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu">
+   <widget class="QMenu" name="MainMenu_File">
     <property name="title">
      <string> 文件(&amp;F)</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menu_E">
+   <widget class="QMenu" name="MainMenu_Edit">
     <property name="title">
      <string>编辑(&amp;E)</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menu_E_2">
+   <widget class="QMenu" name="MainMenu_View">
     <property name="title">
-     <string>视图(&amp;E)</string>
+     <string>视图(&amp;V)</string>
     </property>
+    <addaction name="MMView_CommandWindow"/>
+    <addaction name="MMView_HistoryWindow"/>
+    <addaction name="MMView_LayerWindow"/>
    </widget>
    <widget class="QMenu" name="menu_D">
     <property name="title">
@@ -110,9 +113,9 @@
     </property>
     <addaction name="action_Command_Line"/>
    </widget>
-   <addaction name="menu"/>
-   <addaction name="menu_E"/>
-   <addaction name="menu_E_2"/>
+   <addaction name="MainMenu_File"/>
+   <addaction name="MainMenu_Edit"/>
+   <addaction name="MainMenu_View"/>
    <addaction name="menu_D"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -167,9 +170,42 @@
     </layout>
    </widget>
   </widget>
+  <widget class="QTUI_History_DockablePane" name="HistoryPanel_Dockable">
+   <property name="floating">
+    <bool>true</bool>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents"/>
+  </widget>
   <action name="action_Command_Line">
    <property name="text">
     <string>直线(&amp;L)</string>
+   </property>
+  </action>
+  <action name="MMView_CommandWindow">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>指令窗口(&amp;C)</string>
+   </property>
+  </action>
+  <action name="MMView_HistoryWindow">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>历史窗口(H)</string>
+   </property>
+  </action>
+  <action name="MMView_LayerWindow">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>层窗口(L)</string>
    </property>
   </action>
  </widget>
@@ -193,7 +229,78 @@
    <header location="global">qtui_commandfloating_widget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QTUI_History_DockablePane</class>
+   <extends>QDockWidget</extends>
+   <header location="global">qtui_history_dockablepane.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>HistoryPanel_Dockable</sender>
+   <signal>visibilityChanged(bool)</signal>
+   <receiver>MMView_HistoryWindow</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1204</x>
+     <y>310</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CommandPanel_Dockable</sender>
+   <signal>visibilityChanged(bool)</signal>
+   <receiver>MMView_CommandWindow</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>622</x>
+     <y>675</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MMView_CommandWindow</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>CommandPanel_Dockable</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>622</x>
+     <y>675</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MMView_HistoryWindow</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>HistoryPanel_Dockable</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1204</x>
+     <y>310</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

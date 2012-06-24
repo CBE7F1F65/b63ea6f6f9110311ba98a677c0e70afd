@@ -12,6 +12,8 @@ Kad_QT::Kad_QT(QWidget *parent, Qt::WFlags flags)
 
 	ui.setupUi(this);
 
+    QMainInterface::getInstance().OnMainFrameSetupUIDone();
+
     StringManager * psm = &StringManager::getInstance();
     QSettings settings(psm->GetRegistryKeyName(), psm->GetAppIDName());
     restoreGeometry(settings.value(psm->GetRegistryGeometryName()).toByteArray());

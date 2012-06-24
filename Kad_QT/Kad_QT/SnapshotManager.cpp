@@ -107,6 +107,7 @@ int SnapshotManager::DeleteSnapshot( int nSnapshot )
 	{
 		if (i==nSnapshot)
 		{
+            it->ClearSet();
 			snapshots.erase(it);
 			break;
 		}
