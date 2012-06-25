@@ -13,7 +13,8 @@ public:
 	~Kad_QT();
 
 protected:
-	virtual void closeEvent(QCloseEvent *event);
+    virtual void closeEvent(QCloseEvent *event);
+    virtual bool eventFilter(QObject *target, QEvent *e);
 
 
 private slots:

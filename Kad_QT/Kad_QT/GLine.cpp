@@ -112,6 +112,10 @@ void GStraightLine::OnRender( int iHighlightLevel/*=0*/ )
 bool GStraightLine::Clone( GObject * pNewParent )
 {
 	_GOBJ_CLONE_PRE(GStraightLine);
+
+    _node->plbegin = NULL;
+    _node->plend = NULL;
+
 	_GOBJ_CLONE_POST_NORET();
 	list<GObject *>::reverse_iterator it=_node->listChildren.rbegin();
 	_node->plbegin = (GAnchorPoint *)*it;
@@ -350,7 +354,12 @@ void GBezierLine::GetBoundingBox( float *xl, float *yt, float *xr, float * yb )
 
 bool GBezierLine::Clone( GObject * pNewParent )
 {
-	_GOBJ_CLONE_PRE(GBezierLine);
+    _GOBJ_CLONE_PRE(GBezierLine);
+
+    _node->plbegin = NULL;
+    _node->plend = NULL;
+    _node->pmid = NULL;
+
 	_GOBJ_CLONE_POST_NORET();
 	list<GObject *>::reverse_iterator it=_node->listChildren.rbegin();
 	_node->plbegin = (GAnchorPoint *)*it;

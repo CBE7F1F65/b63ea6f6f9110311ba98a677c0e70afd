@@ -11,6 +11,8 @@ QMainInterface::QMainInterface()
     pCommandFloatingEdit = NULL;
     pHistoryDockable = NULL;
     pHistoryTable = NULL;
+    pLayerDockable = NULL;
+    pLayerTree = NULL;
 }
 
 QMainInterface::~QMainInterface()
@@ -20,4 +22,6 @@ QMainInterface::~QMainInterface()
 void QMainInterface::OnMainFrameSetupUIDone()
 {
     pHistoryDockable->OnMainFrameSetupUIDone();
+    pLayerDockable->OnMainFrameSetupUIDone();
+    pGLView->OnMainFrameSetupUIDone();
 }

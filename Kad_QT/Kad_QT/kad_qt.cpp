@@ -19,6 +19,7 @@ Kad_QT::Kad_QT(QWidget *parent, Qt::WFlags flags)
     restoreGeometry(settings.value(psm->GetRegistryGeometryName()).toByteArray());
     restoreState(settings.value(psm->GetRegistryWindowStateName()).toByteArray());
 
+    this->installEventFilter(this);
 }
 
 Kad_QT::~Kad_QT()
@@ -33,6 +34,11 @@ void Kad_QT::closeEvent( QCloseEvent *event )
 	settings.setValue(psm->GetRegistryGeometryName(), saveGeometry());
 	settings.setValue(psm->GetRegistryWindowStateName(), saveState());
     QWidget::closeEvent(event);
+}
+
+bool Kad_QT::eventFilter(QObject *target, QEvent *e)
+{
+    return QMainWindow::eventFilter(target, e);
 }
 
 void Kad_QT::on_action_Command_Line_triggered()

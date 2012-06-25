@@ -67,7 +67,7 @@ void QTUI_History_Table::ChangeCurrentHistory(int step)
     bInternalProcessing = true;
 
     int nowrow = this->currentRow();
-    this->selectRow(nowrow+step);
+    SetSelect(nowrow+step);
 
     bInternalProcessing = false;
 }

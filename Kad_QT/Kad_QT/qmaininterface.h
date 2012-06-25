@@ -8,6 +8,8 @@
 #include "qtui_commandfloating_widget.h"
 #include "qtui_commandfloating_command.h"
 #include "qtui_history_table.h"
+#include "qtui_layer_dockablepane.h"
+#include "qtui_layer_tree.h"
 
 class QMainInterface
 {
@@ -59,6 +61,8 @@ public:
     _QMWDEF(QTUI_CommandFloating_Command, CommandFloatingEdit);
     _QMWDEF(QTUI_History_DockablePane, HistoryDockable);
     _QMWDEF(QTUI_History_Table, HistoryTable);
+    _QMWDEF(QTUI_Layer_DockablePane, LayerDockable);
+    _QMWDEF(QTUI_Layer_Tree, LayerTree);
 
 #undef _QMWDEF
 

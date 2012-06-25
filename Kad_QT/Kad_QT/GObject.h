@@ -13,7 +13,8 @@
 	ASSERT(pNewParent);	\
 	ASSERT(pNewParent != this);	\
 	ASSERT(!(pNewParent->isDescendantOf(this)));	\
-	*_node = *this;	\
+    *_node = *this;	\
+    _node->SetCloning(true); \
 	_node->Independ();
 
 #define _GOBJ_CLONE_POST_NORET()	\
@@ -21,7 +22,8 @@
 	for (list<GObject *>::reverse_iterator it=getChildren()->rbegin(); it!=getChildren()->rend(); ++it)	\
 	{	\
 		(*it)->Clone(_node);	\
-	}
+    }   \
+    _node->SetCloning(false);
 
 #define _GOBJ_CLONE_POST()	\
 	_GOBJ_CLONE_POST_NORET();	\
@@ -204,7 +206,12 @@ protected:
 	float fTryMove_bx;
 	float fTryMove_by;
 
+
 	list<GObject*> listChildren;
+protected:
+    bool bCloning;
+public:
+    void SetCloning(bool bSet){bCloning = bSet;};
 
 private:
 	static GObject * pTreeBase;

@@ -2,6 +2,7 @@
 #include "qtui_glview.h"
 #include "MainInterface.h"
 #include "qmaininterface.h"
+#include "qkeystatemanager.h"
 
 using namespace Qt;
 
@@ -12,8 +13,9 @@ QTUI_GLView::QTUI_GLView(QWidget *parent)
 {
     QMainInterface::getInstance().SetPGLView(this);
 
-	updatetimer = NULL;
-	ClearKeyState();
+    updatetimer = NULL;
+
+    this->installEventFilter(this);
 }
 
 QTUI_GLView::~QTUI_GLView()
@@ -29,13 +31,15 @@ void QTUI_GLView::initializeGL()
 {
     QGLWidget::initializeGL();
 
-	MainInterface::getInstance().OnPreInit();
-	MainInterface::getInstance().OnInit(this, this->width(), this->height());
-//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//	glEnable(GL_BLEND);
-	if (!updatetimer)
-	{
-		updatetimer = new QTimer(this);
+}
+
+void QTUI_GLView::OnMainFrameSetupUIDone()
+{
+    MainInterface::getInstance().OnPreInit();
+    MainInterface::getInstance().OnInit(this, this->width(), this->height());
+    if (!updatetimer)
+    {
+        updatetimer = new QTimer(this);
         connect( updatetimer, SIGNAL(timeout()), SLOT(SLT_OnUpdate()) );
         updatetimer->start( 4 );
     }
@@ -72,22 +76,6 @@ void QTUI_GLView::SLT_OnUpdate()
 void QTUI_GLView::keyPressEvent( QKeyEvent * e )
 {
     int ekey = e->key();
-
-    keyState[ekey&0xff] = 1;
-
-    MainInterface * pmain = &MainInterface::getInstance();
-    if (e->modifiers() & Qt::ControlModifier)
-    {
-        if (ekey == Key_Z)
-        {
-            pmain->OnUnDo();
-        }
-        else if (ekey == Key_Y)
-        {
-            pmain->OnReDo();
-        }
-    }
-
     if (ekey != Qt::Key_Backspace && ekey != Qt::Key_Delete && ekey != Qt::Key_Space && ekey != Qt::Key_Escape)
     {
         if (!e->text().isEmpty())
@@ -100,7 +88,6 @@ void QTUI_GLView::keyPressEvent( QKeyEvent * e )
 
 void QTUI_GLView::keyReleaseEvent( QKeyEvent * e )
 {
-    keyState[e->key()&0xff] = 0;
     QGLWidget::keyReleaseEvent(e);
 }
 
@@ -149,6 +136,42 @@ void QTUI_GLView::leaveEvent( QEvent *e )
     QGLWidget::leaveEvent(e);
 }
 
+bool QTUI_GLView::eventFilter(QObject *target, QEvent *e)
+{
+    if (e->type() == QEvent::KeyPress)
+    {
+        QKeyEvent * pke = static_cast<QKeyEvent *>(e);
+
+        QKeyStateManager * qksm = &QKeyStateManager::getInstance();
+        qksm->SetKey(pke->key());
+
+        Qt::KeyboardModifiers km = pke->modifiers();
+        if (km)
+        {
+
+            if (km & Qt::ALT)
+            {
+                qksm->SetKey(Qt::ALT);
+            }
+            if (km & Qt::CTRL)
+            {
+                qksm->SetKey(Qt::CTRL);
+            }
+            if (km & Qt::META)
+            {
+                qksm->SetKey(Qt::META);
+            }
+            if (km & Qt::SHIFT)
+            {
+                qksm->SetKey(Qt::SHIFT);
+            }
+
+            return true;
+        }
+    }
+    return QGLWidget::eventFilter(target, e);
+}
+
 void QTUI_GLView::OnFrame()
 {
 	if (QApplication::mouseButtons() & Qt::MouseButton::LeftButton)
@@ -159,21 +182,25 @@ void QTUI_GLView::OnFrame()
 	{
 		hge->Input_SetDIMouseKey(1);
 	}
-    if (keyState[Key_Space&0xff])
-	{
-		hge->Input_SetDIKey(DIK_SPACE);
-    }
-    if (keyState[Key_Escape&0xff])
-    {
-        hge->Input_SetDIKey(DIK_ESCAPE);
-    }
-    if (keyState[Key_Enter&0xff])
-    {
-        hge->Input_SetDIKey(DIK_RETURN);
-    }
-}
 
-void QTUI_GLView::ClearKeyState()
-{
-	ZeroMemory(keyState, sizeof(keyState));
+    QKeyStateManager * qksm = &QKeyStateManager::getInstance();
+
+    if (QApplication::keyboardModifiers() & Qt::ALT)
+    {
+        qksm->SetKey(Qt::ALT);
+    }
+    if (QApplication::keyboardModifiers() & Qt::CTRL)
+    {
+        qksm->SetKey(Qt::CTRL);
+    }
+    if (QApplication::keyboardModifiers() & Qt::META)
+    {
+        qksm->SetKey(Qt::META);
+    }
+    if (QApplication::keyboardModifiers() & Qt::SHIFT)
+    {
+        qksm->SetKey(Qt::SHIFT);
+    }
+
+    qksm->Flush();
 }

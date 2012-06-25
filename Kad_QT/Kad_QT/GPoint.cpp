@@ -94,9 +94,13 @@ const char * GAnchorPoint::getDisplayName()
 bool GAnchorPoint::Clone( GObject * pNewParent )
 {
 	_GOBJ_CLONE_PRE(GAnchorPoint);
-	_GOBJ_CLONE_POST();
+
+    _node->phandle = NULL;
+
+    _GOBJ_CLONE_POST_NORET();
 	list<GObject *>::reverse_iterator it=_node->listChildren.rbegin();
 	_node->phandle = (GHandlePoint *)*it;
+    return true;
 }
 
 void GAnchorPoint::SetHandlePosition( float _x, float _y )

@@ -508,6 +508,7 @@ void MainInterface::OnTreeLockChange( bool toLock )
 
 void MainInterface::OnRebuildLayerTree( GObject * changebase, GObject * activeitem )
 {
+    QMainInterface::getInstance().GetPLayerTree()->RebuildTree(changebase, activeitem);
 //	parentview->GetMainFrame()->RebuildLayerTree(changebase, activeitem);
 }
 

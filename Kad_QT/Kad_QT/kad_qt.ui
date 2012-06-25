@@ -179,6 +179,15 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetContents"/>
   </widget>
+  <widget class="QTUI_Layer_DockablePane" name="LayerPanel_Dockable">
+   <property name="floating">
+    <bool>true</bool>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_3"/>
+  </widget>
   <action name="action_Command_Line">
    <property name="text">
     <string>直线(&amp;L)</string>
@@ -233,6 +242,12 @@
    <class>QTUI_History_DockablePane</class>
    <extends>QDockWidget</extends>
    <header location="global">qtui_history_dockablepane.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QTUI_Layer_DockablePane</class>
+   <extends>QDockWidget</extends>
+   <header location="global">qtui_layer_dockablepane.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -299,6 +314,38 @@
     <hint type="destinationlabel">
      <x>1204</x>
      <y>310</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MMView_LayerWindow</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>LayerPanel_Dockable</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1204</x>
+     <y>580</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>LayerPanel_Dockable</sender>
+   <signal>visibilityChanged(bool)</signal>
+   <receiver>MMView_LayerWindow</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1204</x>
+     <y>580</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
     </hint>
    </hints>
   </connection>

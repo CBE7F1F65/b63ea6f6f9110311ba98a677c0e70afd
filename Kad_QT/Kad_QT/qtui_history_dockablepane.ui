@@ -29,7 +29,7 @@
       <property name="handleWidth">
        <number>1</number>
       </property>
-      <widget class="QTUI_History_SnapshotTable" name="Snapshot">
+      <widget class="QTUI_History_SnapshotTable" name="SnapshotTable">
        <property name="selectionMode">
         <enum>QAbstractItemView::SingleSelection</enum>
        </property>
@@ -43,7 +43,7 @@
         <bool>false</bool>
        </attribute>
       </widget>
-      <widget class="QTUI_History_Table" name="History">
+      <widget class="QTUI_History_Table" name="HistoryTable">
        <property name="horizontalScrollBarPolicy">
         <enum>Qt::ScrollBarAlwaysOff</enum>
        </property>
@@ -168,7 +168,7 @@
   <connection>
    <sender>HTBTN_CreateSnapshot</sender>
    <signal>clicked()</signal>
-   <receiver>Snapshot</receiver>
+   <receiver>SnapshotTable</receiver>
    <slot>AddSnapshot()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -184,7 +184,7 @@
   <connection>
    <sender>HTBTN_DeleteSnapshot</sender>
    <signal>clicked()</signal>
-   <receiver>Snapshot</receiver>
+   <receiver>SnapshotTable</receiver>
    <slot>DeleteSnapshot()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -198,9 +198,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>Snapshot</sender>
+   <sender>SnapshotTable</sender>
    <signal>cellClicked(int,int)</signal>
-   <receiver>Snapshot</receiver>
+   <receiver>SnapshotTable</receiver>
    <slot>RevertToSnapshot(int)</slot>
    <hints>
     <hint type="sourcelabel">

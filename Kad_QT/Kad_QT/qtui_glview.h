@@ -23,6 +23,7 @@ protected:
     virtual void wheelEvent(QWheelEvent *e);
     virtual void enterEvent(QEvent *e);
     virtual void leaveEvent(QEvent *e);
+    virtual bool eventFilter(QObject *target, QEvent *e);
 
 signals:
     void SIG_OnChar(QString);
@@ -31,13 +32,11 @@ public slots:
     void SLT_OnUpdate();
 
 public:
-	void OnFrame();
+    void OnFrame();
+    void OnMainFrameSetupUIDone();
 
 private:
 	QTimer * updatetimer;
-
-	BYTE keyState[256];
-	void ClearKeyState();
 };
 
 #endif // QTUI_GLVIEW_H

@@ -25,6 +25,8 @@ GObject::GObject(void)
 	fTryMove_bx = 0;
 	fTryMove_by = 0;
 
+    bCloning = false;
+
 	_SetID();
 	OnInit();
 }
@@ -572,11 +574,14 @@ void GObject::CallUpdate()
 
 void GObject::CallModify()
 {
-	OnModify();
-	if (isModifyParent() && pParent)
-	{
-		pParent->CallModify();
-	}
+    if (!bCloning)
+    {
+        OnModify();
+        if (isModifyParent() && pParent)
+        {
+            pParent->CallModify();
+        }
+    }
 }
 
 void GObject::CallClearModify()
