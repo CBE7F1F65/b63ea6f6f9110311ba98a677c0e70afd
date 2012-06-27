@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "qtui_history_snapshottable.h"
 #include "IconManager.h"
 #include "SnapshotManager.h"

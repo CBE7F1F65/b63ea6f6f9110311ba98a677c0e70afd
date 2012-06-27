@@ -33,10 +33,10 @@ void DeleteItemCommand::OnProcessCommand()
 			);
 		if (ret<0)
 		{
-			list<GObject*> * activenodelist = pgm->GetSelectedNodes();
+            list<GObject*> * activenodelist = pgm->GetSelectedNodes();
 			
 			list <int> lids;
-			for (list<GObject*>::reverse_iterator it=activenodelist->rbegin(); it!= activenodelist->rend(); ++it)
+            for (list<GObject*>::reverse_iterator it=activenodelist->rbegin(); it!= activenodelist->rend(); ++it)
 			{
 				if (pgm->CanDeleteItem((*it)))
 				{

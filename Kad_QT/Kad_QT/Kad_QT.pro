@@ -6,7 +6,7 @@ TEMPLATE = app
 TARGET = Kad_QT
 DESTDIR = ../
 QT += core gui xml opengl
-CONFIG += debug
+CONFIG += debug precompile_header
 DEFINES += __DEBUG __OPENGL QT_LARGEFILE_SUPPORT QT_XML_LIB QT_OPENGL_LIB
 INCLUDEPATH += ./GeneratedFiles \
     ./GeneratedFiles/Debug \

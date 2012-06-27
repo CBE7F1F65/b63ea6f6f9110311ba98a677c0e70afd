@@ -114,10 +114,10 @@ public:
 	GLayer * GetLastActiveLayer(){return pLastActiveLayer;};
 	void SetActiveLayer_Internal(GObject * pObj=NULL, bool bCallUI=true);
 	const char * GetDefaultLayerName( int layerIndex=-1 );
-	list<GObject*> * GetSelectedNodes();
+    list<GObject*> * GetSelectedNodes();
 	GLayer * GetDragDroppedLayerNode();
 	GObject * GetDragDroppedAfterNode();
-	list<GObject*> selectednodes;
+//	list<GObject*> selectednodes;
 
 	int PushMoveNodeByOffsetForBatchCommand( GObject* pObj, float xoffset, float yoffset );
 	void DoMoveNodeByOffsetBatch();

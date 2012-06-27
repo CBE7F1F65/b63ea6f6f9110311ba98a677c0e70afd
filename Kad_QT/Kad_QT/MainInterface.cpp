@@ -512,16 +512,18 @@ void MainInterface::OnRebuildLayerTree( GObject * changebase, GObject * activeit
 //	parentview->GetMainFrame()->RebuildLayerTree(changebase, activeitem);
 }
 
-GObject * MainInterface::OnGetSelectedNodes( int * pnextfromIndex )
+list<GObject *> * MainInterface::OnGetSelectedNodes()
 {
+    return QMainInterface::getInstance().GetPLayerTree()->GetActiveNodes();
 //	return parentview->GetMainFrame()->GetActiveNodes(pnextfromIndex);
-	return NULL;
+//	return NULL;
 }
 
 bool MainInterface::OnGetDragDroppedNodes( GLayer ** pLayerNode, GObject ** pAfterNode )
 {
+    return QMainInterface::getInstance().GetPLayerTree()->GetDragDroppedNodes(pLayerNode, pAfterNode);
 //	return parentview->GetMainFrame()->GetDragDropNodes(pLayerNode, pAfterNode);
-	return false;
+//	return false;
 }
 
 void MainInterface::OnSetActiveLayer_Internal( GLayer * pLayer )

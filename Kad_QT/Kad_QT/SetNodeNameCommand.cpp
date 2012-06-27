@@ -44,14 +44,14 @@ void SetNodeNameCommand::OnProcessCommand()
 			);
 		if (ret < 0)
 		{
-			list <GObject *> * activenodelist = pgm->GetSelectedNodes();
-			if (activenodelist->empty())
+            list <GObject *> * activenodelist = pgm->GetSelectedNodes();
+            if (activenodelist->empty())
 			{
 				pcommand->StepTo(CSI_TERMINAL);
 			}
 			else
 			{
-				int index = activenodelist->front()->getID();
+                int index = activenodelist->front()->getID();
 				pcommand->SetParamI(CSP_SETNODENAME_I_S_INDEX_NEWNAME, index, CWP_INDEX);
 				pcommand->StepTo(CSI_SETNODENAME_WANTNEWNAME, CWP_NAME);
 			}

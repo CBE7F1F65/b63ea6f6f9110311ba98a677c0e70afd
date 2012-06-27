@@ -59,7 +59,7 @@ public:
 	void OnClearPreviousHistory(int ndelete=1);
 	void OnTreeLockChange( bool toLock );
 	void OnRebuildLayerTree(GObject * changebase, GObject * activeitem);
-	GObject * OnGetSelectedNodes( int * pnextfromIndex );
+    list<GObject *> * OnGetSelectedNodes();
 	bool OnGetDragDroppedNodes( GLayer ** pLayerNode, GObject ** pAfterNode );
 	void OnSetActiveLayer_Internal( GLayer * pLayer );
 	void OnSetActiveLayerFromUI();

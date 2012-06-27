@@ -290,6 +290,8 @@ void GObjectManager::SetActiveLayer_Internal( GObject * pObj/*=NULL*/, bool bCal
 
 list<GObject*> * GObjectManager::GetSelectedNodes()
 {
+    return MainInterface::getInstance().OnGetSelectedNodes();
+    /*
 	selectednodes.clear();
 	GObject * _pobj = NULL;
 	int nextfromindex = -1;
@@ -303,6 +305,7 @@ list<GObject*> * GObjectManager::GetSelectedNodes()
 	} while (_pobj);
 
 	return &selectednodes;
+    */
 }
 
 bool GObjectManager::CanDeleteItem( GObject * pObj )
@@ -369,9 +372,9 @@ bool GObjectManager::CanDuplicateItem( GObject * pObj )
 
 GLayer * GObjectManager::GetActiveLayerFromUI()
 {
-	GetSelectedNodes();
+    list<GObject *> * selectednodes = GetSelectedNodes();
 	GLayer * pLayer = NULL;
-	for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end(); ++it)
+    for (list<GObject *>::iterator it=selectednodes->begin(); it!=selectednodes->end(); ++it)
 	{
 		pLayer = (GLayer *)(*it)->GetLayer();
 		if (pLayer)

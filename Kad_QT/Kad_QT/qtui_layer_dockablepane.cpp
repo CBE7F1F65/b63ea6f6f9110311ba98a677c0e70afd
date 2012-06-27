@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "qtui_layer_dockablepane.h"
 #include "ui_qtui_layer_dockablepane.h"
 #include "qmaininterface.h"

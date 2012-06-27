@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "qtui_commandfloating_command.h"
 #include "qmaininterface.h"
 #include "qtui_commandfloating_widget.h"

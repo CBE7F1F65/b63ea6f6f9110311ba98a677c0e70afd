@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "qtui_history_table.h"
 #include "qmaininterface.h"
 #include "IconManager.h"

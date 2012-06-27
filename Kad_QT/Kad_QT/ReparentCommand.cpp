@@ -71,14 +71,14 @@ void ReparentCommand::OnProcessCommand()
 		{
 			int newindex = pcommand->GetParamI(CSI_REPARENT_WANTNEWPARENTINDEX);
 
-			list<GObject*> * activenodelist = pgm->GetSelectedNodes();
+            list<GObject*> * activenodelist = pgm->GetSelectedNodes();
 			GObject * pTemp;
-			for (list<GObject*>::iterator it=activenodelist->begin(); it!= activenodelist->end();)
+            for (list<GObject*>::iterator it=activenodelist->begin(); it!= activenodelist->end();)
 			{
 				pTemp = *it;
 				bool shoulddelete=false;
 				// Active Node List should be in order
-				for (list<GObject*>::iterator jt=activenodelist->begin(); jt!=it/*activenodelist->end()*/; ++jt)
+                for (list<GObject*>::iterator jt=activenodelist->begin(); jt!=it/*activenodelist->end()*/; ++jt)
 				{
 					if ((*it)->isAncestorOf(*jt))
 					{
@@ -88,7 +88,7 @@ void ReparentCommand::OnProcessCommand()
 				}
 				if (shoulddelete)
 				{
-					it = activenodelist->erase(it);
+                    it = activenodelist->erase(it);
 				}
 				else
 				{
@@ -98,7 +98,7 @@ void ReparentCommand::OnProcessCommand()
 
 //			GObject * pNewPlaceAfter = pgm->FindObjectByID(newindex);
 			list <int> lids;
-			for (list<GObject*>::reverse_iterator it=activenodelist->rbegin(); it!= activenodelist->rend(); ++it)
+            for (list<GObject*>::reverse_iterator it=activenodelist->rbegin(); it!= activenodelist->rend(); ++it)
 			{
 				if (pgm->CanReparentItem((*it), newindex))
 				{
