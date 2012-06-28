@@ -3,6 +3,9 @@
 #include "qmaininterface.h"
 #include "IconManager.h"
 #include "MainInterface.h"
+#include "GObjectManager.h"
+
+#include "QTDLG_LayerProperty.h"
 
 #define _UILT_ICONSIZE  ICMSIZE_MIDDLE
 #define _UILT_LINECOLORSIZE 6
@@ -26,6 +29,9 @@ QTUI_Layer_Tree::QTUI_Layer_Tree(QWidget *parent) :
     this->setColumnCount(_UILT_COLUMNCOUNT);    // Not working
     this->header()->moveSection(_UILT_COLUMN_TREE, _UILT_COLUMN_LINECOLOR);
     this->setIndentation(_UILT_INDENTATION);
+
+//    this->setItemDelegate(new UILT_EditDelegate(this));
+
     AdjustSize();
 }
 
@@ -75,6 +81,13 @@ void QTUI_Layer_Tree::RebuildTree(GObject *changebase, GObject *activeitem)
 
 list<GObject *> * QTUI_Layer_Tree::GetActiveNodes()
 {
+    if (selectednodes.empty())
+    {
+        GObject * pObj = GetObjFromItem(this->topLevelItem(0));
+        Q_ASSERT(pObj);
+        selectednodes.push_back(pObj);
+        Reselect();
+    }
     return &selectednodes;
 }
 
@@ -139,6 +152,32 @@ void QTUI_Layer_Tree::dragMoveEvent(QDragMoveEvent *e)
 void QTUI_Layer_Tree::resizeEvent(QResizeEvent *e)
 {
     AdjustSize();
+}
+
+void QTUI_Layer_Tree::mouseMoveEvent(QMouseEvent *e)
+{
+    GObjectManager::getInstance().ClearUILayerIndicators();
+    if (!selectednodes.empty())
+    {
+        for (list<GObject *>::iterator it=selectednodes.begin(); it!= selectednodes.end(); ++it)
+        {
+            GObject * pObj = *it;
+            pObj->CallShowUISelect();
+        }
+    }
+    QTreeWidgetItem * pItem = this->itemAt(e->pos());
+    if (pItem)
+    {
+        GObject * pObj = GetObjFromItem(pItem);
+        pObj->CallShowIndicate();
+    }
+    QTreeWidget::mouseMoveEvent(e);
+}
+
+void QTUI_Layer_Tree::leaveEvent(QEvent *e)
+{
+    GObjectManager::getInstance().ClearUILayerIndicators();
+    GObjectManager::getInstance().SetRedraw();
 }
 
 void QTUI_Layer_Tree::AdjustSize()
@@ -241,14 +280,9 @@ void QTUI_Layer_Tree::BuildChildren(QTreeWidgetItem *pItem, GObject *pObjParent)
         bool bFolded = pObj->isDisplayFolded();
 
         QTreeWidgetItem * pNowItem = new QTreeWidgetItem(pItem);
+//        pNowItem->setFlags(Qt::ItemIsEditable|pNowItem->flags());
 
-        SetItemData(pNowItem, pObj);
-        SetItemVisible(pNowItem, pObj->isDisplayVisible(), pObj->isRecDisplayVisible(), pObj);
-        SetItemLock(pNowItem, pObj->isDisplayLocked(), pObj->isRecDisplayLocked(), pObj);
-        SetItemLineColor(pNowItem, pObj->getLineColor(), pObj);
-        SetItemTreeInfo(pNowItem, pObj->getDisplayName(), bFolded, pObj);
-        SetItemLineSelect(pNowItem, pObj->isSelected(), pObj);
-        SetItemFrameColor(pNowItem, pObj->GetLayer()->getLineColor(), pObj);
+        UpdateNodeInfo(pNowItem, pObj);
 
         BuildChildren(pNowItem, pObj);
     }
@@ -281,6 +315,17 @@ void QTUI_Layer_Tree::Reselect()
                     this->indexFromItem(pItem, _UILT_COLUMN_TREE),
                     QItemSelectionModel::Select);
     }
+}
+
+void QTUI_Layer_Tree::UpdateNodeInfo(QTreeWidgetItem *pItem, GObject *pObj)
+{
+    SetItemData(pItem, pObj);
+    SetItemVisible(pItem, pObj->isDisplayVisible(), pObj->isRecDisplayVisible(), pObj);
+    SetItemLock(pItem, pObj->isDisplayLocked(), pObj->isRecDisplayLocked(), pObj);
+    SetItemLineColor(pItem, pObj->getLineColor(), pObj);
+    SetItemTreeInfo(pItem, pObj->getDisplayName(), pObj->isDisplayFolded(), pObj);
+    SetItemLineSelect(pItem, pObj->isSelected(), pObj);
+    SetItemFrameColor(pItem, pObj->GetLayer()->getLineColor(), pObj);
 }
 
 void QTUI_Layer_Tree::SetItemData(QTreeWidgetItem *pItem, GObject *pObj)
@@ -366,7 +411,31 @@ void QTUI_Layer_Tree::SLT_CopyItems()
 
 void QTUI_Layer_Tree::SLT_DeleteItems()
 {
+    if (selectednodes.empty())
+    {
+        return;
+    }
+    GObject * pLayer = selectednodes.front()->GetLayer(false);
     MainInterface::getInstance().OnCommand(COMM_DELETEITEM);
+    selectednodes.clear();
+
+    QTreeWidgetItem * pItem = NULL;
+    if (pLayer)
+    {
+        pItem = FindItemByObj(pLayer);
+    }
+
+    if (!pItem)
+    {
+        pItem = this->topLevelItem(0);
+        pLayer = GetObjFromItem(pItem)->GetLayer();
+    }
+
+    Q_ASSERT(pLayer);
+    selectednodes.push_back(pLayer);
+    Reselect();
+
+
 }
 
 void QTUI_Layer_Tree::SLT_UpdateSelectionNodes()
@@ -386,3 +455,32 @@ void QTUI_Layer_Tree::SLT_UpdateSelectionNodes()
         selectednodes.push_back(GetObjFromItem(*it));
     }
 }
+
+void QTUI_Layer_Tree::SLT_ItemDoubleClicked(QTreeWidgetItem *pItem, int column)
+{
+    QTDLG_LayerProperty * pDlg = new QTDLG_LayerProperty();
+
+    GObject * pObj = GetObjFromItem(pItem);
+    pDlg->SetInitalValue(pObj->getDisplayName(), pObj->getLineColorSet(), pObj->isDisplayVisible(), pObj->isDisplayLocked());
+    int ret = pDlg->exec();
+    if (ret == QDialog::Accepted)
+    {
+        QString str = pDlg->GetName();
+        pObj->setDisplayName(str.toUtf8());
+        pObj->setLineColor(pDlg->GetLineColorSet());
+        pObj->setDisplayVisible(pDlg->GetVisible());
+        pObj->setDisplayLock(pDlg->GetLocked());
+        UpdateNodeInfo(pItem, pObj);
+    }
+    delete pDlg;
+}
+/*
+QWidget *UILT_EditDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    if (index.column() == _UILT_COLUMN_TREE)
+    {
+        return QItemDelegate::createEditor(parent, option, index);
+    }
+    return 0;
+}
+*/

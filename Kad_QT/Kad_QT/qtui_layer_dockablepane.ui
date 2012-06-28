@@ -154,8 +154,8 @@
     </item>
     <item row="0" column="0" colspan="5">
      <widget class="QTUI_Layer_Tree" name="treeWidget">
-      <property name="horizontalScrollBarPolicy">
-       <enum>Qt::ScrollBarAsNeeded</enum>
+      <property name="mouseTracking">
+       <bool>true</bool>
       </property>
       <property name="dragEnabled">
        <bool>true</bool>
@@ -235,6 +235,7 @@
     <slot>SLT_CopyItems()</slot>
     <slot>SLT_DeleteItems()</slot>
     <slot>SLT_UpdateSelectionNodes()</slot>
+    <slot>SLT_ItemDoubleClicked(QTreeWidgetItem*,int)</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -349,6 +350,22 @@
     <hint type="destinationlabel">
      <x>120</x>
      <y>237</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>treeWidget</sender>
+   <signal>itemDoubleClicked(QTreeWidgetItem*,int)</signal>
+   <receiver>treeWidget</receiver>
+   <slot>SLT_ItemDoubleClicked(QTreeWidgetItem*,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>33</x>
+     <y>87</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>54</x>
+     <y>89</y>
     </hint>
    </hints>
   </connection>

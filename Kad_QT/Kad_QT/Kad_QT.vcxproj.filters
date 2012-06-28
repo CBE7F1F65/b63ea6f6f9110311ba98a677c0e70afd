@@ -341,6 +341,24 @@
     <ClCompile Include="qkeystatemanager.cpp">
       <Filter>QT</Filter>
     </ClCompile>
+    <ClCompile Include="QTDLG_LayerProperty.cpp">
+      <Filter>QT</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_QTDLG_LayerProperty.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_QTDLG_LayerProperty.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="QTUI_StatusBar.cpp">
+      <Filter>QT</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_QTUI_StatusBar.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_QTUI_StatusBar.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -493,6 +511,12 @@
     <ClInclude Include="qkeystatemanager.h">
       <Filter>QT</Filter>
     </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_QTDLG_LayerProperty.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_QTUI_StatusBar.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="kad_qt.ui">
@@ -548,6 +572,18 @@
     </CustomBuild>
     <CustomBuild Include="qtui_layer_tree.h">
       <Filter>QT</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QTDLG_LayerProperty.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QTDLG_LayerProperty.h">
+      <Filter>QT</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QTUI_StatusBar.h">
+      <Filter>QT</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QTUI_StatusBar.ui">
+      <Filter>Form Files</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

@@ -64,7 +64,8 @@ HEADERS += ./Const.h \
     qkeystatemanager.h \
     qtui_layer_dockablepane.h \
     qtui_layer_tree.h \
-    QTUI_StatusBar.h
+    QTUI_StatusBar.h \
+    QTDLG_LayerProperty.h
 SOURCES += ./InitDllLoader.cpp \
     ./kad_qt.cpp \
     ./main.cpp \
@@ -121,11 +122,13 @@ SOURCES += ./InitDllLoader.cpp \
     qkeystatemanager.cpp \
     qtui_layer_dockablepane.cpp \
     qtui_layer_tree.cpp \
-    QTUI_StatusBar.cpp
+    QTUI_StatusBar.cpp \
+    QTDLG_LayerProperty.cpp
 FORMS += ./kad_qt.ui \
     qtui_commanddockable.ui \
     qtui_commandfloating_widget.ui \
     qtui_history_dockablepane.ui \
     qtui_layer_dockablepane.ui \
-    QTUI_StatusBar.ui
+    QTUI_StatusBar.ui \
+    QTDLG_LayerProperty.ui
 RESOURCES += kad_qt.qrc

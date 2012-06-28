@@ -87,7 +87,17 @@ DWORD ColorManager::GetLayerLineHighlightColor( int layer )
 
 DWORD ColorManager::GetLayerLineActiveColor( int layer )
 {
-	return 0xffff4f4f;	// Light Red
+    return 0xffff4f4f;	// Light Red
+}
+
+DWORD ColorManager::GetLayerLineUISelectColor(int layer)
+{
+    return 0xffff9900;	// Gold
+}
+
+DWORD ColorManager::GetLayerLineIndicatingColor(int layer)
+{
+    return 0xffffff4f;	// Yellow
 }
 
 LineColorSet ColorManager::GetLayerLineColorSetByIndex( int layerID )
@@ -96,6 +106,8 @@ LineColorSet ColorManager::GetLayerLineColorSetByIndex( int layerID )
 	ls.SetColor(LINECOLOR_NORMAL, GetLayerLineColor(layerID));
 	ls.SetColor(LINECOLOR_ACTIVE, GetLayerLineActiveColor(layerID));
 	ls.SetColor(LINECOLOR_HIGHLIGHT, GetLayerLineHighlightColor(layerID));
+    ls.SetColor(LINECOLOR_UISELECT, GetLayerLineUISelectColor(layerID));
+    ls.SetColor(LINECOLOR_INDICATING, GetLayerLineIndicatingColor(layerID));
 
 	return ls;
 }

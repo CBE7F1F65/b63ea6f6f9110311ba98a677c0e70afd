@@ -26,6 +26,8 @@ enum{
 	LINECOLOR_NORMAL=0,
 	LINECOLOR_ACTIVE,			// Selected
 	LINECOLOR_HIGHLIGHT,		// Picking
+    LINECOLOR_UISELECT,         // Selected by UI
+    LINECOLOR_INDICATING,       // Indicating
 
 	_LINECOLOR_ENDINDEX
 };
@@ -185,8 +187,11 @@ public:
 
 	DWORD GetLayerLineColor(int layer);
 	DWORD GetLayerLineHighlightColor(int layer);
-	DWORD GetLayerLineActiveColor(int layer);
+    DWORD GetLayerLineActiveColor(int layer);
+    DWORD GetLayerLineUISelectColor(int layer);
+    DWORD GetLayerLineIndicatingColor(int layer);
 	LineColorSet GetLayerLineColorSetByIndex( int layerID );
+    inline bool isIndicatingLevel(int index){return index==LINECOLOR_UISELECT||index==LINECOLOR_INDICATING;};
 
 #undef _CMFDEF
 

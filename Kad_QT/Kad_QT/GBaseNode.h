@@ -11,6 +11,8 @@ public:
 	void CopyBaseFrom( GBaseNode * pFrom );
 	void CopyBaseTo( GBaseNode * pTo );
 
+    bool isUILayerIndicating(){return bIndicating || bUISelecting;};
+
 	virtual bool Clone(GObject * pNewParent);
 };
 

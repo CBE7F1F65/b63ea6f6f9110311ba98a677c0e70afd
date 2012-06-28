@@ -113,15 +113,22 @@ public:
 	virtual void OnRelease();
 
 	// Use Call for Recursive
+    virtual void OnShowIndicate();
+    virtual void OnShowUISelect();
+    virtual void OnPrecisionChanged(float fPrecision);
 	virtual void OnModify();
 	virtual void OnClearModify();	// Post-Update
 	virtual void OnUpdate();
-	virtual void OnRender(int iHighlightLevel=0);
+    virtual void OnRender(int iHighlightLevel=0);
 
+    virtual void CallShowIndicate();
+    virtual void CallShowUISelect();
     virtual void CallPrecisionChanged(float fPrecision);
-    virtual void OnPrecisionChanged(float fPrecision);
 	virtual void CallModify();
 	virtual void CallClearModify();
+    virtual void CallClearUILayerIndicators();
+    virtual void CallRedrawModify();
+    virtual void CallUILayerIndicatingModify();
 	virtual void CallUpdate();
 	virtual void CallRender(int iHighlightLevel=0);
 
@@ -177,7 +184,8 @@ public:
 	// Can only be called by UI
 	void setDisplayLock(bool toDisplayLock);
 
-	DWORD getLineColor(int iHighlightLevel=0);;
+    DWORD getLineColor(int iHighlightLevel=0);
+    LineColorSet getLineColorSet(){return lsLineColorSet;};
 
 	// Can only be called by Layer
 	virtual void setLineColor(LineColorSet ls);
@@ -208,6 +216,8 @@ protected:
 	float fTryMove_bx;
 	float fTryMove_by;
 
+    bool bIndicating;
+    bool bUISelecting;
 
 	list<GObject*> listChildren;
 protected:

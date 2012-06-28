@@ -3,7 +3,15 @@
 
 #include <QTreeWidget>
 #include "GLayer.h"
-
+/*
+#include <QStyledItemDelegate>
+class UILT_EditDelegate: public QItemDelegate
+{
+public:
+    UILT_EditDelegate(QObject* parent=0): QItemDelegate(parent) {}
+    virtual QWidget* createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+};
+*/
 class QTUI_Layer_Tree : public QTreeWidget
 {
     Q_OBJECT
@@ -19,6 +27,9 @@ protected:
     virtual void dropEvent(QDropEvent *e);
     virtual void dragMoveEvent(QDragMoveEvent *e);
     virtual void resizeEvent(QResizeEvent * e);
+    virtual void mouseMoveEvent(QMouseEvent * e);
+    virtual void leaveEvent(QEvent * e);
+
     
 private:
     void AdjustSize();
@@ -30,6 +41,7 @@ private:
     bool IsObjInSelection(GObject * pObj);
     void Reselect();
 
+    void UpdateNodeInfo(QTreeWidgetItem * pItem, GObject * pObj);
     void SetItemData(QTreeWidgetItem * pItem, GObject * pObj);
     void SetItemVisible(QTreeWidgetItem * pItem, bool bDisplayVisible, bool bRecDisplayVisable, GObject * pObj);
     void SetItemLock(QTreeWidgetItem * pItem, bool bDisplayLocked, bool bRecDisplayLocked, GObject * pObj);
@@ -52,6 +64,7 @@ public slots:
     void SLT_CopyItems();
     void SLT_DeleteItems();
     void SLT_UpdateSelectionNodes();
+    void SLT_ItemDoubleClicked(QTreeWidgetItem * pItem, int column);
     
 };
 

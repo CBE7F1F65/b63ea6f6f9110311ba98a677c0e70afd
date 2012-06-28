@@ -66,7 +66,10 @@ bool GLine::MoveTo( float newx, float newy, bool bTry )
 
 void GLine::OnModify()
 {
-	UpdateMidPoint();
+    if (!listChildren.empty())
+    {
+        UpdateMidPoint();
+    }
 	GObject::OnModify();
 }
 
@@ -238,11 +241,15 @@ void GBezierLine::UpdateMidPoint()
 void GBezierLine::OnModify()
 {
 	GStraightLine::OnModify();
-	if (plbegin && plend)
-	{
-		if (!isStraightLine())
-		{
-			bsinfo.ResetPoints(plbegin->GetPointF2D(), plbegin->GetHandle()->GetPointF2D(), plend->GetHandle()->GetPointF2D(), plend->GetPointF2D(), MainInterface::getInstance().GetPrecision());
+
+    if (!listChildren.empty())
+    {
+        if (plbegin && plend)
+        {
+            if (!isStraightLine())
+            {
+                bsinfo.ResetPoints(plbegin->GetPointF2D(), plbegin->GetHandle()->GetPointF2D(), plend->GetHandle()->GetPointF2D(), plend->GetPointF2D(), MainInterface::getInstance().GetPrecision());
+            }
 		}
 	}
 }

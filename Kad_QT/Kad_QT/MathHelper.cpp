@@ -294,6 +294,7 @@ BezierSublinesInfo::BezierSublinesInfo()
 {
 	ptPoints = NULL;
 	fLengths = NULL;
+    ClearSet();
 }
 
 BezierSublinesInfo::~BezierSublinesInfo()

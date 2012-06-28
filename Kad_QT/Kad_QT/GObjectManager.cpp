@@ -49,6 +49,7 @@ void GObjectManager::Release()
 	pActiveLayer = NULL;
 	pLastActiveLayer = NULL;
 	pushedmovenodebyoffset.clear();
+    bRedraw = false;
 //	bLockTreeChange = false;
 }
 
@@ -62,13 +63,14 @@ void GObjectManager::Update()
 
 	bool tarupdated=false;
 	HTARGET tar = RenderTargetManager::getInstance().UpdateTarget(RTID_GOBJECTS, &tarupdated);
-	if (tar != tarObjs || tarupdated || pBaseNode->isModified())
+    if (tar != tarObjs || tarupdated || pBaseNode->isModified() || bRedraw)
 	{
 		tarObjs = tar;
 		RenderHelper::getInstance().BeginRenderTar(tar);
 		pBaseNode->CallRender();
 		RenderHelper::getInstance().EndRenderTar();
 	}
+    bRedraw = false;
 	pBaseNode->CallClearModify();
 
 	if (nLockTreeChangeState == GMLOCKTREESTATE_REQUIRELOCK)
@@ -88,7 +90,12 @@ void GObjectManager::Render()
 	if (tarObjs)
 	{
 		RenderHelper::getInstance().TargetQuadRender_S(tarObjs, 0, 0, 0xffffffff);
-	}
+    }
+    if (pBaseNode->isUILayerIndicating())
+    {
+        pBaseNode->CallRender(LINECOLOR_UISELECT);
+//        pBaseNode->CallRender(LINECOLOR_INDICATING);
+    }
 }
 
 void GObjectManager::Delete()
@@ -375,7 +382,12 @@ bool GObjectManager::CanDuplicateItem( GObject * pObj )
 	{
 		return true;
 	}
-	return false;
+    return false;
+}
+
+void GObjectManager::ClearUILayerIndicators()
+{
+    pBaseNode->CallClearUILayerIndicators();
 }
 
 GLayer * GObjectManager::GetActiveLayerFromUI()

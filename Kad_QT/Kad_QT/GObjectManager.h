@@ -83,6 +83,9 @@ public:
 	bool CanReparentItem( GObject * pObj, int newparentindex );
 	bool CanDuplicateItem( GObject * pObj );
 
+    void ClearUILayerIndicators();
+    void SetRedraw(){bRedraw = true;};
+
 	GObject * FindObjectByID(int id);
 
 	GLayer * NewLayer(GObject * node, const char * layername, int layerIndex=-1);
@@ -126,4 +129,5 @@ public:
 	list<MoveNodeByOffsetInfo> pushedmovenodebyoffset;
 
 	HTARGET tarObjs;
+    bool bRedraw;
 };
