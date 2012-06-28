@@ -27,3 +27,5 @@ include(Kad_QT.pri)
 HEADERS +=
 
 SOURCES +=
+
+QMAKE_CXXFLAGS_WARN_OFF -= -Wunused-parameter

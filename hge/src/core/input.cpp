@@ -97,9 +97,25 @@ void CALL HGE_Impl::Input_SetMousePos(float x, float y)
 #endif
 }
 
-int CALL HGE_Impl::Input_GetMouseWheel()
+int CALL HGE_Impl::Input_GetMouseWheel(bool bHorz)
 {
-	return Zpos;
+	if (bHorz)
+	{
+		return ZHpos;
+	}
+	return ZVpos;
+}
+
+void CALL HGE_Impl::Input_SetMouseWheel( int inc, bool bHorz/*=false*/ )
+{
+	if (bHorz)
+	{
+		ZHpos += inc;
+	}
+	else
+	{
+		ZVpos += inc;
+	}
 }
 
 bool CALL HGE_Impl::Input_IsMouseOver()
@@ -523,7 +539,7 @@ void HGE_Impl::_BuildEvent(int type, int key, int scan, int flags, int x, int y)
 		keyz[key] |= 2;
 		ToAscii(key, scan, kbstate, (unsigned short *)&eptr->event.chr, 0);
 	}
-	if(type==INPUT_MOUSEWHEEL)
+	if(type==INPUT_MOUSEWHEELV || type==INPUT_MOUSEWHEELH)
 	{
 		eptr->event.key=0; eptr->event.wheel=key;
 		ScreenToClient(hwnd,&pt);
@@ -591,9 +607,13 @@ void HGE_Impl::_BuildEvent(int type, int key, int scan, int flags, int x, int y)
 	{
 		Xpos=eptr->event.x;Ypos=eptr->event.y;
 	}
-	else if(eptr->event.type==INPUT_MOUSEWHEEL)
+	else if(eptr->event.type==INPUT_MOUSEWHEELV)
 	{
-		Zpos+=eptr->event.wheel;
+		ZVpos+=eptr->event.wheel;
+	}
+	else if (eptr->event.type==INPUT_MOUSEWHEELH)
+	{
+		ZHpos+=eptr->event.wheel;
 	}
 #endif
 }
@@ -611,7 +631,7 @@ void HGE_Impl::_ClearQueue()
 		eptr=nexteptr;
 	}
 
-	queue=0; VKey=0; Char=0; Zpos=0;
+	queue=0; VKey=0; Char=0; ZVpos=0; ZHpos=0;
 }
 
 /************************************************************************/

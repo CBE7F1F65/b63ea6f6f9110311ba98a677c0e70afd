@@ -24,6 +24,8 @@ GUICoordinate::GUICoordinate()
 	hge = hgeCreate(HGE_VERSION);
 	targrid = NULL;
 	scale = _GUIC_DEFAULTSCALE;
+
+    SetShowGrid(true);
 }
 
 GUICoordinate::~GUICoordinate()
@@ -74,9 +76,13 @@ void GUICoordinate::RenderGridReDraw()
 
 void GUICoordinate::RenderGrid()
 {
+    if (!bShowGrid)
+    {
+        return;
+    }
 	if (!targrid)
 	{
-		RenderGridReDraw();
+        RenderGridReDraw();
 	}
 	else
 	{
@@ -354,14 +360,14 @@ void GUICoordinate::UpdateScreenMeasure()
 		}
 	}
 
-	targrid = RenderTargetManager::getInstance().UpdateTarget(RTID_GRID);
-	if (targrid)
-	{
-		RenderHelper::getInstance().BeginRenderTar(targrid);
-		RenderGridReDraw();
-		RenderHelper::getInstance().EndRenderTar();
-	}
-	RenderTargetManager::getInstance().SetNeedUpdate();
+    targrid = RenderTargetManager::getInstance().UpdateTarget(RTID_GRID);
+    if (targrid)
+    {
+        RenderHelper::getInstance().BeginRenderTar(targrid);
+        RenderGridReDraw();
+        RenderHelper::getInstance().EndRenderTar();
+    }
+    RenderTargetManager::getInstance().SetNeedUpdate();
 }
 
 void GUICoordinate::SetCursorPosition( float x_s, float y_s )

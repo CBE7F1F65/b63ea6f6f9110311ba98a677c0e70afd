@@ -94,10 +94,16 @@ public:
 
 	void MBeep(int id=-1);
 
-	inline float GetPrecision()
+    inline float GetPrecision()
 	{
-		return precision;
+        return nPrecision/100.0f;
 	};
+    inline int GetPrecisionInt()
+    {
+        return nPrecision;
+    };
+    void SetPrecisionInt(int nVal);
+
 	HGE * hge;
 	int resizewindow_w;
 	int resizewindow_h;
@@ -118,8 +124,8 @@ public:
 	float GetMouseX_C();
 	float GetMouseY_C();
 
-	int lastmousewheel;
-	int mousewheel;
+	int lastmousevwheel;
+	int mousevwheel;
 
 	float wheelscalefactor;
 
@@ -128,7 +134,7 @@ public:
 
 	bool manageloop;
 
-	float precision;
+	float nPrecision;
 	bool bActive;
 	int toactivedelay;
 	int inactivereason;

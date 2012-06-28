@@ -178,7 +178,15 @@ void GObjectManager::OnTreeChanged( GObject * changingbase, GObject * activeitem
 				MainInterface::getInstance().OnRebuildLayerTree(changingbase, activeitem);
 			}
 		}
-	}
+    }
+}
+
+void GObjectManager::OnPrecisionChanged()
+{
+    if (pBaseNode)
+    {
+        pBaseNode->CallPrecisionChanged(MainInterface::getInstance().GetPrecision());
+    }
 }
 
 GLayer * GObjectManager::NewLayer( GObject * node, const char * layername, int layerIndex/*=-1*/ )

@@ -14,6 +14,7 @@ QMainInterface::QMainInterface()
     pHistoryTable = NULL;
     pLayerDockable = NULL;
     pLayerTree = NULL;
+    pStatusBar = NULL;
 }
 
 QMainInterface::~QMainInterface()

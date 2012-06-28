@@ -51,7 +51,7 @@ void QKeyStateManager::Flush()
             hge->Input_SetDIKey(i, false);
         }
     }
-    Clear();
+//    Clear();
 }
 
 void QKeyStateManager::FillMapKey()

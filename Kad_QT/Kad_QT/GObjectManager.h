@@ -72,6 +72,7 @@ public:
 
 	void OnTreeWillChange();
 	void OnTreeChanged(GObject * changingbase, GObject * activeitem, bool bSetActiveLayer=true);
+    void OnPrecisionChanged();
 
 	void AddNodeToDelete(GObject * node);
 

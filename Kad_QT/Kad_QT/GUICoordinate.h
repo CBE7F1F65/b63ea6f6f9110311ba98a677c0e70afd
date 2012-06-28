@@ -44,6 +44,12 @@ public:
 	void UpdateScreenMeasure();
 
 private:
+    bool bShowGrid;
+public:
+    bool isShowGrid(){return bShowGrid;};
+    void SetShowGrid(bool bSet){bShowGrid=bSet;};
+
+private:
 	int measuretype;
 	float originx_s;
 	float originy_s;

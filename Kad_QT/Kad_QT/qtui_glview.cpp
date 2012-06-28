@@ -70,8 +70,33 @@ void QTUI_GLView::SLT_OnUpdate()
 
 	MainInterface::getInstance().OnUpdateTimer();
 	MainInterface::getInstance().hge->System_Log("s");
-//	ClearKeyState();
+
+    QMainInterface::getInstance().GetPStatusBar()->UpdateStatusBar();
+    //	ClearKeyState();
 }
+
+void QTUI_GLView::SLT_HScrollValueChanged(int val)
+{
+    static int curpos = 5000;
+    static int lastpos = curpos;
+
+    lastpos = curpos;
+    curpos = val;
+
+    MainInterface::getInstance().OnDoScroll(true, curpos-lastpos, 1000);
+}
+
+void QTUI_GLView::SLT_VScrollValueChanged(int val)
+{
+    static int curpos = 5000;
+    static int lastpos = curpos;
+
+    lastpos = curpos;
+    curpos = val;
+
+    MainInterface::getInstance().OnDoScroll(false, curpos-lastpos, 1000);
+}
+
 
 void QTUI_GLView::keyPressEvent( QKeyEvent * e )
 {
@@ -122,7 +147,18 @@ void QTUI_GLView::mouseReleaseEvent( QMouseEvent *e )
 
 void QTUI_GLView::wheelEvent( QWheelEvent *e )
 {
-    QGLWidget::wheelEvent(e);
+	int numDegrees = e->delta() / 8;
+	int numSteps = numDegrees / 15;
+
+	if (e->orientation() == Qt::Horizontal)
+	{
+		hge->Input_SetMouseWheel(numSteps, true);
+	}
+	else
+	{
+		hge->Input_SetMouseWheel(numSteps, false);
+	}
+	setFocus();
 }
 
 void QTUI_GLView::enterEvent( QEvent *e )
@@ -169,6 +205,38 @@ bool QTUI_GLView::eventFilter(QObject *target, QEvent *e)
             return true;
         }
     }
+	else if(e->type() == QEvent::KeyRelease)
+	{
+		QKeyEvent * pke = static_cast<QKeyEvent *>(e);
+
+		QKeyStateManager * qksm = &QKeyStateManager::getInstance();
+		qksm->SetKey(pke->key(), false);
+
+		Qt::KeyboardModifiers km = pke->modifiers();
+		if (km)
+		{
+
+			if (km & Qt::ALT)
+			{
+				qksm->SetKey(Qt::ALT, false);
+			}
+			if (km & Qt::CTRL)
+			{
+				qksm->SetKey(Qt::CTRL, false);
+			}
+			if (km & Qt::META)
+			{
+				qksm->SetKey(Qt::META, false);
+			}
+			if (km & Qt::SHIFT)
+			{
+				qksm->SetKey(Qt::SHIFT, false);
+			}
+
+			return true;
+		}
+	}
+
     return QGLWidget::eventFilter(target, e);
 }
 

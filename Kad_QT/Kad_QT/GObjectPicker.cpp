@@ -84,7 +84,7 @@ int GObjectPicker::UpdatePickPoint()
 
 	bool bSnapped = false;
 	// Snap to Geometry
-	if (!bSnapped && (snaptoflag & GOPSNAP_GEOMETRY))
+    if (!bSnapped && isSnapToGeometry())
 	{
 		GObjectManager * pgm = &GObjectManager::getInstance();
 		GObject * pNode = pgm->GetMainBaseNode();
@@ -95,17 +95,17 @@ int GObjectPicker::UpdatePickPoint()
 		}
 	}
 	// Snap to Continuity
-	if (!bSnapped && (snaptoflag & GOPSNAP_CONTINUITY))
+    if (!bSnapped && isSnapToContinuity())
 	{
 		bSnapped = CheckSnapContinuity();
 	}
 	// Snap to Coord
-	if (!bSnapped && (snaptoflag & GOPSNAP_COORD))
+    if (!bSnapped && isSnapToCoord())
 	{
 		bSnapped = CheckSnapCoord();
 	}
 	// Snap to Grid
-	if (!bSnapped && (snaptoflag & GOPSNAP_GRID))
+    if (!bSnapped && isSnapToGrid())
 	{
 		bSnapped = CheckSnapGrid();
 	}
@@ -376,7 +376,19 @@ GObject * GObjectPicker::GetMDownPickedEntityObj()
 	{
 		return mousedownPickEntityObj;
 	}
-	return NULL;
+    return NULL;
+}
+
+void GObjectPicker::SetSnapTo(int snapto, bool bSet)
+{
+    if (bSet)
+    {
+        snaptoflag |= snapto;
+    }
+    else
+    {
+        snaptoflag &= ~snapto;
+    }
 }
 
 void GObjectPicker::ClearSet()

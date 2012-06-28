@@ -32,8 +32,8 @@ MainInterface::MainInterface()
 	resizewindow_h = -1;
 	mousex = 0;
 	mousey = 0;
-	mousewheel = 0;
-	lastmousewheel = 0;
+	mousevwheel = 0;
+	lastmousevwheel = 0;
 	wheelscalefactor = 1.25f;
 
 	cursorleftkeyindex = 0;
@@ -44,7 +44,7 @@ MainInterface::MainInterface()
 	manageloop = false;
 	bActive = false;
 
-	precision = 0.25f;
+    nPrecision = 25;
 }
 
 MainInterface::~MainInterface()
@@ -169,20 +169,20 @@ bool MainInterface::Frame()
 	lastmousey = mousey;
 	hge->Input_GetMousePos(&mousex, &mousey);
 
-	lastmousewheel = mousewheel;
-	mousewheel = hge->Input_GetMouseWheel();
+	lastmousevwheel = mousevwheel;
+	mousevwheel = hge->Input_GetMouseWheel();
 
 	DoCheckFloatCommand();
 
 	Command * pcommand = &Command::getInstance();
 
 	GUICoordinate * pguic = &GUICoordinate::getInstance();
-	if (mousewheel != lastmousewheel)
+	if (mousevwheel != lastmousevwheel)
 	{
 		pcommand->CreateCommandCommit(COMM_DOZOOM);
 		pcommand->SetParamX(CSP_DOZOOM_XY_F_C_SCALE, mousex);
 		pcommand->SetParamY(CSP_DOZOOM_XY_F_C_SCALE, mousey);
-		pcommand->SetParamF(CSP_DOZOOM_XY_F_C_SCALE, powf(wheelscalefactor, mousewheel-lastmousewheel));
+		pcommand->SetParamF(CSP_DOZOOM_XY_F_C_SCALE, powf(wheelscalefactor, mousevwheel-lastmousevwheel));
 	}
 
 	if (hge->Input_GetDIKey(DIK_SPACE, DIKEY_DOWN) && IsMainViewActive())
@@ -762,7 +762,21 @@ void MainInterface::OnDoScroll( bool horz, int pos, int range )
 
 void MainInterface::MBeep( int id/*=-1*/ )
 {
-	MessageBeep(id);
+    MessageBeep(id);
+}
+
+void MainInterface::SetPrecisionInt(int nVal)
+{
+    if (nVal > 100)
+    {
+        nVal = 100;
+    }
+    else if (nVal < 0)
+    {
+        nVal = 0;
+    }
+    nPrecision = nVal;
+    GObjectManager::getInstance().OnPrecisionChanged();
 }
 
 void MainInterface::OnPushRevertable( const char * desc, const char * commandstr, int command )

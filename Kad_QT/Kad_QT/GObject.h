@@ -118,6 +118,8 @@ public:
 	virtual void OnUpdate();
 	virtual void OnRender(int iHighlightLevel=0);
 
+    virtual void CallPrecisionChanged(float fPrecision);
+    virtual void OnPrecisionChanged(float fPrecision);
 	virtual void CallModify();
 	virtual void CallClearModify();
 	virtual void CallUpdate();

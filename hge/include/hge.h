@@ -466,7 +466,8 @@ struct hgeInputEvent
 #define INPUT_MBUTTONDOWN	3
 #define INPUT_MBUTTONUP		4
 #define INPUT_MOUSEMOVE		5
-#define INPUT_MOUSEWHEEL	6
+#define INPUT_MOUSEWHEELV	6
+#define INPUT_MOUSEWHEELH	7
 
 /*
 ** HGE Input Event flags
@@ -860,7 +861,8 @@ public:
 
 	virtual void		CALL	Input_GetMousePos(float *x, float *y) = 0;
 	virtual void		CALL	Input_SetMousePos(float x, float y) = 0;
-	virtual int			CALL	Input_GetMouseWheel() = 0;
+	virtual int			CALL	Input_GetMouseWheel(bool bHorz=false) = 0;
+	virtual void		CALL	Input_SetMouseWheel(int inc, bool bHorz=false) = 0;
 	virtual bool		CALL	Input_IsMouseOver() = 0;
 	virtual bool		CALL	Input_KeyDown(int key) = 0;
 	virtual bool		CALL	Input_KeyUp(int key) = 0;

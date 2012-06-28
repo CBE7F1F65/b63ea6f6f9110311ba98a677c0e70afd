@@ -118,6 +118,7 @@ public:
 	GBezierLine(GObject * parent, PointF2D pb, PointF2D pbh, PointF2D peh, PointF2D pe);
 	virtual ~GBezierLine();
 
+    virtual void OnPrecisionChanged(float fPrecision);
 	virtual void OnModify();
 	virtual void UpdateMidPoint();
 	virtual bool canMove(){return true;};

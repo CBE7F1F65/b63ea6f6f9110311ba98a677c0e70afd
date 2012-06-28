@@ -95,7 +95,12 @@ public:
 private:
 	int snaptoflag;
 public:
-	void SetSnapTo(int snapto){snaptoflag=snapto;};
+    void SetSnapTo(int snapto){SetSnapTo(snapto, true);};
+    void SetSnapTo(int snapto, bool bSet);
+    bool isSnapToGrid(){return snaptoflag&GOPSNAP_GRID;};
+    bool isSnapToGeometry(){return snaptoflag&GOPSNAP_GEOMETRY;};
+    bool isSnapToCoord(){return snaptoflag&GOPSNAP_COORD;};
+    bool isSnapToContinuity(){return snaptoflag&GOPSNAP_CONTINUITY;};
 private:
 	float snaprange_c;
 	float snaprange_s;

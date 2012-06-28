@@ -10,6 +10,7 @@
 #include "qtui_history_table.h"
 #include "qtui_layer_dockablepane.h"
 #include "qtui_layer_tree.h"
+#include "QTUI_StatusBar.h"
 
 class QMainInterface
 {
@@ -63,6 +64,7 @@ public:
     _QMWDEF(QTUI_History_Table, HistoryTable);
     _QMWDEF(QTUI_Layer_DockablePane, LayerDockable);
     _QMWDEF(QTUI_Layer_Tree, LayerTree);
+    _QMWDEF(QTUI_StatusBar, StatusBar);
 
 #undef _QMWDEF
 

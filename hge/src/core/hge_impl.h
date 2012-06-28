@@ -213,7 +213,8 @@ public:
 
 	virtual void		CALL	Input_GetMousePos(float *x, float *y);
 	virtual void		CALL	Input_SetMousePos(float x, float y);
-	virtual int			CALL	Input_GetMouseWheel();
+	virtual int			CALL	Input_GetMouseWheel(bool bHorz=false);
+	virtual void		CALL	Input_SetMouseWheel(int inc, bool bHorz=false);
 	virtual bool		CALL	Input_IsMouseOver();
 	virtual bool		CALL	Input_KeyDown(int key);
 	virtual bool		CALL	Input_KeyUp(int key);
@@ -438,7 +439,8 @@ public:
 	// Input
 	int					VKey;
 	int					Char;
-	int					Zpos;
+	int					ZVpos;
+	int					ZHpos;
 	float				Xpos;
 	float				Ypos;
 	bool				bMouseOver;

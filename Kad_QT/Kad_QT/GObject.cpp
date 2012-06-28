@@ -322,9 +322,14 @@ void GObject::OnRender( int iHighlightLevel/*=0*/ )
 
 void GObject::OnRelease()
 {
-	RemoveAllChildren(true);
-	GObjectManager::getInstance().AddNodeToDelete(this);
+    RemoveAllChildren(true);
+    GObjectManager::getInstance().AddNodeToDelete(this);
 }
+
+void GObject::OnPrecisionChanged(float fPrecision)
+{
+}
+
 
 void GObject::OnModify()
 {
@@ -570,6 +575,17 @@ void GObject::CallUpdate()
 			}
 		}
 	}
+}
+void GObject::CallPrecisionChanged(float fPrecision)
+{
+    OnPrecisionChanged(fPrecision);
+    if (!listChildren.empty())
+    {
+        FOREACH_GOBJ_CHILDREN_IT()
+        {
+            (*it)->CallPrecisionChanged(fPrecision);
+        }
+    }
 }
 
 void GObject::CallModify()

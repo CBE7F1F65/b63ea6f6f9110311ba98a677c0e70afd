@@ -272,6 +272,75 @@
     <ClCompile Include="GeneratedFiles\Release\moc_qtui_commandpanel_commandlog.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="qtui_commandfloating_command.cpp">
+      <Filter>QT</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qtui_commandfloating_command.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qtui_commandfloating_command.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="qtui_commandfloating_widget.cpp">
+      <Filter>QT</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qtui_commandfloating_widget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qtui_commandfloating_widget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="qtui_history_dockablepane.cpp">
+      <Filter>QT</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qtui_history_dockablepane.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qtui_history_dockablepane.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="qtui_history_snapshottable.cpp">
+      <Filter>QT</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qtui_history_snapshottable.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qtui_history_snapshottable.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="qtui_history_table.cpp">
+      <Filter>QT</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qtui_history_table.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qtui_history_table.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="qtui_layer_dockablepane.cpp">
+      <Filter>QT</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qtui_layer_dockablepane.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qtui_layer_dockablepane.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="qtui_layer_tree.cpp">
+      <Filter>QT</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qtui_layer_tree.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qtui_layer_tree.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="qmaininterface.cpp">
+      <Filter>QT</Filter>
+    </ClCompile>
+    <ClCompile Include="qkeystatemanager.cpp">
+      <Filter>QT</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -409,6 +478,21 @@
     <ClInclude Include="GeneratedFiles\ui_qtui_commanddockable.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_qtui_commandfloating_widget.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_qtui_history_dockablepane.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_qtui_layer_dockablepane.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qmaininterface.h">
+      <Filter>QT</Filter>
+    </ClInclude>
+    <ClInclude Include="qkeystatemanager.h">
+      <Filter>QT</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="kad_qt.ui">
@@ -434,6 +518,36 @@
     </CustomBuild>
     <CustomBuild Include="qtui_commanddockable.ui">
       <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_commandfloating_widget.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_history_dockablepane.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_layer_dockablepane.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_commandfloating_command.h">
+      <Filter>QT</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_commandfloating_widget.h">
+      <Filter>QT</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_history_dockablepane.h">
+      <Filter>QT</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_history_snapshottable.h">
+      <Filter>QT</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_history_table.h">
+      <Filter>QT</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_layer_dockablepane.h">
+      <Filter>QT</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_layer_tree.h">
+      <Filter>QT</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

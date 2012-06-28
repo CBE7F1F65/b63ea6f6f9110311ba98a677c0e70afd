@@ -206,6 +206,18 @@ GBezierLine::~GBezierLine()
 {
 }
 
+void GBezierLine::OnPrecisionChanged(float fPrecision)
+{
+    GStraightLine::OnPrecisionChanged(fPrecision);
+    if (plbegin && plend)
+    {
+        if (!isStraightLine())
+        {
+            bsinfo.ResetPoints(plbegin->GetPointF2D(), plbegin->GetHandle()->GetPointF2D(), plend->GetHandle()->GetPointF2D(), plend->GetPointF2D(), fPrecision);
+        }
+    }
+}
+
 void GBezierLine::UpdateMidPoint()
 {
 	if (pmid)

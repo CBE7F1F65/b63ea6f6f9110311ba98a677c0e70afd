@@ -809,7 +809,7 @@ HGE_Impl::HGE_Impl()
 	res=0;
 
 	queue=0;
-	Char=VKey=Zpos=0;
+	Char=VKey=ZVpos=ZHpos=0;
 	Xpos=Ypos=0.0f;
 	bMouseOver=false;
 	bCaptured=false;
@@ -1239,8 +1239,11 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		case WM_MOUSEMOVE:
 			pHGE->_BuildEvent(INPUT_MOUSEMOVE, 0, 0, 0, LOWORDINT(lparam), HIWORDINT(lparam));
 			return FALSE;
-		case 0x020A: // WM_MOUSEWHEEL, GET_WHEEL_DELTA_WPARAM(wparam);
-			pHGE->_BuildEvent(INPUT_MOUSEWHEEL, short(HIWORD(wparam))/120, 0, 0, LOWORDINT(lparam), HIWORDINT(lparam));
+		case 0x020A: // WM_MOUSEWHEEL, 120 : GET_WHEEL_DELTA_WPARAM(wparam);
+			pHGE->_BuildEvent(INPUT_MOUSEWHEELV, short(HIWORD(wparam))/120, 0, 0, LOWORDINT(lparam), HIWORDINT(lparam));
+			return FALSE;
+		case 0x020E: // WM_MOUSEHWHEEL, 120 : GET_WHEEL_DELTA_WPARAM(wparam);
+			pHGE->_BuildEvent(INPUT_MOUSEWHEELH, short(HIWORD(wparam))/120, 0, 0, LOWORDINT(lparam), HIWORDINT(lparam));
 			return FALSE;
 
 		case WM_SIZE:

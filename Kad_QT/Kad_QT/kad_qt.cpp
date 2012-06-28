@@ -5,6 +5,12 @@
 #include "MainInterface.h"
 #include "qmaininterface.h"
 
+#define _UISCROLL_FAR	1000
+#define _UISCROLL_PAGE	100
+#define _UISCROLL_NPAGE	10
+#define _UISCROLL_LINE	10
+#define _UISCROLL_RANGE	1000
+
 Kad_QT::Kad_QT(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags)
 {
