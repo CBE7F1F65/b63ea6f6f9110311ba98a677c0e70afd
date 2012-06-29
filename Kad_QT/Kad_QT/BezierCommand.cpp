@@ -103,6 +103,19 @@ void BezierCommand::OnProcessCommand()
 			);
 	}
 
+
+	if (step >= CSI_BEZIER_WANTBHX)
+	{
+		float bx, by;
+		pcommand->GetParamXY(CSP_BEZIER_XY_BA, &bx, &by);
+		pgp->PushInterestPoint(bx, by);
+		if (step >= CSI_BEZIER_WANTNHX)
+		{
+			pcommand->GetParamXY(CSP_BEZIER_XY_NA, &bx, &by);
+			pgp->PushInterestPoint(bx, by);
+		}
+	}
+
 	if (!ret)
 	{
 	}

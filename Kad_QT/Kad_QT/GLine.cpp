@@ -134,25 +134,7 @@ bool GStraightLine::CheckNearTo( float px, float py, float r, float *plx, float 
 //	float xl, yt, xr, yb;
 //	GetBoundingBox(&xl, &yt, &xr, &yb);
 //	if (!MathHelper::getInstance().PointInRectTwoPoint(px, py, xl-r, yt-r, xr-xl+2*r, yb-yt+2*r))
-	if (!MathHelper::getInstance().PointInRectTwoPoint(px, py, plbegin->x, plbegin->y, plend->x, plend->y, r))
-	{
-		return false;
-	}
-	float nx, ny;
-	float distpow2 = MathHelper::getInstance().NearestPointOnStraightLinePow2(px, py, plbegin->x, plbegin->y, plend->x, plend->y, &nx, &ny);
-	if (plx)
-	{
-		*plx = nx;
-	}
-	if (ply)
-	{
-		*ply = ny;
-	}
-	if (distpow2 < r*r)
-	{
-		return true;
-	}
-	return false;
+	return MathHelper::getInstance().PointNearToStraightLine(px, py, plbegin->x, plbegin->y, plend->x, plend->y, r, plx, ply);
 }
 
 void GStraightLine::GetBoundingBox( float *xl, float *yt, float *xr, float * yb )

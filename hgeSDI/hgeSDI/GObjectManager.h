@@ -23,7 +23,7 @@ public:
 	{
 		pObj = NULL;
 		xoffset = 0;
-		yoffset = 9;
+        yoffset = 0;
 	};
 	bool IsDescendantOf( GObject* _pObj )
 	{

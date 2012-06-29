@@ -112,23 +112,17 @@ public:
 	virtual void OnEnter();
 	virtual void OnRelease();
 
-	// Use Call for Recursive
-    virtual void OnShowIndicate();
-    virtual void OnShowUISelect();
+    // Use Call for Recursive
     virtual void OnPrecisionChanged(float fPrecision);
 	virtual void OnModify();
 	virtual void OnClearModify();	// Post-Update
 	virtual void OnUpdate();
     virtual void OnRender(int iHighlightLevel=0);
 
-    virtual void CallShowIndicate();
-    virtual void CallShowUISelect();
     virtual void CallPrecisionChanged(float fPrecision);
 	virtual void CallModify();
-	virtual void CallClearModify();
-    virtual void CallClearUILayerIndicators();
+    virtual void CallClearModify();
     virtual void CallRedrawModify();
-    virtual void CallUILayerIndicatingModify();
 	virtual void CallUpdate();
 	virtual void CallRender(int iHighlightLevel=0);
 
@@ -215,9 +209,6 @@ protected:
 	int nTryState;
 	float fTryMove_bx;
 	float fTryMove_by;
-
-    bool bIndicating;
-    bool bUISelecting;
 
 	list<GObject*> listChildren;
 protected:

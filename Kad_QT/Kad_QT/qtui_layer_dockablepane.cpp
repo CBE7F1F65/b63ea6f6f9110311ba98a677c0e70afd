@@ -2,6 +2,7 @@
 #include "qtui_layer_dockablepane.h"
 #include "ui_qtui_layer_dockablepane.h"
 #include "qmaininterface.h"
+#include "GObjectManager.h"
 
 QTUI_Layer_DockablePane::QTUI_Layer_DockablePane(QWidget *parent) :
     QDockWidget(parent),
@@ -19,4 +20,14 @@ void QTUI_Layer_DockablePane::OnMainFrameSetupUIDone()
 QTUI_Layer_DockablePane::~QTUI_Layer_DockablePane()
 {
     delete ui;
+}
+
+void QTUI_Layer_DockablePane::enterEvent(QEvent *e)
+{
+    GObjectManager::getInstance().SetRenderUILayerIndicators(true);
+}
+
+void QTUI_Layer_DockablePane::leaveEvent(QEvent *e)
+{
+    GObjectManager::getInstance().SetRenderUILayerIndicators(false);
 }

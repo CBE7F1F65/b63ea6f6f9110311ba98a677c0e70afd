@@ -8,7 +8,7 @@
 
 #define M_STRMAX	256
 
-#define M_FLOATEPS	0.00001f
+#define M_FLOATEPS	0.0001f
 
 #define ANGLEBASE_90	90000
 #define ANGLEBASE_180	180000

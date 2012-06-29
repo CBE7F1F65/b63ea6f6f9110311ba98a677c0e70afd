@@ -60,6 +60,7 @@ public:
 	void OnTreeLockChange( bool toLock );
 	void OnRebuildLayerTree(GObject * changebase, GObject * activeitem);
     list<GObject *> * OnGetSelectedNodes();
+    GObject * OnGetHoveringNode();
 	bool OnGetDragDroppedNodes( GLayer ** pLayerNode, GObject ** pAfterNode );
 	void OnSetActiveLayer_Internal( GLayer * pLayer );
 	void OnSetActiveLayerFromUI();

@@ -30,7 +30,7 @@ public:
 
 	void DeSelect(GObject * pObj);
 	void DeSelectAll();
-	void AddSelect(GObject * pObj);
+    void AddSelect(GObject * pObj, int level=-1);
 
 	int nomoveflag;
 

@@ -257,17 +257,33 @@ void QTUI_GLView::OnFrame()
     {
         qksm->SetKey(Qt::ALT);
     }
+    else
+    {
+        qksm->SetKey(Qt::ALT, false);
+    }
     if (QApplication::keyboardModifiers() & Qt::CTRL)
     {
         qksm->SetKey(Qt::CTRL);
+    }
+    else
+    {
+        qksm->SetKey(Qt::CTRL, false);
     }
     if (QApplication::keyboardModifiers() & Qt::META)
     {
         qksm->SetKey(Qt::META);
     }
+    else
+    {
+        qksm->SetKey(Qt::META, false);
+    }
     if (QApplication::keyboardModifiers() & Qt::SHIFT)
     {
         qksm->SetKey(Qt::SHIFT);
+    }
+    else
+    {
+        qksm->SetKey(Qt::SHIFT, false);
     }
 
     qksm->Flush();

@@ -55,7 +55,7 @@ void MarqueeSelect::DeSelectAll()
 	selectednodes.clear();
 }
 
-void MarqueeSelect::AddSelect( GObject * pObj )
+void MarqueeSelect::AddSelect( GObject * pObj, int level )
 {
 	if (!pObj)
 	{
@@ -74,10 +74,33 @@ void MarqueeSelect::AddSelect( GObject * pObj )
 		return;
 	}
 
-	if (!pObj->isRepresentablePoint() && !pObj->isRepresentableLine() && !pObj->isRepresentablePiece())
-	{
-		return;
-	}
+    switch (level)
+    {
+    case MARQNOMOVE_POINT:
+        if (!pObj->isRepresentablePoint())
+        {
+            return;
+        }
+        break;
+    case MARQNOMOVE_LINE:
+        if (!pObj->isRepresentableLine())
+        {
+            return;
+        }
+        break;
+    case MARQNOMOVE_PIECE:
+        if (!pObj->isRepresentablePiece())
+        {
+            return;
+        }
+        break;
+    default:
+        if (!pObj->isRepresentablePoint() && !pObj->isRepresentableLine() && !pObj->isRepresentablePiece())
+        {
+            return;
+        }
+    }
+
 	
 	for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end();)
 	{
@@ -179,6 +202,7 @@ void MarqueeSelect::Update()
 				}
 				if (itemmovestate == MARQMOVESTATE_BEGAN)
 				{
+					pgp->SetCheckMouseDown(true);
 					if (pgp->GetSnappedState())
 					{
 						mousex_c = pgp->GetPickX_C();
@@ -321,7 +345,8 @@ void MarqueeSelect::CheckMarqueeSelect_Line( GObject * pObj )
 	{
 		if (((GLine *)pObj)->CheckIntersectWithRect(beginx_c, beginy_c, endx_c, endy_c))
 		{
-			selectednodes.push_back(pObj);
+            AddSelect(pObj, MARQNOMOVE_LINE);
+//			selectednodes.push_back(pObj);
 		}
 	}
 	for (list<GObject *>::iterator it=pObj->getChildren()->begin(); it!=pObj->getChildren()->end(); ++it)
@@ -342,7 +367,8 @@ void MarqueeSelect::CheckMarqueeSelect_Pt( GObject * pObj )
 		{
 			if (!pObj->isHandlePoint())
 			{
-				selectednodes.push_back(pObj);
+                AddSelect(pObj, MARQNOMOVE_POINT);
+//				selectednodes.push_back(pObj);
 			}
 		}
 	}

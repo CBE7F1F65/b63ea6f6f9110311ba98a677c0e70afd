@@ -133,7 +133,9 @@ public:
 
 	float NearestPointOnStraightLine(float px, float py, float lx1, float ly1, float lx2, float ly2, float * nx, float * ny);
 	float NearestPointOnStraightLinePow2(float px, float py, float lx1, float ly1, float lx2, float ly2, float * nx, float * ny);
+	bool PointNearToStraightLine( float px, float py, float x1, float y1, float x2, float y2, float r, float * plx, float * ply );
 	void GetPerpendicularPointForLine( PointF2D pt1, PointF2D pt2, float s, float l, bool bUpward, PointF2D* ptp );
 	int GetLineAngle( PointF2D pt1, PointF2D pt2 );
 	void RestrictAngle( int* angle );
+	bool GetLineSegmentInRect( float x, float y, int angle, float lx, float ty, float rx, float by, float* x1, float* y1, float* x2, float* y2 );
 };

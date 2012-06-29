@@ -21,6 +21,7 @@ public:
 public:
     void RebuildTree( GObject * changebase, GObject * activeitem );
     list<GObject *> * GetActiveNodes();
+    GObject * GetHoveringNode();
     bool GetDragDroppedNodes( GLayer ** pLayerNode, GObject ** pAfterNode );
 
 protected:
@@ -28,7 +29,8 @@ protected:
     virtual void dragMoveEvent(QDragMoveEvent *e);
     virtual void resizeEvent(QResizeEvent * e);
     virtual void mouseMoveEvent(QMouseEvent * e);
-    virtual void leaveEvent(QEvent * e);
+//    virtual void enterEvent(QEvent * e);
+//    virtual void leaveEvent(QEvent * e);
 
     
 private:
@@ -53,6 +55,10 @@ private:
     list<GObject *> selectednodes;
     GLayer * pDragDropLayer;
     GObject * pDragDropAfter;
+    GObject * pHoveringNode;
+    GObject * pPreferredNextSelectItem;
+
+    bool bInternalSelecting;
 
 signals:
     

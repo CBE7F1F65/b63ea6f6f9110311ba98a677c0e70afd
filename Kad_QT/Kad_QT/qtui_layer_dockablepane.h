@@ -15,6 +15,10 @@ public:
     explicit QTUI_Layer_DockablePane(QWidget *parent = 0);
     ~QTUI_Layer_DockablePane();
 
+protected:
+    virtual void enterEvent(QEvent * e);
+    virtual void leaveEvent(QEvent * e);
+
 public:
     void OnMainFrameSetupUIDone();
 

@@ -103,6 +103,13 @@ void MoveNodeCommand::OnDoneCommand()
 		toy += oldy;
 	}
 
+	PointF2D p(tox, tox);
+	if (p.Equals(PointF2D(oldx, oldy)))
+	{
+		pcommand->StepTo(CSI_TERMINAL);
+		return;
+	}
+
 
 	if (pObj->MoveTo(tox, toy, false))
 	{

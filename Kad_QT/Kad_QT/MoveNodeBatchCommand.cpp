@@ -94,6 +94,13 @@ void MoveNodeBatchCommand::OnDoneCommand()
 	float xoffset, yoffset;
 	pcommand->GetParamXY(CSP_MOVENODE_BATCH_I_XY_INDEXES_NEWPOS, &xoffset, &yoffset);
 
+	PointF2D p(xoffset, yoffset);
+	if (p.Equals(PointF2D(0, 0)))
+	{
+		pcommand->StepTo(CSI_TERMINAL);
+		return;
+	}
+
 	list<GObject *> lobjs;
 	int i=0;
 	while (index >= 0)

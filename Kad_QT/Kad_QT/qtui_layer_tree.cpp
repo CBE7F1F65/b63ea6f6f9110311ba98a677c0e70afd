@@ -30,6 +30,12 @@ QTUI_Layer_Tree::QTUI_Layer_Tree(QWidget *parent) :
     this->header()->moveSection(_UILT_COLUMN_TREE, _UILT_COLUMN_LINECOLOR);
     this->setIndentation(_UILT_INDENTATION);
 
+    pHoveringNode = NULL;
+    pDragDropLayer = NULL;
+    pDragDropAfter = NULL;
+
+    bInternalSelecting = false;
+
 //    this->setItemDelegate(new UILT_EditDelegate(this));
 
     AdjustSize();
@@ -37,6 +43,7 @@ QTUI_Layer_Tree::QTUI_Layer_Tree(QWidget *parent) :
 
 void QTUI_Layer_Tree::RebuildTree(GObject *changebase, GObject *activeitem)
 {
+    selectednodes.clear();
     QTreeWidgetItem * pBaseItem = FindItemByObj(changebase);
     if (!pBaseItem)
     {
@@ -51,8 +58,10 @@ void QTUI_Layer_Tree::RebuildTree(GObject *changebase, GObject *activeitem)
         QTreeWidgetItem *pActive = FindItemByObj(activeitem, pBaseItem);
         if (pActive)
         {
+            pPreferredNextSelectItem = activeitem;
             this->setCurrentItem(pActive);
             this->scrollToItem(pActive);
+            Reselect();
         }
     }
 
@@ -83,12 +92,26 @@ list<GObject *> * QTUI_Layer_Tree::GetActiveNodes()
 {
     if (selectednodes.empty())
     {
-        GObject * pObj = GetObjFromItem(this->topLevelItem(0));
+        GObject * pObj = NULL;
+        if (pPreferredNextSelectItem && FindItemByObj(pPreferredNextSelectItem))
+        {
+            pObj = pPreferredNextSelectItem;
+        }
+        else
+        {
+            pObj = GetObjFromItem(this->topLevelItem(0));
+            pPreferredNextSelectItem = pObj;
+        }
         Q_ASSERT(pObj);
         selectednodes.push_back(pObj);
         Reselect();
     }
     return &selectednodes;
+}
+
+GObject *QTUI_Layer_Tree::GetHoveringNode()
+{
+    return pHoveringNode;
 }
 
 bool QTUI_Layer_Tree::GetDragDroppedNodes(GLayer **pLayerNode, GObject **pAfterNode)
@@ -156,29 +179,31 @@ void QTUI_Layer_Tree::resizeEvent(QResizeEvent *e)
 
 void QTUI_Layer_Tree::mouseMoveEvent(QMouseEvent *e)
 {
-    GObjectManager::getInstance().ClearUILayerIndicators();
-    if (!selectednodes.empty())
-    {
-        for (list<GObject *>::iterator it=selectednodes.begin(); it!= selectednodes.end(); ++it)
-        {
-            GObject * pObj = *it;
-            pObj->CallShowUISelect();
-        }
-    }
     QTreeWidgetItem * pItem = this->itemAt(e->pos());
     if (pItem)
     {
-        GObject * pObj = GetObjFromItem(pItem);
-        pObj->CallShowIndicate();
+        pHoveringNode = GetObjFromItem(pItem);
+    }
+    else
+    {
+        pHoveringNode = NULL;
     }
     QTreeWidget::mouseMoveEvent(e);
 }
 
+/*
+void QTUI_Layer_Tree::enterEvent(QEvent *e)
+{
+    pHoveringNode = NULL;
+    GObjectManager::getInstance().SetRenderUILayerIndicators(true);
+}
+
 void QTUI_Layer_Tree::leaveEvent(QEvent *e)
 {
-    GObjectManager::getInstance().ClearUILayerIndicators();
-    GObjectManager::getInstance().SetRedraw();
+    pHoveringNode = NULL;
+    GObjectManager::getInstance().SetRenderUILayerIndicators(false);
 }
+*/
 
 void QTUI_Layer_Tree::AdjustSize()
 {
@@ -307,7 +332,10 @@ bool QTUI_Layer_Tree::IsObjInSelection(GObject *pObj)
 
 void QTUI_Layer_Tree::Reselect()
 {
+    bInternalSelecting = true;
+
     list<GObject *> lst = selectednodes;
+    this->selectionModel()->clearSelection();
     for (list<GObject *>::iterator it=lst.begin(); it!= lst.end(); ++it)
     {
         QTreeWidgetItem * pItem = FindItemByObj(*it);
@@ -315,6 +343,8 @@ void QTUI_Layer_Tree::Reselect()
                     this->indexFromItem(pItem, _UILT_COLUMN_TREE),
                     QItemSelectionModel::Select);
     }
+
+    bInternalSelecting = false;
 }
 
 void QTUI_Layer_Tree::UpdateNodeInfo(QTreeWidgetItem *pItem, GObject *pObj)
@@ -415,8 +445,9 @@ void QTUI_Layer_Tree::SLT_DeleteItems()
     {
         return;
     }
-    GObject * pLayer = selectednodes.front()->GetLayer(false);
+    pPreferredNextSelectItem = selectednodes.front()->GetLayer(false);
     MainInterface::getInstance().OnCommand(COMM_DELETEITEM);
+    /*
     selectednodes.clear();
 
     QTreeWidgetItem * pItem = NULL;
@@ -434,12 +465,15 @@ void QTUI_Layer_Tree::SLT_DeleteItems()
     Q_ASSERT(pLayer);
     selectednodes.push_back(pLayer);
     Reselect();
-
-
+    */
 }
 
 void QTUI_Layer_Tree::SLT_UpdateSelectionNodes()
 {
+    if (bInternalSelecting)
+    {
+        return;
+    }
     QList<QTreeWidgetItem *> lst = this->selectedItems();
     if (!lst.size())
     {
@@ -449,10 +483,42 @@ void QTUI_Layer_Tree::SLT_UpdateSelectionNodes()
 
     QList<QTreeWidgetItem *>::iterator it;
 
-    selectednodes.clear();
-    for (it=lst.begin(); it!=lst.end(); ++it)
+    if (lst.size() == 1)
     {
-        selectednodes.push_back(GetObjFromItem(*it));
+        selectednodes.clear();
+        for (it=lst.begin(); it!=lst.end(); ++it)
+        {
+            selectednodes.push_back(GetObjFromItem(*it));
+        }
+    }
+    else
+    {
+        GObject * pParent;
+        GObject * pSelf;
+        bool bLayer;
+        if (selectednodes.empty())
+        {
+            pSelf = GetObjFromItem(lst.front());
+            pParent = pSelf->getParent();
+        }
+        else
+        {
+            pSelf = selectednodes.front();
+            pParent = pSelf->getParent();
+        }
+        Q_ASSERT(pSelf);
+        Q_ASSERT(pParent);
+        bLayer = pSelf->isLayer();
+        selectednodes.clear();
+        for (it=lst.begin(); it!=lst.end(); ++it)
+        {
+            GObject * pObj = GetObjFromItem(*it);
+            if (pParent == pObj->getParent() && bLayer == pObj->isLayer())
+            {
+                selectednodes.push_back(pObj);
+            }
+        }
+        Reselect();
     }
 }
 

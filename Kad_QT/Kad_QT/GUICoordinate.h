@@ -67,6 +67,8 @@ private:
 public:
 	float GetScreenWidth_S(){return scrw_s;};
 	float GetScreenHeight_S(){return scrh_s;};
+	float GetScreenWidth_C(){return StoCs(scrw_s);};
+	float GetScreenHeight_C(){return StoCs(scrh_s);};
 private:
 	int nsubgrid;
 	float cursorx_s;

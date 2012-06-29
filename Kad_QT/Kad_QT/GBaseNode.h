@@ -9,9 +9,7 @@ public:
 	virtual ~GBaseNode(void);
 
 	void CopyBaseFrom( GBaseNode * pFrom );
-	void CopyBaseTo( GBaseNode * pTo );
-
-    bool isUILayerIndicating(){return bIndicating || bUISelecting;};
+    void CopyBaseTo( GBaseNode * pTo );
 
 	virtual bool Clone(GObject * pNewParent);
 };

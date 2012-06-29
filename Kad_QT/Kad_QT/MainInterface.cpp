@@ -516,7 +516,12 @@ list<GObject *> * MainInterface::OnGetSelectedNodes()
 {
     return QMainInterface::getInstance().GetPLayerTree()->GetActiveNodes();
 //	return parentview->GetMainFrame()->GetActiveNodes(pnextfromIndex);
-//	return NULL;
+    //	return NULL;
+}
+
+GObject *MainInterface::OnGetHoveringNode()
+{
+    return QMainInterface::getInstance().GetPLayerTree()->GetHoveringNode();
 }
 
 bool MainInterface::OnGetDragDroppedNodes( GLayer ** pLayerNode, GObject ** pAfterNode )

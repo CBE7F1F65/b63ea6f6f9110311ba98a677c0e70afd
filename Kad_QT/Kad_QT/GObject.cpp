@@ -26,8 +26,6 @@ GObject::GObject(void)
 	fTryMove_by = 0;
 
     bCloning = false;
-    bIndicating = false;
-    bUISelecting = false;
 
 	_SetID();
 	OnInit();
@@ -285,14 +283,6 @@ void GObject::OnRelease()
 {
     RemoveAllChildren(true);
     GObjectManager::getInstance().AddNodeToDelete(this);
-}
-
-void GObject::OnShowIndicate()
-{
-}
-
-void GObject::OnShowUISelect()
-{
 }
 
 void GObject::OnPrecisionChanged(float fPrecision)
@@ -556,61 +546,11 @@ void GObject::OnParentToggleDisplayLocked( bool toDisplayLock )
 
 }
 
-void GObject::CallShowIndicate()
-{
-    if (!bIndicating)
-    {
-        bIndicating = true;
-        CallUILayerIndicatingModify();
-    }
-
-    OnShowIndicate();
-    if (!listChildren.empty())
-    {
-        FOREACH_GOBJ_CHILDREN_IT()
-        {
-            (*it)->CallShowIndicate();
-        }
-    }
-}
-
-void GObject::CallShowUISelect()
-{
-    if (!bUISelecting)
-    {
-        bUISelecting = true;
-        CallUILayerIndicatingModify();
-    }
-    OnShowUISelect();
-    if (!listChildren.empty())
-    {
-        FOREACH_GOBJ_CHILDREN_IT()
-        {
-            (*it)->CallShowUISelect();
-        }
-    }
-}
-
 void GObject::CallRender( int iHighlightLevel/*=0*/ )
 {
-    if (iHighlightLevel || canRender() || bIndicating || bUISelecting)
+    if (iHighlightLevel || canRender())
     {
-        if (ColorManager::getInstance().isIndicatingLevel(iHighlightLevel))
-        {
-            if (bIndicating)
-            {
-                OnRender(LINECOLOR_INDICATING);
-            }
-            else if (bUISelecting)
-            {
-                OnRender(LINECOLOR_UISELECT);
-            }
-        }
-        else
-        {
-            OnRender(iHighlightLevel);
-        }
-
+        OnRender(iHighlightLevel);
 
 		if (!listChildren.empty())
 		{
@@ -675,34 +615,9 @@ void GObject::CallClearModify()
     OnClearModify();
 }
 
-void GObject::CallClearUILayerIndicators()
-{
-    if (!listChildren.empty())
-    {
-        FOREACH_GOBJ_CHILDREN_IT()
-        {
-            if ((*it))
-            {
-                (*it)->CallClearUILayerIndicators();
-            }
-        }
-    }
-    bIndicating = false;
-    bUISelecting = false;
-}
-
 void GObject::CallRedrawModify()
 {
     GObjectManager::getInstance().SetRedraw();
-}
-
-void GObject::CallUILayerIndicatingModify()
-{
-    if (pTreeBase)
-    {
-        pTreeBase->bIndicating = true;
-        pTreeBase->bUISelecting = true;
-    }
 }
 
 GObject * GObject::GetLayer( bool bIncludingSelf/*=true*/ )

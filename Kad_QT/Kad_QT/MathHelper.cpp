@@ -240,6 +240,29 @@ float MathHelper::NearestPointOnStraightLinePow2( float px, float py, float lx1,
 
 }
 
+bool MathHelper::PointNearToStraightLine( float px, float py, float x1, float y1, float x2, float y2, float r, float * plx, float * ply )
+{
+	if (!PointInRectTwoPoint(px, py, x1, y1, x2, y2, r))
+	{
+		return false;
+	}
+	float nx, ny;
+	float distpow2 = NearestPointOnStraightLinePow2(px, py, x1, y1, x2, y2, &nx, &ny);
+	if (plx)
+	{
+		*plx = nx;
+	}
+	if (ply)
+	{
+		*ply = ny;
+	}
+	if (distpow2 < r*r)
+	{
+		return true;
+	}
+	return false;
+}
+
 bool MathHelper::PointInRectTwoPoint( float px, float py, float x1, float y1, float x2, float y2, float r/*=0*/ )
 {
 	return PointInRect(px, py, min(x1, x2)-r, min(y1, y2)-r, fabsf(x1-x2)+2*r, fabsf(y1-y2)+2*r);
@@ -290,6 +313,99 @@ void MathHelper::RestrictAngle( int* angle )
 		}
 	}
 }
+
+bool MathHelper::GetLineSegmentInRect( float x, float y, int angle, float lx, float ty, float rx, float by, float* x1, float* y1, float* x2, float* y2 )
+{
+	RestrictAngle(&angle);
+	if (angle < 0)
+	{
+		angle += ANGLEBASE_180;
+	}
+	if (angle == ANGLEBASE_180)
+	{
+		angle = 0;
+	}
+
+	float tpx[2];
+	float tpy[2];
+	bool bret = false;
+
+	if (angle == 0)
+	{
+		if (x >= lx && x <= rx)
+		{
+			tpx[0] = tpx[1] = x;
+			tpy[0] = ty;
+			tpy[1] = by;
+			bret = true;
+		}
+	}
+	else if (angle == 90)
+	{
+		if (y >= ty && y <= by)
+		{
+			tpy[0] = tpy[1] = y;
+			tpx[0] = lx;
+			tpx[1] = rx;
+			bret = true;
+		}
+	}
+	else
+	{
+		float ftg = tanf(ARC(angle));
+
+		int nowindex = 0;
+		// Check Left
+		tpy[nowindex] = y + (x-lx)/ftg;
+		if (tpy[nowindex] >= ty && tpy[nowindex] <= by)
+		{
+			tpx[nowindex] = lx;
+			nowindex++;
+		}
+		// Check Top
+		tpx[nowindex] = x + (y-ty)*ftg;
+		if (tpx[nowindex] >= lx && tpx[nowindex] <= rx)
+		{
+			tpy[nowindex] = ty;
+			nowindex++;
+		}
+		// Check Right
+		if (nowindex < 2)
+		{
+			tpy[nowindex] = y + (x-rx)/ftg;
+			if (tpy[nowindex] >= ty && tpy[nowindex] <= by)
+			{
+				tpx[nowindex] = rx;
+				nowindex++;
+			}
+		}
+		// Check Bottom
+		if (nowindex < 2)
+		{
+			tpx[nowindex] = x + (y-by)*ftg;
+			if (tpx[nowindex] >= lx && tpx[nowindex] <= rx)
+			{
+				tpy[nowindex] = by;
+				nowindex++;
+			}
+		}
+		//
+		if (nowindex == 2)
+		{
+			bret = true;
+		}
+	}
+	if (bret)
+	{
+		if (x1) { *x1 = tpx[0]; }
+		if (y1) { *y1 = tpy[0]; }
+		if (x2) { *x2 = tpx[1]; }
+		if (y2) { *y2 = tpy[1]; }
+		return true;
+	}
+	return false;
+}
+
 BezierSublinesInfo::BezierSublinesInfo()
 {
 	ptPoints = NULL;

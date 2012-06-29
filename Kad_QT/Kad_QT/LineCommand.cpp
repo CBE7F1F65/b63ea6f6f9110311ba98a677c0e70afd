@@ -61,12 +61,6 @@ void LineCommand::OnProcessCommand()
 	}
 	else if (step == CSI_LINE_WANTX2)
 	{
-		if (!pgp->isBeginPtSet())
-		{
-			float bx, by;
-			pcommand->GetParamXY(CSP_LINE_XY_B, &bx, &by);
-			pgp->SetBeginPt(bx, by);
-		}
 		ret = pcommand->ProcessPending(
 			CSP_LINE_XY_N, COMMPARAMFLAG_X, CWP_X_N,	// Fill in Param
 			CSI_LINE_WANTY2, CWP_Y_N					// Step to with want
@@ -78,6 +72,13 @@ void LineCommand::OnProcessCommand()
 			CSP_LINE_XY_N, COMMPARAMFLAG_Y, CWP_Y_N,	// Fill in Param
 			CSI_FINISHCONTINUE							// Step to with want
 			);
+	}
+
+	if (step >= CSI_LINE_WANTX2)
+	{
+		float bx, by;
+		pcommand->GetParamXY(CSP_LINE_XY_B, &bx, &by);
+		pgp->PushInterestPoint(bx, by);
 	}
 
 	if (!ret)

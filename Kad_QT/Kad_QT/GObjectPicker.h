@@ -3,14 +3,16 @@
 #include "GObject.h"
 
 #define GOPSNAP_NONE		0x0000
-#define GOPSNAP_GRID		0x0001
-#define GOPSNAP_GEOMETRY	0x0002
-#define GOPSNAP_COORD		0x0004
-#define GOPSNAP_CONTINUITY	0x0008
+#define GOPSNAP_SELF        0x0001
+#define GOPSNAP_GRID		0x0002
+#define GOPSNAP_GEOMETRY	0x0004
+#define GOPSNAP_COORD		0x0008
+#define GOPSNAP_CONTINUITY	0x0010
 
 #define GOPSNAPPED_OBJ			0x0100
 #define GOPSNAPPED_POINT		0x0200
-#define GOPSNAPPED_LINE			0x0400
+#define GOPSNAPPED_VIRTUALPOINT	0x0400
+#define GOPSNAPPED_LINE			0x0800
 #define GOPSNAPPED_XAXIS		0x1000
 #define GOPSNAPPED_YAXIS		0x2000
 #define GOPSNAPPED_CONTINUITY	0x4000
@@ -27,6 +29,42 @@
 
 typedef bool (*PickFilterCallback)(GObject *);
 
+class PickerInterestPointInfo
+{
+public:
+	PickerInterestPointInfo(){ClearSet();};
+	~PickerInterestPointInfo(){};
+
+	void ClearSet()
+	{
+		x = 0;
+		y = 0;
+		bHasAngle = false;
+		angle = 0;
+	};
+	void SetPosition(float _x, float _y)
+	{
+		x = _x;
+		y = _y;
+	};
+	void SetAngle(int _angle)
+	{
+		angle = _angle;
+		bHasAngle = true;
+	};
+
+	float GetX(){return x;};
+	float GetY(){return y;};
+	int GetAngle(){ASSERT(bHasAngle); return angle;};
+	bool HasAngle(){return bHasAngle;};
+
+private:
+	float x;
+	float y;
+	bool bHasAngle;
+	int angle;
+};
+
 class GObjectPicker
 {
 public:
@@ -41,19 +79,11 @@ private:
 public:
 
 	void Init();
-	bool isBeginPtSet();
-	bool isBeginAngleSet();
-	void SetBeginPt(float beginx, float beginy);
-	void SetBeginAngle(int beginangle);
 private:
 	int state;
 	int restrict;
 
-	int havebeginstate;
 	int mousestate;
-	float beginx;
-	float beginy;
-	int beginangle;
 
 	float pickx_s;
 	float picky_s;
@@ -108,14 +138,16 @@ public:
 	void SetSnapRange(float range){snaprange_s=range;};
 private:
 	bool IsInSnapRangePoint_C(float x, float y);
+	bool IsInSnapRangeAngle_C(float x, float y, int angle, float * plx, float * ply);
 	bool IsInSnapRangeXAxis_C(float y);
 	bool IsInSnapRangeYAxis_C(float x);
 
 	bool CheckSnapGeometryPoint(GObject * pObj);
+    bool CheckSnapPointAndCoord(float x, float y, int tostate);
 	bool CheckSnapGeometryLine(GObject * pObj);
 
 	bool CheckSnapGrid();
-	bool CheckSnapCoord();
+	bool CheckCoord_Obj(GObject * pObj);
 	bool CheckSnapContinuity();
 public:
 	void ClearSet();
@@ -130,4 +162,11 @@ public:
 
 	bool IsPickReady(int iret=-1);
 	bool IsMouseDownReady();
+
+public:
+	void PushInterestPoint(float x, float y, bool bHasAngle=false, int angle=0);
+	void SetCheckMouseDown( bool bSet ){bCheckMouseDown=bSet;};
+private:
+	list<PickerInterestPointInfo> pipinfo;
+	bool bCheckMouseDown;
 };

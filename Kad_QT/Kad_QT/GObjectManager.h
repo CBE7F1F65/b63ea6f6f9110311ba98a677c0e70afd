@@ -12,7 +12,7 @@ public:
 	MoveNodeByOffsetInfo(){ClearSet();};
 	MoveNodeByOffsetInfo(GObject * _pObj, float _xoffset, float _yoffset)
 	{
-		ASSERT(pObj);
+		ASSERT(_pObj);
 		pObj = _pObj;
 		xoffset = _xoffset;
 		yoffset = _yoffset;
@@ -83,8 +83,8 @@ public:
 	bool CanReparentItem( GObject * pObj, int newparentindex );
 	bool CanDuplicateItem( GObject * pObj );
 
-    void ClearUILayerIndicators();
     void SetRedraw(){bRedraw = true;};
+    void SetRenderUILayerIndicators(bool bSet){bRenderUILayerIndicators=bSet;};
 
 	GObject * FindObjectByID(int id);
 
@@ -129,5 +129,6 @@ public:
 	list<MoveNodeByOffsetInfo> pushedmovenodebyoffset;
 
 	HTARGET tarObjs;
+    bool bRenderUILayerIndicators;
     bool bRedraw;
 };
