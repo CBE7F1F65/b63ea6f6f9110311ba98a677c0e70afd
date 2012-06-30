@@ -103,6 +103,7 @@ public:
 	void SetLockTreeChange();
 
 	GBaseNode undobasenode;
+	GBaseNode fakebasenode;
 	int stackedLayerIndex;
 	string defaultLayerName;
 private:

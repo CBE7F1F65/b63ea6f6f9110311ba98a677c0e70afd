@@ -42,6 +42,7 @@ void GObjectManager::Release()
 		pBaseNode->RemoveAllChildren(true);
 	}
 	undobasenode.RemoveAllChildren(true);
+	fakebasenode.RemoveAllChildren(true);
 	OnTreeChanged(pBaseNode, pBaseNode, false);
 	Delete();
 	stackedLayerIndex = 0;

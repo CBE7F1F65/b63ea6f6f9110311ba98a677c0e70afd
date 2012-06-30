@@ -8,6 +8,7 @@
 #include "ColorManager.h"
 #include "GLine.h"
 
+
 GObjectPicker::GObjectPicker(void)
 {
 	state = PICKSTATE_NULL;
@@ -24,6 +25,10 @@ void GObjectPicker::Init()
 	pfilterfunc = NULL;
 	SetSnapTo(GOPSNAP_GEOMETRY|GOPSNAP_COORD|GOPSNAP_CONTINUITY);
 	SetSnapRange(25.0f);
+	for (int i=0; i<GOPONLINE_MAX; i++)
+	{
+		pFakeLine[i] = new GStraightLine(&(GObjectManager::getInstance().fakebasenode), PointF2D(0, 0), PointF2D(0, 0));
+	}
 }
 
 int GObjectPicker::PickPoint( PickFilterCallback pfunc/*=NULL*/ )
@@ -65,8 +70,6 @@ int GObjectPicker::UpdatePickPoint()
 	{
 		ClearSet();
 	}
-
-
 	
 	GUICoordinate * pguic = &GUICoordinate::getInstance();
 	pickx_s = pguic->GetCursorX_S();
@@ -76,60 +79,60 @@ int GObjectPicker::UpdatePickPoint()
 
 	snaprange_c = pguic->StoCs(snaprange_s);
 
-	bool bSnapped = false;
 	GObjectManager * pgm = &GObjectManager::getInstance();
 	GObject * pBaseNode = pgm->GetMainBaseNode();
 
+	nOnLine = 0;
+	nPickObj = 0;
+	nPickPIP = 0;
+
+	for (int i=0; i<GOPONLINE_MAX; i++)
+	{
+		pickCoordEntityObj[i] = NULL;
+	}
+
     // Snap to Self
-    if (!bSnapped && bCheckMouseDown)
+    if (bCheckMouseDown)
     {
-        bSnapped = CheckSnapPointAndCoord(mousedownx_c, mousedowny_c, GOPSNAP_SELF);
+        CheckSnapPoint(mousedownx_c, mousedowny_c, GOPSNAP_SELF);
     }
 	// Snap to Geometry
-    if (!bSnapped && isSnapToGeometry())
+    if (isSnapToGeometry())
 	{
-		bSnapped = CheckSnapGeometryPoint(pBaseNode);
-		if (!bSnapped)
+		CheckSnapGeometryPoint(pBaseNode);
+		if (!pipinfo.empty())
 		{
-			if (!pipinfo.empty())
+			for (list<PickerInterestPointInfo>::iterator it=pipinfo.begin(); it!=pipinfo.end(); ++it)
 			{
-				for (list<PickerInterestPointInfo>::iterator it=pipinfo.begin(); it!=pipinfo.end(); ++it)
-				{
-					bSnapped = CheckSnapPointAndCoord(it->GetX(), it->GetY(), GOPSNAP_GEOMETRY);
-					if (bSnapped)
-					{
-						break;
-					}
-				}
+				CheckSnapPoint(it->GetX(), it->GetY(), GOPSNAP_GEOMETRY);
+			}
+			for (list<PickerInterestPointInfo>::iterator it=pipinfo.begin(); it!=pipinfo.end(); ++it)
+			{
+				CheckSnapPointCoord(it->GetX(), it->GetY(), GOPSNAP_GEOMETRY);
 			}
 		}
-		if (!bSnapped)
-		{
-			bSnapped = CheckSnapGeometryLine(pBaseNode);
-		}
+		CheckSnapGeometryLine(pBaseNode);
 	}
 	// Snap to Continuity
-    if (!bSnapped && isSnapToContinuity())
+    if (isSnapToContinuity())
 	{
-		bSnapped = CheckSnapContinuity();
+		CheckSnapContinuity();
 	}
 	// Snap to Coord
-    if (!bSnapped && isSnapToCoord())
+    if (isSnapToCoord())
 	{
-		bSnapped = CheckCoord_Obj(pBaseNode);
-		if (snappedstate)
+		CheckCoord_Obj(pBaseNode);
+		CheckSnapPoint(0, 0, GOPSNAP_COORD);
+		CheckSnapPointCoord(0, 0, GOPSNAP_COORD);
+		if (bCheckMouseDown)
 		{
-			bSnapped = true;
-		}
-		if (!bSnapped)
-		{
-			bSnapped = CheckSnapPointAndCoord(0, 0, GOPSNAP_COORD);
+			CheckSnapPointCoord(mousedownx_c, mousedowny_c, GOPSNAP_COORD);
 		}
 	}
 	// Snap to Grid
-    if (!bSnapped && isSnapToGrid())
+    if (isSnapToGrid())
 	{
-		bSnapped = CheckSnapGrid();
+		CheckSnapGrid();
 	}
 
 	if (pmain->hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_DOWN))
@@ -138,8 +141,8 @@ int GObjectPicker::UpdatePickPoint()
 		mousedowny_c = picky_c;
 		mousedownx_s = GetPickX_S();
 		mousedowny_s = GetPickY_S();
-		mousedownPickObj = pickObj;
-		mousedownPickEntityObj = pickEntityObj;
+//		mousedownPickObj = pickObj;
+//		mousedownPickEntityObj = pickEntityObj;
 		mousestate = GOPMOUSE_DOWN;
 	}
 
@@ -231,9 +234,19 @@ void GObjectPicker::Render()
 	}
 	if (snappedstate & GOPSNAPPED_OBJ)
 	{
-		if (pickEntityObj)
+		for (int i=0; i<nPickObj; i++)
 		{
-			pickEntityObj->CallRender(LINECOLOR_HIGHLIGHT);
+			if (pickEntityObj[i])
+			{
+				pickEntityObj[i]->CallRender(LINECOLOR_HIGHLIGHT);
+			}
+		}
+	}
+	for (int i=0; i<nOnLine; i++)
+	{
+		if (pickCoordEntityObj[i])
+		{
+			pickCoordEntityObj[i]->CallRender(LINECOLOR_HIGHLIGHT);
 		}
 	}
 	if (snappedstate/* & GOPSNAPPED_POINT*/)
@@ -249,112 +262,182 @@ void GObjectPicker::Render()
 
 bool GObjectPicker::CheckSnapGeometryPoint( GObject * pObj )
 {
-	if (pObj->isRepresentablePoint())
+	if (!snappedstate)
 	{
-		float objx = pObj->getX();
-		float objy = pObj->getY();
-		if (IsInSnapRangePoint_C(objx, objy))
+		if (pObj->isRepresentablePoint())
 		{
-			bool bret = true;
-			if (pfilterfunc)
+			float objx = pObj->getX();
+			float objy = pObj->getY();
+			if (IsInSnapRangePoint_C(objx, objy))
 			{
-				bret = pfilterfunc(pObj);
-			}
-			if (bret)
-			{
-				snappedstate = GOPSNAPPED_POINT|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
-				pickObj = pObj;
-				pickEntityObj = pObj->getParent();
-				if (pickEntityObj->isLayer())
+				bool bret = true;
+				if (pfilterfunc)
 				{
-					pickEntityObj = pObj;
+					bret = pfilterfunc(pObj);
 				}
-				pickx_c = objx;
-				picky_c = objy;
+				if (bret)
+				{
+					snappedstate |= GOPSNAPPED_POINT|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
+					SetPickObj(pObj);
+					pickx_c = objx;
+					picky_c = objy;
+					nOnLine = GOPONLINE_MAX;
+					return true;
+				}
+			}
+		}
+		for (list<GObject *>::iterator it=pObj->getChildren()->begin(); it!=pObj->getChildren()->end(); ++it)
+		{
+			if (CheckSnapGeometryPoint(*it))
+			{
 				return true;
 			}
 		}
 	}
-	for (list<GObject *>::iterator it=pObj->getChildren()->begin(); it!=pObj->getChildren()->end(); ++it)
+    return false;
+}
+
+bool GObjectPicker::CheckSnapPoint(float x, float y, int tostate)
+{
+	if (!snappedstate)
 	{
-		if (CheckSnapGeometryPoint(*it))
+		if (IsInSnapRangePoint_C(x, y))
 		{
+			snappedstate |= tostate | GOPSNAPPED_VIRTUALPOINT;
+			pickx_c = x;
+			picky_c = y;
+			nOnLine = GOPONLINE_MAX;
 			return true;
 		}
 	}
     return false;
 }
 
-bool GObjectPicker::CheckSnapPointAndCoord(float x, float y, int tostate)
+bool GObjectPicker::CheckSnapPointCoord(float x, float y, int tostate)
 {
-    if (IsInSnapRangePoint_C(x, y))
-    {
-        snappedstate = tostate | GOPSNAPPED_VIRTUALPOINT;
-        pickx_c = x;
-        picky_c = y;
-        return true;
-    }
-	else if (IsInSnapRangeXAxis_C(y))
+	if (nOnLine < GOPONLINE_MAX)
 	{
-		snappedstate = tostate | GOPSNAPPED_XAXIS;
-		picky_c = y;
-		return true;
+		if (!(snappedstate&GOPSNAPPED_XAXIS))
+		{
+			if (IsInSnapRangeXAxis_C(y))
+			{
+				if (nOnLine)
+				{
+					if (FindLineIntersectX(y))
+					{
+						snappedstate |= tostate | GOPSNAPPED_XAXIS;
+						nOnLine++;
+						return true;
+					}
+				}
+				else
+				{
+					snappedstate |= tostate | GOPSNAPPED_XAXIS;
+					picky_c = y;
+					nOnLine++;
+				}
+			}
+		}
+		if (!(snappedstate&GOPSNAPPED_YAXIS))
+		{
+			if (IsInSnapRangeYAxis_C(x))
+			{
+				if (nOnLine)
+				{
+					if (FindLineIntersectY(x))
+					{
+						snappedstate |= tostate | GOPSNAPPED_YAXIS;
+						nOnLine++;
+						return true;
+					}
+				}
+				else
+				{
+					snappedstate |= tostate | GOPSNAPPED_YAXIS;
+					pickx_c = x;
+					nOnLine++;
+				}
+			}
+		}
 	}
-	else if (IsInSnapRangeYAxis_C(x))
-	{
-		snappedstate = tostate | GOPSNAPPED_YAXIS;
-		pickx_c = x;
-		return true;
-	}
-    return false;
+	return false;
 }
 
 bool GObjectPicker::CheckCoord_Obj( GObject * pObj )
 {
-	if (pObj->isRepresentablePoint())
+	if (nOnLine >= GOPONLINE_MAX)
 	{
-		float objx = pObj->getX();
-		float objy = pObj->getY();
-		if (!(snappedstate & GOPSNAPPED_XAXIS) && IsInSnapRangeXAxis_C(objy))
-		{
-			bool bret = true;
-			if (pfilterfunc)
-			{
-				bret = pfilterfunc(pObj);
-			}
-			if (bret)
-			{
-				snappedstate |= GOPSNAPPED_XAXIS|GOPSNAP_COORD;
-				picky_c = objy;
-				if (snappedstate & GOPSNAPPED_YAXIS)
-				{
-					return true;
-				}
-			}
-		}
-		if (!(snappedstate & GOPSNAPPED_YAXIS) && IsInSnapRangeYAxis_C(objx))
-		{
-			bool bret = true;
-			if (pfilterfunc)
-			{
-				bret = pfilterfunc(pObj);
-			}
-			if (bret)
-			{
-				snappedstate |= GOPSNAPPED_YAXIS|GOPSNAP_COORD;
-				pickx_c = objx;
-				if (snappedstate & GOPSNAPPED_XAXIS)
-				{
-					return true;
-				}
-			}
-		}
+		return false;
 	}
-	for (list<GObject *>::iterator it=pObj->getChildren()->begin(); it!=pObj->getChildren()->end(); ++it)
+	if (!(snappedstate&GOPSNAPPED_XAXIS) || !(snappedstate&GOPSNAPPED_YAXIS))
 	{
-		if (CheckCoord_Obj(*it))
+		if (pObj->isRepresentablePoint())
 		{
-			return true;
+			float objx = pObj->getX();
+			float objy = pObj->getY();
+			if (!(snappedstate & GOPSNAPPED_XAXIS) && IsInSnapRangeXAxis_C(objy))
+			{
+				bool bret = true;
+				if (pfilterfunc)
+				{
+					bret = pfilterfunc(pObj);
+				}
+				if (bret)
+				{
+					if (nOnLine)
+					{
+						if (FindLineIntersectX(objy))
+						{
+							snappedstate |= GOPSNAPPED_XAXIS|GOPSNAP_COORD;
+							SetPickObjCoord(pObj);
+							nOnLine++;
+							return true;
+						}
+					}
+					else
+					{
+						snappedstate |= GOPSNAPPED_XAXIS|GOPSNAP_COORD;
+						picky_c = objy;
+						SetPickObjCoord(pObj);
+						nOnLine++;
+					}
+				}
+			}
+			if (!(snappedstate & GOPSNAPPED_YAXIS) && IsInSnapRangeYAxis_C(objx))
+			{
+				bool bret = true;
+				if (pfilterfunc)
+				{
+					bret = pfilterfunc(pObj);
+				}
+				if (bret)
+				{
+					if (nOnLine)
+					{
+						if (FindLineIntersectY(objx))
+						{
+							snappedstate |= GOPSNAPPED_YAXIS|GOPSNAP_COORD;
+							SetPickObjCoord(pObj);
+							nOnLine++;
+							return true;
+						}
+					}
+					else
+					{
+						snappedstate |= GOPSNAPPED_YAXIS|GOPSNAP_COORD;
+						pickx_c = objx;
+						SetPickObjCoord(pObj);
+						nOnLine++;
+					}
+				}
+			}
+		}
+		for (list<GObject *>::iterator it=pObj->getChildren()->begin(); it!=pObj->getChildren()->end(); ++it)
+		{
+			if (CheckCoord_Obj(*it))
+			{
+				return true;
+			}
 		}
 	}
 	return false;
@@ -362,37 +445,47 @@ bool GObjectPicker::CheckCoord_Obj( GObject * pObj )
 
 bool GObjectPicker::CheckSnapGeometryLine( GObject * pObj )
 {
-	if (pObj->isRepresentableLine())
+	if (nOnLine < GOPONLINE_MAX)
 	{
-		float neartox;
-		float neartoy;
-		if (((GLine *)pObj)->CheckNearTo(pickx_c, picky_c, snaprange_c, &neartox, &neartoy))
+		if (pObj->isRepresentableLine())
 		{
-			bool bret = true;
-			if (pfilterfunc)
+			float neartox;
+			float neartoy;
+			if (((GLine *)pObj)->CheckNearTo(pickx_c, picky_c, snaprange_c, &neartox, &neartoy))
 			{
-				bret = pfilterfunc(pObj);
-			}
-			if (bret)
-			{
-				snappedstate = GOPSNAPPED_LINE|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
-				pickObj = pObj;
-				pickEntityObj = pObj->getParent();
-				if (pickEntityObj->isLayer())
+				bool bret = true;
+				if (pfilterfunc)
 				{
-					pickEntityObj = pObj;
+					bret = pfilterfunc(pObj);
 				}
-				pickx_c = neartox;
-				picky_c = neartoy;
-				return true;
+				if (bret)
+				{
+					if (nOnLine)
+					{
+						if (FindLineIntersectLine((GLine *)pObj))
+						{
+							snappedstate |= GOPSNAPPED_LINE|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
+							SetPickObj(pObj);
+							nOnLine++;
+						}
+					}
+					else
+					{
+						snappedstate |= GOPSNAPPED_LINE|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
+						SetPickObj(pObj);
+						pickx_c = neartox;
+						picky_c = neartoy;
+						nOnLine++;
+					}
+				}
 			}
 		}
-	}
-	for (list<GObject *>::iterator it=pObj->getChildren()->begin(); it!=pObj->getChildren()->end(); ++it)
-	{
-		if (CheckSnapGeometryLine(*it))
+		for (list<GObject *>::iterator it=pObj->getChildren()->begin(); it!=pObj->getChildren()->end(); ++it)
 		{
-			return true;
+			if (CheckSnapGeometryLine(*it))
+			{
+				return true;
+			}
 		}
 	}
 	return false;
@@ -401,38 +494,56 @@ bool GObjectPicker::CheckSnapGeometryLine( GObject * pObj )
 
 bool GObjectPicker::CheckSnapGrid()
 {
-	GUICoordinate * pguic = &GUICoordinate::getInstance();
-
-	float subspace = pguic->GetSubgirdSpace_C();
-	int ixindex = (int)(pickx_c/subspace+0.5f);
-	int iyindex = (int)(picky_c/subspace+0.5f);
-	float fnx = ixindex*subspace;
-	float fny = iyindex*subspace;
-	if (IsInSnapRangePoint_C(fnx, fny))
+	if (!snappedstate)
 	{
-		snappedstate = GOPSNAPPED_POINT|GOPSNAP_GRID;
-		pickx_c = fnx;
-		picky_c = fny;
-		return true;
+		GUICoordinate * pguic = &GUICoordinate::getInstance();
+
+		float subspace = pguic->GetSubgirdSpace_C();
+		int ixindex = (int)(pickx_c/subspace+0.5f);
+		int iyindex = (int)(picky_c/subspace+0.5f);
+		float fnx = ixindex*subspace;
+		float fny = iyindex*subspace;
+		if (IsInSnapRangePoint_C(fnx, fny))
+		{
+			snappedstate |= GOPSNAPPED_POINT|GOPSNAP_GRID;
+			pickx_c = fnx;
+			picky_c = fny;
+			nOnLine = GOPONLINE_MAX;
+			return true;
+		}
 	}
 	return false;
 }
 
 bool GObjectPicker::CheckSnapContinuity()
 {
-	if (!pipinfo.empty())
+	if (nOnLine < GOPONLINE_MAX)
 	{
-		for (list<PickerInterestPointInfo>::iterator it=pipinfo.begin(); it!=pipinfo.end(); ++it)
+		if (!pipinfo.empty())
 		{
-			if (it->HasAngle())
+			for (list<PickerInterestPointInfo>::iterator it=pipinfo.begin(); it!=pipinfo.end(); ++it)
 			{
-				float lx, ly;
-				if (IsInSnapRangeAngle_C(it->GetX(), it->GetY(), it->GetAngle(), &lx, &ly))
+				if (it->HasAngle())
 				{
-					snappedstate = GOPSNAP_CONTINUITY;
-					pickx_c = lx;
-					picky_c = ly;
-					return true;
+					float lx, ly;
+					if (IsInSnapRangeAngle_C(it->GetX(), it->GetY(), it->GetAngle(), &lx, &ly))
+					{
+						if (nOnLine)
+						{
+							if (FindLineIntersectPIP(&(*it)))
+							{
+								snappedstate |= GOPSNAP_CONTINUITY;
+								SetPickPIP((*it));
+								nOnLine++;
+							}
+						}
+						snappedstate |= GOPSNAP_CONTINUITY;
+						SetPickPIP((*it));
+						pickx_c = lx;
+						picky_c = ly;
+						nOnLine++;
+						return true;
+					}
 				}
 			}
 		}
@@ -440,24 +551,25 @@ bool GObjectPicker::CheckSnapContinuity()
 	return false;
 }
 
-GObject * GObjectPicker::GetPickedObj()
+GObject * GObjectPicker::GetPickedObj(int index/*=0*/)
 {
 	if (snappedstate & GOPSNAPPED_OBJ)
 	{
-		return pickObj;
+		return pickObj[index];
 	}
 	return NULL;
 }
 
-GObject * GObjectPicker::GetPickedEntityObj()
+GObject * GObjectPicker::GetPickedEntityObj(int index/*=0*/)
 {
 	if (snappedstate & GOPSNAPPED_OBJ)
 	{
-		return pickEntityObj;
+		return pickEntityObj[index];
 	}
 	return NULL;
 }
 
+/*
 GObject * GObjectPicker::GetMDownPickedObj()
 {
 	if (mousestate != GOPMOUSE_NONE)
@@ -475,7 +587,7 @@ GObject * GObjectPicker::GetMDownPickedEntityObj()
 	}
     return NULL;
 }
-
+*/
 void GObjectPicker::SetSnapTo(int snapto, bool bSet)
 {
     if (bSet)
@@ -490,10 +602,15 @@ void GObjectPicker::SetSnapTo(int snapto, bool bSet)
 
 void GObjectPicker::ClearSet()
 {
-	pickObj = NULL;
-	pickEntityObj = NULL;
-	mousedownPickObj = NULL;
-	mousedownPickEntityObj = NULL;
+	for (int i=0; i<GOPONLINE_MAX; i++)
+	{
+		pickObj[i] = NULL;
+		pickEntityObj[i] = NULL;
+		pickCoordEntityObj[i] = NULL;
+	}
+
+//	mousedownPickObj = NULL;
+//	mousedownPickEntityObj = NULL;
 }
 
 void GObjectPicker::OnDeleteNode( GObject * node )
@@ -504,10 +621,14 @@ void GObjectPicker::OnDeleteNode( GObject * node )
 		NODE = NULL;	\
 	}
 
-	_NULLIFYNODE_IF_DELETED(pickObj, node);
-	_NULLIFYNODE_IF_DELETED(pickEntityObj, node);
-	_NULLIFYNODE_IF_DELETED(mousedownPickObj, node);
-	_NULLIFYNODE_IF_DELETED(mousedownPickEntityObj, node);
+	for (int i=0; i<GOPONLINE_MAX; i++)
+	{
+		_NULLIFYNODE_IF_DELETED(pickObj[i], node);
+		_NULLIFYNODE_IF_DELETED(pickEntityObj[i], node);
+		_NULLIFYNODE_IF_DELETED(pickCoordEntityObj[i], node);
+	}
+//	_NULLIFYNODE_IF_DELETED(mousedownPickObj, node);
+//	_NULLIFYNODE_IF_DELETED(mousedownPickEntityObj, node);
 }
 
 bool GObjectPicker::IsPickReady( int iret/*=-1*/ )
@@ -532,5 +653,279 @@ void GObjectPicker::PushInterestPoint( float x, float y, bool bHasAngle/*=false*
 	{
 		_info.SetAngle(angle);
 	}
+	for (list<PickerInterestPointInfo>::iterator it=pipinfo.begin(); it!=pipinfo.end(); ++it)
+	{
+		if ((*it).Equals(_info))
+		{
+			return;
+		}
+	}
 	pipinfo.push_back(_info);
+}
+
+bool GObjectPicker::FindLineIntersectX( float y )
+{
+	// To set pickx_c and picky_c
+	if (snappedstate & GOPSNAPPED_LINE)
+	{
+		return SubFindLineX((GLine *)pickObj[0], y);
+	}
+	else if (snappedstate & GOPSNAPPED_YAXIS)
+	{
+		picky_c = y;
+		return true;
+	}
+	else if (snappedstate & GOPSNAPPED_CONTINUITY)
+	{
+		return SubFindPIPX(&(pickPIP[0]), y);
+	}
+	return false;
+}
+
+bool GObjectPicker::FindLineIntersectY( float x )
+{
+	// To set pickx_c and picky_c
+	if (snappedstate & GOPSNAPPED_LINE)
+	{
+		return SubFindLineY((GLine *)pickObj[0], x);
+	}
+	else if (snappedstate & GOPSNAPPED_XAXIS)
+	{
+		pickx_c = x;
+		return true;
+	}
+	else if (snappedstate & GOPSNAPPED_CONTINUITY)
+	{
+		return SubFindPIPY(&(pickPIP[0]), x);
+	}
+	return false;
+}
+
+bool GObjectPicker::FindLineIntersectLine( GLine * pLine )
+{
+	// To set pickx_c and picky_c
+	if (snappedstate & GOPSNAPPED_XAXIS)
+	{
+		SubFindLineX(pLine, picky_c);
+	}
+	else if (snappedstate & GOPSNAPPED_YAXIS)
+	{
+		SubFindLineY(pLine, pickx_c);
+	}
+	else if (snappedstate & GOPSNAPPED_LINE)
+	{
+		return SubFindLineLine(pLine, (GLine *)pickObj[0]);
+	}
+	else if (snappedstate & GOPSNAPPED_CONTINUITY)
+	{
+		return SubFindLinePIP(pLine, &(pickPIP[0]));
+	}
+	return false;
+}
+
+bool GObjectPicker::FindLineIntersectPIP( PickerInterestPointInfo * pPIP )
+{
+	// To set pickx_c and picky_c
+	if (snappedstate & GOPSNAPPED_LINE)
+	{
+		return SubFindLinePIP((GLine *)pickObj[0], pPIP);
+	}
+	else if (snappedstate & GOPSNAPPED_XAXIS)
+	{
+		return SubFindPIPX(pPIP, picky_c);
+	}
+	else if (snappedstate & GOPSNAPPED_YAXIS)
+	{
+		return SubFindPIPY(pPIP, pickx_c);
+	}
+	else if (snappedstate & GOPSNAPPED_CONTINUITY)
+	{
+		return SubFindPIPPIP(pPIP, &(pickPIP[0]));
+	}
+	return false;
+}
+
+void GObjectPicker::SetPickObj( GObject * pObj )
+{
+	ASSERT(nPickObj < GOPONLINE_MAX);
+	pickObj[nPickObj] = pObj;
+	pickEntityObj[nPickObj] = pObj->getParent();
+	if (pickEntityObj[nPickObj]->isLayer())
+	{
+		pickEntityObj[nPickObj] = pObj;
+	}
+	nPickObj++;
+}
+
+void GObjectPicker::SetPickPIP( PickerInterestPointInfo info )
+{
+	ASSERT(nPickPIP < GOPONLINE_MAX);
+	pickPIP[nPickPIP] = info;
+	nPickPIP++;
+}
+
+void GObjectPicker::SetPickObjCoord( GObject * pObj )
+{
+	ASSERT(nOnLine < GOPONLINE_MAX);
+	pickCoordEntityObj[nOnLine] = pObj->getParent();
+	if (pickCoordEntityObj[nOnLine]->isLayer())
+	{
+		pickCoordEntityObj[nOnLine] = pObj;
+	}
+	// No increment
+}
+
+
+bool GObjectPicker::SubFindLineX( GLine * pLine, float y )
+{
+	list<PointF2D> pts;
+	pFakeLine[0]->SetBeginEnd(pickx_c-snaprange_c, y, pickx_c+snaprange_c, y);
+	if (pLine->CheckIntersectWithLineObj(pFakeLine[0], &pts))
+	{
+		pickx_c = pts.front().x;
+		picky_c = pts.front().y;
+		return true;
+	}
+	return false;
+}
+
+bool GObjectPicker::SubFindLineY( GLine * pLine, float x )
+{
+	list<PointF2D> pts;
+	pFakeLine[0]->SetBeginEnd(x, picky_c-snaprange_c, x, picky_c+snaprange_c);
+	if (pLine->CheckIntersectWithLineObj(pFakeLine[0], &pts))
+	{
+		pickx_c = pts.front().x;
+		picky_c = pts.front().y;
+		return true;
+	}
+	return false;
+}
+
+bool GObjectPicker::SubFindPIPX( PickerInterestPointInfo * pPIP, float y )
+{
+	list<PointF2D> pts;
+	
+	float arc = ARC(pPIP->GetAngle());
+	float fcos = cosf(arc) * snaprange_c;
+	float fsin = sinf(arc) * snaprange_c;
+	float xbase = pPIP->GetX();
+	float ybase = pPIP->GetY();
+
+	pFakeLine[0]->SetBeginEnd(xbase-fcos, ybase-fsin, xbase+fcos, ybase+fsin);
+	pFakeLine[1]->SetBeginEnd(pickx_c-snaprange_c, y, pickx_c+snaprange_c, y);
+	if (pFakeLine[1]->CheckIntersectWithLineObj(pFakeLine[0], &pts))
+	{
+		pickx_c = pts.front().x;
+		picky_c = pts.front().y;
+		return true;
+	}
+	return false;
+}
+
+bool GObjectPicker::SubFindPIPY( PickerInterestPointInfo * pPIP, float x )
+{
+	list<PointF2D> pts;
+
+	float arc = ARC(pPIP->GetAngle());
+	float fcos = cosf(arc) * snaprange_c;
+	float fsin = sinf(arc) * snaprange_c;
+	float xbase = pPIP->GetX();
+	float ybase = pPIP->GetY();
+
+	pFakeLine[0]->SetBeginEnd(xbase-fcos, ybase-fsin, xbase+fcos, ybase+fsin);
+	pFakeLine[1]->SetBeginEnd(x, picky_c-snaprange_c, x, picky_c+snaprange_c);
+	if (pFakeLine[1]->CheckIntersectWithLineObj(pFakeLine[0], &pts))
+	{
+		pickx_c = pts.front().x;
+		picky_c = pts.front().y;
+		return true;
+	}
+	return false;
+}
+
+bool GObjectPicker::SubFindLinePIP( GLine * pLine, PickerInterestPointInfo * pPIP )
+{
+	list<PointF2D> pts;
+
+	float arc = ARC(pPIP->GetAngle());
+	float fcos = cosf(arc) * snaprange_c;
+	float fsin = sinf(arc) * snaprange_c;
+	float xbase = pPIP->GetX();
+	float ybase = pPIP->GetY();
+
+	pFakeLine[0]->SetBeginEnd(xbase-fcos, ybase-fsin, xbase+fcos, ybase+fsin);
+	if (pLine->CheckIntersectWithLineObj(pFakeLine[0], &pts))
+	{
+		pickx_c = pts.front().x;
+		picky_c = pts.front().y;
+		return true;
+	}
+	return false;
+}
+
+bool GObjectPicker::SubFindLineLine( GLine * pLine1, GLine * pLine2 )
+{
+	list<PointF2D> pts;
+
+	if (pLine1->CheckIntersectWithLineObj(pLine2, &pts))
+	{
+		pickx_c = pts.front().x;
+		picky_c = pts.front().y;
+		return true;
+	}
+	return false;
+}
+
+bool GObjectPicker::SubFindPIPPIP( PickerInterestPointInfo * pPIP1, PickerInterestPointInfo * pPIP2 )
+{
+	list<PointF2D> pts;
+
+	float arc1 = ARC(pPIP1->GetAngle());
+	float fcos1 = cosf(arc1) * snaprange_c;
+	float fsin1 = sinf(arc1) * snaprange_c;
+	float xbase1 = pPIP1->GetX();
+	float ybase1 = pPIP1->GetY();
+
+	pFakeLine[0]->SetBeginEnd(xbase1-fcos1, ybase1-fsin1, xbase1+fcos1, ybase1+fsin1);
+
+	float arc2 = ARC(pPIP2->GetAngle());
+	float fcos2 = cosf(arc2) * snaprange_c;
+	float fsin2 = sinf(arc2) * snaprange_c;
+	float xbase2 = pPIP2->GetX();
+	float ybase2 = pPIP2->GetY();
+
+	pFakeLine[1]->SetBeginEnd(xbase2-fcos2, ybase2-fsin2, xbase2+fcos2, ybase2+fsin2);
+
+	if (pFakeLine[1]->CheckIntersectWithLineObj(pFakeLine[0], &pts))
+	{
+		pickx_c = pts.front().x;
+		picky_c = pts.front().y;
+		return true;
+	}
+
+	return false;
+}
+bool PickerInterestPointInfo::Equals( PickerInterestPointInfo & r )
+{
+	PointF2D p1(x, y);
+	PointF2D p2(r.x, r.y);
+	if (p1.Equals(p2))
+	{
+		if (bHasAngle)
+		{
+			if (r.bHasAngle && angle == r.angle)
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if (!r.bHasAngle)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
 }

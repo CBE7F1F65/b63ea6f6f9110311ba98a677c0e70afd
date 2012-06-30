@@ -27,13 +27,24 @@ int MathHelper::RestrictAngle( int angle )
 
 bool MathHelper::LineSegmentIntersect( float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float * intx/*=0*/, float * inty/*=0*/ )
 {
+	/*
+	float s1_x, s1_y, s2_x, s2_y;
+    s1_x = x2 - x1;     s1_y = y2 - y1;
+    s2_x = x4 - x3;     s2_y = y4 - y3;
+	*/
+
 	float mua,mub;
 	float denom,numera,numerb;
-
+	/*
+	denom = (-s2_x * s1_y + s1_x * s2_y);
+	numera = (-s1_y * (x1 - x3) + s1_x * (y1 - y3));
+	numerb = ( s2_x * (y1 - y3) - s2_y * (x1 - x3));
+	*/
+	
 	denom  = (y4-y3) * (x2-x1) - (x4-x3) * (y2-y1);
 	numera = (x4-x3) * (y1-y3) - (y4-y3) * (x1-x3);
 	numerb = (x2-x1) * (y1-y3) - (y2-y1) * (x1-x3);
-
+	
 	/* Are the line coincident? */
 	if (fabsf(numera) < FLT_MIN && fabsf(numerb) < FLT_MIN && fabsf(denom) < FLT_MIN)
 	{

@@ -100,14 +100,6 @@ void QTUI_GLView::SLT_VScrollValueChanged(int val)
 
 void QTUI_GLView::keyPressEvent( QKeyEvent * e )
 {
-    int ekey = e->key();
-    if (ekey != Qt::Key_Backspace && ekey != Qt::Key_Delete && ekey != Qt::Key_Space && ekey != Qt::Key_Escape)
-    {
-        if (!e->text().isEmpty())
-        {
-            QMainInterface::getInstance().GetPCommandFloatingWidget()->OnReceiveTextFromGL(e->text());
-        }
-    }
     QGLWidget::keyPressEvent(e);
 }
 
@@ -175,11 +167,21 @@ void QTUI_GLView::leaveEvent( QEvent *e )
 bool QTUI_GLView::eventFilter(QObject *target, QEvent *e)
 {
     if (e->type() == QEvent::KeyPress)
-    {
+	{
+
         QKeyEvent * pke = static_cast<QKeyEvent *>(e);
 
+		int ekey = pke->key();
+		if (ekey != Qt::Key_Backspace && ekey != Qt::Key_Delete && ekey != Qt::Key_Space && ekey != Qt::Key_Escape)
+		{
+			if (!pke->text().isEmpty())
+			{
+				QMainInterface::getInstance().GetPCommandFloatingWidget()->OnReceiveTextFromGL(pke->text());
+			}
+		}
+
         QKeyStateManager * qksm = &QKeyStateManager::getInstance();
-        qksm->SetKey(pke->key());
+        qksm->SetKey(ekey);
 
         Qt::KeyboardModifiers km = pke->modifiers();
         if (km)

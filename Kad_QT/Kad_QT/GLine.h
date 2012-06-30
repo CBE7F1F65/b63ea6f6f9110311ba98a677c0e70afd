@@ -54,11 +54,11 @@ public:
 	virtual void UpdateMidPoint() = 0;
 	virtual bool CheckNearTo(float px, float py, float r, float *plx, float *ply) = 0;
 	virtual bool CheckIntersectWithRect(float xl, float yt, float xr, float yb) = 0;
+	virtual bool CheckIntersectWithLineObj( GLine * pLine, list<PointF2D> *pPoints );
 
 	virtual const char * getDisplayName();
 
 	virtual void OnModify();
-
 	GAnchorPoint * plbegin;
 	GAnchorPoint * plend;
 	GMidPoint * pmid;
@@ -103,6 +103,7 @@ public:
 
 	virtual bool CheckNearTo(float px, float py, float r, float *plx, float *ply);
 	virtual bool CheckIntersectWithRect(float xl, float yt, float xr, float yb);
+	virtual bool CheckIntersectStraightStraight(GStraightLine * pLine, list<PointF2D> *pPoints);
 	virtual void GetBoundingBox(float *xl, float *yt, float *xr, float * yb);
 
 	virtual bool Clone( GObject * pNewParent );
@@ -133,6 +134,8 @@ public:
 
 	virtual bool CheckNearTo(float px, float py, float r, float *plx, float *ply);
 	virtual bool CheckIntersectWithRect(float xl, float yt, float xr, float yb);
+	virtual bool CheckIntersectBezierStraight(GStraightLine * pLine, list<PointF2D> *pPoints);
+	virtual bool CheckIntersectBezierBezier(GBezierLine * pLine, list<PointF2D> *pPoints);
 	virtual void GetBoundingBox(float *xl, float *yt, float *xr, float * yb);
 
 	virtual bool Clone( GObject * pNewParent );

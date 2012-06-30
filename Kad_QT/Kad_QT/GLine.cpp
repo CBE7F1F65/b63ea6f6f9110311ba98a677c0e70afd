@@ -73,6 +73,25 @@ void GLine::OnModify()
 	GObject::OnModify();
 }
 
+bool GLine::CheckIntersectWithLineObj( GLine * pLine, list<PointF2D> *pPoints )
+{
+	if (isStraightLine())
+	{
+		if (pLine->isStraightLine())
+		{
+			return ((GStraightLine *)this)->CheckIntersectStraightStraight((GStraightLine *)pLine, pPoints);
+		}
+		else
+		{
+			return ((GBezierLine *)pLine)->CheckIntersectBezierStraight((GStraightLine *)this, pPoints);
+		}
+	}
+	else
+	{
+		return ((GBezierLine *)this)->CheckIntersectBezierBezier((GBezierLine *)pLine, pPoints);
+	}
+	return false;
+}
 /************************************************************************/
 /* GSTRAIGHTLINE                                                        */
 /************************************************************************/
@@ -152,6 +171,23 @@ void GStraightLine::GetBoundingBox( float *xl, float *yt, float *xr, float * yb 
 bool GStraightLine::CheckIntersectWithRect( float xl, float yt, float xr, float yb )
 {
 	return MathHelper::getInstance().LinePartialInRect(plbegin->x, plbegin->y, plend->x, plend->y, xl, yt, xr, yb);
+}
+
+bool GStraightLine::CheckIntersectStraightStraight( GStraightLine * pLine, list<PointF2D> *pPoints )
+{
+	float ix, iy;
+	if (MathHelper::getInstance().LineSegmentIntersect(
+		plbegin->x, plbegin->y, plend->x, plend->y,
+		pLine->plbegin->x, pLine->plbegin->y, pLine->plend->x, pLine->plend->y,
+		&ix, &iy))
+	{
+		if (pPoints)
+		{
+			pPoints->push_back(PointF2D(ix, iy));
+		}
+		return true;
+	}
+	return false;
 }
 /************************************************************************/
 /* GBEZEIERLINE                                                         */
@@ -394,5 +430,15 @@ bool GBezierLine::isStraightLine()
 	{
 		return true;
 	}
+	return false;
+}
+
+bool GBezierLine::CheckIntersectBezierStraight( GStraightLine * pLine, list<PointF2D> *pPoints )
+{
+	return false;
+}
+
+bool GBezierLine::CheckIntersectBezierBezier( GBezierLine * pLine, list<PointF2D> *pPoints )
+{
 	return false;
 }

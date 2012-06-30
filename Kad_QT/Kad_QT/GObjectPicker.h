@@ -1,6 +1,7 @@
 #pragma once
 
-#include "GObject.h"
+#include "GLine.h"
+#include "GBaseNode.h"
 
 #define GOPSNAP_NONE		0x0000
 #define GOPSNAP_SELF        0x0001
@@ -17,6 +18,8 @@
 #define GOPSNAPPED_YAXIS		0x2000
 #define GOPSNAPPED_CONTINUITY	0x4000
 
+#define GOPSNAPINDEX_SHIFT		0x010000
+
 
 #define PICKSTATE_NULL				0x00
 #define PICKSTATE_REQUIREUPDATE		0x01
@@ -26,6 +29,8 @@
 #define GOPMOUSE_NONE	0x0100
 #define GOPMOUSE_DOWN	0x0200
 #define GOPMOUSE_UP		0x0300
+
+#define GOPONLINE_MAX	2
 
 typedef bool (*PickFilterCallback)(GObject *);
 
@@ -52,6 +57,7 @@ public:
 		angle = _angle;
 		bHasAngle = true;
 	};
+	bool Equals(PickerInterestPointInfo & r);
 
 	float GetX(){return x;};
 	float GetY(){return y;};
@@ -113,15 +119,19 @@ public:
 	float GetPickY_S();
 
 private:
-	GObject * pickObj;
-	GObject * pickEntityObj;
-	GObject * mousedownPickObj;
-	GObject * mousedownPickEntityObj;
+	GObject * pickObj[GOPONLINE_MAX];
+	GObject * pickEntityObj[GOPONLINE_MAX];
+	GObject * pickCoordEntityObj[GOPONLINE_MAX];
+	PickerInterestPointInfo pickPIP[GOPONLINE_MAX];
+	int nPickObj;
+	int nPickPIP;
+//	GObject * mousedownPickObj;
+//	GObject * mousedownPickEntityObj;
 public:
-	GObject * GetPickedObj();
-	GObject * GetPickedEntityObj();
-	GObject * GetMDownPickedObj();
-	GObject * GetMDownPickedEntityObj();
+	GObject * GetPickedObj(int index=0);
+	GObject * GetPickedEntityObj(int index=0);
+//	GObject * GetMDownPickedObj();
+//	GObject * GetMDownPickedEntityObj();
 private:
 	int snaptoflag;
 public:
@@ -143,7 +153,8 @@ private:
 	bool IsInSnapRangeYAxis_C(float x);
 
 	bool CheckSnapGeometryPoint(GObject * pObj);
-    bool CheckSnapPointAndCoord(float x, float y, int tostate);
+	bool CheckSnapPoint(float x, float y, int tostate);
+	bool CheckSnapPointCoord(float x, float y, int tostate);
 	bool CheckSnapGeometryLine(GObject * pObj);
 
 	bool CheckSnapGrid();
@@ -166,7 +177,25 @@ public:
 public:
 	void PushInterestPoint(float x, float y, bool bHasAngle=false, int angle=0);
 	void SetCheckMouseDown( bool bSet ){bCheckMouseDown=bSet;};
+	bool FindLineIntersectX( float y );
+	bool FindLineIntersectY( float x );
+	bool FindLineIntersectLine( GLine * pLine );
+	bool FindLineIntersectPIP( PickerInterestPointInfo * pPIP );
+	void SetPickObj( GObject * pObj );
+	void SetPickPIP( PickerInterestPointInfo info );
+	void SetPickObjCoord(GObject * pObj);
+	bool SubFindLineX( GLine * pLine, float y );
+	bool SubFindPIPX( PickerInterestPointInfo * pPIP, float y );
+	bool SubFindLineY( GLine * pLine, float x );
+	bool SubFindPIPY( PickerInterestPointInfo * pPIP, float x );
+	bool SubFindLinePIP( GLine * pLine, PickerInterestPointInfo * pPIP );
+	bool SubFindLineLine( GLine * pLine1, GLine * pLine2 );
+	bool SubFindPIPPIP( PickerInterestPointInfo * pPIP1, PickerInterestPointInfo * pPIP2 );
 private:
 	list<PickerInterestPointInfo> pipinfo;
 	bool bCheckMouseDown;
+
+	int nOnLine;
+
+	GStraightLine * pFakeLine[GOPONLINE_MAX];
 };
