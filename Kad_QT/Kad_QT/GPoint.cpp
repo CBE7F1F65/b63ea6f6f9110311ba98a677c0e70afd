@@ -6,6 +6,7 @@
 #include "RenderHelper.h"
 #include "MainInterface.h"
 #include "Command.h"
+#include "GObjectManager.h"
 /************************************************************************/
 /* GPOINT                                                               */
 /************************************************************************/
@@ -48,6 +49,18 @@ bool GPoint::MoveTo( float newx, float newy, bool bTry )
 	{
 		return false;
 	}
+	/*
+	if (!clingByList.empty())
+	{
+		for (list<GObject *>::iterator it=clingByList.begin(); it!=clingByList.end(); ++it)
+		{
+			if ((*it)->isPoint())
+			{
+				(*it)->MoveTo(newx, newy, bTry);
+			}
+		}
+	}
+	*/
 	
 	ToggleTryMoveState(bTry);
 
@@ -126,6 +139,18 @@ bool GAnchorPoint::MoveTo( float newx, float newy, bool bTry )
 
 	float xoffset = newx-x;
 	float yoffset = newy-y;
+	/*
+	if (!clingByList.empty())
+	{
+		for (list<GObject *>::iterator it=clingByList.begin(); it!=clingByList.end(); ++it)
+		{
+			if ((*it)->isPoint())
+			{
+				(*it)->MoveTo(newx, newy, bTry);
+			}
+		}
+	}
+	*/
 
 	ToggleTryMoveState(bTry);
 
@@ -236,8 +261,11 @@ void GHandlePoint::OnRender( int iHighlightLevel/* =0 */ )
 	GAnchorPoint * pAnchor = (GAnchorPoint*)GetAnchor();
 	if (!pAnchor->isHandleIdentical())
 	{
-		DWORD col = getLineColor(iHighlightLevel);
-		RenderHelper::getInstance().RenderHandlePoint(x, y, col);
-		RenderHelper::getInstance().RenderLine(x, y, pAnchor->x, pAnchor->y, col);
+		if (GObjectManager::getInstance().isHandleVisible() || iHighlightLevel)
+		{
+			DWORD col = getLineColor(iHighlightLevel);
+			RenderHelper::getInstance().RenderHandlePoint(x, y, col);
+			RenderHelper::getInstance().RenderLine(x, y, pAnchor->x, pAnchor->y, col);
+		}
 	}
 }

@@ -14,6 +14,7 @@
 
 LineCommand::LineCommand()
 {
+	pNextClingToBegin = NULL;
 }
 LineCommand::~LineCommand()
 {
@@ -100,13 +101,22 @@ void LineCommand::OnProcessCommand()
 			{
 				if (!pcommand->IsInternalProcessing())
 				{
-					int tosetpindex = CSP_LINE_XY_B;
-					if (step == CSI_LINE_WANTX2 || step == CSI_LINE_WANTY2)
+					int tosetpindex=-1;
+					switch (step)
 					{
+					case CSI_LINE_WANTX1:
+					case CSI_LINE_WANTY1:
+						tosetpindex = CSP_LINE_XY_B;
+						pClingToBegin = pgp->GetPickedObj();
+						break;
+					case CSI_LINE_WANTX2:
+					case CSI_LINE_WANTY2:
 						tosetpindex = CSP_LINE_XY_N;
+						pClingToEnd = pgp->GetPickedObj();
+						break;
 					}
-					pcommand->SetParamX(tosetpindex, pgp->GetPickX_C());
-					pcommand->SetParamY(tosetpindex, pgp->GetPickY_C());
+					pcommand->SetParamX(tosetpindex, pgp->GetPickX_C(), CWP_X);
+					pcommand->SetParamY(tosetpindex, pgp->GetPickY_C(), CWP_Y);
 					if (step < CSI_LINE_WANTX2)
 					{
 						pcommand->StepTo(
@@ -136,6 +146,33 @@ void LineCommand::OnProcessCommand()
 				CCMake_F(ny1),
 				NULL
 				);
+
+			if (pNCLine)
+			{
+				if (pClingToEnd)
+				{
+					CommitFrontCommand(
+						CCMake_C(COMM_CLING),
+						CCMake_I(pNCLine->plend->getID()),
+						CCMake_I(pClingToEnd->getID()),
+						NULL
+						);
+				}
+				if (pNextClingToBegin)
+				{
+					pClingToBegin = pNextClingToBegin;
+				}
+				if (pClingToBegin)
+				{
+					CommitFrontCommand(
+						CCMake_C(COMM_CLING),
+						CCMake_I(pNCLine->plbegin->getID()),
+						CCMake_I(pClingToBegin->getID()),
+						NULL
+						);
+				}
+				pNextClingToBegin = pNCLine->plend;
+			}
 		}
 	}
 
@@ -169,14 +206,15 @@ void LineCommand::OnDoneCommand()
 	float xb, yb, xe, ye;
 	pcommand->GetParamXY(CSP_LINE_XY_B, &xb, &yb);
 	pcommand->GetParamXY(CSP_LINE_XY_N, &xe, &ye);
-	GStraightLine * line = new GBezierLine(pgm->GetActiveLayer(), PointF2D(xb, yb), PointF2D(xe, ye));
+	GStraightLine * pLine = new GBezierLine(pgm->GetActiveLayer(), PointF2D(xb, yb), PointF2D(xe, ye));
+	pNCLine = pLine;
 
 	PushRevertable(
 		CCMake_C(COMM_I_ADDNODE, 2),
 // 		CCMake_D((int)line),
 // 		CCMake_D((int)(line->getParent())),
-		CCMake_I(line->getID()),
-		CCMake_I(line->getParent()->getID()),
+		CCMake_I(pLine->getID()),
+		CCMake_I(pLine->getParent()->getID()),
 		CCMake_C(COMM_I_COMMAND, 5, 1),
 		CCMake_CI(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 		CCMake_C(COMM_LINE),
@@ -190,4 +228,17 @@ void LineCommand::OnDoneCommand()
 		CCMake_F(yb),
 		NULL
 		);
+
+}
+
+void LineCommand::OnInitCommand()
+{
+	pClingToBegin = NULL;
+	pClingToEnd = NULL;
+	pNCLine = NULL;
+}
+
+void LineCommand::OnTerminalCommand()
+{
+	pNextClingToBegin = NULL;
 }

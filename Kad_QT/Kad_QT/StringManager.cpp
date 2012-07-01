@@ -107,6 +107,7 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_REDO,	"REDO", "R",	"UnDo",	""	);
 
 	_BSET(	COMM_REPARENT,	"REPARENT",	"",	"Reparent Item",	""	);
+	_BSET(	COMM_CLING,	"CLING",	"CLI",	"Cling To",	""	);
 	_BSET(	COMM_DELETEITEM,	"DELETE",	"DEL",	"Delete Item",	""	);
 	_BSET(	COMM_SETNODENAME,	"SETNODENAME",	"",	"Set Display Name",	""	);
 	_BSET(	COMM_DUPLICATE,	"DUPLICATE",	"DUP",	"Duplicate Item",	""	);

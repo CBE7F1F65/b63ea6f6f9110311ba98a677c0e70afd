@@ -52,7 +52,7 @@ public:
 
 	virtual void SetBeginEnd(float xb, float yb, float xe, float ye);
 	virtual void UpdateMidPoint() = 0;
-	virtual bool CheckNearTo(float px, float py, float r, float *plx, float *ply) = 0;
+	virtual bool CheckNearTo(float px, float py, float r, float *plx, float *ply, int *isec=NULL) = 0;
 	virtual bool CheckIntersectWithRect(float xl, float yt, float xr, float yb) = 0;
 	virtual bool CheckIntersectWithLineObj( GLine * pLine, list<PointF2D> *pPoints );
 
@@ -101,7 +101,7 @@ public:
 
 	virtual void OnRender(int iHighlightLevel=0);
 
-	virtual bool CheckNearTo(float px, float py, float r, float *plx, float *ply);
+	virtual bool CheckNearTo(float px, float py, float r, float *plx, float *ply, int *isec=NULL);
 	virtual bool CheckIntersectWithRect(float xl, float yt, float xr, float yb);
 	virtual bool CheckIntersectStraightStraight(GStraightLine * pLine, list<PointF2D> *pPoints);
 	virtual void GetBoundingBox(float *xl, float *yt, float *xr, float * yb);
@@ -132,7 +132,7 @@ public:
 	virtual void SetBeginHandlePos(float x, float y);
 	virtual void SetEndHandlePos(float x, float y);
 
-	virtual bool CheckNearTo(float px, float py, float r, float *plx, float *ply);
+	virtual bool CheckNearTo(float px, float py, float r, float *plx, float *ply, int * isec=NULL);
 	virtual bool CheckIntersectWithRect(float xl, float yt, float xr, float yb);
 	virtual bool CheckIntersectBezierStraight(GStraightLine * pLine, list<PointF2D> *pPoints);
 	virtual bool CheckIntersectBezierBezier(GBezierLine * pLine, list<PointF2D> *pPoints);

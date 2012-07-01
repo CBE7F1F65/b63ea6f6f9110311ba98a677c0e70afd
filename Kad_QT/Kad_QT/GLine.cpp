@@ -148,11 +148,15 @@ bool GStraightLine::Clone( GObject * pNewParent )
 	return true;
 }
 
-bool GStraightLine::CheckNearTo( float px, float py, float r, float *plx, float *ply )
+bool GStraightLine::CheckNearTo( float px, float py, float r, float *plx, float *ply, int *isec/*=NULL*/ )
 {
 //	float xl, yt, xr, yb;
 //	GetBoundingBox(&xl, &yt, &xr, &yb);
 //	if (!MathHelper::getInstance().PointInRectTwoPoint(px, py, xl-r, yt-r, xr-xl+2*r, yb-yt+2*r))
+	if (isec)
+	{
+		*isec=0;
+	}
 	return MathHelper::getInstance().PointNearToStraightLine(px, py, plbegin->x, plbegin->y, plend->x, plend->y, r, plx, ply);
 }
 
@@ -285,7 +289,7 @@ void GBezierLine::OnRender( int iHighlightLevel/*=0*/ )
 	}
 }
 
-bool GBezierLine::CheckNearTo( float px, float py, float r, float *plx, float *ply )
+bool GBezierLine::CheckNearTo( float px, float py, float r, float *plx, float *ply, int * isec/*=NULL*/ )
 {
 	if (isStraightLine())
 	{
@@ -298,6 +302,7 @@ bool GBezierLine::CheckNearTo( float px, float py, float r, float *plx, float *p
 		float ndistpow2 = r*r;
 
 		float xl, yt, xr, yb;
+		int isection=0;
 		GetBoundingBox(&xl, &yt, &xr, &yb);
 		MathHelper * pmh = &MathHelper::getInstance();
 		if (!pmh->PointInRect(px, py, xl-r, yt-r, xr-xl+2*r, yb-yt+2*r))
@@ -327,6 +332,7 @@ bool GBezierLine::CheckNearTo( float px, float py, float r, float *plx, float *p
 						ndistpow2 = distpow2;
 						nx = tnx;
 						ny = tny;
+						isection = i;
 					}
 				}
 			}
@@ -340,6 +346,10 @@ bool GBezierLine::CheckNearTo( float px, float py, float r, float *plx, float *p
 			if (ply)
 			{
 				*ply = ny;
+			}
+			if (isec)
+			{
+				*isec = isection;
 			}
 			return true;
 		}

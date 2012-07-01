@@ -193,6 +193,16 @@ public:
 			strDisplayName=str;
 		}
 	};
+
+	bool ClingTo(GObject * pObj, float fProp=0);
+	bool AddClingBy(GObject * pObj);
+	void DeclingToOther();
+	void DeclingByOther(GObject * pObj=NULL);
+	bool isClingTo(GObject * pObj);
+	bool isClingBy(GObject * pObj);
+	GObject * getClingTo(){return pClingTo;};
+	list<GObject *> * getClingBy(){return &clingByList;};
+
 protected:
 	int nNonAttributeChildrenCount;
 
@@ -205,6 +215,10 @@ protected:
 	int nID;
 	GObject * pParent;
 	bool bModified;
+
+	GObject * pClingTo;
+	float fClingToProportion;
+	list<GObject *> clingByList;
 
 	int nTryState;
 	float fTryMove_bx;

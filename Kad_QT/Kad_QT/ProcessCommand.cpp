@@ -75,7 +75,7 @@ int Command::ProcessPending( int index, int useflag, int fillprompt, int step, i
 
 int Command::ProcessCommittedCommand()
 {
-	if (inputcommandlist.empty() || pendingparam.type)
+	if (inputcommandlist.empty() || pendingparam.type || GetStep()==CSI_FINISH)
 	{
 		return GetCurrentCommand();
 	}

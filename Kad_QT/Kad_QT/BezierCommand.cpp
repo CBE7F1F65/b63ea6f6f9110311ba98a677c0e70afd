@@ -135,7 +135,7 @@ void BezierCommand::OnProcessCommand()
 				int iret = pgp->PickPoint();
 				if (pgp->IsMouseDownReady())
 				{
-					int tosetpindex=-1;
+					int tosetpindex = -1;
 					switch (step)
 					{
 					case CSI_BEZIER_WANTBAX:
@@ -149,8 +149,8 @@ void BezierCommand::OnProcessCommand()
 					}
 					if (tosetpindex >= 0)
 					{
-						pcommand->SetParamX(tosetpindex, pgp->GetPickX_C());
-						pcommand->SetParamY(tosetpindex, pgp->GetPickY_C());
+						pcommand->SetParamX(tosetpindex, pgp->GetPickX_C(), CWP_X);
+						pcommand->SetParamY(tosetpindex, pgp->GetPickY_C(), CWP_Y);
 					}
 					switch (tosetpindex)
 					{
@@ -167,6 +167,17 @@ void BezierCommand::OnProcessCommand()
 					int tosetpindex=-1;
 					float pickx = pgp->GetPickX_C();
 					float picky = pgp->GetPickY_C();
+
+					GObject * pPicked = pgp->GetPickedObj();
+					GAnchorPoint * pAnchor = NULL;
+					if (pPicked && step < CSI_BEZIER_WANTNAX)
+					{
+						if (pPicked->isAnchorPoint())
+						{
+							pAnchor = (GAnchorPoint *)pPicked;
+						}
+					}
+
 					switch (step)
 					{
 					case CSI_BEZIER_WANTBHX:
@@ -186,8 +197,19 @@ void BezierCommand::OnProcessCommand()
 					}
 					if (tosetpindex >= 0)
 					{
-						pcommand->SetParamX(tosetpindex, pickx);
-						pcommand->SetParamY(tosetpindex, picky);
+						if (pAnchor)
+						{
+							GHandlePoint * pHandle = pAnchor->GetHandle();
+							float hx = pHandle->getX();
+							float hy = pHandle->getY();
+							pcommand->SetParamX(tosetpindex, 2*pickx-hx, CWP_HANDLEX);
+							pcommand->SetParamY(tosetpindex, 2*picky-hy, CWP_HANDLEY);
+						}
+						else
+						{
+							pcommand->SetParamX(tosetpindex, pickx, CWP_HANDLEX);
+							pcommand->SetParamY(tosetpindex, picky, CWP_HANDLEY);
+						}
 					}
 					switch (tosetpindex)
 					{

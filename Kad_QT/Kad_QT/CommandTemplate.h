@@ -27,6 +27,10 @@ public:
 	void InstantProcessCommand();
 	virtual void OnDoneCommand()=0;
 	void CallDoneCommand();
+	virtual void OnInitCommand();
+	void CallInitCommand();
+	virtual void OnTerminalCommand();
+	void CallTerminalCommand();
 	virtual void OnProcessUnDoCommand(RevertableCommand * rc);
 	void CallProcessUnDoCommand(int comm, RevertableCommand * rc);
 

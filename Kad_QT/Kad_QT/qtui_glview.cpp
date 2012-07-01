@@ -97,17 +97,6 @@ void QTUI_GLView::SLT_VScrollValueChanged(int val)
     MainInterface::getInstance().OnDoScroll(false, curpos-lastpos, 1000);
 }
 
-
-void QTUI_GLView::keyPressEvent( QKeyEvent * e )
-{
-    QGLWidget::keyPressEvent(e);
-}
-
-void QTUI_GLView::keyReleaseEvent( QKeyEvent * e )
-{
-    QGLWidget::keyReleaseEvent(e);
-}
-
 void QTUI_GLView::mouseMoveEvent( QMouseEvent *e )
 {
 	if (hge)
@@ -172,13 +161,6 @@ bool QTUI_GLView::eventFilter(QObject *target, QEvent *e)
         QKeyEvent * pke = static_cast<QKeyEvent *>(e);
 
 		int ekey = pke->key();
-		if (ekey != Qt::Key_Backspace && ekey != Qt::Key_Delete && ekey != Qt::Key_Space && ekey != Qt::Key_Escape)
-		{
-			if (!pke->text().isEmpty())
-			{
-				QMainInterface::getInstance().GetPCommandFloatingWidget()->OnReceiveTextFromGL(pke->text());
-			}
-		}
 
         QKeyStateManager * qksm = &QKeyStateManager::getInstance();
         qksm->SetKey(ekey);
@@ -205,7 +187,14 @@ bool QTUI_GLView::eventFilter(QObject *target, QEvent *e)
             }
 
             return true;
-        }
+		}
+		if (ekey != Qt::Key_Backspace && ekey != Qt::Key_Delete && ekey != Qt::Key_Space && ekey != Qt::Key_Escape)
+		{
+			if (!pke->text().isEmpty())
+			{
+				QMainInterface::getInstance().GetPCommandFloatingWidget()->OnReceiveTextFromGL(pke->text());
+			}
+		}
     }
 	else if(e->type() == QEvent::KeyRelease)
 	{

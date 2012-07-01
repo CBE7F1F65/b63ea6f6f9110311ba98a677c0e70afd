@@ -179,10 +179,13 @@ bool MainInterface::Frame()
 	GUICoordinate * pguic = &GUICoordinate::getInstance();
 	if (mousevwheel != lastmousevwheel)
 	{
+		/*
 		pcommand->CreateCommandCommit(COMM_DOZOOM);
 		pcommand->SetParamX(CSP_DOZOOM_XY_F_C_SCALE, mousex);
 		pcommand->SetParamY(CSP_DOZOOM_XY_F_C_SCALE, mousey);
 		pcommand->SetParamF(CSP_DOZOOM_XY_F_C_SCALE, powf(wheelscalefactor, mousevwheel-lastmousevwheel));
+		*/
+		GUICoordinate::getInstance().DoZoom(mousex, mousey, powf(wheelscalefactor, mousevwheel-lastmousevwheel));
 	}
 
 	if (hge->Input_GetDIKey(DIK_SPACE, DIKEY_DOWN) && IsMainViewActive())
@@ -214,6 +217,15 @@ bool MainInterface::Frame()
 	GObjectManager::getInstance().Delete();
 	DoUpdateFPS();
 	DoUpdateStatusInfo();
+
+	if (hge->Input_GetDIKey(DIK_LMENU) || hge->Input_GetDIKey(DIK_RMENU))
+	{
+		GObjectManager::getInstance().SetHandleVisible(true);
+	}
+	else
+	{
+		GObjectManager::getInstance().SetHandleVisible(false);
+	}
 
 	if (hge->Input_GetDIMouseKey(cursorrightkeyindex, DIKEY_UP) && hge->Input_IsMouseOver()
 		|| hge->Input_GetDIKey(DIK_APPS, DIKEY_UP)

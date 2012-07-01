@@ -41,6 +41,7 @@ enum{
 	// Node
 	COMM_DELETEITEM,
 	COMM_REPARENT,
+	COMM_CLING,
 	COMM_SETNODENAME,
 	COMM_DUPLICATE,
 	COMM_MOVENODE,
@@ -137,19 +138,32 @@ enum{
 /* REPARENT                                                             */
 /************************************************************************/
 
-#define CREPARENTINDEX_SNAPSHOT	-1
-
 enum{
 	CSP_REPARENT_I_NEWPARENTINDEX=0,
 	CSP_REPARENT_I_AFTERINDEX,
 	CSP_REPARENT_I_OLDINDEXES,
 };
-
+//////////////////////////////////////////////////////////////////////////
 enum{
 	CSI_REPARENT_DUMMY=0,
 	CSI_REPARENT_WANTNEWPARENTINDEX,
 	CSI_REPARENT_WANTAFTERINDEX,
 	CSI_REPARENT_WANTOLDINDEXES,
+};
+
+/************************************************************************/
+/* CLING                                                                */
+/************************************************************************/
+
+enum{
+	CSP_CLING_I_FROMINDEX=0,
+	CSP_CLING_I_TOINDEX,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_CLING_DUMMY=0,
+	CSI_CLING_WANTFROMINDEX,
+	CSI_CLING_WANTTOINDEX,
 };
 
 /************************************************************************/

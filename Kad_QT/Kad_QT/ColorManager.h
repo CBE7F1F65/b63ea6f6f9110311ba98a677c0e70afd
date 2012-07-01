@@ -185,13 +185,12 @@ public:
 	DWORD GetTextColor(int type, int state);
 	DWORD GetTextBkColor(int type, int state);
 
-	DWORD GetLayerLineColor(int layer);
-	DWORD GetLayerLineHighlightColor(int layer);
-    DWORD GetLayerLineActiveColor(int layer);
-    DWORD GetLayerLineUISelectColor(int layer);
-    DWORD GetLayerLineIndicatingColor(int layer);
-	LineColorSet GetLayerLineColorSetByIndex( int layerID );
-    inline bool isIndicatingLevel(int index){return index==LINECOLOR_UISELECT||index==LINECOLOR_INDICATING;};
+	DWORD GetLayerLineColor(int layer=-1);
+	DWORD GetLayerLineHighlightColor(int layer=-1);
+    DWORD GetLayerLineActiveColor(int layer=-1);
+    DWORD GetLayerLineUISelectColor(int layer=-1);
+    DWORD GetLayerLineIndicatingColor(int layer=-1);
+	LineColorSet GetLayerLineColorSetByIndex( int layerID=-1 );
 
 #undef _CMFDEF
 

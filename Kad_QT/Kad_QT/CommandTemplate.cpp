@@ -44,6 +44,7 @@ int CommandTemplate::OnNormalProcessCommand( int cursorindex/*=-1*/ )
 		{
 			GUICursor::getInstance().ChangeCursor(cursorindex);
 		}
+		CallInitCommand();
 		break;
 	case CSI_PAUSE:
 		ReleaseTarget();
@@ -73,6 +74,7 @@ int CommandTemplate::OnNormalProcessCommand( int cursorindex/*=-1*/ )
 	case CSI_TERMINAL:
 		GUICursor::getInstance().ChangeCursor(GUIC_NORMAL);
 		ReleaseTarget();
+		CallTerminalCommand();
 		pcommand->TerminalCommand();
 		return CSI_TERMINAL;
 		break;
@@ -105,6 +107,7 @@ void CommandTemplate::DispatchNormalSubCommand( int subcommand )
 	case SSC_TERMINAL:
 		GUICursor::getInstance().ChangeCursor(GUIC_NORMAL);
 		ReleaseTarget();
+		CallTerminalCommand();
 		pcommand->TerminalCommand();
 		break;
 	}
@@ -360,4 +363,24 @@ void CommandTemplate::CallOnUnDo()
 {
 	// lastworkinglayer can be dangerous
 	GObjectManager::getInstance().UpdateActiveLayer(NULL, true);
+}
+
+void CommandTemplate::CallInitCommand()
+{
+	OnInitCommand();
+}
+
+void CommandTemplate::OnInitCommand()
+{
+
+}
+
+void CommandTemplate::OnTerminalCommand()
+{
+
+}
+
+void CommandTemplate::CallTerminalCommand()
+{
+	OnTerminalCommand();
 }

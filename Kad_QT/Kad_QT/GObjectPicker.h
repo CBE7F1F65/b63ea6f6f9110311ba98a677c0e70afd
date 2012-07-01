@@ -3,12 +3,14 @@
 #include "GLine.h"
 #include "GBaseNode.h"
 
-#define GOPSNAP_NONE		0x0000
-#define GOPSNAP_SELF        0x0001
-#define GOPSNAP_GRID		0x0002
-#define GOPSNAP_GEOMETRY	0x0004
-#define GOPSNAP_COORD		0x0008
-#define GOPSNAP_CONTINUITY	0x0010
+#define GOPSNAP_NONE			0x0000
+#define GOPSNAP_SELF			0x0001
+#define GOPSNAP_GRID			0x0002
+#define GOPSNAP_GEOMETRY		0x0004
+#define GOPSNAP_COORD			0x0008
+#define GOPSNAP_GEOMETRYCOORD	0x0010
+#define GOPSNAP_VIRTUALCOORD	0x0020
+#define GOPSNAP_CONTINUITY		0x0040
 
 #define GOPSNAPPED_OBJ			0x0100
 #define GOPSNAPPED_POINT		0x0200
@@ -120,6 +122,7 @@ public:
 
 private:
 	GObject * pickObj[GOPONLINE_MAX];
+	int pickSection[GOPONLINE_MAX];
 	GObject * pickEntityObj[GOPONLINE_MAX];
 	GObject * pickCoordEntityObj[GOPONLINE_MAX];
 	PickerInterestPointInfo pickPIP[GOPONLINE_MAX];
@@ -137,10 +140,12 @@ private:
 public:
     void SetSnapTo(int snapto){SetSnapTo(snapto, true);};
     void SetSnapTo(int snapto, bool bSet);
-    bool isSnapToGrid(){return snaptoflag&GOPSNAP_GRID;};
-    bool isSnapToGeometry(){return snaptoflag&GOPSNAP_GEOMETRY;};
-    bool isSnapToCoord(){return snaptoflag&GOPSNAP_COORD;};
-    bool isSnapToContinuity(){return snaptoflag&GOPSNAP_CONTINUITY;};
+    inline bool isSnapToGrid(){return snaptoflag&GOPSNAP_GRID;};
+    inline bool isSnapToGeometry(){return snaptoflag&GOPSNAP_GEOMETRY;};
+    inline bool isSnapToCoord(){return snaptoflag&GOPSNAP_COORD;};
+    inline bool isSnapToContinuity(){return snaptoflag&GOPSNAP_CONTINUITY;};
+	inline bool isSnapToGeometryCoord(){return snaptoflag&GOPSNAP_GEOMETRYCOORD;};
+	inline bool isSnapToVirtualCoord(){return snaptoflag&GOPSNAP_VIRTUALCOORD;};
 private:
 	float snaprange_c;
 	float snaprange_s;
@@ -184,16 +189,18 @@ public:
 	void SetPickObj( GObject * pObj );
 	void SetPickPIP( PickerInterestPointInfo info );
 	void SetPickObjCoord(GObject * pObj);
-	bool SubFindLineX( GLine * pLine, float y );
+	bool SubFindLineX( GLine * pLine, float y, int iIndex );
 	bool SubFindPIPX( PickerInterestPointInfo * pPIP, float y );
-	bool SubFindLineY( GLine * pLine, float x );
+	bool SubFindLineY( GLine * pLine, float x, int iIndex );
 	bool SubFindPIPY( PickerInterestPointInfo * pPIP, float x );
-	bool SubFindLinePIP( GLine * pLine, PickerInterestPointInfo * pPIP );
+	bool SubFindLinePIP( GLine * pLine, PickerInterestPointInfo * pPIP, int iIndex );
 	bool SubFindLineLine( GLine * pLine1, GLine * pLine2 );
 	bool SubFindPIPPIP( PickerInterestPointInfo * pPIP1, PickerInterestPointInfo * pPIP2 );
+	void TraslateLineToStraightLine( GLine * pLine, int index, int isec );
 private:
 	list<PickerInterestPointInfo> pipinfo;
 	bool bCheckMouseDown;
+	bool bRenderMouseDown;
 
 	int nOnLine;
 

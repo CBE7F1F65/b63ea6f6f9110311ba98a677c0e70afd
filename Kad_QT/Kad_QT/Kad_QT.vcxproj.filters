@@ -359,6 +359,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_QTUI_StatusBar.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="ClingCommand.cpp">
+      <Filter>Main\Command\Node</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -516,6 +519,9 @@
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_QTUI_StatusBar.h">
       <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ClingCommand.h">
+      <Filter>Main\Command\Node</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

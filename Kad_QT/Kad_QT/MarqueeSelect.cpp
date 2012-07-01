@@ -108,7 +108,13 @@ void MarqueeSelect::AddSelect( GObject * pObj, int level )
 		{
 			return;
 		}
-		if (pObj->isAnchorPoint() && ((GAnchorPoint *)pObj)->GetHandle() == (*it))
+		//////////////////////////////////////////////////////////////////////////
+		if (pObj->isClingBy(*it))
+		{
+			it = selectednodes.erase(it);
+		}
+		//////////////////////////////////////////////////////////////////////////
+		else if (pObj->isAnchorPoint() && ((GAnchorPoint *)pObj)->GetHandle() == (*it))
 		{
 			it = selectednodes.erase(it);
 		}
@@ -121,6 +127,15 @@ void MarqueeSelect::AddSelect( GObject * pObj, int level )
 			++it;
 		}
 	}
+
+	PushSelectCling(pObj);
+
+	if (pObj->getClingTo())
+	{
+		AddSelect(pObj->getClingTo());
+		return;
+	}
+
 	selectednodes.push_back(pObj);
 }
 
@@ -158,6 +173,10 @@ void MarqueeSelect::Update()
 	}
 	if (mlkeynotpressed)
 	{
+		if (marqueestate == MARQSTATE_LEFTKEYDOWN)
+		{
+			marqueestate = MARQSTATE_NONE;
+		}
 		itemmovestate = MARQMOVESTATE_NONE;
 	}
 	
@@ -523,6 +542,10 @@ bool MarqueeSelect::PickFilterCallback( GObject * pObj )
 {
 	if (itemmovestate == MARQMOVESTATE_BEGAN)
 	{
+		if (pObj->isHandlePoint())
+		{
+			return false;
+		}
 		return !CheckObjInSelection(pObj, true, true);
 	}
 	return true;
@@ -540,5 +563,28 @@ void MarqueeSelect::OnDeleteNode( GObject * pObj )
 		{
 			++it;
 		}
+	}
+}
+
+void MarqueeSelect::PushSelectCling( GObject * pObj )
+{
+	if (!pObj)
+	{
+		return;
+	}
+	if (!pObj->getChildren()->empty())
+	{
+		for (list<GObject *>::iterator it=pObj->getChildren()->begin(); it!=pObj->getChildren()->end(); ++it)
+		{
+			PushSelectCling(*it);
+		}
+	}
+	if (pObj->getClingBy()->empty())
+	{
+		return;
+	}
+	for (list<GObject *>::iterator it=pObj->getClingBy()->begin(); it!=pObj->getClingBy()->end(); ++it)
+	{
+		selectednodes.push_back(*it);
 	}
 }

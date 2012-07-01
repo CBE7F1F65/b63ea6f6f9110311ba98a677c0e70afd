@@ -3,6 +3,7 @@
 #include "ui_QTUI_StatusBar.h"
 #include "qmaininterface.h"
 #include "MainInterface.h"
+#include "GObjectManager.h"
 
 #include "GUICoordinate.h"
 #include "GObjectPicker.h"
@@ -46,6 +47,8 @@ void QTUI_StatusBar::UpdateStatusBar()
     }
 
     GObjectPicker * pgp = &GObjectPicker::getInstance();
+    GObjectManager * pgm = &GObjectManager::getInstance();
+
     if (ui->PBSnapGrid->isChecked() != pgp->isSnapToGrid())
     {
         ui->PBSnapGrid->setChecked(pgp->isSnapToGrid());
@@ -61,6 +64,14 @@ void QTUI_StatusBar::UpdateStatusBar()
     if (ui->PBSnapCoord->isChecked() != pgp->isSnapToCoord())
     {
         ui->PBSnapCoord->setChecked(pgp->isSnapToCoord());
+    }
+    if (ui->PBSnapGeometryCoord->isChecked() != pgp->isSnapToGeometryCoord())
+    {
+        ui->PBSnapGeometryCoord->setChecked(pgp->isSnapToGeometryCoord());
+    }
+    if (ui->PBSnapVirtualCoord->isChecked() != pgp->isSnapToVirtualCoord())
+    {
+        ui->PBSnapVirtualCoord->setChecked(pgp->isSnapToVirtualCoord());
     }
 
     if (ui->PBShowGrid->isChecked() != pguic->isShowGrid())
@@ -97,6 +108,16 @@ void QTUI_StatusBar::SLT_PBSnapContinuityTriggered(bool bVal)
 void QTUI_StatusBar::SLT_PBShowGridTriggered(bool bVal)
 {
     GUICoordinate::getInstance().SetShowGrid(bVal);
+}
+
+void QTUI_StatusBar::SLT_PBSnapGeometryCoordTriggered(bool bVal)
+{
+    GObjectPicker::getInstance().SetSnapTo(GOPSNAP_GEOMETRYCOORD, bVal);
+}
+
+void QTUI_StatusBar::SLT_PBSnapVirtualCoordTriggered(bool bVal)
+{
+    GObjectPicker::getInstance().SetSnapTo(GOPSNAP_VIRTUALCOORD, bVal);
 }
 
 void QTUI_StatusBar::resizeEvent(QResizeEvent *e)

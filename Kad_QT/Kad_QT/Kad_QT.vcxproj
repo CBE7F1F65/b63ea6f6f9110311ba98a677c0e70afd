@@ -82,6 +82,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BezierCommand.cpp" />
+    <ClCompile Include="ClingCommand.cpp" />
     <ClCompile Include="ColorManager.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="CommandGetTemplate.cpp" />
@@ -235,6 +236,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BezierCommand.h" />
+    <ClInclude Include="ClingCommand.h" />
     <ClInclude Include="ColorManager.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="CommandDefines.h" />

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>994</width>
-    <height>56</height>
+    <width>1050</width>
+    <height>441</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -177,7 +177,7 @@
        </size>
       </property>
       <property name="toolTip">
-       <string>延续对象捕捉</string>
+       <string>对象轴捕捉</string>
       </property>
       <property name="text">
        <string/>
@@ -187,7 +187,7 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="10">
+    <item row="0" column="13">
      <spacer name="horizontalSpacer_2">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -200,21 +200,21 @@
       </property>
      </spacer>
     </item>
-    <item row="0" column="11">
+    <item row="0" column="14">
      <widget class="QLabel" name="labelStatic_Precision">
       <property name="text">
        <string>精确度:  </string>
       </property>
      </widget>
     </item>
-    <item row="0" column="13">
+    <item row="0" column="16">
      <widget class="QLabel" name="labelFPS">
       <property name="text">
        <string>FPS</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="12">
+    <item row="0" column="15">
      <widget class="QSpinBox" name="spinPrecision">
       <property name="maximum">
        <number>100</number>
@@ -261,7 +261,7 @@
        </size>
       </property>
       <property name="toolTip">
-       <string>轴对象捕捉</string>
+       <string>轴捕捉</string>
       </property>
       <property name="text">
        <string/>
@@ -270,6 +270,84 @@
        <bool>true</bool>
       </property>
      </widget>
+    </item>
+    <item row="0" column="10">
+     <widget class="QPushButton" name="PBSnapGeometryCoord">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>延续对象捕捉</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="11">
+     <widget class="QPushButton" name="PBSnapVirtualCoord">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>虚拟对象轴捕捉</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="12">
+     <spacer name="horizontalSpacer_4">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>
@@ -287,8 +365,8 @@
      <y>22</y>
     </hint>
     <hint type="destinationlabel">
-     <x>885</x>
-     <y>23</y>
+     <x>798</x>
+     <y>53</y>
     </hint>
    </hints>
   </connection>
@@ -299,12 +377,12 @@
    <slot>SLT_PBSnapGridTriggered(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>210</x>
-     <y>27</y>
+     <x>176</x>
+     <y>30</y>
     </hint>
     <hint type="destinationlabel">
-     <x>210</x>
-     <y>45</y>
+     <x>181</x>
+     <y>85</y>
     </hint>
    </hints>
   </connection>
@@ -315,12 +393,12 @@
    <slot>SLT_PBSnapGeometryTriggered(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>238</x>
-     <y>32</y>
+     <x>201</x>
+     <y>35</y>
     </hint>
     <hint type="destinationlabel">
-     <x>239</x>
-     <y>47</y>
+     <x>211</x>
+     <y>110</y>
     </hint>
    </hints>
   </connection>
@@ -331,12 +409,12 @@
    <slot>SLT_PBSnapCoordTriggered(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>263</x>
-     <y>25</y>
+     <x>226</x>
+     <y>28</y>
     </hint>
     <hint type="destinationlabel">
-     <x>263</x>
-     <y>6</y>
+     <x>231</x>
+     <y>136</y>
     </hint>
    </hints>
   </connection>
@@ -347,12 +425,12 @@
    <slot>SLT_PBSnapContinuityTriggered(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>293</x>
-     <y>25</y>
+     <x>251</x>
+     <y>29</y>
     </hint>
     <hint type="destinationlabel">
-     <x>306</x>
-     <y>5</y>
+     <x>255</x>
+     <y>161</y>
     </hint>
    </hints>
   </connection>
@@ -363,12 +441,44 @@
    <slot>SLT_PBShowGridTriggered(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>28</y>
+     <x>130</x>
+     <y>31</y>
     </hint>
     <hint type="destinationlabel">
-     <x>164</x>
-     <y>48</y>
+     <x>135</x>
+     <y>65</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PBSnapGeometryCoord</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>QTUI_StatusBar</receiver>
+   <slot>SLT_PBSnapGeometryCoordTriggered(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>271</x>
+     <y>24</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>276</x>
+     <y>185</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PBSnapVirtualCoord</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>QTUI_StatusBar</receiver>
+   <slot>SLT_PBSnapVirtualCoordTriggered(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>288</x>
+     <y>25</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>292</x>
+     <y>215</y>
     </hint>
    </hints>
   </connection>
@@ -380,5 +490,8 @@
   <slot>SLT_PBSnapCoordTriggered(bool)</slot>
   <slot>SLT_PBSnapContinuityTriggered(bool)</slot>
   <slot>SLT_PBShowGridTriggered(bool)</slot>
+  <slot>SLT_PBSnapGeometryCoordTriggered(bool)</slot>
+  <slot>SLT_PBSnapVirtualCoordTriggered(bool)</slot>
+  <slot>SLT_PBHandleVisibleTriggered(bool)</slot>
  </slots>
 </ui>

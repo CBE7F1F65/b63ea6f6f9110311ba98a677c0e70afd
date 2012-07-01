@@ -127,6 +127,13 @@ public:
 	int PushMoveNodeByOffsetForBatchCommand( GObject* pObj, float xoffset, float yoffset );
 	void DoMoveNodeByOffsetBatch();
 	void OnDeleteNode( GObject * node );
+
+public:
+	void SetHandleVisible( bool bSet );
+	bool isHandleVisible(){return bHandleVisible;};
+private:
+	bool bHandleVisible;
+
 	list<MoveNodeByOffsetInfo> pushedmovenodebyoffset;
 
 	HTARGET tarObjs;

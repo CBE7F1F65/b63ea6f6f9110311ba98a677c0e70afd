@@ -15,7 +15,7 @@ ColorManager::~ColorManager(void)
 	}
 }
 
-DWORD ColorManager::GetLayerLineColor( int layer )
+DWORD ColorManager::GetLayerLineColor( int layer/* =-1 */ )
 {
 	/*
 //	4f80ff	Light Blue
@@ -80,27 +80,27 @@ DWORD ColorManager::GetLayerLineColor( int layer )
 	return 0xffffffff;
 }
 
-DWORD ColorManager::GetLayerLineHighlightColor( int layer )
+DWORD ColorManager::GetLayerLineHighlightColor( int layer/* =-1 */ )
 {
 	return 0xff4fff4f;	// Green
 }
 
-DWORD ColorManager::GetLayerLineActiveColor( int layer )
+DWORD ColorManager::GetLayerLineActiveColor( int layer/* =-1 */ )
 {
     return 0xffff4f4f;	// Light Red
 }
 
-DWORD ColorManager::GetLayerLineUISelectColor(int layer)
+DWORD ColorManager::GetLayerLineUISelectColor(int layer/* =-1 */)
 {
     return 0xffff9900;	// Gold
 }
 
-DWORD ColorManager::GetLayerLineIndicatingColor(int layer)
+DWORD ColorManager::GetLayerLineIndicatingColor(int layer/* =-1 */)
 {
     return 0xffffff4f;	// Yellow
 }
 
-LineColorSet ColorManager::GetLayerLineColorSetByIndex( int layerID )
+LineColorSet ColorManager::GetLayerLineColorSetByIndex( int layerID/* =-1 */ )
 {
 	LineColorSet ls;
 	ls.SetColor(LINECOLOR_NORMAL, GetLayerLineColor(layerID));

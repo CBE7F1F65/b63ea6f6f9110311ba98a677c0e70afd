@@ -25,6 +25,8 @@ public slots:
     void SLT_PBSnapCoordTriggered(bool bVal);
     void SLT_PBSnapContinuityTriggered(bool bVal);
     void SLT_PBShowGridTriggered(bool bVal);
+    void SLT_PBSnapGeometryCoordTriggered(bool bVal);
+    void SLT_PBSnapVirtualCoordTriggered(bool bVal);
     
 protected:
     virtual void resizeEvent(QResizeEvent *e);

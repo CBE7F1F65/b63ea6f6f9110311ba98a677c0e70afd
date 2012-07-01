@@ -52,6 +52,7 @@ void GObjectManager::Release()
 	pushedmovenodebyoffset.clear();
     bRedraw = false;
     bRenderUILayerIndicators = false;
+	bHandleVisible = true;
 //	bLockTreeChange = false;
 }
 
@@ -563,5 +564,14 @@ void GObjectManager::OnDeleteNode( GObject * node )
 		{
 			++it;
 		}
+	}
+}
+
+void GObjectManager::SetHandleVisible( bool bSet )
+{
+	if (bSet != bHandleVisible)
+	{
+		bHandleVisible = bSet;
+		SetRedraw();
 	}
 }

@@ -18,4 +18,12 @@ public:
 	virtual void OnProcessCommand();
 	virtual void OnDoneCommand();
 	virtual void RenderToTarget();
+	virtual void OnInitCommand();
+	virtual void OnTerminalCommand();
+private:
+	GObject * pClingToBegin;
+	GObject * pClingToEnd;
+	GObject * pNextClingToBegin;
+
+	GLine * pNCLine;
 };
