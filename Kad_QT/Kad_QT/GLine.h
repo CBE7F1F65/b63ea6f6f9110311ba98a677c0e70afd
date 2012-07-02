@@ -12,41 +12,16 @@ public:
 	GLine(void);
 	virtual ~GLine(void);
 
-	virtual float getX()
-	{
-		if (pmid)
-		{
-			return pmid->getX();
-		}
-		return 0;
-	};
-	virtual float getY()
-	{
-		if (pmid)
-		{
-			return pmid->getY();
-		}
-		return 0;
-	};
+	virtual float getX() { if (pmid) { return pmid->getX(); } return 0; };
+	virtual float getY() { if (pmid) { return pmid->getY(); } return 0; };
 
 	virtual bool isLine(){return true;};
 
 
-	virtual GObject * getPiece()
-	{
-		GObject * pObj = pParent;
-		while (pObj)
-		{
-			if (pObj->isPiece())
-			{
-				return pObj;
-			}
-			pObj = pObj->getParent();
-		}
-		return NULL;
-	};
+	virtual GObject * getPiece();
 
 	virtual bool MoveTo(float newx, float newy, bool bTry);
+	virtual bool CallMoveTo(float newx, float newy, bool bTry);
 
 	virtual bool isStraightLine() = 0;
 
@@ -59,9 +34,25 @@ public:
 	virtual const char * getDisplayName();
 
 	virtual void OnModify();
+
+public:
+	inline GAnchorPoint * GetBeginPoint(){return plbegin;};
+	inline GAnchorPoint * GetEndPoint(){return plend;};
+	inline GMidPoint * GetMidPoint(){return pmid;};
+protected:
 	GAnchorPoint * plbegin;
 	GAnchorPoint * plend;
 	GMidPoint * pmid;
+
+public:
+	virtual void OnRemove();
+
+	bool AddClingBy(GPoint * pPoint);
+	void DeclingByOther(GPoint * pPoint=NULL);
+	bool isClingBy(GPoint * pPoint);
+	list<GPoint *> * getClingBy(){return &clingByList;};
+protected:
+	list<GPoint *> clingByList;
 };
 /************************************************************************/
 /* GSubstantiveLine                                                     */

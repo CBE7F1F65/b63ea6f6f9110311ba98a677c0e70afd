@@ -30,6 +30,43 @@ void Command::ExitReDo()
 	undoredoflag = CUNDOREDO_NULL;
 }
 
+void Command::RevertUnDoList(RevertableCommand * rc)
+{
+	ASSERT(rc);
+
+	list<RevertableCommand> rclist;
+	RevertableCommand rv;
+	rclist.push_front(rv);
+	for (list<CommittedCommand>::iterator it=rc->commandlist.begin(); it!=rc->commandlist.end(); ++it)
+	{
+
+		if (IsCCTypeCommand(it->type) && IsInternalCommand_CommandEndMark(it->ival))
+		{
+			RevertableCommand rvt;
+			rclist.push_front(rvt);
+		}
+		else
+		{
+			rclist.front().PushCommand(&(*it));
+		}
+	}
+	if (rclist.front().commandlist.empty())
+	{
+		rclist.pop_front();
+	}
+
+	rc->Clear();
+//	RevertableCommand rvundo;
+	for (list<RevertableCommand>::iterator it=rclist.begin(); it!=rclist.end(); ++it)
+	{
+		for (list<CommittedCommand>::iterator jt=it->commandlist.begin(); jt!=it->commandlist.end(); ++jt)
+		{
+//			rvundo.PushCommand(&(*jt));
+			rc->PushCommand(&(*jt));
+		}
+	}
+}
+
 bool Command::DoUnDo( int undostep/*=1*/ )
 {
 	if (undolist.size()<=1 || undostep < 1)
@@ -43,6 +80,7 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 	ClearCurrentCommand(true);
 
 	RevertableCommand rc = undolist.back();
+	RevertUnDoList(&rc);
 
 	// Dispatch
 	EnterUnDo();
@@ -142,8 +180,8 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 	MainInterface::getInstance().OnUnDo();
 	ExitUnDo();
 
+	redolist.push_back(undolist.back());
 	undolist.pop_back();
-	redolist.push_back(rc);
 
 
 	if (!GObjectManager::getInstance().GetActiveLayer())
@@ -263,7 +301,7 @@ bool Command::DoReDo( int redostep/*=1*/ )
 	// No need to push back undolist
 	// All ReDo should done by command
 //	undolist.push_back(rc);
-	CommandTemplate::CallOnUnDo();
+	CommandTemplate::CallOnReDo();
 
 	if (redostep > 1)
 	{

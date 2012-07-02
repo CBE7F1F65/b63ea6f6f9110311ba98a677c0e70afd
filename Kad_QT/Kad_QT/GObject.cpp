@@ -24,10 +24,7 @@ GObject::GObject(void)
 	nTryState = 0;
 	fTryMove_bx = 0;
 	fTryMove_by = 0;
-
-	pClingTo = NULL;
-	fClingToProportion = 0;
-
+	
     bCloning = false;
 
 	_SetID();
@@ -106,8 +103,7 @@ list<GObject *>::iterator GObject::_ActualRemoveChild( list<GObject *>::iterator
 	{
 		_ModifyNonAttributeChildrenCount(-1);
 	}
-	DeclingToOther();
-	DeclingByOther();
+	(*it)->OnRemove();
 	if (bRelease)
 	{
 		(*it)->OnRelease();
@@ -290,6 +286,11 @@ void GObject::OnRelease()
     GObjectManager::getInstance().AddNodeToDelete(this);
 }
 
+void GObject::OnRemove()
+{
+
+}
+
 void GObject::OnPrecisionChanged(float fPrecision)
 {
 }
@@ -308,6 +309,7 @@ void GObject::OnUpdate()
 			// Add Command
 			float tx = getX();
 			float ty = getY();
+			// Directly Move!!
 			MoveTo(fTryMove_bx, fTryMove_by, false);
 			GObjectManager::getInstance().PushMoveNodeByOffsetForBatchCommand(this, tx-fTryMove_bx, ty-fTryMove_by);
 			/*
@@ -857,99 +859,4 @@ void GObject::ToggleTryMoveState( bool bTry )
 	{
 		nTryState = GOBJTRYSTATE_MOVE_REQUIREUPDATE;
 	}
-}
-
-bool GObject::ClingTo( GObject * pObj, float fProp/*=0*/ )
-{
-	ASSERT(pObj);
-	if (pObj->AddClingBy(this))
-	{
-		if (pClingTo)
-		{
-			DeclingToOther();
-		}
-		pClingTo = pObj;
-		fClingToProportion = fProp;
-		return true;
-	}
-	return false;
-}
-
-bool GObject::AddClingBy( GObject * pObj )
-{
-	ASSERT(pObj);
-	for (list<GObject *>::iterator it=clingByList.begin(); it!=clingByList.end(); ++it)
-	{
-		if (*it == pObj)
-		{
-			DASSERT(true);
-			return false;
-		}
-	}
-	clingByList.push_back(pObj);
-	return true;
-}
-
-void GObject::DeclingToOther()
-{
-	if (pClingTo)
-	{
-		pClingTo->DeclingByOther(this);
-	}
-}
-
-void GObject::DeclingByOther( GObject * pObj/*=NULL*/ )
-{
-	if (!pObj)
-	{
-		for (list<GObject *>::iterator it=clingByList.begin(); it!=clingByList.end(); ++it)
-		{
-			(*it)->pClingTo = NULL;
-		}
-		clingByList.clear();
-	}
-	else
-	{
-		for (list<GObject *>::iterator it=clingByList.begin(); it!=clingByList.end(); ++it)
-		{
-			if (*it == pObj)
-			{
-				clingByList.erase(it);
-				break;
-			}
-		}		
-	}
-}
-
-bool GObject::isClingTo( GObject * pObj )
-{
-	if (!pObj)
-	{
-		return false;
-	}
-	if (pClingTo == pObj)
-	{
-		return true;
-	}
-	if (pObj->getChildren()->empty())
-	{
-		return false;
-	}
-	for (list<GObject *>::iterator it=pObj->getChildren()->begin(); it!=pObj->getChildren()->end(); ++it)
-	{
-		if (isClingTo(*it))
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
-bool GObject::isClingBy( GObject * pObj )
-{
-	if (!pObj)
-	{
-		return false;
-	}
-	return pObj->isClingTo(this);
 }

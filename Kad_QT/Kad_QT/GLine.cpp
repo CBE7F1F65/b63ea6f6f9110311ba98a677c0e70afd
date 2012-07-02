@@ -24,11 +24,11 @@ void GLine::SetBeginEnd( float xb, float yb, float xe, float ye )
 {
 	if (plbegin)
 	{
-		plbegin->MoveTo(xb, yb, false);
+		plbegin->CallMoveTo(xb, yb, false);
 	}
 	if (plend)
 	{
-		plend->MoveTo(xe, ye, false);
+		plend->CallMoveTo(xe, ye, false);
 	}
 //	UpdateMidPoint();
 }
@@ -54,14 +54,28 @@ bool GLine::MoveTo( float newx, float newy, bool bTry )
 	ToggleTryMoveState(bTry);
 
 	bool bret;
-	bret = plbegin->MoveByOffset(xoffset, yoffset, false);
+	bret = plbegin->CallMoveByOffset(xoffset, yoffset, false);
 	if (!bret)
 	{
 		return false;
 	}
-	bret = plend->MoveByOffset(xoffset, yoffset, false);
+	bret = plend->CallMoveByOffset(xoffset, yoffset, false);
 //	UpdateMidPoint();
 	return bret;
+}
+
+bool GLine::CallMoveTo( float newx, float newy, bool bTry )
+{
+	if (!clingByList.empty())
+	{
+		float xoffset = newx - getX();
+		float yoffset = newy - getY();
+		for (list<GPoint *>::iterator it=clingByList.begin(); it!=clingByList.end(); ++it)
+		{
+			(*it)->CallMoveByOffset(xoffset, yoffset, bTry);
+		}
+	}
+	return MoveTo(newx, newy, bTry);
 }
 
 void GLine::OnModify()
@@ -92,6 +106,72 @@ bool GLine::CheckIntersectWithLineObj( GLine * pLine, list<PointF2D> *pPoints )
 	}
 	return false;
 }
+
+void GLine::OnRemove()
+{
+	DeclingByOther();
+}
+
+bool GLine::AddClingBy( GPoint * pPoint )
+{
+	ASSERT(pPoint);
+	for (list<GPoint *>::iterator it=clingByList.begin(); it!=clingByList.end(); ++it)
+	{
+		if (*it == pPoint)
+		{
+			DASSERT(true);
+			return false;
+		}
+	}
+	clingByList.push_back(pPoint);
+	return true;
+}
+
+void GLine::DeclingByOther( GPoint * pPoint/*=NULL*/ )
+{
+	if (!pPoint)
+	{
+		while (!clingByList.empty())
+		{
+			DeclingByOther(clingByList.front());
+		}
+	}
+	else
+	{
+		for (list<GPoint *>::iterator it=clingByList.begin(); it!=clingByList.end(); ++it)
+		{
+			if (*it == pPoint)
+			{
+				pPoint->ClearClingTo();
+				clingByList.erase(it);
+				break;
+			}
+		}		
+	}
+}
+
+bool GLine::isClingBy( GPoint * pPoint )
+{
+	if (!pPoint)
+	{
+		return false;
+	}
+	return pPoint->isClingTo(this);
+}
+
+GObject * GLine::getPiece()
+{
+	GObject * pObj = pParent;
+	while (pObj)
+	{
+		if (pObj->isPiece())
+		{
+			return pObj;
+		}
+		pObj = pObj->getParent();
+	}
+	return NULL;
+};
 /************************************************************************/
 /* GSTRAIGHTLINE                                                        */
 /************************************************************************/
@@ -120,7 +200,7 @@ void GStraightLine::UpdateMidPoint()
 {
 	if (pmid)
 	{
-		pmid->SetPosition((plbegin->x+plend->x)/2.0f, (plbegin->y+plend->y)/2.0f);
+		pmid->SetPosition((plbegin->getX()+plend->getX())/2.0f, (plbegin->getY()+plend->getY())/2.0f);
 	}
 }
 
@@ -128,7 +208,7 @@ void GStraightLine::UpdateMidPoint()
 void GStraightLine::OnRender( int iHighlightLevel/*=0*/ )
 {
 	DWORD col = getLineColor(iHighlightLevel);
-	RenderHelper::getInstance().RenderLine(plbegin->x, plbegin->y, plend->x, plend->y, col);
+	RenderHelper::getInstance().RenderLine(plbegin->getX(), plbegin->getY(), plend->getX(), plend->getY(), col);
 }
 
 bool GStraightLine::Clone( GObject * pNewParent )
@@ -157,7 +237,7 @@ bool GStraightLine::CheckNearTo( float px, float py, float r, float *plx, float 
 	{
 		*isec=0;
 	}
-	return MathHelper::getInstance().PointNearToStraightLine(px, py, plbegin->x, plbegin->y, plend->x, plend->y, r, plx, ply);
+	return MathHelper::getInstance().PointNearToStraightLine(px, py, plbegin->getX(), plbegin->getY(), plend->getX(), plend->getY(), r, plx, ply);
 }
 
 void GStraightLine::GetBoundingBox( float *xl, float *yt, float *xr, float * yb )
@@ -174,15 +254,15 @@ void GStraightLine::GetBoundingBox( float *xl, float *yt, float *xr, float * yb 
 
 bool GStraightLine::CheckIntersectWithRect( float xl, float yt, float xr, float yb )
 {
-	return MathHelper::getInstance().LinePartialInRect(plbegin->x, plbegin->y, plend->x, plend->y, xl, yt, xr, yb);
+	return MathHelper::getInstance().LinePartialInRect(plbegin->getX(), plbegin->getY(), plend->getX(), plend->getY(), xl, yt, xr, yb);
 }
 
 bool GStraightLine::CheckIntersectStraightStraight( GStraightLine * pLine, list<PointF2D> *pPoints )
 {
 	float ix, iy;
 	if (MathHelper::getInstance().LineSegmentIntersect(
-		plbegin->x, plbegin->y, plend->x, plend->y,
-		pLine->plbegin->x, pLine->plbegin->y, pLine->plend->x, pLine->plend->y,
+		plbegin->getX(), plbegin->getY(), plend->getX(), plend->getY(),
+		pLine->plbegin->getX(), pLine->plbegin->getY(), pLine->plend->getX(), pLine->plend->getY(),
 		&ix, &iy))
 	{
 		if (pPoints)

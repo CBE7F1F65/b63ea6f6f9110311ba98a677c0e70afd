@@ -14,7 +14,7 @@
 
 LineCommand::LineCommand()
 {
-	pNextClingToBegin = NULL;
+	pNextMergeToBegin = NULL;
 }
 LineCommand::~LineCommand()
 {
@@ -107,12 +107,12 @@ void LineCommand::OnProcessCommand()
 					case CSI_LINE_WANTX1:
 					case CSI_LINE_WANTY1:
 						tosetpindex = CSP_LINE_XY_B;
-						pClingToBegin = pgp->GetPickedObj();
+						pMergeToBegin = pgp->GetPickedObj();
 						break;
 					case CSI_LINE_WANTX2:
 					case CSI_LINE_WANTY2:
 						tosetpindex = CSP_LINE_XY_N;
-						pClingToEnd = pgp->GetPickedObj();
+						pMergeToEnd = pgp->GetPickedObj();
 						break;
 					}
 					pcommand->SetParamX(tosetpindex, pgp->GetPickX_C(), CWP_X);
@@ -149,29 +149,29 @@ void LineCommand::OnProcessCommand()
 
 			if (pNCLine)
 			{
-				if (pClingToEnd)
+				if (pMergeToEnd)
 				{
 					CommitFrontCommand(
-						CCMake_C(COMM_CLING),
-						CCMake_I(pNCLine->plend->getID()),
-						CCMake_I(pClingToEnd->getID()),
+						CCMake_C(COMM_MERGE),
+						CCMake_O(pNCLine->GetEndPoint()),
+						CCMake_O(pMergeToEnd),
 						NULL
 						);
 				}
-				if (pNextClingToBegin)
+				if (pNextMergeToBegin)
 				{
-					pClingToBegin = pNextClingToBegin;
+					pMergeToBegin = pNextMergeToBegin;
 				}
-				if (pClingToBegin)
+				if (pMergeToBegin)
 				{
 					CommitFrontCommand(
-						CCMake_C(COMM_CLING),
-						CCMake_I(pNCLine->plbegin->getID()),
-						CCMake_I(pClingToBegin->getID()),
+						CCMake_C(COMM_MERGE),
+						CCMake_O(pNCLine->GetBeginPoint()),
+						CCMake_O(pMergeToBegin),
 						NULL
 						);
 				}
-				pNextClingToBegin = pNCLine->plend;
+				pNextMergeToBegin = pNCLine->GetEndPoint();
 			}
 		}
 	}
@@ -233,12 +233,12 @@ void LineCommand::OnDoneCommand()
 
 void LineCommand::OnInitCommand()
 {
-	pClingToBegin = NULL;
-	pClingToEnd = NULL;
+	pMergeToBegin = NULL;
+	pMergeToEnd = NULL;
 	pNCLine = NULL;
 }
 
 void LineCommand::OnTerminalCommand()
 {
-	pNextClingToBegin = NULL;
+	pNextMergeToBegin = NULL;
 }

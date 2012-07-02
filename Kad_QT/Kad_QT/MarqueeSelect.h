@@ -39,7 +39,7 @@ public:
 	void DoMoveLine(GLine * pLine, float movedx_c, float movedy_c);
 	void DoMovePiece(GPiece * pPiece, float movedx_c, float movedy_c);
 
-	bool CheckObjInSelection(GObject * pObj, bool bFindAncestor=false, bool bFindUpperClass=false);
+	bool CheckObjInSelection(GObject * pObj, bool bFindAncestor=false, bool bFindUpperClass=false, bool bFindMerge=false, bool bFindCling=false);
 
 	void Update();
 	void Render();

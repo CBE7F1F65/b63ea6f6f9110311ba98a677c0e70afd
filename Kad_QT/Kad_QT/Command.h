@@ -80,7 +80,10 @@ public:
 #define COMMITTEDCOMMANDTYPE_INT			0x20
 #define F_COMMITTEDCOMMANDTYPE_NUMBER			(COMMITTEDCOMMANDTYPE_FLOAT|COMMITTEDCOMMANDTYPE_INT)
 
-#define COMMITTEDCOMMANDTYPE_STRING			0x40
+#define COMMITTEDCOMMANDTYPE_OBJ			0x40
+#define F_COMMITTEDCOMMANDTYPE_POINTER			(COMMITTEDCOMMANDTYPE_OBJ)
+
+#define COMMITTEDCOMMANDTYPE_STRING			0x80
 #define F_COMMITTEDCOMMANDTYPE_STRING			0xff
 
 #define COMMITTEDCOMMANDTYPE_SKIPCOMMAND	0x50
@@ -106,6 +109,8 @@ public:
 		csub = 0;
 		sval = "";
 	};
+
+	bool TranslateObjToID();
 
 	string sval;
 	int type;
@@ -258,6 +263,7 @@ public:
 	bool DoUnDoCommandCommit(RevertableCommand * rc);
 	bool DoUnDoCommandParam(int command, RevertableCommand * rc);
 	bool DoReDoCommandSingle(RevertableCommand * rc);
+	void RevertUnDoList(RevertableCommand * rc);
 
 	bool DoUnDoAddNode(int objid, int objparentid);
 	bool DoReDoAddNode(int objid, int objparentid);

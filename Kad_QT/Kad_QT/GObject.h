@@ -79,8 +79,9 @@ public:
 
 	// Should be derived:
 	virtual bool canMove(){return false;};
-    virtual bool MoveTo(float newx, float newy, bool bTry){DASSERT(true); return false;};
-	virtual bool MoveByOffset(float xoffset, float yoffset, bool bTry){return MoveTo(getX()+xoffset, getY()+yoffset, bTry);};
+	virtual bool MoveTo(float newx, float newy, bool bTry){DASSERT(true); return false;};
+    virtual bool CallMoveTo(float newx, float newy, bool bTry){return MoveTo(newx, newy, bTry);};
+	virtual bool CallMoveByOffset(float xoffset, float yoffset, bool bTry){return CallMoveTo(getX()+xoffset, getY()+yoffset, bTry);};
 
 	virtual bool isLayer(){return false;};
 	virtual bool isLine(){return false;};
@@ -111,6 +112,7 @@ public:
 	virtual void OnInit();
 	virtual void OnEnter();
 	virtual void OnRelease();
+	virtual void OnRemove();
 
     // Use Call for Recursive
     virtual void OnPrecisionChanged(float fPrecision);
@@ -194,15 +196,6 @@ public:
 		}
 	};
 
-	bool ClingTo(GObject * pObj, float fProp=0);
-	bool AddClingBy(GObject * pObj);
-	void DeclingToOther();
-	void DeclingByOther(GObject * pObj=NULL);
-	bool isClingTo(GObject * pObj);
-	bool isClingBy(GObject * pObj);
-	GObject * getClingTo(){return pClingTo;};
-	list<GObject *> * getClingBy(){return &clingByList;};
-
 protected:
 	int nNonAttributeChildrenCount;
 
@@ -215,10 +208,6 @@ protected:
 	int nID;
 	GObject * pParent;
 	bool bModified;
-
-	GObject * pClingTo;
-	float fClingToProportion;
-	list<GObject *> clingByList;
 
 	int nTryState;
 	float fTryMove_bx;

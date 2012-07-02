@@ -14,6 +14,8 @@
 #include "MoveNodeCommand.h"
 #include "MoveNodeBatchCommand.h"
 #include "ClingCommand.h"
+#include "MergeCommand.h"
+#include "SeparateCommand.h"
 
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
@@ -27,6 +29,10 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 		return &ReparentCommand::getInstance();
 	case COMM_CLING:
 		return &ClingCommand::getInstance();
+	case COMM_MERGE:
+		return &MergeCommand::getInstance();
+	case COMM_SEPARATE:
+		return &SeparateCommand::getInstance();
 	case COMM_DELETEITEM:
 		return &DeleteItemCommand::getInstance();
 	case COMM_SETNODENAME:

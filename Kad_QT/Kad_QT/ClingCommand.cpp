@@ -64,19 +64,30 @@ void ClingCommand::OnDoneCommand()
 
 	GObject * pFromObj = pgm->FindObjectByID(fromindex);
 	GObject * pToObj = pgm->FindObjectByID(toindex);
-	if (!pFromObj || !pToObj)
+	if (!pFromObj)
+	{
+		return;
+	}
+	if (!pFromObj->isPoint() ||(pToObj && !pToObj->isLine()))
 	{
 		return;
 	}
 
-	GObject * pOClingto = pFromObj->getClingTo();
+	GPoint * pFromPoint = (GPoint *)pFromObj;
+//	GLine * pToLine = (GLine *)pToObj;
+
+	GObject * pOClingto = pFromPoint->getClingTo();
 	int oClingToIndex = -1;
 	if (pOClingto)
 	{
 		oClingToIndex = pOClingto->getID();
 	}
 
-	pFromObj->ClingTo(pToObj);
+	if (pFromPoint->isClingTo(pToObj))
+	{
+		return;
+	}
+	pFromPoint->ClingTo(pToObj);
 
 	PushRevertable(
 		CCMake_C(COMM_I_COMMAND, 3, 1),
@@ -102,14 +113,16 @@ void ClingCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 
 	GObject * pObj = pgm->FindObjectByID(fromindex);
 	ASSERT(pObj);
+	ASSERT(pObj->isPoint());
+	GPoint * pPoint = (GPoint *)pObj;
 	GObject * pOClingToObj = NULL;
 	if (oClingToIndex >= 0)
 	{
 		pgm->FindObjectByID(oClingToIndex);
 	}
-	pObj->DeclingToOther();
+	pPoint->DeclingToOther();
 	if (pOClingToObj)
 	{
-		pObj->ClingTo(pOClingToObj);
+		pPoint->ClingTo(pOClingToObj);
 	}
 }

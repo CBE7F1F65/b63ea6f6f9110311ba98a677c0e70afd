@@ -55,6 +55,7 @@ public:
 	CommittedCommand * CCMake_CI(int command, int ival);
 	CommittedCommand * CCMake_F(float fval);
 	CommittedCommand * CCMake_I(int ival);
+	CommittedCommand * CCMake_O(GObject * pObj);
 	CommittedCommand * CCMake_D(int ival){return CCMake_I(ival);};
 	CommittedCommand * CCMake_S(const char * sval);
 	CommittedCommand * CCMake_Sub(int subcommand);
@@ -79,5 +80,5 @@ public:
 	static CommandTemplate * GetTemplateByCommand(int comm);
 
 	int workinglayerID;
-	static void CallOnUnDo();
+	static void CallOnReDo();
 };

@@ -957,7 +957,7 @@ void GObjectPicker::TraslateLineToStraightLine( GLine * pLine, int index, int is
 {
 	if (pLine->isStraightLine())
 	{
-		pFakeLine[index]->SetBeginEnd(pLine->plbegin->getX(), pLine->plbegin->getY(), pLine->plend->getX(), pLine->plend->getY());
+		pFakeLine[index]->SetBeginEnd(pLine->GetBeginPoint()->getX(), pLine->GetBeginPoint()->getY(), pLine->GetEndPoint()->getX(), pLine->GetEndPoint()->getY());
 	}
 	else
 	{

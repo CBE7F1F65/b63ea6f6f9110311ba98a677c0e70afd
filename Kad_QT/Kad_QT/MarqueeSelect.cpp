@@ -109,9 +109,12 @@ void MarqueeSelect::AddSelect( GObject * pObj, int level )
 			return;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		if (pObj->isClingBy(*it))
+		if (pObj->isPoint() && (*it)->isPoint())
 		{
-			it = selectednodes.erase(it);
+			if (((GPoint *)pObj)->isMergeWith((GPoint *)*it))
+			{
+				it = selectednodes.erase(it);
+			}
 		}
 		//////////////////////////////////////////////////////////////////////////
 		else if (pObj->isAnchorPoint() && ((GAnchorPoint *)pObj)->GetHandle() == (*it))
@@ -127,7 +130,7 @@ void MarqueeSelect::AddSelect( GObject * pObj, int level )
 			++it;
 		}
 	}
-
+	/*
 	PushSelectCling(pObj);
 
 	if (pObj->getClingTo())
@@ -135,7 +138,7 @@ void MarqueeSelect::AddSelect( GObject * pObj, int level )
 		AddSelect(pObj->getClingTo());
 		return;
 	}
-
+	*/
 	selectednodes.push_back(pObj);
 }
 
@@ -435,7 +438,7 @@ void MarqueeSelect::MoveSelected( float movedx_c, float movedy_c )
 	}
 }
 
-bool MarqueeSelect::CheckObjInSelection( GObject * pObj, bool bFindAncestor/*=false*/, bool bFindUpperClass/*=false*/ )
+bool MarqueeSelect::CheckObjInSelection( GObject * pObj, bool bFindAncestor/*=false*/, bool bFindUpperClass/*=false*/, bool bFindMerge/*=false*/, bool bFindCling/*=false*/ )
 {
 	if (!pObj)
 	{
@@ -449,33 +452,98 @@ bool MarqueeSelect::CheckObjInSelection( GObject * pObj, bool bFindAncestor/*=fa
 	{
 		pObj = pObj->getPiece();
 	}
+	
+	GPoint * pItPoint = NULL;
+	GLine * pItLine = NULL;
+	GPiece * pItPiece = NULL;
+	GObject * pItObj = NULL;
+
 	for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end(); ++it)
 	{
-		if ((*it) == pObj)
+		pItObj = *it;
+		if (pItObj == pObj)
 		{
 			return true;
 		}
+
+		if (pItObj->isPoint()) { pItPoint = (GPoint *)pItObj; }
+		else if (pItObj->isLine()) { pItLine = (GLine *)pItObj; }
+		else if (pItObj->isPiece()) { pItPiece = (GPiece *)pItObj; }
+
 		if (bFindAncestor)
 		{
-			if ((*it)->isAncestorOf(pObj))
+			if (pItObj->isAncestorOf(pObj))
 			{
 				return true;
 			}
 		}
 		if (bFindUpperClass)
 		{
-			if ((*it)->isPoint())
+			if (pItPoint)
 			{
-				if ((*it)->getLine() == pObj)
+				if (pItPoint->getLine() == pObj)
 				{
 					return true;
 				}
 			}
-			if ((*it)->isLine())
+			if (pItLine)
 			{
-				if ((*it)->getPiece() == pObj)
+				if (pItLine->getPiece() == pObj)
 				{
 					return true;
+				}
+			}
+		}
+		if (bFindMerge)
+		{
+			if (pItPoint)
+			{
+				if (pObj->isPoint())
+				{
+					GPoint * pPoint = (GPoint *)pObj;
+					if (pPoint->isMergeWith(pItPoint))
+					{
+						return true;
+					}
+				}
+				if (bFindAncestor || bFindUpperClass)
+				{
+					if (!pItPoint->getMergeWith()->empty())
+					{
+						for (list<GPoint *>::iterator jt=pItPoint->getMergeWith()->begin(); jt!=pItPoint->getMergeWith()->end(); ++jt)
+						{
+							if (bFindAncestor)
+							{
+								if ((*jt)->isAncestorOf(pObj))
+								{
+									return true;
+								}
+							}
+							if (bFindUpperClass)
+							{
+								if ((*jt)->getLine() == pObj)
+								{
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		if (bFindCling)
+		{
+			if (pItPoint)
+			{
+				if (pObj->isLine())
+				{
+					GLine * pLine = (GLine *)pItLine;
+
+					if (pItPoint->isClingTo(pLine))
+					{
+						return true;
+					}
+
 				}
 			}
 		}
@@ -493,7 +561,7 @@ void MarqueeSelect::DoMovePoint( GPoint * pPoint, float movedx_c, float movedy_c
 	{
 		if (nomoveflag < MARQNOMOVE_POINT)
 		{
-			pPoint->MoveByOffset(movedx_c, movedy_c, true);
+			pPoint->CallMoveByOffset(movedx_c, movedy_c, true);
 		}
 	}
 }
@@ -508,7 +576,7 @@ void MarqueeSelect::DoMoveLine( GLine * pLine, float movedx_c, float movedy_c )
 	{
 		if (nomoveflag < MARQNOMOVE_LINE)
 		{
-			pLine->MoveByOffset(movedx_c, movedy_c, true);
+			pLine->CallMoveByOffset(movedx_c, movedy_c, true);
 		}
 	}
 }
@@ -518,7 +586,7 @@ void MarqueeSelect::DoMovePiece( GPiece * pPiece, float movedx_c, float movedy_c
 	//ToDo!!
 	if (nomoveflag < MARQNOMOVE_PIECE)
 	{
-		pPiece->MoveByOffset(movedx_c, movedy_c, true);
+		pPiece->CallMoveByOffset(movedx_c, movedy_c, true);
 	}
 }
 
@@ -546,7 +614,7 @@ bool MarqueeSelect::PickFilterCallback( GObject * pObj )
 		{
 			return false;
 		}
-		return !CheckObjInSelection(pObj, true, true);
+		return !CheckObjInSelection(pObj, true, true, true, true);
 	}
 	return true;
 }
@@ -568,6 +636,7 @@ void MarqueeSelect::OnDeleteNode( GObject * pObj )
 
 void MarqueeSelect::PushSelectCling( GObject * pObj )
 {
+	/*
 	if (!pObj)
 	{
 		return;
@@ -587,4 +656,5 @@ void MarqueeSelect::PushSelectCling( GObject * pObj )
 	{
 		selectednodes.push_back(*it);
 	}
+	*/
 }

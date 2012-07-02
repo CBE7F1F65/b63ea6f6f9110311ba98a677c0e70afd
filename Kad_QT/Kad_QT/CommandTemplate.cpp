@@ -169,6 +169,15 @@ CommittedCommand * CommandTemplate::CCMake_I( int ival )
 	return cc;
 }
 
+CommittedCommand * CommandTemplate::CCMake_O( GObject * pObj )
+{
+	CommittedCommand * cc = new CommittedCommand();
+	cc->type = COMMITTEDCOMMANDTYPE_OBJ;
+	cc->ival = (int)pObj;
+	madecctodelete.push_back(cc);
+	return cc;
+}
+
 CommittedCommand * CommandTemplate::CCMake_S( const char * sval )
 {
 	CommittedCommand * cc = new CommittedCommand();
@@ -359,7 +368,7 @@ void CommandTemplate::OnProcessUnDoCommand( RevertableCommand * rc )
 
 }
 
-void CommandTemplate::CallOnUnDo()
+void CommandTemplate::CallOnReDo()
 {
 	// lastworkinglayer can be dangerous
 	GObjectManager::getInstance().UpdateActiveLayer(NULL, true);

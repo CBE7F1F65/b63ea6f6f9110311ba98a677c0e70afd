@@ -11,42 +11,19 @@ public:
 	GPoint();
 	virtual ~GPoint();
 
-	virtual float getX(){return x;};
-	virtual float getY(){return y;};
+	virtual inline float getX(){return x;};
+	virtual inline float getY(){return y;};
 public:
 	void SetPosition(float x, float y);
 public:
 	virtual bool canMove(){return true;};
 
 	virtual bool MoveTo( float newx, float newy, bool bTry );
+	virtual bool CallMoveTo( float newx, float newy, bool bTry );
 	virtual bool isPoint(){return true;};
 
-	virtual GObject * getLine()
-	{
-		GObject * pObj = pParent;
-		while (pObj)
-		{
-			if (pObj->isLine())
-			{
-				return pObj;
-			}
-			pObj = pObj->getParent();
-		}
-		return NULL;
-	};
-	virtual GObject * getPiece()
-	{
-		GObject * pObj = pParent;
-		while (pObj)
-		{
-			if (pObj->isPiece())
-			{
-				return pObj;
-			}
-			pObj = pObj->getParent();
-		}
-		return NULL;
-	};
+	virtual GObject * getLine();
+	virtual GObject * getPiece();
 
 	virtual const char * getDisplayName();
 
@@ -54,8 +31,32 @@ public:
 
 	PointF2D GetPointF2D(){return PointF2D(x, y);};
 
+protected:
 	float x;
 	float y;
+
+public:
+
+	virtual void OnRemove();
+
+	// Only Point To Line!
+	void ClearClingTo();
+	bool ClingTo(GObject * pObj, float fProp=0);
+	void DeclingToOther();
+	bool isClingTo(GObject * pObj);
+	GObject * getClingTo(){return pClingTo;};
+
+	// Only Point To Point!
+	bool MergeWith(GPoint * pPoint, bool bNoBackward=false);
+	bool isMergeWith(GPoint * pPoint);
+	bool SeperateFrom(GPoint * pPoint=NULL, bool bNoBackward=false);
+	list<GPoint *> * getMergeWith(){return &mergeWithList;};
+
+protected:
+	GObject * pClingTo;
+	float fClingToProportion;
+
+	list<GPoint *> mergeWithList;
 };
 /************************************************************************/
 /* GSubstantivePoint                                                    */

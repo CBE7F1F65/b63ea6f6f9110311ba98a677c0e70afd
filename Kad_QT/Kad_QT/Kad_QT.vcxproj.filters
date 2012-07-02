@@ -96,6 +96,9 @@
     <Filter Include="Main\Core\InitDllLoader">
       <UniqueIdentifier>{488e50d4-2012-47a7-ae12-cd80b94fa0c4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\Command\Combination">
+      <UniqueIdentifier>{3633b82a-ec5c-4653-9ba8-3f243a61590d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_kad_qt.cpp">
@@ -359,8 +362,14 @@
     <ClCompile Include="GeneratedFiles\Release\moc_QTUI_StatusBar.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="MergeCommand.cpp">
+      <Filter>Main\Command\Combination</Filter>
+    </ClCompile>
+    <ClCompile Include="SeparateCommand.cpp">
+      <Filter>Main\Command\Combination</Filter>
+    </ClCompile>
     <ClCompile Include="ClingCommand.cpp">
-      <Filter>Main\Command\Node</Filter>
+      <Filter>Main\Command\Combination</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -520,8 +529,14 @@
     <ClInclude Include="GeneratedFiles\ui_QTUI_StatusBar.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="MergeCommand.h">
+      <Filter>Main\Command\Combination</Filter>
+    </ClInclude>
+    <ClInclude Include="SeparateCommand.h">
+      <Filter>Main\Command\Combination</Filter>
+    </ClInclude>
     <ClInclude Include="ClingCommand.h">
-      <Filter>Main\Command\Node</Filter>
+      <Filter>Main\Command\Combination</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

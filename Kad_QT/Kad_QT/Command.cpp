@@ -977,6 +977,7 @@ void Command::DoPushRevertable()
 	}
 	if (rc)
 	{
+		/*
 		list<RevertableCommand> rclist;
 		RevertableCommand rv;
 		rclist.push_front(rv);
@@ -1006,11 +1007,11 @@ void Command::DoPushRevertable()
 			}
 		}
 		undolist.push_back(rvundo);
-//		undolist.push_back(*rc);
+		*/
+		undolist.push_back(*rc);
 		while ((int)undolist.size() > undostepmax)
 		{
 			undolist.pop_front();
-			// ToDo!!! can be dangerous when a list contains multiple undos
 			SnapshotManager::getInstance().OnDeleteUnDo(undostepmax);
 			MainInterface::getInstance().OnClearPreviousHistory();
 		}
@@ -1182,4 +1183,27 @@ int Command::CreateReDoCommandCommit( int step/*=1*/ )
 int Command::GetCurrentCommand()
 {
 	return ccomm.command;
+}
+
+bool CommittedCommand::TranslateObjToID()
+{
+	if (type != COMMITTEDCOMMANDTYPE_OBJ)
+	{
+		return false;
+	}
+	type = COMMITTEDCOMMANDTYPE_INT;
+	GObject * pObj = (GObject *)ival;
+	if (pObj)
+	{
+		ival = pObj->getID();
+	}
+	else
+	{
+		ival = -1;
+	}
+	fval = ival;
+	stringstream ss;
+	ss << ival;
+	sval = ss.str();
+	return true;
 }

@@ -21,9 +21,9 @@ public:
 	virtual void OnInitCommand();
 	virtual void OnTerminalCommand();
 private:
-	GObject * pClingToBegin;
-	GObject * pClingToEnd;
-	GObject * pNextClingToBegin;
+	GObject * pMergeToBegin;
+	GObject * pMergeToEnd;
+	GObject * pNextMergeToBegin;
 
 	GLine * pNCLine;
 };

@@ -42,6 +42,8 @@ enum{
 	COMM_DELETEITEM,
 	COMM_REPARENT,
 	COMM_CLING,
+	COMM_MERGE,
+	COMM_SEPARATE,
 	COMM_SETNODENAME,
 	COMM_DUPLICATE,
 	COMM_MOVENODE,
@@ -166,6 +168,36 @@ enum{
 	CSI_CLING_WANTTOINDEX,
 };
 
+
+/************************************************************************/
+/* MERGE                                                                */
+/************************************************************************/
+
+enum{
+	CSP_MERGE_I_FROMINDEX=0,
+	CSP_MERGE_I_TOINDEX,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_MERGE_DUMMY=0,
+	CSI_MERGE_WANTFROMINDEX,
+	CSI_MERGE_WANTTOINDEX,
+};
+
+/************************************************************************/
+/* SEPARATE                                                             */
+/************************************************************************/
+
+enum{
+	CSP_SEPARATE_I_FROMINDEX=0,
+	CSP_SEPARATE_I_TOINDEX,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_SEPARATE_DUMMY=0,
+	CSI_SEPARATE_WANTFROMINDEX,
+	CSI_SEPARATE_WANTTOINDEX,
+};
 /************************************************************************/
 /* DELETEITEM                                                           */
 /************************************************************************/
@@ -357,6 +389,8 @@ enum{
 	SSC_REDO,
 	SSC_FINISH,
 	SSC_TERMINAL,
+	SSC_POINT,
+	SSC_LINE,
 
 	_SSC_ENDINDEX,
 };

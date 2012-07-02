@@ -111,7 +111,7 @@ void MoveNodeCommand::OnDoneCommand()
 	}
 
 
-	if (pObj->MoveTo(tox, toy, false))
+	if (pObj->CallMoveTo(tox, toy, false))
 	{
 		pgm->OnTreeChanged(pObj->getParent(), pObj);
 //		MainInterface::getInstance().CallChangeNode(pObj);
@@ -143,7 +143,7 @@ void MoveNodeCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 	float oldy = it->fval;
 	GObject * pObj = pgm->FindObjectByID(index);
 	ASSERT(pObj);
-	pObj->MoveTo(oldx, oldy, false);
+	pObj->CallMoveTo(oldx, oldy, false);
 	pgm->OnTreeChanged(pObj->getParent(), pObj);
 //	MainInterface::getInstance().CallChangeNode(pObj);
 }

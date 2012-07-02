@@ -199,6 +199,7 @@
     <ClCompile Include="MainInterface.cpp" />
     <ClCompile Include="MarqueeSelect.cpp" />
     <ClCompile Include="MathHelper.cpp" />
+    <ClCompile Include="MergeCommand.cpp" />
     <ClCompile Include="MessageBoxManager.cpp" />
     <ClCompile Include="MouseCursorManager.cpp" />
     <ClCompile Include="MoveNodeBatchCommand.cpp" />
@@ -224,6 +225,7 @@
     <ClCompile Include="RenderHelper.cpp" />
     <ClCompile Include="RenderTargetManager.cpp" />
     <ClCompile Include="ReparentCommand.cpp" />
+    <ClCompile Include="SeparateCommand.cpp" />
     <ClCompile Include="SetNodeNameCommand.cpp" />
     <ClCompile Include="SetWorkingLayerCommand.cpp" />
     <ClCompile Include="SnapshotManager.cpp" />
@@ -367,6 +369,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp" "-fStdAfx.h" "-f../../qtui_layer_tree.h"  -DUNICODE -D__RELEASE -D__OPENGL -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_OPENGL_LIB "-I." "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtOpenGL" "-I." "-I." "-I." "-I."</Command>
     </CustomBuild>
+    <ClInclude Include="MergeCommand.h" />
     <ClInclude Include="qkeystatemanager.h" />
     <ClInclude Include="qmaininterface.h" />
     <CustomBuild Include="QTDLG_LayerProperty.h">
@@ -389,6 +392,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp" "-fStdAfx.h" "-f../../QTUI_StatusBar.h"  -DUNICODE -D__RELEASE -D__OPENGL -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_OPENGL_LIB "-I." "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtOpenGL" "-I." "-I." "-I." "-I."</Command>
     </CustomBuild>
+    <ClInclude Include="SeparateCommand.h" />
     <ClInclude Include="StringManager.h" />
     <ClInclude Include="targetver.h" />
     <CustomBuild Include="qtui_glview.h">

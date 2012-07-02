@@ -119,7 +119,8 @@ int Command::ProcessCommittedCommand()
 	{
 		if (GetCurrentCommand())
 		{
-			pendingparam = (*it);
+			pendingparam = *it;
+			pendingparam.TranslateObjToID();
 		}
 		else
 		{
