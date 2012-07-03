@@ -38,6 +38,11 @@ enum{
 	_COMM_INSTANTCOMMANDEND,
 	// Common Command
 
+	// Test
+#ifdef DEBUGTEST
+	COMM_TEST,
+#endif // DEBUGTEST
+
 	// Node
 	COMM_DELETEITEM,
 	COMM_REPARENT,

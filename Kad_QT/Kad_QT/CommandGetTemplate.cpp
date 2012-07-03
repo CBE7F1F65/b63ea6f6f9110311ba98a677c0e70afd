@@ -16,6 +16,7 @@
 #include "ClingCommand.h"
 #include "MergeCommand.h"
 #include "SeparateCommand.h"
+#include "TestCommand.h"
 
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
@@ -58,7 +59,10 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 
 	case COMM_OUTPUT:
 		return &OutputCommand::getInstance();
-
+#ifdef DEBUGTEST
+	case COMM_TEST:
+		return &TestCommand::getInstance();
+#endif //DEBUGTEST
 	default:
 		ASSERT(true);
 	}

@@ -99,6 +99,12 @@
     <Filter Include="Main\Command\Combination">
       <UniqueIdentifier>{3633b82a-ec5c-4653-9ba8-3f243a61590d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\Command\Template\Map">
+      <UniqueIdentifier>{efc3580f-31c4-401d-8113-c5f901ff8eb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Test">
+      <UniqueIdentifier>{361135fb-7d1f-42a9-b4de-0c326edf50e1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_kad_qt.cpp">
@@ -371,6 +377,15 @@
     <ClCompile Include="ClingCommand.cpp">
       <Filter>Main\Command\Combination</Filter>
     </ClCompile>
+    <ClCompile Include="CommandMap.cpp">
+      <Filter>Main\Command\Template\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandSubState.cpp">
+      <Filter>Main\Command\Template\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCommand.cpp">
+      <Filter>Main\Command\Test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -537,6 +552,15 @@
     </ClInclude>
     <ClInclude Include="ClingCommand.h">
       <Filter>Main\Command\Combination</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandMap.h">
+      <Filter>Main\Command\Template\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandSubState.h">
+      <Filter>Main\Command\Template\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="TestCommand.h">
+      <Filter>Main\Command\Test</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -916,10 +916,35 @@ void Command::EnableSubCommand( bool bdisplay, int first, ... )
 		return;
 	}
 
+	list<int> sublist;
+
 	va_list ap;
 	va_start(ap, first);
 	int vai = first;
 
+	while (vai)
+	{
+		sublist.push_back(vai);
+		vai = (int)va_arg(ap, int);
+	}
+	va_end(ap);
+
+	EnableSubCommand(bdisplay, &sublist);
+}
+
+void Command::EnableSubCommand( bool bdisplay, list<int> * sublist )
+{
+	if (!GetCurrentCommand())
+	{
+		return;
+	}
+
+	ASSERT(sublist);
+	if (sublist->empty())
+	{
+		return;
+	}
+	
 	if (pendingparam.type)
 	{
 		bdisplay = false;
@@ -931,24 +956,21 @@ void Command::EnableSubCommand( bool bdisplay, int first, ... )
 			LogDisplaySubCommandBegin();
 		}
 	}
-	while (vai)
+	for (list<int>::iterator it=sublist->begin(); it!=sublist->end(); ++it)
 	{
-		ccomm.EnableSubCommand(vai);
+		ccomm.EnableSubCommand(*it);
 		if (bdisplay)
 		{
-			LogDisplaySubCommand(vai);
+			LogDisplaySubCommand(*it);
 		}
-		vai = (int)va_arg(ap, int);
 	}
-	va_end(ap);
 
 	if (bdisplay)
 	{
 		LogDisplaySubCommandEnd();
 	}
-//	enabledsubcommand.push_back(subcommand);
-}
 
+}
 void Command::ClearEnabledSubCommand()
 {
 	if (GetCurrentCommand())

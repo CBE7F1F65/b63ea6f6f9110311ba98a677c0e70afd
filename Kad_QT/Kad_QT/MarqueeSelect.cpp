@@ -109,12 +109,10 @@ void MarqueeSelect::AddSelect( GObject * pObj, int level )
 			return;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		if (pObj->isPoint() && (*it)->isPoint())
+		if (pObj->isPoint() && (*it)->isPoint()
+			&& ((GPoint *)pObj)->isMergeWith((GPoint *)*it))
 		{
-			if (((GPoint *)pObj)->isMergeWith((GPoint *)*it))
-			{
-				it = selectednodes.erase(it);
-			}
+			it = selectednodes.erase(it);
 		}
 		//////////////////////////////////////////////////////////////////////////
 		else if (pObj->isAnchorPoint() && ((GAnchorPoint *)pObj)->GetHandle() == (*it))
@@ -211,7 +209,7 @@ void MarqueeSelect::Update()
 				if (mlkeydown)
 				{
 					GObject * pObj = pgp->GetPickedObj();
-					if (!pObj || !CheckObjInSelection(pObj, true))
+					if (!pObj || !CheckObjInSelection(pObj, true, false, true))
 					{
 						DeSelectAll();
 					}

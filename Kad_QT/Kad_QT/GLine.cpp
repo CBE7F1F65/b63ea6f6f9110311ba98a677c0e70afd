@@ -48,6 +48,7 @@ bool GLine::MoveTo( float newx, float newy, bool bTry )
 	{
 		return false;
 	}
+
 	float xoffset = newx - getX();
 	float yoffset = newy - getY();
 

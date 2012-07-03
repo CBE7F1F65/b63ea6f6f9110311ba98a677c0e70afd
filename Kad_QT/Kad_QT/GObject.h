@@ -79,6 +79,7 @@ public:
 
 	// Should be derived:
 	virtual bool canMove(){return false;};
+public:
 	virtual bool MoveTo(float newx, float newy, bool bTry){DASSERT(true); return false;};
     virtual bool CallMoveTo(float newx, float newy, bool bTry){return MoveTo(newx, newy, bTry);};
 	virtual bool CallMoveByOffset(float xoffset, float yoffset, bool bTry){return CallMoveTo(getX()+xoffset, getY()+yoffset, bTry);};

@@ -97,6 +97,10 @@ void StringManager::FillSCInfo()
 
 	// Do not use _SSET, _LSET directly
 	// Keep format for Excel Editing
+#ifdef DEBUGTEST
+	_BSET(	COMM_TEST,	"TEST",	"T",	"Test",	""	);
+#endif // DEBUGTEST
+
 	_BSET(	COMM_PAN,	"PAN",	"",	"Pan",	""	);
 	_BSET(	COMM_ZOOMIN,	"ZOOMIN",	"",	"Zone Zoom",	""	);
 	_BSET(	COMM_DOZOOM,	"ZOOM",	"",	"Instant Zoom",	""	);

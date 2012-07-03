@@ -51,13 +51,14 @@ bool GPoint::MoveTo( float newx, float newy, bool bTry )
 	{
 		return false;
 	}
-
+	
 	ToggleTryMoveState(bTry);
 
 	x = newx;
 	y = newy;
 
 	CallModify();
+
 	return true;
 }
 

@@ -86,6 +86,8 @@
     <ClCompile Include="ColorManager.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="CommandGetTemplate.cpp" />
+    <ClCompile Include="CommandMap.cpp" />
+    <ClCompile Include="CommandSubState.cpp" />
     <ClCompile Include="CommandTemplate.cpp" />
     <ClCompile Include="DeleteItemCommand.cpp" />
     <ClCompile Include="DuplicateCommand.cpp" />
@@ -234,6 +236,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="StringManager.cpp" />
+    <ClCompile Include="TestCommand.cpp" />
     <ClCompile Include="UnDoReDoCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -242,6 +245,8 @@
     <ClInclude Include="ColorManager.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="CommandDefines.h" />
+    <ClInclude Include="CommandMap.h" />
+    <ClInclude Include="CommandSubState.h" />
     <ClInclude Include="CommandTemplate.h" />
     <ClInclude Include="Const.h" />
     <ClInclude Include="DeleteItemCommand.h" />
@@ -269,6 +274,7 @@
     <ClInclude Include="LineCommand.h" />
     <ClInclude Include="MainInterface.h" />
     <ClInclude Include="MainDependency.h" />
+    <ClInclude Include="TestCommand.h" />
     <CustomBuild Include="qtui_commanddockable.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing qtui_commanddockable.h...</Message>

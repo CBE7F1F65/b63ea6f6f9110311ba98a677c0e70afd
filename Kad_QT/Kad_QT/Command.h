@@ -242,6 +242,7 @@ public:
 	int FindSubCommandByStr(const char * str);
 
 	void EnableSubCommand(bool bdisplay, int first, ...);
+	void EnableSubCommand(bool bdisplay, list<int> * sublist);
 	void ClearEnabledSubCommand();
 
 	void LogCreate();

@@ -8,7 +8,6 @@
 //#include "MainInterface.h"
 //#include "Command.h"
 
-
 GObject * GObject::pTreeBase=NULL;
 
 
@@ -26,7 +25,7 @@ GObject::GObject(void)
 	fTryMove_by = 0;
 	
     bCloning = false;
-
+	
 	_SetID();
 	OnInit();
 }
@@ -860,3 +859,4 @@ void GObject::ToggleTryMoveState( bool bTry )
 		nTryState = GOBJTRYSTATE_MOVE_REQUIREUPDATE;
 	}
 }
+

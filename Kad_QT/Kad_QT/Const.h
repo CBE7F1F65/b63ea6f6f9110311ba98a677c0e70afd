@@ -1,9 +1,13 @@
 #pragma once
 
 #ifdef __RELEASE
-#define DEFAULT_HGEDLLPATH	"../../hge/lib/vc/hge.dll"
+ #define DEFAULT_HGEDLLPATH	"../../hge/lib/vc/hge.dll"
 #else
-#define DEFAULT_HGEDLLPATH	"../../hge/lib/vc/hge_d.dll"
+ #define DEFAULT_HGEDLLPATH	"../../hge/lib/vc/hge_d.dll"
+#endif
+
+#ifndef __RELEASE
+ #define DEBUGTEST
 #endif
 
 #define M_STRMAX	256
