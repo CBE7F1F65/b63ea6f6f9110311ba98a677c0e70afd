@@ -26,6 +26,9 @@ GObject::GObject(void)
 	
     bCloning = false;
 	
+	nMoveActionID = -1;
+	nUpdateMoveActionID = -1;
+
 	_SetID();
 	OnInit();
 }
@@ -309,7 +312,7 @@ void GObject::OnUpdate()
 			float tx = getX();
 			float ty = getY();
 			// Directly Move!!
-			MoveTo(fTryMove_bx, fTryMove_by, false);
+			MoveTo(fTryMove_bx, fTryMove_by, false, nUpdateMoveActionID);
 			GObjectManager::getInstance().PushMoveNodeByOffsetForBatchCommand(this, tx-fTryMove_bx, ty-fTryMove_by);
 			/*
 			MainInterface::getInstance().OnCommandWithParam(
@@ -572,6 +575,7 @@ void GObject::CallUpdate()
 {
 	if (canUpdate())
 	{
+		nUpdateMoveActionID = GObjectManager::getInstance().GetNextMoveActionID();
 		OnUpdate();
 		if (!listChildren.empty())
 		{

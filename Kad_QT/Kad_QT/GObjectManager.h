@@ -131,6 +131,8 @@ public:
 public:
 	void SetHandleVisible( bool bSet );
 	bool isHandleVisible(){return bHandleVisible;};
+
+	int GetNextMoveActionID();
 private:
 	bool bHandleVisible;
 
@@ -139,4 +141,6 @@ private:
 	HTARGET tarObjs;
     bool bRenderUILayerIndicators;
     bool bRedraw;
+
+	int nMoveActionID;
 };

@@ -53,6 +53,7 @@ void GObjectManager::Release()
     bRedraw = false;
     bRenderUILayerIndicators = false;
 	bHandleVisible = true;
+	nMoveActionID = 0;
 //	bLockTreeChange = false;
 }
 
@@ -574,4 +575,9 @@ void GObjectManager::SetHandleVisible( bool bSet )
 		bHandleVisible = bSet;
 		SetRedraw();
 	}
+}
+
+int GObjectManager::GetNextMoveActionID()
+{
+	return nMoveActionID++;
 }

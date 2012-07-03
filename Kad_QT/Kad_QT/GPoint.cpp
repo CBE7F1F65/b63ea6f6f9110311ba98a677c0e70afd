@@ -45,13 +45,21 @@ bool GPoint::Clone( GObject * pNewParent )
 	_GOBJ_CLONE_POST();
 }
 
-bool GPoint::MoveTo( float newx, float newy, bool bTry )
+bool GPoint::MoveTo( float newx, float newy, bool bTry, int moveActionID/*=-1 */ )
 {
 	if (!canMove())
 	{
 		return false;
 	}
 	
+	if (moveActionID >= 0)
+	{
+		if (nMoveActionID == moveActionID)
+		{
+			return true;
+		}
+	}
+
 	ToggleTryMoveState(bTry);
 
 	x = newx;
@@ -59,19 +67,20 @@ bool GPoint::MoveTo( float newx, float newy, bool bTry )
 
 	CallModify();
 
+	nMoveActionID = moveActionID;
 	return true;
 }
 
-bool GPoint::CallMoveTo( float newx, float newy, bool bTry )
+bool GPoint::CallMoveTo( float newx, float newy, bool bTry, int moveActionID/*=-1*/ )
 {
 	if (!mergeWithList.empty())
 	{
 		for (list<GPoint *>::iterator it=mergeWithList.begin(); it!=mergeWithList.end(); ++it)
 		{
-			(*it)->MoveTo(newx, newy, bTry);
+			(*it)->MoveTo(newx, newy, bTry, moveActionID);
 		}
 	}
-	return MoveTo(newx, newy, bTry);
+	return MoveTo(newx, newy, bTry, moveActionID);
 }
 
 void GPoint::OnRemove()
@@ -331,18 +340,18 @@ bool GAnchorPoint::isHandleIdentical()
 	return false;
 }
 
-bool GAnchorPoint::MoveTo( float newx, float newy, bool bTry )
+bool GAnchorPoint::MoveTo( float newx, float newy, bool bTry, int moveActionID/*=-1 */ )
 {
 	float xoffset = newx-x;
 	float yoffset = newy-y;
 
-	bool bret = GAttributePoint::MoveTo(newx, newy, bTry);
+	bool bret = GAttributePoint::MoveTo(newx, newy, bTry, moveActionID);
 
 	if (bret)
 	{
 		if (phandle)
 		{
-			return phandle->CallMoveByOffset(xoffset, yoffset, bTry);
+			return phandle->CallMoveByOffset(xoffset, yoffset, bTry, moveActionID);
 		}
 		else
 		{

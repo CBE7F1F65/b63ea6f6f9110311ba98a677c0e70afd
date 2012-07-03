@@ -110,7 +110,6 @@ void MoveNodeCommand::OnDoneCommand()
 		return;
 	}
 
-
 	if (pObj->CallMoveTo(tox, toy, false))
 	{
 		pgm->OnTreeChanged(pObj->getParent(), pObj);

@@ -322,6 +322,7 @@ void MarqueeSelect::Update()
 			beginy_c = ty;
 			endx_c = rx;
 			endy_c = by;
+
 			if (pmain->hge->Input_GetDIKey(DIK_LSHIFT) || pmain->hge->Input_GetDIKey(DIK_RSHIFT))
 			{
 				CheckMarqueeSelect_Pt(pObj);
@@ -418,20 +419,20 @@ void MarqueeSelect::MoveSelected( float movedx_c, float movedy_c )
 		}
 	}
 
-
+	int nMoveActionID = GObjectManager::getInstance().GetNextMoveActionID();
 	for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end(); ++it)
 	{
 		if ((*it)->isRepresentablePoint())
 		{
-			DoMovePoint((GPoint *)(*it), movedx_c, movedy_c);
+			DoMovePoint((GPoint *)(*it), movedx_c, movedy_c, nMoveActionID);
 		}
 		else if ((*it)->isRepresentableLine())
 		{
-			DoMoveLine((GLine *)(*it), movedx_c, movedy_c);
+			DoMoveLine((GLine *)(*it), movedx_c, movedy_c, nMoveActionID);
 		}
 		else if ((*it)->isRepresentablePiece())
 		{
-			DoMovePiece((GPiece *)(*it), movedx_c, movedy_c);
+			DoMovePiece((GPiece *)(*it), movedx_c, movedy_c, nMoveActionID);
 		}
 	}
 }
@@ -549,42 +550,42 @@ bool MarqueeSelect::CheckObjInSelection( GObject * pObj, bool bFindAncestor/*=fa
 	return false;
 }
 
-void MarqueeSelect::DoMovePoint( GPoint * pPoint, float movedx_c, float movedy_c )
+void MarqueeSelect::DoMovePoint( GPoint * pPoint, float movedx_c, float movedy_c, int nMoveActionID )
 {
 	if (pPoint->isSlaveToLine())
 	{
-		DoMoveLine((GLine *)pPoint->getLine(), movedx_c, movedy_c);
+		DoMoveLine((GLine *)pPoint->getLine(), movedx_c, movedy_c, nMoveActionID);
 	}
 	else
 	{
 		if (nomoveflag < MARQNOMOVE_POINT)
 		{
-			pPoint->CallMoveByOffset(movedx_c, movedy_c, true);
+			pPoint->CallMoveByOffset(movedx_c, movedy_c, true, nMoveActionID);
 		}
 	}
 }
 
-void MarqueeSelect::DoMoveLine( GLine * pLine, float movedx_c, float movedy_c )
+void MarqueeSelect::DoMoveLine( GLine * pLine, float movedx_c, float movedy_c, int nMoveActionID )
 {
 	if (pLine->isSlaveToPiece())
 	{
-		DoMovePiece((GPiece *)pLine->getPiece(), movedx_c, movedy_c);
+		DoMovePiece((GPiece *)pLine->getPiece(), movedx_c, movedy_c, nMoveActionID);
 	}
 	else
 	{
 		if (nomoveflag < MARQNOMOVE_LINE)
 		{
-			pLine->CallMoveByOffset(movedx_c, movedy_c, true);
+			pLine->CallMoveByOffset(movedx_c, movedy_c, true, nMoveActionID);
 		}
 	}
 }
 
-void MarqueeSelect::DoMovePiece( GPiece * pPiece, float movedx_c, float movedy_c )
+void MarqueeSelect::DoMovePiece( GPiece * pPiece, float movedx_c, float movedy_c, int nMoveActionID )
 {
 	//ToDo!!
 	if (nomoveflag < MARQNOMOVE_PIECE)
 	{
-		pPiece->CallMoveByOffset(movedx_c, movedy_c, true);
+		pPiece->CallMoveByOffset(movedx_c, movedy_c, true, nMoveActionID);
 	}
 }
 

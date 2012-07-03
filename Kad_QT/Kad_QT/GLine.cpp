@@ -42,7 +42,7 @@ const char * GLine::getDisplayName()
 	return StringManager::getInstance().GetNNLineName();
 }
 
-bool GLine::MoveTo( float newx, float newy, bool bTry )
+bool GLine::MoveTo( float newx, float newy, bool bTry, int moveActionID/*=-1*/ )
 {
 	if (!canMove())
 	{
@@ -55,17 +55,17 @@ bool GLine::MoveTo( float newx, float newy, bool bTry )
 	ToggleTryMoveState(bTry);
 
 	bool bret;
-	bret = plbegin->CallMoveByOffset(xoffset, yoffset, false);
+	bret = plbegin->CallMoveByOffset(xoffset, yoffset, false, moveActionID);
 	if (!bret)
 	{
 		return false;
 	}
-	bret = plend->CallMoveByOffset(xoffset, yoffset, false);
+	bret = plend->CallMoveByOffset(xoffset, yoffset, false, moveActionID);
 //	UpdateMidPoint();
 	return bret;
 }
 
-bool GLine::CallMoveTo( float newx, float newy, bool bTry )
+bool GLine::CallMoveTo( float newx, float newy, bool bTry, int moveActionID/*=-1*/ )
 {
 	if (!clingByList.empty())
 	{
@@ -73,10 +73,10 @@ bool GLine::CallMoveTo( float newx, float newy, bool bTry )
 		float yoffset = newy - getY();
 		for (list<GPoint *>::iterator it=clingByList.begin(); it!=clingByList.end(); ++it)
 		{
-			(*it)->CallMoveByOffset(xoffset, yoffset, bTry);
+			(*it)->CallMoveByOffset(xoffset, yoffset, bTry, moveActionID);
 		}
 	}
-	return MoveTo(newx, newy, bTry);
+	return MoveTo(newx, newy, bTry, moveActionID);
 }
 
 void GLine::OnModify()

@@ -20,8 +20,8 @@ public:
 
 	virtual GObject * getPiece();
 
-	virtual bool MoveTo(float newx, float newy, bool bTry);
-	virtual bool CallMoveTo(float newx, float newy, bool bTry);
+	virtual bool MoveTo(float newx, float newy, bool bTry, int moveActionID=-1);
+	virtual bool CallMoveTo(float newx, float newy, bool bTry, int moveActionID=-1);
 
 	virtual bool isStraightLine() = 0;
 

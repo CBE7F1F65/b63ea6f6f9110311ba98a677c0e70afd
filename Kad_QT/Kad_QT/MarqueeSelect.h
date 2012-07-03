@@ -35,9 +35,9 @@ public:
 
 	int nomoveflag;
 
-	void DoMovePoint(GPoint * pPoint, float movedx_c, float movedy_c);
-	void DoMoveLine(GLine * pLine, float movedx_c, float movedy_c);
-	void DoMovePiece(GPiece * pPiece, float movedx_c, float movedy_c);
+	void DoMovePoint(GPoint * pPoint, float movedx_c, float movedy_c, int nMoveActionID);
+	void DoMoveLine(GLine * pLine, float movedx_c, float movedy_c, int nMoveActionID);
+	void DoMovePiece(GPiece * pPiece, float movedx_c, float movedy_c, int nMoveActionID);
 
 	bool CheckObjInSelection(GObject * pObj, bool bFindAncestor=false, bool bFindUpperClass=false, bool bFindMerge=false, bool bFindCling=false);
 

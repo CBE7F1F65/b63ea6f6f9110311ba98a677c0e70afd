@@ -18,8 +18,8 @@ public:
 public:
 	virtual bool canMove(){return true;};
 
-	virtual bool MoveTo( float newx, float newy, bool bTry );
-	virtual bool CallMoveTo( float newx, float newy, bool bTry );
+	virtual bool MoveTo( float newx, float newy, bool bTry, int moveActionID=-1 );
+	virtual bool CallMoveTo( float newx, float newy, bool bTry, int moveActionID=-1 );
 	virtual bool isPoint(){return true;};
 
 	virtual GObject * getLine();
@@ -147,7 +147,7 @@ public:
 	GAnchorPoint(GObject * parent, float x, float y);
 	virtual ~GAnchorPoint();
 
-	virtual bool MoveTo( float newx, float newy, bool bTry );
+	virtual bool MoveTo( float newx, float newy, bool bTry, int moveActionID=-1 );
 	virtual const char * getDisplayName();
 	virtual bool Clone( GObject * pNewParent );
 	virtual bool isAnchorPoint(){return true;};
