@@ -159,6 +159,7 @@ void StringManager::FillWPInfo()
 	_PSET(	CWP_STEP,	"STEP"	);
 	_PSET(	CWP_INDEX,	"INDEX"	);
 	_PSET(	CWP_NAME,	"NAME"	);
+	_PSET(	CWP_PROPORTION,	"PROPORTION"	);
 
 #undef _PSET
 }

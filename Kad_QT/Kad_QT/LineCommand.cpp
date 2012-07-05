@@ -12,6 +12,8 @@
 #include "GLine.h"
 #include "GObjectManager.h"
 
+#include "PickFilterTemplate.h"
+
 LineCommand::LineCommand()
 {
 	pNextMergeToBegin = NULL;
@@ -108,11 +110,19 @@ void LineCommand::OnProcessCommand()
 					case CSI_LINE_WANTY1:
 						tosetpindex = CSP_LINE_XY_B;
 						pMergeToBegin = pgp->GetPickedObj();
+						if (pMergeToBegin)
+						{
+							fProportionBegin = pgp->CalculateProportion();
+						}
 						break;
 					case CSI_LINE_WANTX2:
 					case CSI_LINE_WANTY2:
 						tosetpindex = CSP_LINE_XY_N;
 						pMergeToEnd = pgp->GetPickedObj();
+						if (pMergeToEnd)
+						{
+							fProportionEnd = pgp->CalculateProportion();
+						}
 						break;
 					}
 					pcommand->SetParamX(tosetpindex, pgp->GetPickX_C(), CWP_X);
@@ -149,27 +159,26 @@ void LineCommand::OnProcessCommand()
 
 			if (pNCLine)
 			{
-				if (pMergeToEnd)
+				if (!pMergeToEnd)
 				{
-					CommitFrontCommand(
-						CCMake_C(COMM_MERGE),
-						CCMake_O(pNCLine->GetEndPoint()),
-						CCMake_O(pMergeToEnd),
-						NULL
-						);
+					pMergeToEnd = TestPickObjSingleFilter(pNCLine->GetEndPoint(), pNCLine, &fProportionEnd);
 				}
 				if (pNextMergeToBegin)
 				{
 					pMergeToBegin = pNextMergeToBegin;
 				}
+				else if (!pMergeToBegin)
+				{
+					pMergeToBegin = TestPickObjSingleFilter(pNCLine->GetBeginPoint(), pNCLine, &fProportionBegin);
+				}
+				if (pMergeToEnd)
+				{
+					MergeClingNewPoint(pNCLine->GetEndPoint(), pMergeToEnd, fProportionEnd);
+
+				}
 				if (pMergeToBegin)
 				{
-					CommitFrontCommand(
-						CCMake_C(COMM_MERGE),
-						CCMake_O(pNCLine->GetBeginPoint()),
-						CCMake_O(pMergeToBegin),
-						NULL
-						);
+					MergeClingNewPoint(pNCLine->GetBeginPoint(), pMergeToBegin, fProportionBegin);
 				}
 				pNextMergeToBegin = pNCLine->GetEndPoint();
 			}

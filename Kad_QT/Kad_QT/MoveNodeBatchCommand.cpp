@@ -49,7 +49,7 @@ void MoveNodeBatchCommand::OnProcessCommand()
 	{
 		ret = pcommand->ProcessPending(
 			CSP_MOVENODE_BATCH_I_XY_INDEXES_NEWPOS, COMMPARAMFLAG_Y, cwpy,
-			CSI_MOVENODE_BATCH_WANTINDEXES
+			CSI_MOVENODE_BATCH_WANTINDEXES, CWP_INDEX
 			);
 	}
 	else if (step >= CSI_MOVENODE_BATCH_WANTINDEXES)
@@ -74,13 +74,14 @@ void MoveNodeBatchCommand::OnProcessCommand()
 	{
 		if (step >= CSI_MOVENODE_BATCH_WANTX && step < CSI_MOVENODE_BATCH_WANTINDEXES)
 		{
-			if (pgp->PickPoint())
+			int iret = pgp->PickPoint();
+			if (pgp->IsPickReady(iret))
 			{
 				if (!pcommand->IsInternalProcessing())
 				{
 					pcommand->SetParamX(CSP_MOVENODE_BATCH_I_XY_INDEXES_NEWPOS, pgp->GetPickX_C());
 					pcommand->SetParamY(CSP_MOVENODE_BATCH_I_XY_INDEXES_NEWPOS, pgp->GetPickY_C());
-					pcommand->StepTo(CSI_FINISH);
+					pcommand->StepTo(CSI_MOVENODE_BATCH_WANTINDEXES, CWP_INDEX);
 				}
 			}
 		}
@@ -122,10 +123,16 @@ void MoveNodeBatchCommand::OnDoneCommand()
 		}
 		else
 		{
-			pgm->OnTreeChanged((*it)->getParent(), (*it));
+			GObject * pMovedObj = *it;
+			pgm->OnTreeChanged(pMovedObj->getParent(), pMovedObj);
 //			MainInterface::getInstance().CallChangeNode(*it);
 			++it;
 		}
+	}
+
+	for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end(); ++it)
+	{
+		ReclingAfterMoveNode(*it, true, &lobjs);
 	}
 
 	if (lobjs.empty())

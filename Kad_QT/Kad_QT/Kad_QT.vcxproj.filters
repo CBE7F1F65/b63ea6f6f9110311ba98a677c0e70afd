@@ -386,6 +386,9 @@
     <ClCompile Include="TestCommand.cpp">
       <Filter>Main\Command\Test</Filter>
     </ClCompile>
+    <ClCompile Include="PickFilterTemplate.cpp">
+      <Filter>Main\Helper</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -561,6 +564,9 @@
     </ClInclude>
     <ClInclude Include="TestCommand.h">
       <Filter>Main\Command\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="PickFilterTemplate.h">
+      <Filter>Main\Helper</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

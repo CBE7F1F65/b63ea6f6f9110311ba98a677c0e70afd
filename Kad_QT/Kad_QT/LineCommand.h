@@ -24,6 +24,8 @@ private:
 	GObject * pMergeToBegin;
 	GObject * pMergeToEnd;
 	GObject * pNextMergeToBegin;
+	float fProportionBegin;
+	float fProportionEnd;
 
 	GLine * pNCLine;
 };

@@ -164,13 +164,14 @@ enum{
 
 enum{
 	CSP_CLING_I_FROMINDEX=0,
-	CSP_CLING_I_TOINDEX,
+	CSP_CLING_I_F_TOINDEX_PROPORTION,
 };
 //////////////////////////////////////////////////////////////////////////
 enum{
 	CSI_CLING_DUMMY=0,
 	CSI_CLING_WANTFROMINDEX,
 	CSI_CLING_WANTTOINDEX,
+	CSI_CLING_WANTPROPORTION,
 };
 
 
@@ -378,6 +379,7 @@ enum{
 	CWP_STEP,
 	CWP_INDEX,
 	CWP_NAME,
+	CWP_PROPORTION,
 
 	_CWP_ENDINDEX,
 };

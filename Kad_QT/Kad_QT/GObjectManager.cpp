@@ -470,6 +470,12 @@ void GObjectManager::SetLockTreeChange()
 
 int GObjectManager::PushMoveNodeByOffsetForBatchCommand( GObject* pObj, float xoffset, float yoffset )
 {
+
+	if (fabsf(xoffset) < M_FLOATEPS && fabsf(yoffset) < M_FLOATEPS)
+	{
+		return pushedmovenodebyoffset.size();
+	}
+
 	bool dobatch = false;
 	if (!pushedmovenodebyoffset.empty())
 	{

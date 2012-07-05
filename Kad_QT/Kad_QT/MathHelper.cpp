@@ -48,13 +48,24 @@ bool MathHelper::LineSegmentIntersect( float x1, float y1, float x2, float y2, f
 	/* Are the line coincident? */
 	if (fabsf(numera) < FLT_MIN && fabsf(numerb) < FLT_MIN && fabsf(denom) < FLT_MIN)
 	{
+		float retx, rety;
+		if ((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1) < (x4-x3)*(x4-x3)+(y4-y3)*(y4-y3))
+		{
+			retx = (x1+x2)/2;
+			rety = (y1+y2)/2;
+		}
+		else
+		{
+			retx = (x3+x4)/2;
+			rety = (y3+y4)/2;
+		}
 		if (intx)
 		{
-			*intx = (x1 + x2) / 2;
+			*intx = retx;
 		}
 		if (inty)
 		{
-			*inty = (y1 + y2) / 2;
+			*inty = rety;
 		}
 
 		return true;
@@ -417,6 +428,27 @@ bool MathHelper::GetLineSegmentInRect( float x, float y, int angle, float lx, fl
 	return false;
 }
 
+float MathHelper::CalculateProportionOnStraightLine( float xb, float yb, float xe, float ye, float x, float y )
+{
+	float xdiff = xe-xb;
+	float ydiff = ye-yb;
+	if (fabsf(xdiff) > fabsf(ydiff))
+	{
+		return (x-xb)/xdiff;
+	}
+	else
+	{
+		if (!ydiff)
+		{
+			return 0;
+		}
+		else
+		{
+			return (y-yb)/ydiff;
+		}
+	}
+	return 0;
+}
 BezierSublinesInfo::BezierSublinesInfo()
 {
 	ptPoints = NULL;
@@ -571,7 +603,7 @@ float BezierSublinesInfo::GetY( int i )
 	return 0;
 }
 
-float BezierSublinesInfo::GetLength( int i )
+float BezierSublinesInfo::GetLength( int i/*=-1*/ )
 {
 	if (!fLengths)
 	{
@@ -581,10 +613,29 @@ float BezierSublinesInfo::GetLength( int i )
 	{
 		return fLengths[i];
 	}
+	else
+	{
+		return GetLength(0, nPoints-2);
+	}
 	ASSERT(true);
 	return 0;
 }
 
+float BezierSublinesInfo::GetLength( int ibegin, int iend )
+{
+	if (ibegin >= 0 && ibegin < nPoints-1 && iend >= 0 && iend < nPoints-1)
+	{
+		float fRet = 0;
+		for (int i=ibegin; i<=iend; i++)
+		{
+			fRet += fLengths[i];
+		}
+		return fRet;
+	}
+	ASSERT(true);
+	return 0;
+
+}
 const PointF2D & BezierSublinesInfo::GetPoint( int i )
 {
 	if (i >= 0 && i < nPoints)

@@ -30,6 +30,11 @@ public:
 	virtual bool CheckNearTo(float px, float py, float r, float *plx, float *ply, int *isec=NULL) = 0;
 	virtual bool CheckIntersectWithRect(float xl, float yt, float xr, float yb) = 0;
 	virtual bool CheckIntersectWithLineObj( GLine * pLine, list<PointF2D> *pPoints );
+	virtual float CalculateProportion( float x, float y, int iSec ) = 0;
+	virtual float CalculateMidPointProportion() = 0;
+	virtual bool GetPositionAtProportion( float fClingToProportion, float* tox, float* toy ) = 0;
+
+	virtual float getLength() = 0;
 
 	virtual const char * getDisplayName();
 
@@ -65,6 +70,7 @@ public:
 	virtual ~GSubstantiveLine(){};
 
 	virtual bool isRepresentableLine(){return true;};
+	virtual bool canBeClingTo(){return true;};
 };
 /************************************************************************/
 /* GVirturalLine                                                        */
@@ -90,12 +96,18 @@ public:
 	virtual bool canMove(){return true;};
 	virtual bool isStraightLine(){return true;};
 
+	virtual float CalculateProportion( float x, float y, int iSec );
+	virtual float CalculateMidPointProportion();
+	virtual bool GetPositionAtProportion( float fClingToProportion, float* tox, float* toy );
+
 	virtual void OnRender(int iHighlightLevel=0);
 
 	virtual bool CheckNearTo(float px, float py, float r, float *plx, float *ply, int *isec=NULL);
 	virtual bool CheckIntersectWithRect(float xl, float yt, float xr, float yb);
 	virtual bool CheckIntersectStraightStraight(GStraightLine * pLine, list<PointF2D> *pPoints);
 	virtual void GetBoundingBox(float *xl, float *yt, float *xr, float * yb);
+
+	virtual float getLength();
 
 	virtual bool Clone( GObject * pNewParent );
 };
@@ -128,6 +140,12 @@ public:
 	virtual bool CheckIntersectBezierStraight(GStraightLine * pLine, list<PointF2D> *pPoints);
 	virtual bool CheckIntersectBezierBezier(GBezierLine * pLine, list<PointF2D> *pPoints);
 	virtual void GetBoundingBox(float *xl, float *yt, float *xr, float * yb);
+
+	virtual float CalculateProportion( float x, float y, int iSec );
+	virtual float CalculateMidPointProportion();
+	virtual bool GetPositionAtProportion( float fClingToProportion, float* tox, float* toy );
+
+	virtual float getLength();
 
 	virtual bool Clone( GObject * pNewParent );
 

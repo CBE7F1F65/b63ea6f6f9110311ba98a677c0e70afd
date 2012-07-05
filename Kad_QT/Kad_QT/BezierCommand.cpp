@@ -156,9 +156,19 @@ void BezierCommand::OnProcessCommand()
 					{
 					case CSP_BEZIER_XY_BA:
 						pcommand->StepTo(CSI_BEZIER_WANTBHX, CWP_HANDLEX);
+						pMergeToBegin = pgp->GetPickedObj();
+						if (pMergeToBegin)
+						{
+							fProportionBegin = pgp->CalculateProportion();
+						}
 						break;
 					case CSP_BEZIER_XY_NA:
 						pcommand->StepTo(CSI_BEZIER_WANTNHX, CWP_HANDLEX);
+						pMergeToEnd = pgp->GetPickedObj();
+						if (pMergeToEnd)
+						{
+							fProportionEnd = pgp->CalculateProportion();
+						}
 						break;
 					}
 				}
@@ -243,6 +253,32 @@ void BezierCommand::OnProcessCommand()
 				CCMake_F(nhy1),
 				NULL
 				);
+
+			if (pNCLine)
+			{
+				if (!pMergeToEnd)
+				{
+					pMergeToEnd = TestPickObjSingleFilter(pNCLine->GetEndPoint(), pNCLine, &fProportionEnd);
+				}
+				if (pNextMergeToBegin)
+				{
+					pMergeToBegin = pNextMergeToBegin;
+				}
+				else if (!pMergeToBegin)
+				{
+					pMergeToBegin = TestPickObjSingleFilter(pNCLine->GetBeginPoint(), pNCLine, &fProportionBegin);
+				}
+				if (pMergeToEnd)
+				{
+					MergeClingNewPoint(pNCLine->GetEndPoint(), pMergeToEnd, fProportionEnd);
+
+				}
+				if (pMergeToBegin)
+				{
+					MergeClingNewPoint(pNCLine->GetBeginPoint(), pMergeToBegin, fProportionBegin);
+				}
+				pNextMergeToBegin = pNCLine->GetEndPoint();
+			}
 		}
 	}
 
@@ -259,12 +295,13 @@ void BezierCommand::OnDoneCommand()
 	pcommand->GetParamXY(CSP_BEZIER_XY_NA, &xe, &ye);
 	pcommand->GetParamXY(CSP_BEZIER_XY_NH, &xeh, &yeh);
 
-	GBezierLine * line = new GBezierLine(pgm->GetActiveLayer(), PointF2D(xb, yb), PointF2D(xbh, ybh), PointF2D(xeh, yeh), PointF2D(xe, ye));
+	GBezierLine * pLine = new GBezierLine(pgm->GetActiveLayer(), PointF2D(xb, yb), PointF2D(xbh, ybh), PointF2D(xeh, yeh), PointF2D(xe, ye));
+	pNCLine = pLine;
 
 	PushRevertable(
 		CCMake_C(COMM_I_ADDNODE, 2),
-		CCMake_I(line->getID()),
-		CCMake_I(line->getParent()->getID()),
+		CCMake_I(pLine->getID()),
+		CCMake_I(pLine->getParent()->getID()),
 		CCMake_C(COMM_I_COMMAND, 9, 1),
 		CCMake_CI(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 		CCMake_C(COMM_BEZIER),
@@ -371,4 +408,16 @@ void BezierCommand::RenderToTarget()
 
 	}
 
+}
+
+void BezierCommand::OnInitCommand()
+{
+	pMergeToBegin = NULL;
+	pMergeToEnd = NULL;
+	pNCLine = NULL;
+}
+
+void BezierCommand::OnTerminalCommand()
+{
+	pNextMergeToBegin = NULL;
 }

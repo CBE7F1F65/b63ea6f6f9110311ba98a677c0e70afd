@@ -18,4 +18,14 @@ public:
 	virtual void OnProcessCommand();
 	virtual void OnDoneCommand();
 	virtual void RenderToTarget();
+	virtual void OnInitCommand();
+	virtual void OnTerminalCommand();
+
+	GObject * pMergeToBegin;
+	GObject * pMergeToEnd;
+	GObject * pNextMergeToBegin;
+	float fProportionBegin;
+	float fProportionEnd;
+
+	GLine * pNCLine;
 };

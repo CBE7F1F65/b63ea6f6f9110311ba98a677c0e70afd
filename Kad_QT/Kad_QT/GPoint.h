@@ -41,17 +41,18 @@ public:
 
 	// Only Point To Line!
 	void ClearClingTo();
-	bool ClingTo(GObject * pObj, float fProp=0);
+	bool ClingTo(GObject * pObj, float fProp);
 	void DeclingToOther();
 	bool isClingTo(GObject * pObj);
 	GObject * getClingTo(){return pClingTo;};
+	float getClingProportion(){return fClingToProportion;};
 
 	// Only Point To Point!
 	bool MergeWith(GPoint * pPoint, bool bNoBackward=false);
 	bool isMergeWith(GPoint * pPoint);
 	bool SeperateFrom(GPoint * pPoint=NULL, bool bNoBackward=false);
 	list<GPoint *> * getMergeWith(){return &mergeWithList;};
-
+	void CallClingToMoved( bool bTry, int moveActionID );
 protected:
 	GObject * pClingTo;
 	float fClingToProportion;
@@ -70,6 +71,8 @@ public:
 
 //	virtual bool isAttributeNode(){return false;};
 	virtual bool isRepresentablePoint(){return true;};
+	virtual bool canAttach(){return true;};
+	virtual bool canBeMergedWith(){return true;};
 
 	virtual void OnRender(int iHighlightLevel=0);
 };
@@ -112,7 +115,12 @@ public:
 	GMidPoint();
 	GMidPoint(GObject * parent);
 	virtual ~GMidPoint();
-	
+
+	virtual bool canBeMergedWith(){return true;};
+
+	virtual GObject * getEntity(){return getLine();};
+
+	virtual bool isMidPoint(){return true;};
 	virtual bool isModifyParent(){return false;};
 	virtual bool isSlaveToLine(){return true;};
 	virtual bool canMove(){return false;};
@@ -130,6 +138,8 @@ public:
 	GHandlePoint(GObject * parent, float x, float y);
 	virtual ~GHandlePoint();
 
+	virtual GObject * getEntity(){return getLine();};
+
 	virtual void OnRender(int iHighlightLevel/* =0 */);
 	GObject * GetAnchor(){return getParent();};
 	virtual bool isHandlePoint(){return true;};
@@ -146,6 +156,10 @@ public:
 	GAnchorPoint();
 	GAnchorPoint(GObject * parent, float x, float y);
 	virtual ~GAnchorPoint();
+
+	virtual bool canAttach(){return true;};
+	virtual bool canBeMergedWith(){return true;};
+	virtual GObject * getEntity(){return getLine();};
 
 	virtual bool MoveTo( float newx, float newy, bool bTry, int moveActionID=-1 );
 	virtual const char * getDisplayName();

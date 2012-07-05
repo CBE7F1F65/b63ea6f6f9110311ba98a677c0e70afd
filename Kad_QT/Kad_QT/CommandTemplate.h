@@ -64,6 +64,12 @@ public:
 	bool DoUnDo(int undostep=1);
 	bool DoReDo(int redostep=1);
 
+	GObject * TestPickSingleFilter(float x, float y, GObject * pFilterObj, float * pfProportion);
+	GObject * TestPickObjSingleFilter(GObject * pObj, GObject * pFilterObj, float * pfProportion){ASSERT(pObj); return TestPickSingleFilter(pObj->getX(), pObj->getY(), pFilterObj, pfProportion);};
+
+	bool MergeClingNewPoint( GPoint * pFrom, GObject * pTo, float fProportion=0 );
+	void ReclingAfterMoveNode( GObject * pObj, bool bFindMerge=true, list<GObject *>* lObjs=0 );
+
 	GUICoordinate * pguic;
 	MainInterface * pmain;
 	Command * pcommand;

@@ -80,7 +80,8 @@ public:
 	float GetX(int i);
 	float GetY(int i);
 	const PointF2D &GetPoint(int i);
-	float GetLength(int i);
+	float GetLength(int i=-1);
+	float GetLength(int ibegin, int iend);
 
 	bool GetBoundingBox(float * lx, float * ty, float * rx, float * by);
 
@@ -138,4 +139,5 @@ public:
 	int GetLineAngle( PointF2D pt1, PointF2D pt2 );
 	void RestrictAngle( int* angle );
 	bool GetLineSegmentInRect( float x, float y, int angle, float lx, float ty, float rx, float by, float* x1, float* y1, float* x2, float* y2 );
+	float CalculateProportionOnStraightLine( float xb, float yb, float xe, float ye, float x, float y );
 };

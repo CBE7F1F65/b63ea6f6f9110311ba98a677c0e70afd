@@ -238,6 +238,7 @@ void MarqueeSelect::Update()
 						if (CheckObjInSelection(pPicked))
 						{
 							itemmovestate = MARQMOVESTATE_BEGAN;
+							pgp->SetCheckMouseDown(true);
 						}
 					}
 				}

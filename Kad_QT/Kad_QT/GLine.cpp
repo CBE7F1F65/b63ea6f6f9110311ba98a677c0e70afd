@@ -49,20 +49,30 @@ bool GLine::MoveTo( float newx, float newy, bool bTry, int moveActionID/*=-1*/ )
 		return false;
 	}
 
+	if (moveActionID >= 0)
+	{
+		if (nMoveActionID == moveActionID)
+		{
+			return false;
+		}
+	}
+	nMoveActionID = moveActionID;
+
 	float xoffset = newx - getX();
 	float yoffset = newy - getY();
-
-	ToggleTryMoveState(bTry);
-
-	bool bret;
-	bret = plbegin->CallMoveByOffset(xoffset, yoffset, false, moveActionID);
-	if (!bret)
+	/*
+	if (fabsf(xoffset) < M_FLOATEPS && fabsf(yoffset) < M_FLOATEPS)
 	{
 		return false;
 	}
-	bret = plend->CallMoveByOffset(xoffset, yoffset, false, moveActionID);
+	*/
+//	ToggleTryMoveState(bTry);
+
+	plbegin->CallMoveByOffset(xoffset, yoffset, bTry, moveActionID);
+	plend->CallMoveByOffset(xoffset, yoffset, bTry, moveActionID);
+
 //	UpdateMidPoint();
-	return bret;
+	return true;
 }
 
 bool GLine::CallMoveTo( float newx, float newy, bool bTry, int moveActionID/*=-1*/ )
@@ -116,6 +126,10 @@ void GLine::OnRemove()
 bool GLine::AddClingBy( GPoint * pPoint )
 {
 	ASSERT(pPoint);
+	if (!pPoint->canAttach())
+	{
+		return false;
+	}
 	for (list<GPoint *>::iterator it=clingByList.begin(); it!=clingByList.end(); ++it)
 	{
 		if (*it == pPoint)
@@ -173,6 +187,7 @@ GObject * GLine::getPiece()
 	}
 	return NULL;
 };
+
 /************************************************************************/
 /* GSTRAIGHTLINE                                                        */
 /************************************************************************/
@@ -273,6 +288,43 @@ bool GStraightLine::CheckIntersectStraightStraight( GStraightLine * pLine, list<
 		return true;
 	}
 	return false;
+}
+
+float GStraightLine::CalculateProportion( float x, float y, int iSec )
+{
+	return MathHelper::getInstance().CalculateProportionOnStraightLine(plbegin->getX(), plbegin->getY(), plend->getX(), plend->getY(), x, y);
+}
+
+float GStraightLine::getLength()
+{
+	return MathHelper::getInstance().LineSegmentLength(plbegin->GetPointF2D(), plend->GetPointF2D());
+}
+
+bool GStraightLine::GetPositionAtProportion( float fClingToProportion, float* tox, float* toy )
+{
+	if (fClingToProportion < 0 || fClingToProportion > 1)
+	{
+		ASSERT(true);
+		return false;
+	}
+	float fbx = plbegin->getX();
+	float fby = plbegin->getY();
+	float fex = plend->getX();
+	float fey = plend->getY();
+	if (tox)
+	{
+		*tox = (fex-fbx)*fClingToProportion+fbx;
+	}
+	if (toy)
+	{
+		*toy = (fey-fby)*fClingToProportion+fby;
+	}
+	return true;
+}
+
+float GStraightLine::CalculateMidPointProportion()
+{
+	return 0.5f;
 }
 /************************************************************************/
 /* GBEZEIERLINE                                                         */
@@ -532,4 +584,94 @@ bool GBezierLine::CheckIntersectBezierStraight( GStraightLine * pLine, list<Poin
 bool GBezierLine::CheckIntersectBezierBezier( GBezierLine * pLine, list<PointF2D> *pPoints )
 {
 	return false;
+}
+
+float GBezierLine::CalculateProportion( float x, float y, int iSec )
+{
+	if (isStraightLine())
+	{
+		return GStraightLine::CalculateProportion(x, y, iSec);
+	}
+	if (iSec >= 0 && iSec < bsinfo.GetSubPointsCount()-1)
+	{
+		float fTotalLength = getLength();
+		if (!fTotalLength)
+		{
+			return 0;
+		}
+		float fsubproportion = MathHelper::getInstance().CalculateProportionOnStraightLine(bsinfo.GetX(iSec), bsinfo.GetY(iSec), bsinfo.GetX(iSec+1), bsinfo.GetY(iSec+1), x, y);
+		float fSectionLength = bsinfo.GetLength(iSec);
+		float fProportionLength = bsinfo.GetLength(0, iSec-1)+fsubproportion * fSectionLength;
+		return fProportionLength/fTotalLength;
+	}
+	return 0;
+}
+
+float GBezierLine::getLength()
+{
+	if (isStraightLine())
+	{
+		return GStraightLine::getLength();
+	}
+	return bsinfo.GetLength();
+}
+
+bool GBezierLine::GetPositionAtProportion( float fClingToProportion, float* tox, float* toy )
+{
+	if (fClingToProportion < 0 || fClingToProportion > 1)
+	{
+		ASSERT(true);
+		return false;
+	}
+	if (isStraightLine())
+	{
+		return GStraightLine::GetPositionAtProportion(fClingToProportion, tox, toy);
+	}
+
+	float fTotalLength = bsinfo.GetLength();
+	float fProportionLength = fTotalLength*fClingToProportion;
+
+	float fCLength=0;
+	int i = 0;
+	for (; i<bsinfo.GetSubPointsCount()-1; i++)
+	{
+		fCLength += bsinfo.GetLength(i);
+		if (fCLength >= fProportionLength)
+		{
+			break;
+		}
+	}
+	fCLength -= bsinfo.GetLength(i);
+	float fRestLength = fProportionLength-fCLength;
+	float fRestProportion = fRestLength/bsinfo.GetLength(i);
+
+
+	float fbx = bsinfo.GetX(i);
+	float fby = bsinfo.GetY(i);
+	float fex = bsinfo.GetX(i+1);
+	float fey = bsinfo.GetY(i+1);
+	if (tox)
+	{
+		*tox = (fex-fbx)*fRestProportion+fbx;
+	}
+	if (toy)
+	{
+		*toy = (fey-fby)*fRestProportion+fby;
+	}
+
+
+	return true;
+}
+
+float GBezierLine::CalculateMidPointProportion()
+{
+	if (isStraightLine())
+	{
+		return 0.5f;
+	}
+	float lx;
+	float ly;
+	int isec;
+	CheckNearTo(pmid->getX(), pmid->getY(), 1.0f, &lx, &ly, &isec);
+	return CalculateProportion(pmid->getX(), pmid->getY(), isec);
 }

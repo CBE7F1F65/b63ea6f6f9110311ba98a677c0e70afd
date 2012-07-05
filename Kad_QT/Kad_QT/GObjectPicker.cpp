@@ -13,6 +13,16 @@
 GObjectPicker::GObjectPicker(void)
 {
 	state = PICKSTATE_NULL;
+	pfilterfunc = NULL;
+	SetSnapTo(GOPSNAP_GEOMETRY|GOPSNAP_COORD|GOPSNAP_GEOMETRYCOORD|GOPSNAP_CONTINUITY);
+	bCheckMouseDown = false;
+	bRenderMouseDown = false;
+	bFilledPos =false;
+	bTestMode = false;
+	for (int i=0; i<GOPONLINE_MAX; i++)
+	{
+		pFakeLine[i] = new GStraightLine(&(GObjectManager::getInstance().fakebasenode), PointF2D(0, 0), PointF2D(0, 0));
+	}
 }
 
 GObjectPicker::~GObjectPicker(void)
@@ -22,15 +32,62 @@ GObjectPicker::~GObjectPicker(void)
 void GObjectPicker::Init()
 {
 	state = PICKSTATE_NULL;
-	pfilterfunc = NULL;
-	SetSnapTo(GOPSNAP_GEOMETRY|GOPSNAP_COORD|GOPSNAP_GEOMETRYCOORD|GOPSNAP_CONTINUITY);
-	SetSnapRange(25.0f);
-	for (int i=0; i<GOPONLINE_MAX; i++)
+	SetSnapRange_S(25.0f);
+}
+
+int GObjectPicker::TestPickPoint( float x, float y, float *pfProportion/*=0*/, PickFilterCallback pfunc/*=NULL*/, float range_s/*=0*/ )
+{
+	state = PICKSTATE_NULL;
+
+	PickPoint(pfunc);
+	bFilledPos = true;
+	bTestMode = true;
+	filledX_C = x;
+	filledY_C = y;
+
+	this->snaptoflag = getInstance().snaptoflag;
+	if (range_s >= 0)
 	{
-		pFakeLine[i] = new GStraightLine(&(GObjectManager::getInstance().fakebasenode), PointF2D(0, 0), PointF2D(0, 0));
+		SetSnapRange_S(range_s);
 	}
-	bCheckMouseDown = false;
-	bRenderMouseDown = false;
+	else
+	{
+		SetSnapRange_S(getInstance().snaprange_s);
+	}
+
+	ClearSet();
+	UpdatePickPoint();
+	int iret = PickPoint(pfunc);
+	if (pfProportion)
+	{
+		*pfProportion = 0;
+		if (IsPickReady(iret))
+		{
+			*pfProportion = CalculateProportion();
+		}
+	}
+	return iret;
+}
+
+
+void GObjectPicker::FillInitialPosition()
+{
+	GUICoordinate * pguic = &GUICoordinate::getInstance();
+
+	if (bFilledPos)
+	{
+		pickx_c = filledX_C;
+		picky_c = filledY_C;
+		pickx_s = pguic->CtoSx(pickx_c);
+		picky_s = pguic->CtoSy(picky_c);
+	}
+	else
+	{
+		pickx_s = pguic->GetCursorX_S();
+		picky_s = pguic->GetCursorY_S();
+		pickx_c = pguic->GetCursorX_C();
+		picky_c = pguic->GetCursorY_C();
+	}
 }
 
 int GObjectPicker::PickPoint( PickFilterCallback pfunc/*=NULL*/ )
@@ -68,18 +125,22 @@ int GObjectPicker::UpdatePickPoint()
 	state = PICKSTATE_AFTERUPDATE;
 
 	MainInterface * pmain = &MainInterface::getInstance();
-	if (pmain->hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_DOWN))
+	if (!bTestMode)
 	{
-		ClearSet();
+		if (pmain->hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_DOWN))
+		{
+			ClearSet();
+		}
 	}
 	
-	GUICoordinate * pguic = &GUICoordinate::getInstance();
-	pickx_s = pguic->GetCursorX_S();
-	picky_s = pguic->GetCursorY_S();
-	pickx_c = pguic->GetCursorX_C();
-	picky_c = pguic->GetCursorY_C();
+	FillInitialPosition();
 
+	GUICoordinate * pguic = &GUICoordinate::getInstance();
 	snaprange_c = pguic->StoCs(snaprange_s);
+	if (snaprange_c < M_FLOATEPS)
+	{
+		snaprange_c = M_FLOATEPS;
+	}
 
 	GObjectManager * pgm = &GObjectManager::getInstance();
 	GObject * pBaseNode = pgm->GetMainBaseNode();
@@ -94,11 +155,14 @@ int GObjectPicker::UpdatePickPoint()
 	}
 
 	int restoreSnapto = -1;
-	if (!Command::getInstance().GetCurrentCommand() && !MarqueeSelect::getInstance().marqueestate)
+	if (!bTestMode)
 	{
-		restoreSnapto = snaptoflag;
-		SetSnapTo(snaptoflag, false);
-		SetSnapTo(GOPSNAP_GEOMETRY);
+		if (!Command::getInstance().GetCurrentCommand() && !MarqueeSelect::getInstance().marqueestate)
+		{
+			restoreSnapto = snaptoflag;
+			SetSnapTo(snaptoflag, false);
+			SetSnapTo(GOPSNAP_GEOMETRY);
+		}
 	}
 
     // Snap to Self
@@ -164,18 +228,26 @@ int GObjectPicker::UpdatePickPoint()
 		SetSnapTo(restoreSnapto);
 	}
 
-	if (pmain->hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_DOWN))
+	if (!bTestMode)
 	{
-		mousedownx_c = pickx_c;
-		mousedowny_c = picky_c;
-		mousedownx_s = GetPickX_S();
-		mousedowny_s = GetPickY_S();
-//		mousedownPickObj = pickObj;
-//		mousedownPickEntityObj = pickEntityObj;
-		mousestate = GOPMOUSE_DOWN;
-	}
+		if (pmain->hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_DOWN))
+		{
+			mousedownx_c = pickx_c;
+			mousedowny_c = picky_c;
+			mousedownx_s = GetPickX_S();
+			mousedowny_s = GetPickY_S();
+			//		mousedownPickObj = pickObj;
+			//		mousedownPickEntityObj = pickEntityObj;
+			mousestate = GOPMOUSE_DOWN;
+		}
 
-	if (pmain->hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_UP))
+		if (pmain->hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_UP))
+		{
+			mousestate = GOPMOUSE_UP;
+			state = PICKSTATE_READY;
+		}
+	}
+	else
 	{
 		mousestate = GOPMOUSE_UP;
 		state = PICKSTATE_READY;
@@ -964,6 +1036,21 @@ void GObjectPicker::TraslateLineToStraightLine( GLine * pLine, int index, int is
 		GBezierLine * pBLine = (GBezierLine *)pLine;
 		pFakeLine[index]->SetBeginEnd(pBLine->bsinfo.GetX(isec), pBLine->bsinfo.GetY(isec), pBLine->bsinfo.GetX(isec+1), pBLine->bsinfo.GetY(isec+1));
 	}
+}
+
+float GObjectPicker::CalculateProportion( int index/*=0 */ )
+{
+	GObject * pObj = GetPickedObj(index);
+	if (!pObj)
+	{
+		return 0;
+	}
+	if (!pObj->isLine())
+	{
+		return 0;
+	}
+	GLine * pLine = (GLine *)pObj;
+	return pLine->CalculateProportion(pickx_c, picky_c, pickSection[index]);
 }
 
 bool PickerInterestPointInfo::Equals( PickerInterestPointInfo & r )

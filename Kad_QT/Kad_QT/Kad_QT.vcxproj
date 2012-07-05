@@ -208,6 +208,7 @@
     <ClCompile Include="MoveNodeCommand.cpp" />
     <ClCompile Include="NewLayerCommand.cpp" />
     <ClCompile Include="OutputCommand.cpp" />
+    <ClCompile Include="PickFilterTemplate.cpp" />
     <ClCompile Include="ProcessCommand.cpp" />
     <ClCompile Include="qkeystatemanager.cpp" />
     <ClCompile Include="qmaininterface.cpp" />
@@ -274,6 +275,7 @@
     <ClInclude Include="LineCommand.h" />
     <ClInclude Include="MainInterface.h" />
     <ClInclude Include="MainDependency.h" />
+    <ClInclude Include="PickFilterTemplate.h" />
     <ClInclude Include="TestCommand.h" />
     <CustomBuild Include="qtui_commanddockable.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

@@ -45,7 +45,14 @@ void ClingCommand::OnProcessCommand()
 	else if (step == CSI_CLING_WANTTOINDEX)
 	{
 		ret = pcommand->ProcessPending(
-			CSP_CLING_I_TOINDEX, COMMPARAMFLAG_I, CWP_INDEX,
+			CSP_CLING_I_F_TOINDEX_PROPORTION, COMMPARAMFLAG_I, CWP_INDEX,
+			CSI_CLING_WANTPROPORTION, CWP_PROPORTION
+			);
+	}
+	else if (step == CSI_CLING_WANTPROPORTION)
+	{
+		ret = pcommand->ProcessPending(
+			CSP_CLING_I_F_TOINDEX_PROPORTION, COMMPARAMFLAG_F, CWP_PROPORTION,
 			CSI_FINISH
 			);
 	}
@@ -60,7 +67,8 @@ void ClingCommand::OnProcessCommand()
 void ClingCommand::OnDoneCommand()
 {
 	int fromindex = pcommand->GetParamI(CSP_CLING_I_FROMINDEX);
-	int toindex = pcommand->GetParamI(CSP_CLING_I_TOINDEX);
+	int toindex = pcommand->GetParamI(CSP_CLING_I_F_TOINDEX_PROPORTION);
+	float fProportion = pcommand->GetParamF(CSP_CLING_I_F_TOINDEX_PROPORTION);
 
 	GObject * pFromObj = pgm->FindObjectByID(fromindex);
 	GObject * pToObj = pgm->FindObjectByID(toindex);
@@ -78,26 +86,30 @@ void ClingCommand::OnDoneCommand()
 
 	GObject * pOClingto = pFromPoint->getClingTo();
 	int oClingToIndex = -1;
+	float oClingToProportion = 0;
 	if (pOClingto)
 	{
 		oClingToIndex = pOClingto->getID();
+		oClingToProportion = pFromPoint->getClingProportion();
 	}
 
-	if (pFromPoint->isClingTo(pToObj))
+	if (pFromPoint->isClingTo(pToObj) && fabsf(pFromPoint->getClingProportion() - fProportion) < M_FLOATEPS)
 	{
 		return;
 	}
-	pFromPoint->ClingTo(pToObj);
+	pFromPoint->ClingTo(pToObj, fProportion);
 
 	PushRevertable(
-		CCMake_C(COMM_I_COMMAND, 3, 1),
+		CCMake_C(COMM_I_COMMAND, 4, 1),
 		CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 		CCMake_C(COMM_CLING),
 		CCMake_I(fromindex),
 		CCMake_I(toindex),
-		CCMake_C(COMM_I_UNDO_PARAM, 2),
+		CCMake_F(fProportion),
+		CCMake_C(COMM_I_UNDO_PARAM, 3),
 		CCMake_I(fromindex),
 		CCMake_I(oClingToIndex),
+		CCMake_F(oClingToProportion),
 		NULL
 		);
 }
@@ -109,6 +121,8 @@ void ClingCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 	int fromindex = it->ival;
 	++it;
 	int oClingToIndex = it->ival;
+	++it;
+	float oClingToProportion = it->fval;
 
 
 	GObject * pObj = pgm->FindObjectByID(fromindex);
@@ -118,11 +132,11 @@ void ClingCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 	GObject * pOClingToObj = NULL;
 	if (oClingToIndex >= 0)
 	{
-		pgm->FindObjectByID(oClingToIndex);
+		pOClingToObj = pgm->FindObjectByID(oClingToIndex);
 	}
 	pPoint->DeclingToOther();
 	if (pOClingToObj)
 	{
-		pPoint->ClingTo(pOClingToObj);
+		pPoint->ClingTo(pOClingToObj, oClingToProportion);
 	}
 }

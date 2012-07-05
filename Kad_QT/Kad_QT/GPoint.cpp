@@ -56,18 +56,38 @@ bool GPoint::MoveTo( float newx, float newy, bool bTry, int moveActionID/*=-1 */
 	{
 		if (nMoveActionID == moveActionID)
 		{
-			return true;
+			return false;
+		}
+	}
+	nMoveActionID = moveActionID;
+	/*
+	if (fabsf(x-newx) < M_FLOATEPS && fabsf(y-newy) < M_FLOATEPS)
+	{
+		return false;
+	}
+	*/
+
+	ToggleTryMoveState(bTry);
+	x = newx;
+	y = newy;
+	
+	if (!isAnchorPoint())
+	{
+		CallModify();
+		if (isHandlePoint())
+		{
+			GLine * pLine = (GLine *)getLine();
+			list<GPoint *> * pClingByList = pLine->getClingBy();
+			if (!pClingByList->empty())
+			{
+				for (list<GPoint *>::iterator it=pClingByList->begin(); it!=pClingByList->end(); ++it)
+				{
+					(*it)->CallClingToMoved(false, moveActionID);
+				}
+			}
 		}
 	}
 
-	ToggleTryMoveState(bTry);
-
-	x = newx;
-	y = newy;
-
-	CallModify();
-
-	nMoveActionID = moveActionID;
 	return true;
 }
 
@@ -95,11 +115,20 @@ void GPoint::ClearClingTo()
 	fClingToProportion = 0.0f;
 }
 
-bool GPoint::ClingTo( GObject * pObj, float fProp/*=0*/ )
+bool GPoint::ClingTo( GObject * pObj, float fProp )
 {
 	if (!pObj)
 	{
 		DeclingToOther();
+		return true;
+	}
+	if (!pObj->canBeClingTo())
+	{
+		return false;
+	}
+	if (isClingTo(pObj))
+	{
+		fClingToProportion = fProp;
 		return true;
 	}
 	ASSERT(pObj->isLine());
@@ -160,7 +189,7 @@ bool GPoint::MergeWith( GPoint * pPoint, bool bNoBackward/*=false*/ )
 	{
 		return false;
 	}
-	if (isHandlePoint() || pPoint->isHandlePoint())
+	if (!canAttach() || !canBeMergedWith() || !pPoint->canAttach() || !pPoint->canBeMergedWith())
 	{
 		return false;
 	}
@@ -281,6 +310,15 @@ GObject * GPoint::getPiece()
 	}
 	return NULL;
 }
+
+void GPoint::CallClingToMoved( bool bTry, int moveActionID )
+{
+	ASSERT(pClingTo);
+	float tox, toy;
+	((GLine *)pClingTo)->GetPositionAtProportion(fClingToProportion, &tox, &toy);
+	CallMoveTo(tox, toy, bTry, moveActionID);
+}
+
 /************************************************************************/
 /* GANCHORPOINT                                                         */
 /************************************************************************/
@@ -351,7 +389,22 @@ bool GAnchorPoint::MoveTo( float newx, float newy, bool bTry, int moveActionID/*
 	{
 		if (phandle)
 		{
-			return phandle->CallMoveByOffset(xoffset, yoffset, bTry, moveActionID);
+			bret = phandle->CallMoveByOffset(xoffset, yoffset, bTry, moveActionID);
+
+			if (bret)
+			{
+				GLine * pLine = (GLine *)getLine();
+				list<GPoint *> * pClingByList = pLine->getClingBy();
+				if (!pClingByList->empty())
+				{
+					for (list<GPoint *>::iterator it=pClingByList->begin(); it!=pClingByList->end(); ++it)
+					{
+						(*it)->CallClingToMoved(false, moveActionID);
+					}
+				}
+			}
+
+			return bret;
 		}
 		else
 		{

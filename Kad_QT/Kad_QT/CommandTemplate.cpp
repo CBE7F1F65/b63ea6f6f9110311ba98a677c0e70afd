@@ -6,6 +6,7 @@
 #include <iomanip>
 
 #include "GObjectManager.h"
+#include "PickFilterTemplate.h"
 
 CommandTemplate::CommandTemplate(void)
 {
@@ -392,4 +393,153 @@ void CommandTemplate::OnTerminalCommand()
 void CommandTemplate::CallTerminalCommand()
 {
 	OnTerminalCommand();
+}
+
+GObject * CommandTemplate::TestPickSingleFilter( float x, float y, GObject * pFilterObj, float * pfProportion )
+{
+	GObjectPicker * pTestPicker = &GObjectPicker::getTestPicker();
+	int iret = 0;
+	PickFilterTemplate * pFilterTemplate = NULL;
+	if (pFilterObj)
+	{
+		if (pFilterObj->isPoint())
+		{
+			pFilterTemplate = &PickFilterSinglePoint::getInstance();
+			iret = pTestPicker->TestPickPoint(x, y, pfProportion, ((PickFilterSinglePoint *)pFilterTemplate)->Use((GPoint *)pFilterObj));
+		}
+		else
+		{
+			pFilterTemplate = &PickFilterSingleObj::getInstance();
+			iret = pTestPicker->TestPickPoint(x, y, pfProportion, ((PickFilterSingleObj *)pFilterTemplate)->Use(pFilterObj));
+		}
+	}
+	else
+	{
+		iret = pTestPicker->TestPickPoint(x, y, pfProportion);
+	}
+	GObject * pRet = pTestPicker->GetPickedObj();
+	if (pFilterTemplate)
+	{
+		pFilterTemplate->Dispose();
+	}
+	return pRet;
+}
+
+bool CommandTemplate::MergeClingNewPoint( GPoint * pFrom, GObject * pTo, float fProportion/*=0 */ )
+{
+	ASSERT(pFrom->isPoint());
+
+	if (pTo->isPoint() && pTo->isSlaveToLine())
+	{
+		if (!pTo->isMidPoint())
+		{
+			ASSERT(true);
+			return false;
+		}
+		pTo = pTo->getLine();
+		fProportion = ((GLine *)pTo)->CalculateMidPointProportion();
+	}
+	if (pTo->isPoint())
+	{
+		CommitFrontCommand(
+			CCMake_C(COMM_MERGE),
+			CCMake_O(pFrom),
+			CCMake_O(pTo),
+			NULL
+			);
+		return true;
+	}
+	if (pTo->isLine())
+	{
+		CommitFrontCommand(
+			CCMake_C(COMM_CLING),
+			CCMake_O(pFrom),
+			CCMake_O(pTo),
+			CCMake_F(fProportion),
+			NULL
+			);
+		return true;
+	}
+	return false;
+}
+
+void CommandTemplate::ReclingAfterMoveNode( GObject * pObj, bool bFindMerge/*=true*/, list<GObject *>* lObjs/*=0 */ )
+{
+	ASSERT(pObj);
+	if (!pObj->getChildren()->empty())
+	{
+		for (list<GObject *>::iterator it=pObj->getChildren()->begin(); it!=pObj->getChildren()->end(); ++it)
+		{
+			ReclingAfterMoveNode(*it, false, lObjs);
+		}
+	}
+	if (!pObj->canAttach())
+	{
+		return;
+	}
+	if (!pObj->isPoint())
+	{
+		return;
+	}
+
+	GPoint * pPoint = (GPoint *)pObj;
+	if (bFindMerge)
+	{
+		if (!pPoint->getMergeWith()->empty())
+		{
+			for (list<GPoint *>::iterator it=pPoint->getMergeWith()->begin(); it!=pPoint->getMergeWith()->end(); ++it)
+			{
+				ReclingAfterMoveNode(*it, false, lObjs);
+			}
+		}
+	}
+	
+	if (lObjs)
+	{
+		for (list<GObject *>::iterator it=lObjs->begin(); it!=lObjs->end(); ++it)
+		{
+			GObject * pAnotherObj = *it;
+			GLine * pAnotherLine = NULL;
+			if (pPoint->isClingTo(pAnotherObj))
+			{
+				return;
+			}
+			/*
+			if (pAnotherObj->isAnchorPoint() || pAnotherObj->isHandlePoint() || pAnotherObj->isMidPoint())
+			{
+				pAnotherLine = (GLine *)pAnotherObj->getLine();
+				if (pPoint->isClingTo(pAnotherLine))
+				{
+					return;
+				}
+			}
+			*/
+	}
+	}
+
+	float fProportion;
+	GObject * pTestPickedObj = TestPickObjSingleFilter(pObj, pObj, &fProportion);
+	if (pTestPickedObj)
+	{
+		if (pTestPickedObj->isMidPoint())
+		{
+			pTestPickedObj = pTestPickedObj->getLine();
+			fProportion = ((GLine *)pTestPickedObj)->CalculateMidPointProportion();
+		}
+		if (!pTestPickedObj->canBeClingTo())
+		{
+			pTestPickedObj = NULL;
+		}
+	}
+
+	if (pPoint->getClingTo() != pTestPickedObj || fabsf(pPoint->getClingProportion() - fProportion) > M_FLOATEPS)
+	{
+		CommitFrontCommand(
+			CCMake_C(COMM_CLING),
+			CCMake_O(pObj),
+			CCMake_O(pTestPickedObj),
+			CCMake_F(fProportion),
+			NULL
+			);
+	}
 }

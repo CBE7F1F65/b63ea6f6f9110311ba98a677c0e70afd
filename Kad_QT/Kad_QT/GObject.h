@@ -92,6 +92,7 @@ public:
 	virtual bool isPiece(){return false;};
 	virtual GObject * getLine(){return NULL;};
 	virtual GObject * getPiece(){return NULL;};
+	virtual GObject * getEntity(){return this;};
 	// A point represent the position
 	virtual bool isRepresentablePoint(){return false;};
 	virtual bool isRepresentableLine(){return false;};
@@ -104,6 +105,11 @@ public:
 	virtual bool isSlaveToPiece(){return false;};
 	virtual bool isHandlePoint(){return false;};
 	virtual bool isAnchorPoint(){return false;};
+	virtual bool isMidPoint(){return false;};
+
+	virtual bool canAttach(){return false;};
+	virtual bool canBeMergedWith(){return false;};
+	virtual bool canBeClingTo(){return false;};
 
 	virtual GObject * GetLayer(bool bIncludingSelf=true);
 	virtual GObject * GetContainerLayer(){return GetLayer(false);};
@@ -137,7 +143,7 @@ public:
 	virtual bool canRender();
 	virtual bool canUpdate();
 
-protected:
+public:
 	virtual void ToggleTryMoveState(bool bTry);
 public:
 

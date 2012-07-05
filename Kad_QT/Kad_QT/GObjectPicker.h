@@ -77,6 +77,7 @@ class GObjectPicker
 {
 public:
 	static GObjectPicker& getInstance() { static GObjectPicker instance; return instance; }
+	static GObjectPicker& getTestPicker() { static GObjectPicker testpickerinstance; return testpickerinstance; };
 
 private:
 	GObjectPicker();
@@ -121,6 +122,13 @@ public:
 	float GetPickY_S();
 
 private:
+	void FillInitialPosition();
+	bool bFilledPos;
+	bool bTestMode;
+	float filledX_C;
+	float filledY_C;
+
+private:
 	GObject * pickObj[GOPONLINE_MAX];
 	int pickSection[GOPONLINE_MAX];
 	GObject * pickEntityObj[GOPONLINE_MAX];
@@ -150,7 +158,7 @@ private:
 	float snaprange_c;
 	float snaprange_s;
 public:
-	void SetSnapRange(float range){snaprange_s=range;};
+	void SetSnapRange_S(float range_s){snaprange_s=range_s;};
 private:
 	bool IsInSnapRangePoint_C(float x, float y);
 	bool IsInSnapRangeAngle_C(float x, float y, int angle, float * plx, float * ply);
@@ -174,6 +182,7 @@ private:
 public:
 	int PickPoint(PickFilterCallback pfunc=NULL);
 	int UpdatePickPoint();
+	int TestPickPoint(float x, float y, float *pfProportion=0, PickFilterCallback pfunc=NULL, float range_s=0);
 	void OnDeleteNode( GObject * node );
 
 	bool IsPickReady(int iret=-1);
@@ -197,6 +206,7 @@ public:
 	bool SubFindLineLine( GLine * pLine1, GLine * pLine2 );
 	bool SubFindPIPPIP( PickerInterestPointInfo * pPIP1, PickerInterestPointInfo * pPIP2 );
 	void TraslateLineToStraightLine( GLine * pLine, int index, int isec );
+	float CalculateProportion( int index=0 );
 private:
 	list<PickerInterestPointInfo> pipinfo;
 	bool bCheckMouseDown;
