@@ -671,7 +671,10 @@ float GBezierLine::CalculateMidPointProportion()
 	}
 	float lx;
 	float ly;
-	int isec;
-	CheckNearTo(pmid->getX(), pmid->getY(), 1.0f, &lx, &ly, &isec);
-	return CalculateProportion(pmid->getX(), pmid->getY(), isec);
+	int isec = 0;
+	if (CheckNearTo(pmid->getX(), pmid->getY(), 1.0f, &lx, &ly, &isec))
+	{
+		return CalculateProportion(pmid->getX(), pmid->getY(), isec);
+	}
+	return 0;
 }

@@ -179,12 +179,11 @@ void BezierCommand::OnProcessCommand()
 					float picky = pgp->GetPickY_C();
 
 					GObject * pPicked = pgp->GetPickedObj();
-					GAnchorPoint * pAnchor = NULL;
-					if (pPicked && step < CSI_BEZIER_WANTNAX)
+					if (pPicked)
 					{
 						if (pPicked->isAnchorPoint())
 						{
-							pAnchor = (GAnchorPoint *)pPicked;
+							step < CSI_BEZIER_WANTNAX ? pBindAnchorBegin : pBindAnchorEnd = (GAnchorPoint *)pPicked;
 						}
 					}
 
@@ -207,9 +206,10 @@ void BezierCommand::OnProcessCommand()
 					}
 					if (tosetpindex >= 0)
 					{
-						if (pAnchor)
+						GAnchorPoint * pBindAnchor = step < CSI_BEZIER_WANTNHX ? pBindAnchorBegin : pBindAnchorEnd;
+						if (pBindAnchor)
 						{
-							GHandlePoint * pHandle = pAnchor->GetHandle();
+							GHandlePoint * pHandle = pBindAnchor->GetHandle();
 							float hx = pHandle->getX();
 							float hy = pHandle->getY();
 							pcommand->SetParamX(tosetpindex, 2*pickx-hx, CWP_HANDLEX);
@@ -271,13 +271,41 @@ void BezierCommand::OnProcessCommand()
 				if (pMergeToEnd)
 				{
 					MergeClingNewPoint(pNCLine->GetEndPoint(), pMergeToEnd, fProportionEnd);
-
 				}
 				if (pMergeToBegin)
 				{
 					MergeClingNewPoint(pNCLine->GetBeginPoint(), pMergeToBegin, fProportionBegin);
 				}
 				pNextMergeToBegin = pNCLine->GetEndPoint();
+
+				if (!pBindAnchorEnd)
+				{
+					if (pMergeToEnd)
+					{
+						if (pMergeToEnd->isAnchorPoint())
+						{
+							pBindAnchorEnd = (GAnchorPoint *)pMergeToEnd;
+						}
+					}
+				}
+				if (!pBindAnchorBegin)
+				{
+					if (pMergeToBegin)
+					{
+						if (pMergeToBegin->isAnchorPoint())
+						{
+							pBindAnchorBegin = (GAnchorPoint *)pMergeToBegin;
+						}
+					}
+				}
+				if (pBindAnchorEnd)
+				{
+					BindNewAnchorPoint(pNCLine->GetEndPoint(), pBindAnchorEnd);
+				}
+				if (pBindAnchorBegin)
+				{
+					BindNewAnchorPoint(pNCLine->GetBeginPoint(), pBindAnchorBegin);
+				}
 			}
 		}
 	}
@@ -415,6 +443,8 @@ void BezierCommand::OnInitCommand()
 	pMergeToBegin = NULL;
 	pMergeToEnd = NULL;
 	pNCLine = NULL;
+	pBindAnchorBegin = NULL;
+	pBindAnchorEnd = NULL;
 }
 
 void BezierCommand::OnTerminalCommand()

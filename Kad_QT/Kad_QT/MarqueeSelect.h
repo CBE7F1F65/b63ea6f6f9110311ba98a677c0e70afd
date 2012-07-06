@@ -43,8 +43,8 @@ public:
 
 	void Update();
 	void Render();
-	void CheckMarqueeSelect_Line( GObject * pObj );
-	void CheckMarqueeSelect_Pt( GObject * pObj );
+	void CheckMarqueeSelect_Line( GObject * pObj, bool bAdd=true );
+	void CheckMarqueeSelect_Pt( GObject * pObj, bool bAdd=true );
 	void MoveSelected( float movedx_c, float movedy_c );
 	void CheckValid();
 

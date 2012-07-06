@@ -389,6 +389,9 @@
     <ClCompile Include="PickFilterTemplate.cpp">
       <Filter>Main\Helper</Filter>
     </ClCompile>
+    <ClCompile Include="BindHandleCommand.cpp">
+      <Filter>Main\Command\Combination</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -567,6 +570,9 @@
     </ClInclude>
     <ClInclude Include="PickFilterTemplate.h">
       <Filter>Main\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="BindHandleCommand.h">
+      <Filter>Main\Command\Combination</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

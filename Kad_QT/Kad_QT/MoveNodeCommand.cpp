@@ -67,9 +67,10 @@ void MoveNodeCommand::OnProcessCommand()
 	}
 	else if (ret < 0)
 	{
-		if (step >= CSI_MOVENODE_WANTX)
+		if (step >= CSI_MOVENODE_WANTX && comm == COMM_MOVENODE)
 		{
-			if (pgp->PickPoint())
+			int iret = pgp->PickPoint();
+			if (pgp->IsPickReady(iret))
 			{
 				if (!pcommand->IsInternalProcessing())
 				{
@@ -114,6 +115,8 @@ void MoveNodeCommand::OnDoneCommand()
 	{
 		pgm->OnTreeChanged(pObj->getParent(), pObj);
 //		MainInterface::getInstance().CallChangeNode(pObj);
+
+		ReAttachAfterMoveNode(pObj, true);
 
 		PushRevertable(
 			CCMake_C(COMM_I_COMMAND, 4, 1),

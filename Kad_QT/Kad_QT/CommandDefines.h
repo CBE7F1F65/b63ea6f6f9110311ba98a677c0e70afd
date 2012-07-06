@@ -47,6 +47,7 @@ enum{
 	COMM_DELETEITEM,
 	COMM_REPARENT,
 	COMM_CLING,
+	COMM_BINDHANDLE,
 	COMM_MERGE,
 	COMM_SEPARATE,
 	COMM_SETNODENAME,
@@ -174,6 +175,20 @@ enum{
 	CSI_CLING_WANTPROPORTION,
 };
 
+/************************************************************************/
+/* BINDHANDLE                                                           */
+/************************************************************************/
+
+enum{
+	CSP_BINDHANDLE_I_FROMINDEX=0,
+	CSP_BINDHANDLE_I_TOINDEX,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_BINDHANDLE_DUMMY=0,
+	CSI_BINDHANDLE_WANTFROMINDEX,
+	CSI_BINDHANDLE_WANTTOINDEX,
+};
 
 /************************************************************************/
 /* MERGE                                                                */

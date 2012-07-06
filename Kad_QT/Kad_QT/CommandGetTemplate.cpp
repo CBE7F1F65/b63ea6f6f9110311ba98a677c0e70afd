@@ -17,6 +17,7 @@
 #include "MergeCommand.h"
 #include "SeparateCommand.h"
 #include "TestCommand.h"
+#include "BindHandleCommand.h"
 
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
@@ -30,6 +31,8 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 		return &ReparentCommand::getInstance();
 	case COMM_CLING:
 		return &ClingCommand::getInstance();
+	case COMM_BINDHANDLE:
+		return &BindHandleCommand::getInstance();
 	case COMM_MERGE:
 		return &MergeCommand::getInstance();
 	case COMM_SEPARATE:

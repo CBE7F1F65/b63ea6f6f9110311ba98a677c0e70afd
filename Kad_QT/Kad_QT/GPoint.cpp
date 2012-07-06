@@ -210,22 +210,78 @@ bool GPoint::MergeWith( GPoint * pPoint, bool bNoBackward/*=false*/ )
 				for (list<GPoint *>::iterator jt=pPoint->getMergeWith()->begin(); jt!=pPoint->getMergeWith()->end(); ++jt)
 				{
 					GPoint * pOtherMerged = *jt;
-					pSelfMerged->getMergeWith()->push_back(pOtherMerged);
-					pOtherMerged->getMergeWith()->push_back(pSelfMerged);
+					if (!pSelfMerged->isMergeWith(pOtherMerged))
+					{
+						pSelfMerged->getMergeWith()->push_back(pOtherMerged);
+						if (!pOtherMerged->isMergeWith(pSelfMerged))
+						{
+							pOtherMerged->getMergeWith()->push_back(pSelfMerged);
+						}
+						else
+						{
+							ASSERT(true);
+						}
+					}
+					else
+					{
+						ASSERT(true);
+					}
 				}
-				pSelfMerged->getMergeWith()->push_back(pPoint);
-				pPoint->getMergeWith()->push_back(pSelfMerged);
+				if (!pSelfMerged->isMergeWith(pPoint))
+				{
+					pSelfMerged->getMergeWith()->push_back(pPoint);
+					if (!pPoint->isMergeWith(pSelfMerged))
+					{
+						pPoint->getMergeWith()->push_back(pSelfMerged);
+					}
+					else
+					{
+						ASSERT(true);
+					}
+				}
+				else
+				{
+					ASSERT(true);
+				}
 			}
 		}
 	}
 	for (list<GPoint *>::iterator jt=pPoint->getMergeWith()->begin(); jt!=pPoint->getMergeWith()->end(); ++jt)
 	{
 		GPoint * pOtherMerged = *jt;
-		mergeWithList.push_back(pOtherMerged);
-		pOtherMerged->getMergeWith()->push_back(this);
+		if (!isMergeWith(pOtherMerged))
+		{
+			mergeWithList.push_back(pOtherMerged);
+			if (!pOtherMerged->isMergeWith(this))
+			{
+				pOtherMerged->getMergeWith()->push_back(this);
+			}
+			else
+			{
+				ASSERT(true);
+			}
+		}
+		else
+		{
+			ASSERT(true);
+		}
 	}
-	mergeWithList.push_back(pPoint);
-	pPoint->getMergeWith()->push_back(this);
+	if (!isMergeWith(pPoint))
+	{
+		mergeWithList.push_back(pPoint);
+		if (!pPoint->isMergeWith(this))
+		{
+			pPoint->getMergeWith()->push_back(this);
+		}
+		else
+		{
+			ASSERT(true);
+		}
+	}
+	else
+	{
+		ASSERT(true);
+	}
 	return true;
 }
 
@@ -268,6 +324,12 @@ bool GPoint::SeperateFrom( GPoint * pPoint/*=NULL*/, bool bNoBackward/*=false*/ 
 			{
 				GPoint * pAnotherPoint = *it;
 				it = mergeWithList.erase(it);
+				//////////////////////////////////////////////////////////////////////////
+				if (this->isAnchorPoint() && pAnotherPoint->isAnchorPoint())
+				{
+					((GAnchorPoint *)this)->GetHandle()->UnbindTo(((GAnchorPoint *)pAnotherPoint)->GetHandle());
+				}
+				//////////////////////////////////////////////////////////////////////////
 				if (!bNoBackward)
 				{
 					return pAnotherPoint->SeperateFrom(this, true);
@@ -399,7 +461,7 @@ bool GAnchorPoint::MoveTo( float newx, float newy, bool bTry, int moveActionID/*
 				{
 					for (list<GPoint *>::iterator it=pClingByList->begin(); it!=pClingByList->end(); ++it)
 					{
-						(*it)->CallClingToMoved(false, moveActionID);
+						(*it)->CallClingToMoved(false, -1);
 					}
 				}
 			}
@@ -472,12 +534,13 @@ void GSubstantivePoint::OnRender( int iHighlightLevel/*=0*/ )
 /************************************************************************/
 GHandlePoint::GHandlePoint()
 {
-
+	pBindTo = NULL;
 }
 
 GHandlePoint::GHandlePoint(GObject * parent, float x, float y)
 {
 	ASSERT(parent);
+	pBindTo = NULL;
 	SetPosition(x, y);
 	parent->AddChild(this);
 	OnInit();
@@ -514,4 +577,64 @@ void GHandlePoint::OnRender( int iHighlightLevel/* =0 */ )
 			RenderHelper::getInstance().RenderLine(x, y, pAnchor->getX(), pAnchor->getY(), col);
 		}
 	}
+}
+
+bool GHandlePoint::BindTo( GHandlePoint * pHandle/*=NULL*/ )
+{
+	if (!pHandle)
+	{
+		if (pBindTo)
+		{
+			pBindTo->pBindTo = NULL;
+			pBindTo = NULL;
+		}
+		return true;
+	}
+	if (isBindTo(pHandle))
+	{
+		return false;
+	}
+	if (pBindTo)
+	{
+		BindTo();
+	}
+	pBindTo = pHandle;
+	pHandle->pBindTo = this;
+	return true;
+}
+
+bool GHandlePoint::MoveTo( float newx, float newy, bool bTry, int moveActionID/*=-1 */ )
+{
+	float xoffset = newx - x;
+	float yoffset = newy - y;
+
+	bool bret = GAttributePoint::MoveTo(newx, newy, bTry, moveActionID);
+	if (bret)
+	{
+		if (pBindTo)
+		{
+			if (GetAnchor()->nMoveActionID != moveActionID && pBindTo->GetAnchor()->nMoveActionID != moveActionID)
+			{
+				pBindTo->CallMoveByOffset(-xoffset, -yoffset, false, moveActionID);
+			}
+			return true;
+		}
+	}
+	return bret;
+}
+
+bool GHandlePoint::UnbindTo( GHandlePoint * pHandle )
+{
+	DASSERT(pHandle);
+	if (!pHandle)
+	{
+		return false;
+	}
+	if (!isBindTo(pHandle))
+	{
+		return false;
+	}
+	BindTo();
+	pHandle->BindTo();
+	return true;
 }

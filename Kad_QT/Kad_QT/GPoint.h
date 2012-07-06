@@ -144,8 +144,16 @@ public:
 	GObject * GetAnchor(){return getParent();};
 	virtual bool isHandlePoint(){return true;};
 
+	virtual bool MoveTo( float newx, float newy, bool bTry, int moveActionID=-1 );
+
 	virtual const char * getDisplayName();
 	virtual bool Clone( GObject * pNewParent );
+
+	GHandlePoint * getBindTo(){return pBindTo;};
+	bool isBindTo(GHandlePoint * pHandle){DASSERT(pHandle); return pBindTo==pHandle;};
+	bool BindTo(GHandlePoint * pHandle=NULL);
+	bool UnbindTo(GHandlePoint * pHandle);
+	GHandlePoint * pBindTo;
 };
 /************************************************************************/
 /* GAnchorPoint                                                         */

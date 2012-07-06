@@ -24,6 +24,10 @@ public:
 	GObject * pMergeToBegin;
 	GObject * pMergeToEnd;
 	GObject * pNextMergeToBegin;
+
+	GAnchorPoint * pBindAnchorBegin;
+	GAnchorPoint * pBindAnchorEnd;
+
 	float fProportionBegin;
 	float fProportionEnd;
 

@@ -132,7 +132,7 @@ void MoveNodeBatchCommand::OnDoneCommand()
 
 	for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end(); ++it)
 	{
-		ReclingAfterMoveNode(*it, true, &lobjs);
+		ReAttachAfterMoveNode(*it, true, &lobjs);
 	}
 
 	if (lobjs.empty())

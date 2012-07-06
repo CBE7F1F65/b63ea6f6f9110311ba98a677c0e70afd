@@ -463,14 +463,14 @@ bool CommandTemplate::MergeClingNewPoint( GPoint * pFrom, GObject * pTo, float f
 	return false;
 }
 
-void CommandTemplate::ReclingAfterMoveNode( GObject * pObj, bool bFindMerge/*=true*/, list<GObject *>* lObjs/*=0 */ )
+void CommandTemplate::ReAttachAfterMoveNode( GObject * pObj, bool bFindMerge/*=true*/, list<GObject *>* lObjs/*=0 */ )
 {
 	ASSERT(pObj);
 	if (!pObj->getChildren()->empty())
 	{
 		for (list<GObject *>::iterator it=pObj->getChildren()->begin(); it!=pObj->getChildren()->end(); ++it)
 		{
-			ReclingAfterMoveNode(*it, false, lObjs);
+			ReAttachAfterMoveNode(*it, false, lObjs);
 		}
 	}
 	if (!pObj->canAttach())
@@ -489,7 +489,7 @@ void CommandTemplate::ReclingAfterMoveNode( GObject * pObj, bool bFindMerge/*=tr
 		{
 			for (list<GPoint *>::iterator it=pPoint->getMergeWith()->begin(); it!=pPoint->getMergeWith()->end(); ++it)
 			{
-				ReclingAfterMoveNode(*it, false, lObjs);
+				ReAttachAfterMoveNode(*it, false, lObjs);
 			}
 		}
 	}
@@ -499,7 +499,11 @@ void CommandTemplate::ReclingAfterMoveNode( GObject * pObj, bool bFindMerge/*=tr
 		for (list<GObject *>::iterator it=lObjs->begin(); it!=lObjs->end(); ++it)
 		{
 			GObject * pAnotherObj = *it;
-			GLine * pAnotherLine = NULL;
+			GPoint * pAnotherPoint = NULL;
+			if (pAnotherObj->isPoint())
+			{
+				pAnotherPoint = (GPoint *)pAnotherObj;
+			}
 			if (pPoint->isClingTo(pAnotherObj))
 			{
 				return;
@@ -519,6 +523,7 @@ void CommandTemplate::ReclingAfterMoveNode( GObject * pObj, bool bFindMerge/*=tr
 
 	float fProportion;
 	GObject * pTestPickedObj = TestPickObjSingleFilter(pObj, pObj, &fProportion);
+	
 	if (pTestPickedObj)
 	{
 		if (pTestPickedObj->isMidPoint())
@@ -526,20 +531,56 @@ void CommandTemplate::ReclingAfterMoveNode( GObject * pObj, bool bFindMerge/*=tr
 			pTestPickedObj = pTestPickedObj->getLine();
 			fProportion = ((GLine *)pTestPickedObj)->CalculateMidPointProportion();
 		}
-		if (!pTestPickedObj->canBeClingTo())
+		if (!pTestPickedObj->canBeClingTo() && !pTestPickedObj->canBeMergedWith())
 		{
-			pTestPickedObj = NULL;
+			return;
 		}
 	}
 
-	if (pPoint->getClingTo() != pTestPickedObj || fabsf(pPoint->getClingProportion() - fProportion) > M_FLOATEPS)
+	if (!pTestPickedObj || pTestPickedObj->canBeClingTo())
+	{
+		if (pPoint->getClingTo() != pTestPickedObj || fabsf(pPoint->getClingProportion() - fProportion) > M_FLOATEPS)
+		{
+			CommitFrontCommand(
+				CCMake_C(COMM_CLING),
+				CCMake_O(pObj),
+				CCMake_O(pTestPickedObj),
+				CCMake_F(fProportion),
+				NULL
+				);
+		}
+	}
+	if (pTestPickedObj && pTestPickedObj->canBeMergedWith())
+	{
+		GPoint * pTestPickedPoint = (GPoint *)pTestPickedObj;
+		if (!pPoint->isMergeWith(pTestPickedPoint))
+		{
+			CommitFrontCommand(
+				CCMake_C(COMM_MERGE),
+				CCMake_O(pObj),
+				CCMake_O(pTestPickedObj),
+				NULL
+				);
+		}
+	}
+}
+
+bool CommandTemplate::BindNewAnchorPoint( GAnchorPoint * pFrom, GAnchorPoint * pTo )
+{
+	ASSERT(pFrom);
+	ASSERT(pTo);
+
+	GHandlePoint * pFromHandle = pFrom->GetHandle();
+	GHandlePoint * pToHandle = pTo->GetHandle();
+	if (!pFromHandle->getBindTo() && !pToHandle->getBindTo())
 	{
 		CommitFrontCommand(
-			CCMake_C(COMM_CLING),
-			CCMake_O(pObj),
-			CCMake_O(pTestPickedObj),
-			CCMake_F(fProportion),
+			CCMake_C(COMM_BINDHANDLE),
+			CCMake_O(pFromHandle),
+			CCMake_O(pToHandle),
 			NULL
 			);
+		return true;
 	}
+	return false;
 }

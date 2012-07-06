@@ -112,6 +112,7 @@ void StringManager::FillSCInfo()
 
 	_BSET(	COMM_REPARENT,	"REPARENT",	"",	"Reparent Item",	""	);
 	_BSET(	COMM_CLING,	"CLING",	"CLI",	"Cling To",	""	);
+	_BSET(	COMM_BINDHANDLE,	"BINDHANDLE",	"BH",	"Bind Handle",	""	);
 	_BSET(	COMM_MERGE,	"MERGE",	"MER",	"Merge With",	""	);
 	_BSET(	COMM_SEPARATE,	"SEPERATE",	"SEP",	"Separate From",	""	);
 	_BSET(	COMM_DELETEITEM,	"DELETE",	"DEL",	"Delete Item",	""	);

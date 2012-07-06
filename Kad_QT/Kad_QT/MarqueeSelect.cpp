@@ -162,6 +162,8 @@ void MarqueeSelect::Update()
 
 	bool mlkeydown = pmain->hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_DOWN);
 	bool mlkeynotpressed = !pmain->hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex);
+	bool bctrldown = pmain->hge->Input_GetDIKey(DIK_LCONTROL) || pmain->hge->Input_GetDIKey(DIK_RCONTROL);
+	bool baltdown = pmain->hge->Input_GetDIKey(DIK_LMENU) || pmain->hge->Input_GetDIKey(DIK_RMENU);
 
 	if (mlkeydown)
 	{
@@ -209,15 +211,22 @@ void MarqueeSelect::Update()
 				if (mlkeydown)
 				{
 					GObject * pObj = pgp->GetPickedObj();
-					if (!pObj || !CheckObjInSelection(pObj, true, false, true))
+					if (!bctrldown && !baltdown && (!pObj || !CheckObjInSelection(pObj, true, false, true)))
 					{
 						DeSelectAll();
 					}
 					if (pObj)
 					{
-						AddSelect(pObj);
-						lastmx_c = mousex_c = pgp->GetPickX_C();
-						lastmy_c = mousey_c = pgp->GetPickY_C();
+						if (baltdown)
+						{
+							DeSelect(pObj);
+						}
+						else
+						{
+							AddSelect(pObj);
+							lastmx_c = mousex_c = pgp->GetPickX_C();
+							lastmy_c = mousey_c = pgp->GetPickY_C();
+						}
 					}
 				}
 				if (itemmovestate == MARQMOVESTATE_BEGAN)
@@ -313,7 +322,7 @@ void MarqueeSelect::Update()
 		if (mlkeynotpressed)
 		{
 			marqueestate = MARQSTATE_NONE;
-			DeSelectAll();
+//			DeSelectAll();
 			GObject * pObj = GObjectManager::getInstance().GetMainBaseNode();
 			float lx = beginx_c < endx_c ? beginx_c : endx_c;
 			float ty = beginy_c < endy_c ? beginy_c : endy_c;
@@ -326,11 +335,11 @@ void MarqueeSelect::Update()
 
 			if (pmain->hge->Input_GetDIKey(DIK_LSHIFT) || pmain->hge->Input_GetDIKey(DIK_RSHIFT))
 			{
-				CheckMarqueeSelect_Pt(pObj);
+				CheckMarqueeSelect_Pt(pObj, !baltdown);
 			}
 			else
 			{
-				CheckMarqueeSelect_Line(pObj);
+				CheckMarqueeSelect_Line(pObj, !baltdown);
 			}
 		}
 		endx_c = pguic->GetCursorX_C();
@@ -346,7 +355,17 @@ void MarqueeSelect::Render()
 	CheckValid();
 	for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end(); ++it)
 	{
-		(*it)->CallRender(LINECOLOR_ACTIVE);
+		GObject * pObj = *it;
+		pObj->CallRender(LINECOLOR_ACTIVE);
+		if (pObj->isHandlePoint())
+		{
+			GHandlePoint * pHandle = (GHandlePoint *)pObj;
+			GHandlePoint * pOtherHandle = pHandle->getBindTo();
+			if (pOtherHandle)
+			{
+				pOtherHandle->CallRender(LINECOLOR_ACTIVE);
+			}
+		}
 	}
 	if (marqueestate == MARQSTATE_BEGAN)
 	{
@@ -357,7 +376,7 @@ void MarqueeSelect::Render()
 	}
 }
 
-void MarqueeSelect::CheckMarqueeSelect_Line( GObject * pObj )
+void MarqueeSelect::CheckMarqueeSelect_Line( GObject * pObj, bool bAdd/*=true */ )
 {
 	if (!pObj)
 	{
@@ -367,17 +386,24 @@ void MarqueeSelect::CheckMarqueeSelect_Line( GObject * pObj )
 	{
 		if (((GLine *)pObj)->CheckIntersectWithRect(beginx_c, beginy_c, endx_c, endy_c))
 		{
-            AddSelect(pObj, MARQNOMOVE_LINE);
+			if (bAdd)
+			{
+				AddSelect(pObj, MARQNOMOVE_LINE);
+			}
+			else
+			{
+				DeSelect(pObj);
+			}
 //			selectednodes.push_back(pObj);
 		}
 	}
 	for (list<GObject *>::iterator it=pObj->getChildren()->begin(); it!=pObj->getChildren()->end(); ++it)
 	{
-		CheckMarqueeSelect_Line(*it);
+		CheckMarqueeSelect_Line(*it, bAdd);
 	}
 }
 
-void MarqueeSelect::CheckMarqueeSelect_Pt( GObject * pObj )
+void MarqueeSelect::CheckMarqueeSelect_Pt( GObject * pObj, bool bAdd/*=true */ )
 {
 	if (!pObj)
 	{
@@ -389,14 +415,21 @@ void MarqueeSelect::CheckMarqueeSelect_Pt( GObject * pObj )
 		{
 			if (!pObj->isHandlePoint())
 			{
-                AddSelect(pObj, MARQNOMOVE_POINT);
+				if (bAdd)
+				{
+					AddSelect(pObj, MARQNOMOVE_POINT);
+				}
+				else
+				{
+					DeSelect(pObj);
+				}
 //				selectednodes.push_back(pObj);
 			}
 		}
 	}
 	for (list<GObject *>::iterator it=pObj->getChildren()->begin(); it!=pObj->getChildren()->end(); ++it)
 	{
-		CheckMarqueeSelect_Pt(*it);
+		CheckMarqueeSelect_Pt(*it, bAdd);
 	}
 }
 
@@ -562,6 +595,16 @@ void MarqueeSelect::DoMovePoint( GPoint * pPoint, float movedx_c, float movedy_c
 		if (nomoveflag < MARQNOMOVE_POINT)
 		{
 			pPoint->CallMoveByOffset(movedx_c, movedy_c, true, nMoveActionID);
+			/*
+			if (pPoint->isHandlePoint())
+			{
+				GHandlePoint * pBindTo = ((GHandlePoint *)pPoint)->getBindTo();
+				if (pBindTo)
+				{
+					pBindTo->CallMoveByOffset(-movedx_c, -movedy_c, true, nMoveActionID);
+				}
+			}
+			*/
 		}
 	}
 }
