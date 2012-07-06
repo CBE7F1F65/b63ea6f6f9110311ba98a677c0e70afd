@@ -186,6 +186,17 @@ void MarqueeSelect::Update()
 	if (marqueestate != MARQSTATE_BEGAN)
 	{
 		int iret = pgp->PickPoint(staticPickFilterCallback);
+
+        if (baltdown)
+        {
+            GObject * pPickedObj = pgp->GetPickedObj();
+            MainInterface::getInstance().CallShowNodeInfo(pPickedObj);
+        }
+        else
+        {
+            MainInterface::getInstance().CallShowNodeInfo(NULL);
+        }
+
 		if (!mlkeynotpressed)
 		{
 			// moving select or to marquee began

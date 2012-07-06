@@ -70,6 +70,7 @@ public:
 	void CallUpdateStatusBarText(int id, const char * text);
 	void CallAppendCommandLogText(const char * text, bool bNewLine=true);
 	void CallChangeNode( GObject * pObj );
+    void CallShowNodeInfo(GObject * pObj=NULL);
 
 	// To Command
 	void CallUnDoReDo(int step);

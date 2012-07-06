@@ -11,6 +11,7 @@
 #include "qtui_layer_dockablepane.h"
 #include "qtui_layer_tree.h"
 #include "QTUI_StatusBar.h"
+#include "QTUI_NodeInfoFloating_Widget.h"
 
 class QMainInterface
 {
@@ -65,6 +66,7 @@ public:
     _QMWDEF(QTUI_Layer_DockablePane, LayerDockable);
     _QMWDEF(QTUI_Layer_Tree, LayerTree);
     _QMWDEF(QTUI_StatusBar, StatusBar);
+    _QMWDEF(QTUI_NodeInfoFloating_Widget, NodeInfoFloatingWidget);
 
 #undef _QMWDEF
 

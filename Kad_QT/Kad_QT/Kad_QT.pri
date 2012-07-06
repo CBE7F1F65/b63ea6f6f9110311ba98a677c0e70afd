@@ -65,7 +65,75 @@ HEADERS += ./Const.h \
     qtui_layer_dockablepane.h \
     qtui_layer_tree.h \
     QTUI_StatusBar.h \
-    QTDLG_LayerProperty.h
+    QTDLG_LayerProperty.h \
+    TestCommand.h \
+    targetver.h \
+    StringManager.h \
+    stdafx.h \
+    SnapshotManager.h \
+    SetWorkingLayerCommand.h \
+    SetNodeNameCommand.h \
+    SeparateCommand.h \
+    ResourceCustomIDs.h \
+    resource.h \
+    ReparentCommand.h \
+    RenderTargetManager.h \
+    RenderHelper.h \
+    QTUI_StatusBar.h \
+    qtui_layer_tree.h \
+    qtui_layer_dockablepane.h \
+    qtui_history_table.h \
+    qtui_history_snapshottable.h \
+    qtui_history_dockablepane.h \
+    qtui_glview.h \
+    qtui_commandpanel_commandlog.h \
+    qtui_commandpanel_commandedit.h \
+    qtui_commandfloating_widget.h \
+    qtui_commandfloating_command.h \
+    qtui_commanddockable.h \
+    QTDLG_LayerProperty.h \
+    qmaininterface.h \
+    qkeystatemanager.h \
+    PickFilterTemplate.h \
+    OutputCommand.h \
+    NewLayerCommand.h \
+    MoveNodeCommand.h \
+    MoveNodeBatchCommand.h \
+    MouseCursorManager.h \
+    MessageBoxManager.h \
+    MergeCommand.h \
+    MathHelper.h \
+    MarqueeSelect.h \
+    MainInterface.h \
+    MainDependency.h \
+    LineCommand.h \
+    kad_qt.h \
+    InitialCommand.h \
+    IconManager.h \
+    GUICursor.h \
+    GUICoordinate.h \
+    GShape.h \
+    GPoint.h \
+    GPiece.h \
+    GObjectPicker.h \
+    GObjectManager.h \
+    GObject.h \
+    GLine.h \
+    GLayer.h \
+    GBaseNode.h \
+    DuplicateCommand.h \
+    DeleteItemCommand.h \
+    Const.h \
+    CommandTemplate.h \
+    CommandSubState.h \
+    CommandMap.h \
+    CommandDefines.h \
+    Command.h \
+    ColorManager.h \
+    ClingCommand.h \
+    BindHandleCommand.h \
+    BezierCommand.h \
+    QTUI_NodeInfoFloating_Widget.h
 SOURCES += ./InitDllLoader.cpp \
     ./kad_qt.cpp \
     ./main.cpp \
@@ -123,12 +191,80 @@ SOURCES += ./InitDllLoader.cpp \
     qtui_layer_dockablepane.cpp \
     qtui_layer_tree.cpp \
     QTUI_StatusBar.cpp \
-    QTDLG_LayerProperty.cpp
+    QTDLG_LayerProperty.cpp \
+    UnDoReDoCommand.cpp \
+    TestCommand.cpp \
+    StringManager.cpp \
+    stdafx.cpp \
+    SnapshotManager.cpp \
+    SetWorkingLayerCommand.cpp \
+    SetNodeNameCommand.cpp \
+    SeparateCommand.cpp \
+    ReparentCommand.cpp \
+    RenderTargetManager.cpp \
+    RenderHelper.cpp \
+    QTUI_StatusBar.cpp \
+    qtui_layer_tree.cpp \
+    qtui_layer_dockablepane.cpp \
+    qtui_history_table.cpp \
+    qtui_history_snapshottable.cpp \
+    qtui_history_dockablepane.cpp \
+    qtui_glview.cpp \
+    qtui_commandpanel_commandlog.cpp \
+    qtui_commandpanel_commandedit.cpp \
+    qtui_commandfloating_widget.cpp \
+    qtui_commandfloating_command.cpp \
+    qtui_commanddockable.cpp \
+    QTDLG_LayerProperty.cpp \
+    qmaininterface.cpp \
+    qkeystatemanager.cpp \
+    ProcessCommand.cpp \
+    PickFilterTemplate.cpp \
+    OutputCommand.cpp \
+    NewLayerCommand.cpp \
+    MoveNodeCommand.cpp \
+    MoveNodeBatchCommand.cpp \
+    MouseCursorManager.cpp \
+    MessageBoxManager.cpp \
+    MergeCommand.cpp \
+    MathHelper.cpp \
+    MarqueeSelect.cpp \
+    MainInterface.cpp \
+    main.cpp \
+    LineCommand.cpp \
+    kad_qt.cpp \
+    InitialCommand.cpp \
+    InitDllLoader.cpp \
+    IconManager.cpp \
+    GUICursor.cpp \
+    GUICoordinate.cpp \
+    GShape.cpp \
+    GPoint.cpp \
+    GPiece.cpp \
+    GObjectPicker.cpp \
+    GObjectManager.cpp \
+    GObject.cpp \
+    GLine.cpp \
+    GLayer.cpp \
+    GBaseNode.cpp \
+    DuplicateCommand.cpp \
+    DeleteItemCommand.cpp \
+    CommandTemplate.cpp \
+    CommandSubState.cpp \
+    CommandMap.cpp \
+    CommandGetTemplate.cpp \
+    Command.cpp \
+    ColorManager.cpp \
+    ClingCommand.cpp \
+    BindHandleCommand.cpp \
+    BezierCommand.cpp \
+    QTUI_NodeInfoFloating_Widget.cpp
 FORMS += ./kad_qt.ui \
     qtui_commanddockable.ui \
     qtui_commandfloating_widget.ui \
     qtui_history_dockablepane.ui \
     qtui_layer_dockablepane.ui \
     QTUI_StatusBar.ui \
-    QTDLG_LayerProperty.ui
+    QTDLG_LayerProperty.ui \
+    QTUI_NodeInfoFloating_Widget.ui
 RESOURCES += kad_qt.qrc

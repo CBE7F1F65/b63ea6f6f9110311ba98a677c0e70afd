@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>888</width>
-    <height>131</height>
+    <height>102</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -45,6 +45,9 @@
       </property>
       <property name="mouseTracking">
        <bool>true</bool>
+      </property>
+      <property name="undoRedoEnabled">
+       <bool>false</bool>
       </property>
       <property name="readOnly">
        <bool>true</bool>

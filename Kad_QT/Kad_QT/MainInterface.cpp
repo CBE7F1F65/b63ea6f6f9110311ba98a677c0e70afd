@@ -388,7 +388,12 @@ void MainInterface::CallAppendCommandLogText( const char * text, bool bNewLine/*
 
 void MainInterface::CallChangeNode( GObject * pObj )
 {
-//	parentview->GetMainFrame()->ChangeNode(pObj);
+    //	parentview->GetMainFrame()->ChangeNode(pObj);
+}
+
+void MainInterface::CallShowNodeInfo(GObject *pObj)
+{
+    QMainInterface::getInstance().GetPNodeInfoFloatingWidget()->ShowNodeInfo(pObj);
 }
 
 int MainInterface::OnCommand( int comm )
