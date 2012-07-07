@@ -12,6 +12,7 @@
 #include "qtui_layer_tree.h"
 #include "QTUI_StatusBar.h"
 #include "QTUI_NodeInfoFloating_Widget.h"
+#include "QTUI_NodeInfoFloating_Tree.h"
 
 class QMainInterface
 {
@@ -67,6 +68,7 @@ public:
     _QMWDEF(QTUI_Layer_Tree, LayerTree);
     _QMWDEF(QTUI_StatusBar, StatusBar);
     _QMWDEF(QTUI_NodeInfoFloating_Widget, NodeInfoFloatingWidget);
+    _QMWDEF(QTUI_NodeInfoFloating_Tree, NodeInfoFloatingTree);
 
 #undef _QMWDEF
 

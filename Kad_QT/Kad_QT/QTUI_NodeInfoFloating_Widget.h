@@ -17,15 +17,17 @@ public:
     ~QTUI_NodeInfoFloating_Widget();
 
 protected:
-    virtual void enterEvent(QEvent * e);
+//    virtual void mousePressEvent( QMouseEvent *e );
+//    virtual void enterEvent(QEvent * e);
 
 public:
-    void ShowNodeInfo(GObject * pObj=NULL);
+    void ShowWidgetWindow(bool bContext);
+    void HideWidgetWindow();
+    bool isWidgetWindowHidden();
+    void AdjustSize(int w=-1, int h=-1);
     
 private:
     Ui::QTUI_NodeInfoFloating_Widget *ui;
-
-    GObject * pDisplyObj;
 };
 
 #endif // QTUI_NODEINFOFLOATING_WIDGET_H

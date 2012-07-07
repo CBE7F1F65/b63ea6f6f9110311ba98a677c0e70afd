@@ -20,49 +20,39 @@ QTUI_NodeInfoFloating_Widget::~QTUI_NodeInfoFloating_Widget()
     delete ui;
 }
 
-void QTUI_NodeInfoFloating_Widget::enterEvent(QEvent * e)
+void QTUI_NodeInfoFloating_Widget::ShowWidgetWindow(bool bContext)
 {
-    ui->treeWidget->setFocus();
+    QPoint pt = parentWidget()->mapFromGlobal(QCursor::pos());
+    if (!bContext)
+    {
+        pt+=QPoint(15, -15);
+    }
+    else
+    {
+        pt+=QPoint(-10, -10);
+    }
+    move(pt);
+    show();
 }
 
-void QTUI_NodeInfoFloating_Widget::ShowNodeInfo(GObject *pObj)
+void QTUI_NodeInfoFloating_Widget::HideWidgetWindow()
 {
-    if ((this->isHidden() || pDisplyObj!=pObj) && pObj)
+    hide();
+}
+
+bool QTUI_NodeInfoFloating_Widget::isWidgetWindowHidden()
+{
+    return isHidden();
+}
+
+void QTUI_NodeInfoFloating_Widget::AdjustSize(int w, int h)
+{
+    if (w >= 0 && h >= 0)
     {
-        pDisplyObj = pObj;
-
-        this->setFocus();
-        QPoint pt = this->parentWidget()->mapFromGlobal(QCursor::pos());
-        pt+=QPoint(15, -15);
-        this->move(pt);
-        this->show();
-
-        QString str;
-        str.sprintf("ID: %d\r\n%s", pObj->getID(), pObj->getDisplayName());
-
-
-        ui->treeWidget->clear();
-        QTreeWidgetItem * pTreeItem[4];
-        for (int i=0; i<4; i++)
-        {
-            pTreeItem[i] = new QTreeWidgetItem();
-
-            pTreeItem[i]->setText(0, str);
-            ui->treeWidget->addTopLevelItem(pTreeItem[i]);
-        }
-        QPushButton * pPush = new QPushButton("AAA");
-        ui->treeWidget->setItemWidget(pTreeItem[2], 0, pPush);
-
-        int htotal = ui->treeWidget->model()->rowCount() * pPush->size().height() + 80;
-        this->resize(this->width(), htotal);
+        this->resize(w, h);
     }
-    else if (!pObj)
+    else
     {
-        pDisplyObj = NULL;
-        if (!this->isHidden())
-        {
-            this->hide();
-            QMainInterface::getInstance().GetPGLView()->setFocus();
-        }
+        adjustSize();
     }
 }

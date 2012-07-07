@@ -70,6 +70,7 @@ public:
 
 #define INIS_TOOLTIP		"ToolTip"
 #define INIS_DEFAULTSTR		"DefaultString"
+#define INIS_NODEINFO		"NodeInfo"
 
 #define INIS_CWP			"WPrompt"
 #define INIS_COMMAND_PREFIX		"Command_"
@@ -222,7 +223,7 @@ public:
 	_SMNNFDEF(	Line,	"Line"	);
 	_SMNNFDEF(	Point,	"Point"	);
 	_SMNNFDEF(	AnchorPoint,	"Anchor"	);
-	_SMNNFDEF(	MidPoint,	"Mid Point"	);
+    _SMNNFDEF(	MidPoint,	"MidPoint"	);
 	_SMNNFDEF(	HandlePoint,	"Handle"	);
 
 #undef _SMNNFDEF
@@ -234,6 +235,19 @@ public:
 	_SMTOOLTIPDEF(	Delete,	"Delete"	);
 
 #undef _SMTOOLTIPDEF
+
+#define _SMNODEINFODEF(STRNAME, DEF) \
+    _SMFDEF(NodeInfo##STRNAME, INIS_NODEINFO, DEF)
+
+    _SMNODEINFODEF( Info,   "Node Information"  );
+    _SMNODEINFODEF( ID, "ID"    );
+    _SMNODEINFODEF( Name,   "Name"    );
+    _SMNODEINFODEF( Position,   "Position"    );
+    _SMNODEINFODEF( ClingTo,    "Cling To"    );
+    _SMNODEINFODEF( ClingBy,    "Cling By"    );
+    _SMNODEINFODEF( MergeWith,  "Merge With"    );
+
+#undef _SMNODEINFODEF
 
 #define _SMMBDEF(STRNAME, DEF)	\
 	_SMFDEF(MB##STRNAME, INIS_MESSAGEBOX, DEF)

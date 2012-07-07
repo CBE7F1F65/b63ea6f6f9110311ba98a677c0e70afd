@@ -391,9 +391,9 @@ void MainInterface::CallChangeNode( GObject * pObj )
     //	parentview->GetMainFrame()->ChangeNode(pObj);
 }
 
-void MainInterface::CallShowNodeInfo(GObject *pObj)
+void MainInterface::CallShowNodeInfo(GObject *pObj, bool bContext)
 {
-    QMainInterface::getInstance().GetPNodeInfoFloatingWidget()->ShowNodeInfo(pObj);
+    QMainInterface::getInstance().GetPNodeInfoFloatingTree()->ShowNodeInfo(pObj, bContext);
 }
 
 int MainInterface::OnCommand( int comm )

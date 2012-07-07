@@ -133,7 +133,8 @@ HEADERS += ./Const.h \
     ClingCommand.h \
     BindHandleCommand.h \
     BezierCommand.h \
-    QTUI_NodeInfoFloating_Widget.h
+    QTUI_NodeInfoFloating_Widget.h \
+    QTUI_NodeInfoFloating_Tree.h
 SOURCES += ./InitDllLoader.cpp \
     ./kad_qt.cpp \
     ./main.cpp \
@@ -258,7 +259,8 @@ SOURCES += ./InitDllLoader.cpp \
     ClingCommand.cpp \
     BindHandleCommand.cpp \
     BezierCommand.cpp \
-    QTUI_NodeInfoFloating_Widget.cpp
+    QTUI_NodeInfoFloating_Widget.cpp \
+    QTUI_NodeInfoFloating_Tree.cpp
 FORMS += ./kad_qt.ui \
     qtui_commanddockable.ui \
     qtui_commandfloating_widget.ui \

@@ -187,10 +187,10 @@ void MarqueeSelect::Update()
 	{
 		int iret = pgp->PickPoint(staticPickFilterCallback);
 
-        if (baltdown)
+        if (baltdown || pmain->hge->Input_GetDIMouseKey(pmain->cursorrightkeyindex, DIKEY_DOWN))
         {
             GObject * pPickedObj = pgp->GetPickedObj();
-            MainInterface::getInstance().CallShowNodeInfo(pPickedObj);
+            MainInterface::getInstance().CallShowNodeInfo(pPickedObj, !baltdown);
         }
         else
         {

@@ -16,6 +16,7 @@ QMainInterface::QMainInterface()
     pLayerTree = NULL;
     pStatusBar = NULL;
     pNodeInfoFloatingWidget = NULL;
+    pNodeInfoFloatingTree = NULL;
 }
 
 QMainInterface::~QMainInterface()
