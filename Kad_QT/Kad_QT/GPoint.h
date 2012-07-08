@@ -149,11 +149,11 @@ public:
 	virtual const char * getDisplayName();
 	virtual bool Clone( GObject * pNewParent );
 
-	GHandlePoint * getBindTo(){return pBindTo;};
-	bool isBindTo(GHandlePoint * pHandle){DASSERT(pHandle); return pBindTo==pHandle;};
-	bool BindTo(GHandlePoint * pHandle=NULL);
+	GHandlePoint * getBindWith(){return pBindWith;};
+    bool isBindWith(GHandlePoint * pHandle){return pBindWith==pHandle;};
+	bool BindWith(GHandlePoint * pHandle=NULL);
 	bool UnbindTo(GHandlePoint * pHandle);
-	GHandlePoint * pBindTo;
+	GHandlePoint * pBindWith;
 };
 /************************************************************************/
 /* GAnchorPoint                                                         */

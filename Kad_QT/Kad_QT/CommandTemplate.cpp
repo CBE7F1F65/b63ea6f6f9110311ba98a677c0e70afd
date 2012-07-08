@@ -572,7 +572,7 @@ bool CommandTemplate::BindNewAnchorPoint( GAnchorPoint * pFrom, GAnchorPoint * p
 
 	GHandlePoint * pFromHandle = pFrom->GetHandle();
 	GHandlePoint * pToHandle = pTo->GetHandle();
-	if (!pFromHandle->getBindTo() && !pToHandle->getBindTo())
+	if (!pFromHandle->getBindWith() && !pToHandle->getBindWith())
 	{
 		CommitFrontCommand(
 			CCMake_C(COMM_BINDHANDLE),

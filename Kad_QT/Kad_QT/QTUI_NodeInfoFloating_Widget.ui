@@ -31,11 +31,17 @@
    </property>
    <item>
     <widget class="QTUI_NodeInfoFloating_Tree" name="treeWidget">
+     <property name="mouseTracking">
+      <bool>true</bool>
+     </property>
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
      <property name="indentation">
       <number>16</number>
+     </property>
+     <property name="uniformRowHeights">
+      <bool>true</bool>
      </property>
      <property name="expandsOnDoubleClick">
       <bool>false</bool>
@@ -72,6 +78,7 @@
     <slot>SLT_ItemClicked(QTreeWidgetItem*,int)</slot>
     <slot>SLT_AdjustSize()</slot>
     <slot>SLT_ItemDoubleClicked(QTreeWidgetItem*,int)</slot>
+    <slot>SLT_ItemChanged(QTreeWidgetItem*,int)</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -138,6 +145,22 @@
     <hint type="destinationlabel">
      <x>48</x>
      <y>127</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>treeWidget</sender>
+   <signal>itemChanged(QTreeWidgetItem*,int)</signal>
+   <receiver>treeWidget</receiver>
+   <slot>SLT_ItemChanged(QTreeWidgetItem*,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>70</x>
+     <y>80</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>71</x>
+     <y>100</y>
     </hint>
    </hints>
   </connection>

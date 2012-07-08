@@ -74,8 +74,8 @@
       <widget class="QTUI_NodeInfoFloating_Widget" name="FLT_NodeInfo" native="true">
        <property name="geometry">
         <rect>
-         <x>730</x>
-         <y>320</y>
+         <x>740</x>
+         <y>380</y>
          <width>120</width>
          <height>80</height>
         </rect>

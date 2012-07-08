@@ -392,6 +392,24 @@
     <ClCompile Include="BindHandleCommand.cpp">
       <Filter>Main\Command\Combination</Filter>
     </ClCompile>
+    <ClCompile Include="QTUI_NodeInfoFloating_Tree.cpp">
+      <Filter>QT</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_QTUI_NodeInfoFloating_Tree.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_QTUI_NodeInfoFloating_Tree.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="QTUI_NodeInfoFloating_Widget.cpp">
+      <Filter>QT</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_QTUI_NodeInfoFloating_Widget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_QTUI_NodeInfoFloating_Widget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -574,6 +592,9 @@
     <ClInclude Include="BindHandleCommand.h">
       <Filter>Main\Command\Combination</Filter>
     </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_QTUI_NodeInfoFloating_Widget.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="kad_qt.ui">
@@ -641,6 +662,15 @@
     </CustomBuild>
     <CustomBuild Include="QTUI_StatusBar.ui">
       <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QTUI_NodeInfoFloating_Widget.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QTUI_NodeInfoFloating_Tree.h">
+      <Filter>QT</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QTUI_NodeInfoFloating_Widget.h">
+      <Filter>QT</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

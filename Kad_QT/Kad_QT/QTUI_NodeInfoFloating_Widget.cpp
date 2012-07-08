@@ -55,4 +55,17 @@ void QTUI_NodeInfoFloating_Widget::AdjustSize(int w, int h)
     {
         adjustSize();
     }
+    QPoint rb = this->geometry().bottomRight();
+    QPoint rbparent = this->parentWidget()->geometry().bottomRight();
+
+    int xmove = rbparent.x()-rb.x();
+    int ymove = rbparent.y()-rb.y();
+    if (xmove < 0)
+    {
+        move(this->pos()+QPoint(xmove, 0));
+    }
+    if (ymove < 0)
+    {
+        move(this->pos()+QPoint(0, ymove));
+    }
 }

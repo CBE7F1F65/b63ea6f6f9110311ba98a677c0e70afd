@@ -371,7 +371,7 @@ void MarqueeSelect::Render()
 		if (pObj->isHandlePoint())
 		{
 			GHandlePoint * pHandle = (GHandlePoint *)pObj;
-			GHandlePoint * pOtherHandle = pHandle->getBindTo();
+			GHandlePoint * pOtherHandle = pHandle->getBindWith();
 			if (pOtherHandle)
 			{
 				pOtherHandle->CallRender(LINECOLOR_ACTIVE);
@@ -609,10 +609,10 @@ void MarqueeSelect::DoMovePoint( GPoint * pPoint, float movedx_c, float movedy_c
 			/*
 			if (pPoint->isHandlePoint())
 			{
-				GHandlePoint * pBindTo = ((GHandlePoint *)pPoint)->getBindTo();
-				if (pBindTo)
+				GHandlePoint * pBindWith = ((GHandlePoint *)pPoint)->getBindWith();
+				if (pBindWith)
 				{
-					pBindTo->CallMoveByOffset(-movedx_c, -movedy_c, true, nMoveActionID);
+					pBindWith->CallMoveByOffset(-movedx_c, -movedy_c, true, nMoveActionID);
 				}
 			}
 			*/

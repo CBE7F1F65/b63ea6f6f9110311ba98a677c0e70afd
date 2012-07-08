@@ -239,13 +239,18 @@ public:
 #define _SMNODEINFODEF(STRNAME, DEF) \
     _SMFDEF(NodeInfo##STRNAME, INIS_NODEINFO, DEF)
 
-    _SMNODEINFODEF( Info,   "Node Information"  );
-    _SMNODEINFODEF( ID, "ID"    );
-    _SMNODEINFODEF( Name,   "Name"    );
-    _SMNODEINFODEF( Position,   "Position"    );
-    _SMNODEINFODEF( ClingTo,    "Cling To"    );
-    _SMNODEINFODEF( ClingBy,    "Cling By"    );
-    _SMNODEINFODEF( MergeWith,  "Merge With"    );
+    _SMNODEINFODEF(	Info,	"Node Information"	);
+    _SMNODEINFODEF(	ID,	"ID"	);
+    _SMNODEINFODEF(	Name,	"Name"	);
+    _SMNODEINFODEF(	Position,	"Position"	);
+    _SMNODEINFODEF(	ClingTo,	"Cling To"	);
+    _SMNODEINFODEF(	ClingBy,	"Cling By"	);
+	_SMNODEINFODEF(	MergeWith,	"Merge With"	);
+	_SMNODEINFODEF(	BindWith,	"Bind With"	);
+
+	_SMNODEINFODEF(	Hierarchy,	"Hierarchy Information"	);
+	_SMNODEINFODEF(	Parent,	"Parent"	);
+	_SMNODEINFODEF(	Children,	"Children"	);
 
 #undef _SMNODEINFODEF
 

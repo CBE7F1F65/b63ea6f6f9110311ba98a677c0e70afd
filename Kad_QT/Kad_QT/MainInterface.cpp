@@ -538,7 +538,12 @@ list<GObject *> * MainInterface::OnGetSelectedNodes()
 
 GObject *MainInterface::OnGetHoveringNode()
 {
-    return QMainInterface::getInstance().GetPLayerTree()->GetHoveringNode();
+    QMainInterface * pqm = &QMainInterface::getInstance();
+    if (!pqm->GetPNodeInfoFloatingWidget()->isHidden())
+    {
+        return pqm->GetPNodeInfoFloatingTree()->GetHoveringNode();
+    }
+    return pqm->GetPLayerTree()->GetHoveringNode();
 }
 
 bool MainInterface::OnGetDragDroppedNodes( GLayer ** pLayerNode, GObject ** pAfterNode )

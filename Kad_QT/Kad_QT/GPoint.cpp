@@ -534,13 +534,13 @@ void GSubstantivePoint::OnRender( int iHighlightLevel/*=0*/ )
 /************************************************************************/
 GHandlePoint::GHandlePoint()
 {
-	pBindTo = NULL;
+    pBindWith = NULL;
 }
 
 GHandlePoint::GHandlePoint(GObject * parent, float x, float y)
 {
 	ASSERT(parent);
-	pBindTo = NULL;
+    pBindWith = NULL;
 	SetPosition(x, y);
 	parent->AddChild(this);
 	OnInit();
@@ -579,27 +579,32 @@ void GHandlePoint::OnRender( int iHighlightLevel/* =0 */ )
 	}
 }
 
-bool GHandlePoint::BindTo( GHandlePoint * pHandle/*=NULL*/ )
+bool GHandlePoint::BindWith( GHandlePoint * pHandle/*=NULL*/ )
 {
 	if (!pHandle)
 	{
-		if (pBindTo)
+        if (pBindWith)
 		{
-			pBindTo->pBindTo = NULL;
-			pBindTo = NULL;
+            pBindWith->pBindWith = NULL;
+            pBindWith = NULL;
 		}
 		return true;
 	}
-	if (isBindTo(pHandle))
+    if (isBindWith(pHandle))
 	{
 		return false;
 	}
-	if (pBindTo)
+    if (pBindWith)
 	{
-		BindTo();
+        BindWith();
 	}
-	pBindTo = pHandle;
-	pHandle->pBindTo = this;
+
+	pHandle->BindWith();
+    pHandle->CallMoveTo(2*GetAnchor()->getX()-x, 2*GetAnchor()->getY()-y, false);
+    pBindWith = pHandle;
+    pHandle->pBindWith = this;
+
+
 	return true;
 }
 
@@ -611,11 +616,11 @@ bool GHandlePoint::MoveTo( float newx, float newy, bool bTry, int moveActionID/*
 	bool bret = GAttributePoint::MoveTo(newx, newy, bTry, moveActionID);
 	if (bret)
 	{
-		if (pBindTo)
+        if (pBindWith)
 		{
-			if (GetAnchor()->nMoveActionID != moveActionID && pBindTo->GetAnchor()->nMoveActionID != moveActionID)
+            if (GetAnchor()->nMoveActionID != moveActionID && pBindWith->GetAnchor()->nMoveActionID != moveActionID)
 			{
-				pBindTo->CallMoveByOffset(-xoffset, -yoffset, false, moveActionID);
+                pBindWith->CallMoveByOffset(-xoffset, -yoffset, false, moveActionID);
 			}
 			return true;
 		}
@@ -630,11 +635,11 @@ bool GHandlePoint::UnbindTo( GHandlePoint * pHandle )
 	{
 		return false;
 	}
-	if (!isBindTo(pHandle))
+    if (!isBindWith(pHandle))
 	{
 		return false;
 	}
-	BindTo();
-	pHandle->BindTo();
+    BindWith();
+    pHandle->BindWith();
 	return true;
 }

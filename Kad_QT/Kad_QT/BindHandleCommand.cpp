@@ -32,7 +32,7 @@ void BindHandleCommand::OnProcessCommand()
 	if (step == CSI_INIT)
 	{
 		pcommand->StepTo(
-			CSI_BINDHANDLE_WANTFROMINDEX,
+            CSI_BINDHANDLE_WANTFROMINDEX,
 			CWP_INDEX);
 	}
 	else if (step == CSI_BINDHANDLE_WANTFROMINDEX)
@@ -64,22 +64,22 @@ void BindHandleCommand::OnDoneCommand()
 
 	GObject * pFromObj = pgm->FindObjectByID(fromindex);
 	GObject * pToObj = pgm->FindObjectByID(toindex);
-	if (!pFromObj || !pToObj)
+    if (!pFromObj)
 	{
 		return;
 	}
-	if (!pFromObj->isHandlePoint() || !pToObj->isHandlePoint())
+    if (!pFromObj->isHandlePoint() || (pToObj && !pToObj->isHandlePoint()))
 	{
 		return;
 	}
 	GHandlePoint * pFromHandlePoint = (GHandlePoint *)pFromObj;
 	GHandlePoint * pToHandlePoint = (GHandlePoint *)pToObj;
 
-	if (pFromHandlePoint->isBindTo(pToHandlePoint))
+    if (pFromHandlePoint->isBindWith(pToHandlePoint))
 	{
 		return;
 	}
-	pFromHandlePoint->BindTo(pToHandlePoint);
+    pFromHandlePoint->BindWith(pToHandlePoint);
 
 	PushRevertable(
 		CCMake_C(COMM_I_COMMAND, 3, 1),
@@ -113,6 +113,6 @@ void BindHandleCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 	GHandlePoint * pFromHandlePoint = (GHandlePoint *)pFromObj;
 	GHandlePoint * pToHandlePoint = (GHandlePoint *)pToObj;
 
-	pFromHandlePoint->BindTo();
-	pToHandlePoint->BindTo();
+    pFromHandlePoint->BindWith();
+    pToHandlePoint->BindWith();
 }

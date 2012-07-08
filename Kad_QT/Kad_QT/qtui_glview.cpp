@@ -69,7 +69,6 @@ void QTUI_GLView::SLT_OnUpdate()
 	updateGL();
 
 	MainInterface::getInstance().OnUpdateTimer();
-	MainInterface::getInstance().hge->System_Log("s");
 
     QMainInterface::getInstance().GetPStatusBar()->UpdateStatusBar();
     //	ClearKeyState();
@@ -155,7 +154,17 @@ void QTUI_GLView::leaveEvent( QEvent *e )
 
 bool QTUI_GLView::eventFilter(QObject *target, QEvent *e)
 {
-    if (e->type() == QEvent::KeyPress)
+    int etype = e->type();
+    if (etype == QEvent::KeyPress || etype == QEvent::KeyRelease || etype == QEvent::MouseButtonPress || etype == QEvent::MouseButtonRelease || etype == QEvent::MouseButtonDblClick || etype == QEvent::Wheel)
+    {
+        QMainInterface * pqm = &QMainInterface::getInstance();
+        if (!pqm->GetPNodeInfoFloatingWidget()->isHidden())
+        {
+            return true;
+        }
+    }
+
+    if (etype == QEvent::KeyPress)
 	{
 
         QKeyEvent * pke = static_cast<QKeyEvent *>(e);
@@ -196,7 +205,7 @@ bool QTUI_GLView::eventFilter(QObject *target, QEvent *e)
 			}
 		}
     }
-	else if(e->type() == QEvent::KeyRelease)
+    else if(etype == QEvent::KeyRelease)
 	{
 		QKeyEvent * pke = static_cast<QKeyEvent *>(e);
 
