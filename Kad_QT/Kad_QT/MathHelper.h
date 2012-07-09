@@ -74,6 +74,7 @@ public:
 	void ClearSet();
 	int ResetPoints(PointF2D pb, PointF2D pbh, PointF2D peh, PointF2D pe, float fPrecision);
 
+	bool isLengthCalculated();
 	int CalculateLengths();
 	
 	int GetSubPointsCount();

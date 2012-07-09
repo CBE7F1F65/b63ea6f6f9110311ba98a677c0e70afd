@@ -95,22 +95,26 @@ void GObjectManager::Render()
 	{
 		RenderHelper::getInstance().TargetQuadRender_S(tarObjs, 0, 0, 0xffffffff);
     }
-    if (bRenderUILayerIndicators)
-    {
-        list<GObject *> * lstSelectedNodes = GetSelectedNodes();
-        GObject * pHover = MainInterface::getInstance().OnGetHoveringNode();
-        for (list<GObject *>::iterator it=lstSelectedNodes->begin(); it!=lstSelectedNodes->end(); ++it)
-        {
-            if (pHover != *it)
-            {
-                (*it)->CallRender(LINECOLOR_UISELECT);
-            }
-        }
-        if (pHover)
-        {
-            pHover->CallRender(LINECOLOR_INDICATING);
-        }
-    }
+}
+
+void GObjectManager::RenderIndication()
+{
+	if (bRenderUILayerIndicators)
+	{
+		list<GObject *> * lstSelectedNodes = GetSelectedNodes();
+		GObject * pHover = MainInterface::getInstance().OnGetHoveringNode();
+		for (list<GObject *>::iterator it=lstSelectedNodes->begin(); it!=lstSelectedNodes->end(); ++it)
+		{
+			if (pHover != *it)
+			{
+				(*it)->CallRender(LINECOLOR_UISELECT);
+			}
+		}
+		if (pHover)
+		{
+			pHover->CallRender(LINECOLOR_INDICATING);
+		}
+	}
 }
 
 void GObjectManager::Delete()

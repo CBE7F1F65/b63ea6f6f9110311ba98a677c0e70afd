@@ -10,10 +10,14 @@
 #include "GObjectManager.h"
 #include "GLine.h"
 
-#define _UINIFT_ICONSIZE  ICMSIZE_MIDDLE
+#define _UINIFT_ICONSIZE  ICMSIZE_SMALL
 #define _UINIFT_INDENTATION   16
 
 #define _UINIFT_ROWHEIGHT   18  // ToDo!!!!!
+
+enum{
+	_UINIFT_PBDATAID_TREEWIDGETITEM,
+};
 
 enum{
     _UINIFT_COLUMN_NAME,
@@ -29,11 +33,14 @@ QTUI_NodeInfoFloating_Tree::QTUI_NodeInfoFloating_Tree(QWidget *parent) :
 
     this->setIndentation(_UINIFT_INDENTATION);
 
+    this->setAttribute(Qt::WA_NoBackground, true);
+
     pDisplyObj = NULL;
     bContextMode = false;
     pHoveringNode = NULL;
 
 	bInternalChanging = false;
+	nRelIndex = 0;
 }
 
 void QTUI_NodeInfoFloating_Tree::ShowNodeInfo(GObject *pObj, bool bContext)
@@ -83,7 +90,7 @@ void QTUI_NodeInfoFloating_Tree::mouseMoveEvent(QMouseEvent *e)
     bool bSet = false;
     if (pItem)
     {
-        QTUINIFT_NodeRelationship * pRel = GetRelationshipFromItem(pItem);
+        QTUIUD_NIFT_NodeRelationship * pRel = GetRelationshipFromItem(pItem);
         if (pRel)
         {
             pHoveringNode = pRel->pThis;
@@ -111,7 +118,7 @@ void QTUI_NodeInfoFloating_Tree::SLT_ItemChanged(QTreeWidgetItem *pItem, int nCo
 	bInternalChanging = true;
     if (nColumn == _UINIFT_COLUMN_NAME)
     {
-		QTUINIFT_NodeRelationship * pRel = GetRelationshipFromItem(pItem);
+		QTUIUD_NIFT_NodeRelationship * pRel = GetRelationshipFromItem(pItem);
         if (pRel)
         {
             if (pItem->flags()&Qt::ItemIsUserCheckable)
@@ -233,7 +240,7 @@ void QTUI_NodeInfoFloating_Tree::SLT_ItemChanged(QTreeWidgetItem *pItem, int nCo
                             for (int i=0; i<nChildren; i++)
                             {
                                 QTreeWidgetItem * pChildItem = pItem->parent()->child(i);
-                                QTUINIFT_NodeRelationship * pRel = GetRelationshipFromItem(pChildItem);
+                                QTUIUD_NIFT_NodeRelationship * pRel = GetRelationshipFromItem(pChildItem);
                                 if (pRel)
                                 {
                                     if (pRel->pRelationParent == pPoint->getBindWith())
@@ -281,8 +288,12 @@ void QTUI_NodeInfoFloating_Tree::SLT_ItemDoubleClicked(QTreeWidgetItem *pItem, i
 {
     if (nColumn == _UINIFT_COLUMN_NAME)
     {
-        QTUINIFT_NodeRelationship * pRel = GetRelationshipFromItem(pItem);
-        if (pRel)
+		if (pItem->childCount())
+		{
+			return;
+		}
+        QTUIUD_NIFT_NodeRelationship * pRel = GetRelationshipFromItem(pItem);
+        if (pRel && pRel->nRelationType >= 0)
         {
             GObject * pObj = pRel->pThis;
             if (pObj)
@@ -293,9 +304,27 @@ void QTUI_NodeInfoFloating_Tree::SLT_ItemDoubleClicked(QTreeWidgetItem *pItem, i
     }
 }
 
+void QTUI_NodeInfoFloating_Tree::SLT_ButtonClicked()
+{
+	QPushButton * pButton = (QPushButton *)this->sender();
+	QTUIUD_NIFT_PushButton * pData = (QTUIUD_NIFT_PushButton *)pButton->userData(_UINIFT_PBDATAID_TREEWIDGETITEM);
+	QTreeWidgetItem * pSenderItem = pData->pParentItem;
+	if (pSenderItem)
+	{
+		QTUIUD_NIFT_NodeRelationship * pRel = GetRelationshipFromItem(pSenderItem);
+		if (pRel)
+		{
+			GLine * pLine = (GLine *)pRel->pThis;
+			QString str;
+			str.sprintf("%s: %f", StringManager::getInstance().GetNodeInfoLengthName(), pLine->getLength());
+			pSenderItem->setText(_UINIFT_COLUMN_NAME, str);
+		}
+	}
+}
+
 void QTUI_NodeInfoFloating_Tree::Clear()
 {
-    vecNodeRelationship.clear();
+	nRelIndex = 0;
     this->clear();
 }
 
@@ -327,6 +356,28 @@ void QTUI_NodeInfoFloating_Tree::UpdateNodeInfo(GObject *pObj, QTreeWidgetItem *
 
     str.sprintf("%s: (%f, %f)", psm->GetNodeInfoPositionName(), pObj->getX(), pObj->getY());
     NewItemWithText(pInfoItem, str);
+
+	if (pObj->isLine())
+	{
+		GLine * pLine = (GLine *)pObj;
+		int relID = -1;
+		QPushButton * pButton = NULL;
+		if (pLine->isLengthCalculated())
+		{
+			str.sprintf("%s: %f", psm->GetNodeInfoLengthName(), pLine->getLength());
+		}
+		else
+		{
+			str.sprintf("%s: %s", psm->GetNodeInfoLengthName(), psm->GetNodeInfoLengthCalculatePromptName());
+			relID = NewRelationship(pObj);
+		}
+		QTreeWidgetItem * pLengthItem = NewItemWithText(pInfoItem, str, relID);
+		if (relID >= 0)
+		{
+			pButton = NewButton(0, psm->GetNodeInfoLengthCalculatePromptName(), pLengthItem);
+			this->setItemWidget(pLengthItem, _UINIFT_COLUMN_BUTTON, pButton);
+		}
+	}
 
     if (pObj->canAttach())
     {
@@ -411,17 +462,17 @@ void QTUI_NodeInfoFloating_Tree::UpdateNodeInfo(GObject *pObj, QTreeWidgetItem *
 	/* Hierarchy                                                            */
 	/************************************************************************/
 
-	QTreeWidgetItem * pHierarchy = NewItemWithText(pParent, psm->GetNodeInfoHierarchyName());
+	QTreeWidgetItem * pHierarchyItem = NewItemWithText(pParent, psm->GetNodeInfoHierarchyName());
 
 	GObject * pParentObj = pObj->getParent();
 	if (pParentObj && pParentObj->getID())
 	{
 		str.sprintf("%s: %s: %d, %s: %s", psm->GetNodeInfoParentName(), strID, pParentObj->getID(), strName, pParentObj->getDisplayName());
-		NewItemWithText(pHierarchy, str, NewRelationship(pParentObj, pObj, QTUINIFT_RELATIONSHIP_PARENT));
+		NewItemWithText(pHierarchyItem, str, NewRelationship(pParentObj, pObj, QTUINIFT_RELATIONSHIP_PARENT));
 	}
 	if (!pObj->getChildren()->empty())
 	{
-		QTreeWidgetItem * pChildrenItem = NewItemWithText(pParent, psm->GetNodeInfoChildrenName());
+		QTreeWidgetItem * pChildrenItem = NewItemWithText(pHierarchyItem, psm->GetNodeInfoChildrenName());
 		for (list<GObject *>::iterator it=pObj->getChildren()->begin(); it!=pObj->getChildren()->end(); ++it)
 		{
 			GObject * pChildObj = *it;
@@ -459,7 +510,8 @@ QTreeWidgetItem *QTUI_NodeInfoFloating_Tree::NewItemWithText(QTreeWidgetItem *pP
     if (relID >= 0)
     {
         pItem->setData(_UINIFT_COLUMN_NAME, Qt::UserRole, relID);
-		if (vecNodeRelationship[relID].nRelationType < _QTUINIFT_RELATIONSHIP_NOCHECKBEGIN)
+		
+		if (((QTUIUD_NIFT_NodeRelationship *)userData(relID))->nRelationType > _QTUINIFT_RELATIONSHIP_CHECKBEGIN)
 		{
 			pItem->setData(_UINIFT_COLUMN_NAME, Qt::CheckStateRole, bChecked?Qt::Checked:Qt::Unchecked);
 		}
@@ -476,9 +528,27 @@ QTreeWidgetItem *QTUI_NodeInfoFloating_Tree::NewItemWithText(QTreeWidgetItem *pP
 
 int QTUI_NodeInfoFloating_Tree::NewRelationship(GObject *pObj, GObject *pRelationParent, int nRelationType, float fProportion)
 {
-    QTUINIFT_NodeRelationship _rel(pObj, pRelationParent, nRelationType, fProportion);
-    vecNodeRelationship.push_back(_rel);
-    return vecNodeRelationship.size()-1;
+    QTUIUD_NIFT_NodeRelationship * _rel = new QTUIUD_NIFT_NodeRelationship(pObj, pRelationParent, nRelationType, fProportion);
+	QObjectUserData * pData = userData(nRelIndex);
+	if (pData)
+	{
+		delete pData;
+	}
+	this->setUserData(nRelIndex, _rel);
+	nRelIndex++;
+	return nRelIndex-1;
+}
+
+QPushButton * QTUI_NodeInfoFloating_Tree::NewButton( int iconID, QString strTooltip, QTreeWidgetItem * pParentItem )
+{
+	QPushButton * pButton = new QPushButton();
+	pButton->setToolTip(strTooltip);
+	pButton->setMaximumSize(_UINIFT_ICONSIZE, _UINIFT_ICONSIZE);
+	pButton->setMinimumSize(_UINIFT_ICONSIZE, _UINIFT_ICONSIZE);
+	connect(pButton, SIGNAL(clicked(bool)), this, SLOT(SLT_ButtonClicked()));
+	QTUIUD_NIFT_PushButton * pData = new QTUIUD_NIFT_PushButton(pParentItem);
+	pButton->setUserData(_UINIFT_PBDATAID_TREEWIDGETITEM, pData);
+	return pButton;
 }
 
 int QTUI_NodeInfoFloating_Tree::CalculateTotalHeight(QTreeWidgetItem *pParent, int height)
@@ -500,14 +570,14 @@ int QTUI_NodeInfoFloating_Tree::CalculateTotalHeight(QTreeWidgetItem *pParent, i
     return height;
 }
 
-QTUINIFT_NodeRelationship * QTUI_NodeInfoFloating_Tree::GetRelationshipFromItem(QTreeWidgetItem *pItem)
+QTUIUD_NIFT_NodeRelationship * QTUI_NodeInfoFloating_Tree::GetRelationshipFromItem(QTreeWidgetItem *pItem)
 {
     Q_ASSERT(pItem);
     bool bOk;
     int relID = pItem->data(_UINIFT_COLUMN_NAME, Qt::UserRole).toInt(&bOk);
     if (bOk)
     {
-        return &(vecNodeRelationship[relID]);
+        return (QTUIUD_NIFT_NodeRelationship *)userData(relID);
     }
     return NULL;
 }

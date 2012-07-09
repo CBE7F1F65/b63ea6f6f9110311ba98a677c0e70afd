@@ -68,6 +68,7 @@ public:
 	void Release();
 	void Update();
 	void Render();
+	void RenderIndication();
 	void Delete();
 
 	void OnTreeWillChange();

@@ -672,3 +672,8 @@ bool BezierSublinesInfo::GetBoundingBox( float * lx, float * ty, float * rx, flo
 
 	return true;
 }
+
+bool BezierSublinesInfo::isLengthCalculated()
+{
+	return fLengths!=NULL;
+}

@@ -678,3 +678,8 @@ float GBezierLine::CalculateMidPointProportion()
 	}
 	return 0;
 }
+
+bool GBezierLine::isLengthCalculated()
+{
+	return bsinfo.isLengthCalculated();
+}

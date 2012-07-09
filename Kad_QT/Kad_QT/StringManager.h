@@ -241,8 +241,10 @@ public:
 
     _SMNODEINFODEF(	Info,	"Node Information"	);
     _SMNODEINFODEF(	ID,	"ID"	);
-    _SMNODEINFODEF(	Name,	"Name"	);
-    _SMNODEINFODEF(	Position,	"Position"	);
+	_SMNODEINFODEF(	Name,	"Name"	);
+	_SMNODEINFODEF(	Position,	"Position"	);
+	_SMNODEINFODEF(	Length,	"Length"	);
+	_SMNODEINFODEF(	LengthCalculatePrompt,	"Press button to Calculate"	);
     _SMNODEINFODEF(	ClingTo,	"Cling To"	);
     _SMNODEINFODEF(	ClingBy,	"Cling By"	);
 	_SMNODEINFODEF(	MergeWith,	"Merge With"	);

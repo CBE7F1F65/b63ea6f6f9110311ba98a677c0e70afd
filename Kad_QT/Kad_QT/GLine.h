@@ -34,6 +34,7 @@ public:
 	virtual float CalculateMidPointProportion() = 0;
 	virtual bool GetPositionAtProportion( float fClingToProportion, float* tox, float* toy ) = 0;
 
+	virtual bool isLengthCalculated(){return true;};
 	virtual float getLength() = 0;
 
 	virtual const char * getDisplayName();
@@ -145,6 +146,7 @@ public:
 	virtual float CalculateMidPointProportion();
 	virtual bool GetPositionAtProportion( float fClingToProportion, float* tox, float* toy );
 
+	virtual bool isLengthCalculated();
 	virtual float getLength();
 
 	virtual bool Clone( GObject * pNewParent );

@@ -112,6 +112,9 @@ bool MainInterface::Render()
 	// Render MarqueeSelect
 	MarqueeSelect::getInstance().Render();
 
+	// Render Indicator
+	GObjectManager::getInstance().RenderIndication();
+
 	// Render Coord
 	GUICoordinate::getInstance().RenderCoordinate();
 	// Render Cursor

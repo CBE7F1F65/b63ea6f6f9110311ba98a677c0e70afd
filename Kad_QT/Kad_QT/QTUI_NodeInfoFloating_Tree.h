@@ -5,32 +5,43 @@
 #include "GObject.h"
 
 enum{
-    QTUINIFT_RELATIONSHIP_CLINGTO,
-    QTUINIFT_RELATIONSHIP_CLINGBY,
-	QTUINIFT_RELATIONSHIP_MERGEWITH,
-	QTUINIFT_RELATIONSHIP_BINDWITH,
-
-	_QTUINIFT_RELATIONSHIP_NOCHECKBEGIN,
 	QTUINIFT_RELATIONSHIP_PARENT,
 	QTUINIFT_RELATIONSHIP_CHILD,
+
+	_QTUINIFT_RELATIONSHIP_CHECKBEGIN,
+
+	QTUINIFT_RELATIONSHIP_CLINGTO,
+	QTUINIFT_RELATIONSHIP_CLINGBY,
+	QTUINIFT_RELATIONSHIP_MERGEWITH,
+	QTUINIFT_RELATIONSHIP_BINDWITH,
 };
 
-class QTUINIFT_NodeRelationship{
+class QTUIUD_NIFT_NodeRelationship : public QObjectUserData
+{
 public:
-    QTUINIFT_NodeRelationship(){};
-    QTUINIFT_NodeRelationship(GObject * pThisObj, GObject * pRelationParentObj, int nRType, float fProportion=0.0f)
+    QTUIUD_NIFT_NodeRelationship(GObject * pThisObj, GObject * pRelationParentObj, int nRType, float fProportion=0.0f)
     {
         pThis = pThisObj;
         pRelationParent = pRelationParentObj;
         nRelationType = nRType;
         fClingProportion = fProportion;
     };
-    ~QTUINIFT_NodeRelationship(){};
 
     GObject * pThis;
     GObject * pRelationParent;
     int nRelationType;
     float fClingProportion;
+};
+
+class QTUIUD_NIFT_PushButton : public QObjectUserData
+{
+public:
+	QTUIUD_NIFT_PushButton(QTreeWidgetItem * _pParentItem)
+	{
+		pParentItem = _pParentItem;
+	}
+
+	QTreeWidgetItem * pParentItem;
 };
 
 class QTUI_NodeInfoFloating_Tree : public QTreeWidget
@@ -56,17 +67,20 @@ public slots:
     void SLT_ItemClicked(QTreeWidgetItem * pItem, int nColumn);
     void SLT_ItemDoubleClicked(QTreeWidgetItem * pItem, int nColumn);
 
+	void SLT_ButtonClicked();
+
 private:
     void Clear();
     void UpdateNodeInfo(GObject * pObj, QTreeWidgetItem * pParent=NULL);
     void AdjustSize();
 
     QTreeWidgetItem * NewItemWithText(QTreeWidgetItem *pParent, QString str, int relID=-1, bool bChecked=true);
-    int NewRelationship(GObject * pObj, GObject * pRelationParent, int nRelationType, float fProportion=0.0f);
+    int NewRelationship(GObject * pObj, GObject * pRelationParent=NULL, int nRelationType=-1, float fProportion=0.0f);
+	QPushButton * NewButton(int iconID, QString strTooltip, QTreeWidgetItem * pParentItem);
 
     int CalculateTotalHeight(QTreeWidgetItem * pParent=0, int height=0);
 
-    QTUINIFT_NodeRelationship * GetRelationshipFromItem(QTreeWidgetItem * pItem);
+    QTUIUD_NIFT_NodeRelationship * GetRelationshipFromItem(QTreeWidgetItem * pItem);
 
     GObject * pDisplyObj;
     bool bContextMode;
@@ -74,8 +88,7 @@ private:
     GObject * pHoveringNode;
 
 	bool bInternalChanging;
-
-    QVector<QTUINIFT_NodeRelationship> vecNodeRelationship;
+	int nRelIndex;
 };
 
 #endif // QTUI_NODEINFOFLOATING_TREE_H
