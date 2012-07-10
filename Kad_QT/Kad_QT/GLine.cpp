@@ -188,6 +188,19 @@ GObject * GLine::getPiece()
 	return NULL;
 };
 
+bool GLine::toStraightLine()
+{
+	if (isStraightLine())
+	{
+		return false;
+	}
+	GBezierLine * pBezier = (GBezierLine *)this;
+	pBezier->GetBeginPoint()->GetHandle()->BindWith();
+	pBezier->GetEndPoint()->GetHandle()->BindWith();
+	pBezier->SetBeginHandlePos(pBezier->GetBeginPoint()->getX(), pBezier->GetBeginPoint()->getY());
+	pBezier->SetEndHandlePos(pBezier->GetEndPoint()->getX(), pBezier->GetEndPoint()->getY());
+	return true;
+}
 /************************************************************************/
 /* GSTRAIGHTLINE                                                        */
 /************************************************************************/
@@ -225,23 +238,6 @@ void GStraightLine::OnRender( int iHighlightLevel/*=0*/ )
 {
 	DWORD col = getLineColor(iHighlightLevel);
 	RenderHelper::getInstance().RenderLine(plbegin->getX(), plbegin->getY(), plend->getX(), plend->getY(), col);
-}
-
-bool GStraightLine::Clone( GObject * pNewParent )
-{
-	_GOBJ_CLONE_PRE(GStraightLine);
-
-    _node->plbegin = NULL;
-    _node->plend = NULL;
-
-	_GOBJ_CLONE_POST_NORET();
-	list<GObject *>::reverse_iterator it=_node->listChildren.rbegin();
-	_node->plbegin = (GAnchorPoint *)*it;
-	++it;
-	_node->plend = (GAnchorPoint *)*it;
-	++it;
-	_node->pmid = (GMidPoint *)*it;
-	return true;
 }
 
 bool GStraightLine::CheckNearTo( float px, float py, float r, float *plx, float *ply, int *isec/*=NULL*/ )
@@ -682,4 +678,28 @@ float GBezierLine::CalculateMidPointProportion()
 bool GBezierLine::isLengthCalculated()
 {
 	return bsinfo.isLengthCalculated();
+}
+
+bool GBezierLine::toBezierLine()
+{
+	if (!isStraightLine())
+	{
+		return false;
+	}
+	float xb = plbegin->getX();
+	float yb = plbegin->getY();
+	float xe = plend->getX();
+	float ye = plend->getY();
+
+	float s = 0.25f;
+	float sb = s;
+	float se = 1-s;
+
+	float hxb = (xe-xb)* sb + xb;
+	float hyb = (ye-yb)* sb + yb;
+	float hxe = (xe-xb)* se + xb;
+	float hye = (ye-yb)* se + yb;
+	SetBeginHandlePos(hxb, hyb);
+	SetEndHandlePos(hxe, hye);
+	return true;
 }

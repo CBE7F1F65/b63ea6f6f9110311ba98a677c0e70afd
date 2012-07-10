@@ -673,11 +673,11 @@ bool MarqueeSelect::PickFilterCallback( GObject * pObj )
 	return true;
 }
 
-void MarqueeSelect::OnDeleteNode( GObject * pObj )
+void MarqueeSelect::OnDeleteNode( GObject * pDeletedObj )
 {
 	for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end();)
 	{
-		if ((*it) == pObj)
+		if ((*it) == pDeletedObj)
 		{
 			it = selectednodes.erase(it);
 		}

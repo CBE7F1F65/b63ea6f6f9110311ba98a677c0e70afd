@@ -112,6 +112,11 @@ LineColorSet ColorManager::GetLayerLineColorSetByIndex( int layerID/* =-1 */ )
 	return ls;
 }
 
+BYTE ColorManager::GetMarkingAlpha()
+{
+	return 0xC0;
+}
+
 DWORD ColorManager::GetTextColor( int type, int state )
 {
 	if (type == COLORMT_LIST)

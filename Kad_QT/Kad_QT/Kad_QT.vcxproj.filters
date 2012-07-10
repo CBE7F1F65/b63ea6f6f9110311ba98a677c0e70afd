@@ -105,6 +105,12 @@
     <Filter Include="Main\Command\Test">
       <UniqueIdentifier>{361135fb-7d1f-42a9-b4de-0c326edf50e1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\Helper\Manager\Marking">
+      <UniqueIdentifier>{504d0514-40d9-4bd3-81fb-45aa500d27b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Transform">
+      <UniqueIdentifier>{0079d06f-594d-49ea-a980-67c120bfb1ad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_kad_qt.cpp">
@@ -410,6 +416,24 @@
     <ClCompile Include="GeneratedFiles\Release\moc_QTUI_NodeInfoFloating_Widget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="MarkingManager.cpp">
+      <Filter>Main\Helper\Manager\Marking</Filter>
+    </ClCompile>
+    <ClCompile Include="MarkingObject.cpp">
+      <Filter>Main\Helper\Manager\Marking</Filter>
+    </ClCompile>
+    <ClCompile Include="QTUI_MarkingFloating_Widget.cpp">
+      <Filter>QT</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_QTUI_MarkingFloating_Widget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_QTUI_MarkingFloating_Widget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="LineTransformCommand.cpp">
+      <Filter>Main\Command\Transform</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -595,6 +619,18 @@
     <ClInclude Include="GeneratedFiles\ui_QTUI_NodeInfoFloating_Widget.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="MarkingManager.h">
+      <Filter>Main\Helper\Manager\Marking</Filter>
+    </ClInclude>
+    <ClInclude Include="MarkingObject.h">
+      <Filter>Main\Helper\Manager\Marking</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_QTUI_MarkingFloating_Widget.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LineTransformCommand.h">
+      <Filter>Main\Command\Transform</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="kad_qt.ui">
@@ -670,6 +706,12 @@
       <Filter>QT</Filter>
     </CustomBuild>
     <CustomBuild Include="QTUI_NodeInfoFloating_Widget.h">
+      <Filter>QT</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QTUI_MarkingFloating_Widget.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QTUI_MarkingFloating_Widget.h">
       <Filter>QT</Filter>
     </CustomBuild>
   </ItemGroup>

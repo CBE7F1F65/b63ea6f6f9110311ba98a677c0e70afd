@@ -181,6 +181,7 @@ public:
 	DWORD GetCoordColor();
 	DWORD GetCursorColor();
 	*/
+	BYTE GetMarkingAlpha();
 
 	DWORD GetTextColor(int type, int state);
 	DWORD GetTextBkColor(int type, int state);

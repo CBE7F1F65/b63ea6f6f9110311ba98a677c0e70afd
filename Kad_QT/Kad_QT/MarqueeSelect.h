@@ -50,6 +50,6 @@ public:
 
 	bool PickFilterCallback(GObject * pObj);
 
-	void OnDeleteNode(GObject * pObj);
+	void OnDeleteNode(GObject * pDeletedObj);
 };
 

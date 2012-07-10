@@ -29,6 +29,8 @@ GObject::GObject(void)
 	nMoveActionID = -1;
 	nUpdateMoveActionID = -1;
 
+	nModifyVersion = 0;
+
 	_SetID();
 	OnInit();
 }
@@ -342,6 +344,7 @@ void GObject::OnRender( int iHighlightLevel/*=0*/ )
 void GObject::OnModify()
 {
 	bModified = true;
+	nModifyVersion++;
 }
 
 void GObject::OnClearModify()

@@ -81,6 +81,8 @@ public:
 
 	int comm;
 
+	static void Release();
+	static GBaseNode tBaseNode;
 
 	CommandStepInfo laststep;
 

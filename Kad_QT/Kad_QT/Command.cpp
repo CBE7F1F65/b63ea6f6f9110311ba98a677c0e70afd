@@ -12,7 +12,7 @@ Command::Command()
 {
 //	ZeroMemory(&ccomm, sizeof(ccomm));
 	ccomm.ClearSet();
-	tarcommand = 0;
+	tarCommand = 0;
 	undoredoflag = 0;
 	undostepmax = INID_UNDOMAX;
 	Init();
@@ -871,12 +871,12 @@ int Command::StepBack()
 
 void Command::Render()
 {
-	RenderHelper::getInstance().TargetQuadRender_S(tarcommand, tarx, tary, 0xffffffff);
+	RenderHelper::getInstance().TargetQuadRender_S(tarCommand, tarx, tary, 0xffffffff);
 }
 
 void Command::SetRenderTarget( HTARGET tar, float x/*=0*/, float y/*=0*/ )
 {
-	tarcommand = tar;
+	tarCommand = tar;
 	tarx = x;
 	tary = y;
 }

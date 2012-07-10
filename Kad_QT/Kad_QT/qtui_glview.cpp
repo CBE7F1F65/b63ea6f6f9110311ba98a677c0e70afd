@@ -242,11 +242,11 @@ bool QTUI_GLView::eventFilter(QObject *target, QEvent *e)
 
 void QTUI_GLView::OnFrame()
 {
-	if (QApplication::mouseButtons() & Qt::MouseButton::LeftButton)
+	if (QApplication::mouseButtons() & Qt::LeftButton)
 	{
 		hge->Input_SetDIMouseKey(0);
 	}
-	if (QApplication::mouseButtons() & Qt::MouseButton::RightButton)
+	if (QApplication::mouseButtons() & Qt::RightButton)
 	{
 		hge->Input_SetDIMouseKey(1);
 	}

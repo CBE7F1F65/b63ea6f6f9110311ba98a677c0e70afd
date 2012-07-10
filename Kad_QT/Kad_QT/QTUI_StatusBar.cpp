@@ -46,6 +46,13 @@ void QTUI_StatusBar::UpdateStatusBar()
         ui->spinPrecision->setValue(nPrecision);
     }
 
+    int nSnapRange = GObjectPicker::getInstance().GetSnapRange_S();
+    int nuiSnapRange = ui->spinSnapRange->value();
+    if (nuiSnapRange != nSnapRange)
+    {
+        ui->spinSnapRange->setValue(nSnapRange);
+    }
+
     GObjectPicker * pgp = &GObjectPicker::getInstance();
     GObjectManager * pgm = &GObjectManager::getInstance();
 
@@ -74,6 +81,11 @@ void QTUI_StatusBar::UpdateStatusBar()
         ui->PBSnapVirtualCoord->setChecked(pgp->isSnapToVirtualCoord());
     }
 
+    if (ui->PBSnapHandleOnly->isChecked() != pgp->isSnapToHandleOnly())
+    {
+        ui->PBSnapHandleOnly->setChecked(pgp->isSnapToHandleOnly());
+    }
+
     if (ui->PBShowGrid->isChecked() != pguic->isShowGrid())
     {
         ui->PBShowGrid->setChecked(pguic->isShowGrid());
@@ -83,6 +95,11 @@ void QTUI_StatusBar::UpdateStatusBar()
 void QTUI_StatusBar::SLT_PrecisionChanged(int value)
 {
     MainInterface::getInstance().SetPrecisionInt(value);
+}
+
+void QTUI_StatusBar::SLT_SnapRangeChanged(int value)
+{
+    GObjectPicker::getInstance().SetSnapRange_S(value);
 }
 
 void QTUI_StatusBar::SLT_PBSnapGridTriggered(bool bVal)
@@ -118,6 +135,11 @@ void QTUI_StatusBar::SLT_PBSnapGeometryCoordTriggered(bool bVal)
 void QTUI_StatusBar::SLT_PBSnapVirtualCoordTriggered(bool bVal)
 {
     GObjectPicker::getInstance().SetSnapTo(GOPSNAP_VIRTUALCOORD, bVal);
+}
+
+void QTUI_StatusBar::SLT_PBSnapHandleOnlyTriggered(bool bVal)
+{
+    GObjectPicker::getInstance().SetSnapTo(GOPSNAP_HANDLEONLY, bVal);
 }
 
 void QTUI_StatusBar::resizeEvent(QResizeEvent *e)

@@ -7,6 +7,7 @@ enum
 	RTID_GRID,
 	RTID_COMMAND,
 	RTID_GOBJECTS,
+	RTID_MEASURE,
 };
 
 struct RenderTargetInfo

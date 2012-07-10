@@ -21,7 +21,7 @@ GObjectPicker::GObjectPicker(void)
 	bTestMode = false;
 	for (int i=0; i<GOPONLINE_MAX; i++)
 	{
-		pFakeLine[i] = new GStraightLine(&(GObjectManager::getInstance().fakebasenode), PointF2D(0, 0), PointF2D(0, 0));
+		pFakeLine[i] = new GBezierLine(&(GObjectManager::getInstance().fakebasenode), PointF2D(0, 0), PointF2D(0, 0));
 	}
 }
 
@@ -161,7 +161,7 @@ int GObjectPicker::UpdatePickPoint()
 		{
 			restoreSnapto = snaptoflag;
 			SetSnapTo(snaptoflag, false);
-			SetSnapTo(GOPSNAP_GEOMETRY);
+			SetSnapTo(GOPSNAP_GEOMETRY|(restoreSnapto&GOPSNAP_HANDLEONLY));
 		}
 	}
 
@@ -381,6 +381,13 @@ bool GObjectPicker::CheckSnapGeometryPoint( GObject * pObj )
 				{
 					bret = pfilterfunc(pObj);
 				}
+                if (isSnapToHandleOnly())
+                {
+                    if (!pObj->isHandlePoint())
+                    {
+                        bret = false;
+                    }
+                }
 				if (bret)
 				{
 					snappedstate |= GOPSNAPPED_POINT|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
@@ -723,7 +730,7 @@ void GObjectPicker::ClearSet()
 //	mousedownPickEntityObj = NULL;
 }
 
-void GObjectPicker::OnDeleteNode( GObject * node )
+void GObjectPicker::OnDeleteNode( GObject * pDeletedObj )
 {
 #define _NULLIFYNODE_IF_DELETED(NODE, DELETEDNODE)	\
 	if (NODE == DELETEDNODE)	\
@@ -733,9 +740,9 @@ void GObjectPicker::OnDeleteNode( GObject * node )
 
 	for (int i=0; i<GOPONLINE_MAX; i++)
 	{
-		_NULLIFYNODE_IF_DELETED(pickObj[i], node);
-		_NULLIFYNODE_IF_DELETED(pickEntityObj[i], node);
-		_NULLIFYNODE_IF_DELETED(pickCoordEntityObj[i], node);
+		_NULLIFYNODE_IF_DELETED(pickObj[i], pDeletedObj);
+		_NULLIFYNODE_IF_DELETED(pickEntityObj[i], pDeletedObj);
+		_NULLIFYNODE_IF_DELETED(pickCoordEntityObj[i], pDeletedObj);
 	}
 //	_NULLIFYNODE_IF_DELETED(mousedownPickObj, node);
 //	_NULLIFYNODE_IF_DELETED(mousedownPickEntityObj, node);
@@ -1034,7 +1041,7 @@ void GObjectPicker::TraslateLineToStraightLine( GLine * pLine, int index, int is
 	else
 	{
 		GBezierLine * pBLine = (GBezierLine *)pLine;
-		pFakeLine[index]->SetBeginEnd(pBLine->bsinfo.GetX(isec), pBLine->bsinfo.GetY(isec), pBLine->bsinfo.GetX(isec+1), pBLine->bsinfo.GetY(isec+1));
+		pFakeLine[index]->SetBeginEnd(pBLine->getBSInfo()->GetX(isec), pBLine->getBSInfo()->GetY(isec), pBLine->getBSInfo()->GetX(isec+1), pBLine->getBSInfo()->GetY(isec+1));
 	}
 }
 

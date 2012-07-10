@@ -20,6 +20,8 @@ public:
 
 public slots:
     void SLT_PrecisionChanged(int value);
+    void SLT_SnapRangeChanged(int value);
+
     void SLT_PBSnapGridTriggered(bool bVal);
     void SLT_PBSnapGeometryTriggered(bool bVal);
     void SLT_PBSnapCoordTriggered(bool bVal);
@@ -27,6 +29,7 @@ public slots:
     void SLT_PBShowGridTriggered(bool bVal);
     void SLT_PBSnapGeometryCoordTriggered(bool bVal);
     void SLT_PBSnapVirtualCoordTriggered(bool bVal);
+    void SLT_PBSnapHandleOnlyTriggered(bool bVal);
     
 protected:
     virtual void resizeEvent(QResizeEvent *e);

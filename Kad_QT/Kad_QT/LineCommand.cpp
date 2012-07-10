@@ -8,6 +8,8 @@
 #include "RenderHelper.h"
 #include "RenderTargetManager.h"
 #include "ColorManager.h"
+#include "MarkingObject.h"
+#include "MarkingManager.h"
 
 #include "GLine.h"
 #include "GObjectManager.h"
@@ -17,9 +19,13 @@
 LineCommand::LineCommand()
 {
 	pNextMergeToBegin = NULL;
+
+	pTempLine = NULL;
 }
+
 LineCommand::~LineCommand()
 {
+//	ClearTemp();
 }
 void LineCommand::OnProcessCommand()
 {
@@ -185,25 +191,38 @@ void LineCommand::OnProcessCommand()
 		}
 	}
 
+	if (step >= CSI_LINE_WANTX2)
+	{
+		float x1, y1;
+		pcommand->GetParamXY(CSP_LINE_XY_B, &x1, &y1);
+
+		float x2 = pgp->GetPickX_C();
+		float y2 = pgp->GetPickY_C();
+		pTempLine->SetBeginEnd(x1, y1, x2, y2);
+
+	}
+
 	RenderToTarget();
 }
 
 void LineCommand::RenderToTarget()
 {
 	int nstep = pcommand->GetStep();
-	if (nstep >= CSI_LINE_WANTX2 && nstep <= CSI_LINE_WANTY2)
+	if (nstep >= CSI_LINE_WANTX2 && nstep <= CSI_LINE_WANTY2 && pTempLine)
 	{
+		/*
 		float x1, y1;
 		pcommand->GetParamXY(CSP_LINE_XY_B, &x1, &y1);
 
 		float x2 = pgp->GetPickX_C();//MainInterface::getInstance().mousex;
 		float y2 = pgp->GetPickY_C();//MainInterface::getInstance().mousey;
-
+		*/
 		HTARGET tar = RenderTargetManager::getInstance().UpdateTarget(RTID_COMMAND);
 
 		RenderHelper::getInstance().BeginRenderTar(tar);
-		RenderHelper::getInstance().RenderLineMeasureMark(x1, y1, x2, y2, pgm->GetActiveLayer()->getLineColor());
-		RenderHelper::getInstance().RenderLine(x1, y1, x2, y2, pgm->GetActiveLayer()->getLineColor());
+//		RenderHelper::getInstance().RenderLineMeasureMark(x1, y1, x2, y2, pgm->GetActiveLayer()->getLineColor());
+//		RenderHelper::getInstance().RenderLine(x1, y1, x2, y2, pgm->GetActiveLayer()->getLineColor());
+		pTempLine->CallRender();
 		RenderHelper::getInstance().EndRenderTar();
 
 		Command::getInstance().SetRenderTarget(tar);
@@ -245,9 +264,24 @@ void LineCommand::OnInitCommand()
 	pMergeToBegin = NULL;
 	pMergeToEnd = NULL;
 	pNCLine = NULL;
+
+	ClearTemp();
+	pTempLine = new GBezierLine(&tBaseNode, PointF2D(), PointF2D());
+	MarkingLine * pMarking = new MarkingLine(pTempLine, MARKFLAG_LENGTH|MARKFLAG_ANGLE);
+	MarkingManager::getInstance().EnableMarking(pMarking);
 }
 
 void LineCommand::OnTerminalCommand()
 {
 	pNextMergeToBegin = NULL;
+	ClearTemp();
+}
+
+void LineCommand::ClearTemp()
+{
+	if (pTempLine)
+	{
+		pTempLine->RemoveFromParent(true);
+		pTempLine = NULL;
+	}
 }

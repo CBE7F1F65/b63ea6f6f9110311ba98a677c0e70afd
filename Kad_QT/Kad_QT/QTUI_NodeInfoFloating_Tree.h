@@ -67,7 +67,8 @@ public slots:
     void SLT_ItemClicked(QTreeWidgetItem * pItem, int nColumn);
     void SLT_ItemDoubleClicked(QTreeWidgetItem * pItem, int nColumn);
 
-	void SLT_ButtonClicked();
+	void SLT_CalculateLengthButtonClicked();
+	void SLT_TransformButtonClicked(bool bChecked);
 
 private:
     void Clear();
@@ -76,7 +77,9 @@ private:
 
     QTreeWidgetItem * NewItemWithText(QTreeWidgetItem *pParent, QString str, int relID=-1, bool bChecked=true);
     int NewRelationship(GObject * pObj, GObject * pRelationParent=NULL, int nRelationType=-1, float fProportion=0.0f);
-	QPushButton * NewButton(int iconID, QString strTooltip, QTreeWidgetItem * pParentItem);
+
+	QPushButton * NewCalculateLengthButton(QString strTooltip, QTreeWidgetItem * pParentItem);
+	QPushButton * NewTransformButton(QString str, QTreeWidgetItem * pParentItem, bool bChecked);
 
     int CalculateTotalHeight(QTreeWidgetItem * pParent=0, int height=0);
 

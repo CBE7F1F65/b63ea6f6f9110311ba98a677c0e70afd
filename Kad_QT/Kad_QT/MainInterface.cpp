@@ -15,6 +15,7 @@
 #include "SnapshotManager.h"
 #include "GObjectPicker.h"
 #include "MarqueeSelect.h"
+#include "MarkingManager.h"
 
 #include "Resource.h"
 
@@ -101,6 +102,9 @@ bool MainInterface::Render()
 
 	// Render Grids
 	GUICoordinate::getInstance().RenderGrid();
+
+	// Marking
+	MarkingManager::getInstance().Render();
 
 	// All Nodes
 	GObjectManager::getInstance().Render();
@@ -217,6 +221,8 @@ bool MainInterface::Frame()
 	GObjectManager::getInstance().Update();
 	pcommand->UpdateProcessCommand();//ProcessCommand();
 
+	MarkingManager::getInstance().Update();
+
 	GObjectManager::getInstance().Delete();
 	DoUpdateFPS();
 	DoUpdateStatusInfo();
@@ -253,6 +259,7 @@ bool MainInterface::FocusGain()
 
 bool MainInterface::Exit()
 {
+	CommandTemplate::Release();
 	SnapshotManager::getInstance().Release();
 	GObjectManager::getInstance().Release();
 	RenderHelper::getInstance().Release();

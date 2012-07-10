@@ -408,7 +408,7 @@ public:
 		return StringManager::getInstance().GetSubCommandPromptStrName(ssc);//subcinfo[ssc].promptstr.c_str();
 	};
 
-	HTARGET tarcommand;
+	HTARGET tarCommand;
 	float tarx;
 	float tary;
 	void SetRenderTarget(HTARGET tar, float x=0, float y=0);

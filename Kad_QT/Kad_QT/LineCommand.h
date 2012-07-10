@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CommandTemplate.h"
+#include "MarkingObject.h"
 
 class LineCommand : public CommandTemplate
 {
@@ -20,7 +21,12 @@ public:
 	virtual void RenderToTarget();
 	virtual void OnInitCommand();
 	virtual void OnTerminalCommand();
+
+
 private:
+
+	void ClearTemp();
+
 	GObject * pMergeToBegin;
 	GObject * pMergeToEnd;
 	GObject * pNextMergeToBegin;
@@ -28,4 +34,6 @@ private:
 	float fProportionEnd;
 
 	GLine * pNCLine;
+
+	GBezierLine * pTempLine;
 };

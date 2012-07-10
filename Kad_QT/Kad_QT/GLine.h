@@ -24,6 +24,8 @@ public:
 	virtual bool CallMoveTo(float newx, float newy, bool bTry, int moveActionID=-1);
 
 	virtual bool isStraightLine() = 0;
+	virtual bool toStraightLine();
+	virtual bool toBezierLine() = 0;
 
 	virtual void SetBeginEnd(float xb, float yb, float xe, float ye);
 	virtual void UpdateMidPoint() = 0;
@@ -85,6 +87,7 @@ class GVirtualLine :
 /************************************************************************/
 /* GStrightLine                                                         */
 /************************************************************************/
+// Still Virtual!
 class GStraightLine : public GSubstantiveLine
 {
 public:
@@ -109,8 +112,6 @@ public:
 	virtual void GetBoundingBox(float *xl, float *yt, float *xr, float * yb);
 
 	virtual float getLength();
-
-	virtual bool Clone( GObject * pNewParent );
 };
 /************************************************************************/
 /* GBezierLine                                                          */
@@ -128,6 +129,7 @@ public:
 	virtual void UpdateMidPoint();
 	virtual bool canMove(){return true;};
 	virtual bool isStraightLine();
+	virtual bool toBezierLine();
 
 	virtual void OnRender(int iHighlightLevel=0);
 
@@ -151,5 +153,7 @@ public:
 
 	virtual bool Clone( GObject * pNewParent );
 
+	BezierSublinesInfo * getBSInfo(){return &bsinfo;};
+private:
 	BezierSublinesInfo bsinfo;
 };

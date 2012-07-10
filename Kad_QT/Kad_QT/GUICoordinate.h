@@ -98,7 +98,7 @@ public:
 
 	bool panwillterminate;
 
-	HTARGET targrid;
+	HTARGET tarGrid;
 	HGE * hge;
 
 	inline float StoCs(float s)

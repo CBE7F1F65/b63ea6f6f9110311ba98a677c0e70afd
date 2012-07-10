@@ -22,7 +22,7 @@
 GUICoordinate::GUICoordinate()
 {
 	hge = hgeCreate(HGE_VERSION);
-	targrid = NULL;
+	tarGrid = NULL;
 	scale = _GUIC_DEFAULTSCALE;
 
     SetShowGrid(true);
@@ -80,24 +80,9 @@ void GUICoordinate::RenderGrid()
     {
         return;
     }
-	if (!targrid)
+	if (tarGrid)
 	{
-        RenderGridReDraw();
-	}
-	else
-	{
-		RenderHelper::getInstance().TargetQuadRender_S(targrid, 0, 0, 0xffffffff);
-		/*
-		HTEXTURE tex = hge->Target_GetTexture(targrid);
-		hgeQuad quad;
-		quad.blend = BLEND_DEFAULT;
-		quad.tex = tex;
-		quad.v[0].x = 0; quad.v[0].y = 0; quad.v[0].tx = 0; quad.v[0].ty = 0, quad.v[0].z = 0, quad.v[0].col = 0xffffffff;
-		quad.v[1].x = scrw_s; quad.v[1].y = 0; quad.v[1].tx = 1; quad.v[1].ty = 0, quad.v[1].z = 0, quad.v[1].col = 0xffffffff;
-		quad.v[2].x = scrw_s; quad.v[2].y = scrh_s; quad.v[2].tx = 1; quad.v[2].ty = 1, quad.v[2].z = 0, quad.v[2].col = 0xffffffff;
-		quad.v[3].x = 0; quad.v[3].y = scrh_s; quad.v[3].tx = 0; quad.v[3].ty = 1, quad.v[3].z = 0, quad.v[3].col = 0xffffffff;
-		hge->Gfx_RenderQuad(&quad);
-		*/
+		RenderHelper::getInstance().TargetQuadRender_S(tarGrid, 0, 0, 0xffffffff);
 	}
 }
 
@@ -360,10 +345,10 @@ void GUICoordinate::UpdateScreenMeasure()
 		}
 	}
 
-    targrid = RenderTargetManager::getInstance().UpdateTarget(RTID_GRID);
-    if (targrid)
+    tarGrid = RenderTargetManager::getInstance().UpdateTarget(RTID_GRID);
+    if (tarGrid)
     {
-        RenderHelper::getInstance().BeginRenderTar(targrid);
+        RenderHelper::getInstance().BeginRenderTar(tarGrid);
         RenderGridReDraw();
         RenderHelper::getInstance().EndRenderTar();
     }

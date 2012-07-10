@@ -10,6 +10,8 @@
 #include "GObjectManager.h"
 #include "GUICursor.h"
 #include "GLine.h"
+#include "MarkingManager.h"
+#include "MarkingObject.h"
 
 BezierCommand::BezierCommand(void)
 {
@@ -183,7 +185,14 @@ void BezierCommand::OnProcessCommand()
 					{
 						if (pPicked->isAnchorPoint())
 						{
-							step < CSI_BEZIER_WANTNAX ? pBindAnchorBegin : pBindAnchorEnd = (GAnchorPoint *)pPicked;
+							if (step < CSI_BEZIER_WANTNAX)
+							{
+								pBindAnchorBegin = (GAnchorPoint *)pPicked;
+							}
+							else
+							{
+								pBindAnchorEnd = (GAnchorPoint *)pPicked;
+							}
 						}
 					}
 
@@ -310,6 +319,60 @@ void BezierCommand::OnProcessCommand()
 		}
 	}
 
+	if (step >= CSI_BEZIER_WANTBHX)
+	{
+		float xb, yb, bhx, bhy, xn, yn, nhx, nhy;
+		float tx = pgp->GetPickX_C();
+		float ty = pgp->GetPickY_C();
+
+		bDrawTempBezierLine=false;
+		bDrawTempLineHandle=false;
+
+		switch (step)
+		{
+			// No Break
+		case CSI_BEZIER_WANTNHX:
+		case CSI_BEZIER_WANTNHY:
+			pcommand->GetParamXY(CSP_BEZIER_XY_NA, &xn, &yn);
+			bDrawTempLineHandle = true;
+		case CSI_BEZIER_WANTNAX:
+		case CSI_BEZIER_WANTNAY:
+			pcommand->GetParamXY(CSP_BEZIER_XY_BH, &bhx, &bhy);
+			bDrawTempBezierLine = true;
+		case CSI_BEZIER_WANTBHX:
+		case CSI_BEZIER_WANTBHY:
+			pcommand->GetParamXY(CSP_BEZIER_XY_BA, &xb, &yb);
+		}
+		if (!bDrawTempLineHandle)
+		{
+			if (!bDrawTempBezierLine)
+			{
+				bhx = tx;
+				bhy = ty;
+
+				xn = nhx = xb;
+				yn = nhy = yb;
+			}
+			else
+			{
+				xn = tx;
+				yn = ty;
+
+				nhx = tx;
+				nhy = ty;
+			}
+		}
+		else
+		{
+			nhx = 2*xn-tx;
+			nhy = 2*yn-ty;
+		}
+
+		pTempLine->SetBeginEnd(xb, yb, xn, yn);
+		pTempLine->SetBeginHandlePos(bhx, bhy);
+		pTempLine->SetEndHandlePos(nhx, nhy);
+	}
+
 	RenderToTarget();
 }
 
@@ -357,79 +420,38 @@ void BezierCommand::RenderToTarget()
 
 	if (nstep >= CSI_BEZIER_WANTBHX && nstep <= CSI_BEZIER_WANTNHY)
 	{
-		float xb, yb, bhx, bhy, xn, yn, nhx, nhy;
-		float tx = pgp->GetPickX_C();
-		float ty = pgp->GetPickY_C();
-
-		bool linebezier=false;
-		bool linenh=false;
-
-		switch (nstep)
-		{
-			// No Break
-		case CSI_BEZIER_WANTNHX:
-		case CSI_BEZIER_WANTNHY:
-			pcommand->GetParamXY(CSP_BEZIER_XY_NA, &xn, &yn);
-			linenh = true;
-		case CSI_BEZIER_WANTNAX:
-		case CSI_BEZIER_WANTNAY:
-			pcommand->GetParamXY(CSP_BEZIER_XY_BH, &bhx, &bhy);
-			linebezier = true;
-		case CSI_BEZIER_WANTBHX:
-		case CSI_BEZIER_WANTBHY:
-			pcommand->GetParamXY(CSP_BEZIER_XY_BA, &xb, &yb);
-		}
-		if (!linenh)
-		{
-			if (!linebezier)
-			{
-				bhx = tx;
-				bhy = ty;
-			}
-			else
-			{
-				xn = tx;
-				yn = ty;
-
-				nhx = tx;
-				nhy = ty;
-			}
-		}
-		else
-		{
-			nhx = 2*xn-tx;
-			nhy = 2*yn-ty;
-		}
-
 		HTARGET tar = RenderTargetManager::getInstance().UpdateTarget(RTID_COMMAND);
 		prh->BeginRenderTar(tar);
-		// BA-BH Line
-		float minxb = 2*xb-bhx;
-		float minyb = 2*yb-bhy;
-		DWORD col = pgm->GetActiveLayer()->getLineColor();
-		prh->RenderLine(xb, yb, bhx, bhy, col);
-		prh->RenderLine(xb, yb, minxb, minyb, col);
-		prh->RenderAttributePoint(xb, yb, col);
-		prh->RenderHandlePoint(bhx, bhy, col);
+
+		DWORD col = pTempLine->getLineColor();
+
+		PointF2D ptBegin = pTempLine->GetBeginPoint()->GetPointF2D();
+		PointF2D ptBeginHandle = pTempLine->GetBeginPoint()->GetHandle()->GetPointF2D();
+		PointF2D ptNext = pTempLine->GetEndPoint()->GetPointF2D();
+		PointF2D ptNextHandle = pTempLine->GetEndPoint()->GetHandle()->GetPointF2D();
+
+		float minxb = 2*ptBegin.x-ptBeginHandle.x;
+		float minyb = 2*ptBegin.y-ptBeginHandle.y;
+		prh->RenderLine(ptBegin.x, ptBegin.y, ptBeginHandle.x, ptBeginHandle.y, col);
+		prh->RenderLine(ptBegin.x, ptBegin.y, minxb, minyb, col);
+		prh->RenderAttributePoint(ptBegin.x, ptBegin.y, col);
+		prh->RenderHandlePoint(ptBeginHandle.x, ptBeginHandle.y, col);
 		prh->RenderHandlePoint(minxb, minyb, col);
 
-		if (linebezier)
+		if (bDrawTempBezierLine)
 		{
-			BezierSublinesInfo bsinfo;
-			bsinfo.ResetPoints(PointF2D(xb, yb), PointF2D(bhx, bhy), PointF2D(nhx, nhy), PointF2D(xn, yn), pmain->GetPrecision());
-			prh->RenderBezierByInfo(&bsinfo, col);
+			pTempLine->CallRender();
 		}
-		if (linenh)
+		if (bDrawTempLineHandle)
 		{
-			float minxn = 2*xn-nhx;
-			float minyn = 2*yn-nhy;
-			prh->RenderLine(xn, yn, nhx, nhy, col);
-			prh->RenderLine(xn, yn, minxn, minyn, col);
-			prh->RenderAttributePoint(xn, yn, col);
-			prh->RenderHandlePoint(nhx, nhy, col);
+			float minxn = 2*ptNext.x-ptNextHandle.x;
+			float minyn = 2*ptNext.y-ptNextHandle.y;
+			prh->RenderLine(ptNext.x, ptNext.y, ptNextHandle.x, ptNextHandle.y, col);
+			prh->RenderLine(ptNext.x, ptNext.y, minxn, minyn, col);
+			prh->RenderAttributePoint(ptNext.x, ptNext.y, col);
+			prh->RenderHandlePoint(ptNextHandle.x, ptNextHandle.y, col);
 			prh->RenderHandlePoint(minxn, minyn, col);
 		}
-
 		RenderHelper::getInstance().EndRenderTar();
 
 		Command::getInstance().SetRenderTarget(tar);
@@ -445,9 +467,27 @@ void BezierCommand::OnInitCommand()
 	pNCLine = NULL;
 	pBindAnchorBegin = NULL;
 	pBindAnchorEnd = NULL;
+
+	ClearTemp();
+	pTempLine = new GBezierLine(&tBaseNode, PointF2D(), PointF2D());
+
+	MarkingLine * pMarking = new MarkingLine(pTempLine, MARKFLAG_LENGTH);
+	MarkingManager::getInstance().EnableMarking(pMarking);
 }
 
 void BezierCommand::OnTerminalCommand()
 {
 	pNextMergeToBegin = NULL;
+	ClearTemp();
+}
+
+void BezierCommand::ClearTemp()
+{
+	if (pTempLine)
+	{
+		pTempLine->RemoveFromParent(true);
+		pTempLine = NULL;
+	}
+	bDrawTempBezierLine = false;
+	bDrawTempLineHandle = false;
 }

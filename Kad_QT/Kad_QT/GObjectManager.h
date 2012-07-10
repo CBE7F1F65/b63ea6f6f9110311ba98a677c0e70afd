@@ -75,7 +75,7 @@ public:
 	void OnTreeChanged(GObject * changingbase, GObject * activeitem, bool bSetActiveLayer=true);
     void OnPrecisionChanged();
 
-	void AddNodeToDelete(GObject * node);
+	void AddNodeToDelete(GObject * pDeletedObj);
 
 	void MoveToUnDoList(GObject * node);
 	GObject * GetUnDoListFront();
@@ -127,7 +127,7 @@ public:
 
 	int PushMoveNodeByOffsetForBatchCommand( GObject* pObj, float xoffset, float yoffset );
 	void DoMoveNodeByOffsetBatch();
-	void OnDeleteNode( GObject * node );
+	void OnDeleteNode( GObject * pDeletedObj );
 
 public:
 	void SetHandleVisible( bool bSet );

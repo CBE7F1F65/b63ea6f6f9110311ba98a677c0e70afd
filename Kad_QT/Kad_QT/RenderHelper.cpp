@@ -331,7 +331,7 @@ void RenderHelper::RenderHandlePoint_S( float x, float y, DWORD col )
 	}
 }
 
-void RenderHelper::RenderBezierByInfo( BezierSublinesInfo * bsinfo, DWORD col )
+void RenderHelper::RenderBezierByInfo( BezierSublinesInfo * bsinfo, DWORD col, PointF2D *ptOffset/*=0*/ )
 {
 	if (!bsinfo)
 	{
@@ -346,18 +346,28 @@ void RenderHelper::RenderBezierByInfo( BezierSublinesInfo * bsinfo, DWORD col )
 	int savedstyle = style;
 	style = RHLINESTYLE_LINE;
 
+	float xoffset = 0;
+	float yoffset = 0;
+	if (ptOffset)
+	{
+		xoffset = ptOffset->x;
+		yoffset = ptOffset->y;
+	}
+
 	switch (savedstyle)
 	{
 	case RHLINESTYLE_LINE:
 		for (int i=0; i<nseg; i++)
 		{
-			RenderLine(bsinfo->GetX(i), bsinfo->GetY(i), bsinfo->GetX(i+1), bsinfo->GetY(i+1), col);
+			RenderLine(bsinfo->GetX(i)+xoffset, bsinfo->GetY(i)+yoffset, bsinfo->GetX(i+1)+xoffset, bsinfo->GetY(i+1)+yoffset, col);
 		}
 		break;
 	case RHLINESTYLE_DOTTEDLINE:
-		for (int i=0; i<nseg+1; i++)
+		for (int i=0; i<nseg; i++)
 		{
-			RenderPoint(bsinfo->GetX(i), bsinfo->GetY(i), col);
+			style = savedstyle;
+			RenderLine(bsinfo->GetX(i)+xoffset, bsinfo->GetY(i)+yoffset, bsinfo->GetX(i+1)+xoffset, bsinfo->GetY(i+1)+yoffset, col);
+//			RenderPoint(bsinfo->GetX(i)+xoffset, bsinfo->GetY(i)+yoffset, col);
 		}
 		break;
 	case RHLINESTYLE_SLASHLINE:
@@ -368,7 +378,7 @@ void RenderHelper::RenderBezierByInfo( BezierSublinesInfo * bsinfo, DWORD col )
 			{
 				if (fSpace < space_c)
 				{
-					RenderLine(bsinfo->GetX(i), bsinfo->GetY(i), bsinfo->GetX(i+1), bsinfo->GetY(i+1), col);
+					RenderLine(bsinfo->GetX(i)+xoffset, bsinfo->GetY(i)+yoffset, bsinfo->GetX(i+1)+xoffset, bsinfo->GetY(i+1)+yoffset, col);
 				}
 				float ofSpace = fSpace;
 				fSpace += bsinfo->GetLength(i);
@@ -384,7 +394,7 @@ void RenderHelper::RenderBezierByInfo( BezierSublinesInfo * bsinfo, DWORD col )
 					}
 				}
 			}
-			RenderLine(bsinfo->GetX(nseg-1), bsinfo->GetY(nseg-1), bsinfo->GetX(nseg), bsinfo->GetY(nseg), col);
+			RenderLine(bsinfo->GetX(nseg-1)+xoffset, bsinfo->GetY(nseg-1)+yoffset, bsinfo->GetX(nseg)+xoffset, bsinfo->GetY(nseg)+yoffset, col);
 		}
 	}
 	style = savedstyle;

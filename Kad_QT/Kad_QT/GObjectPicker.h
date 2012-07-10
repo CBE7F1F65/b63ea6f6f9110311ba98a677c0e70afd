@@ -11,6 +11,7 @@
 #define GOPSNAP_GEOMETRYCOORD	0x0010
 #define GOPSNAP_VIRTUALCOORD	0x0020
 #define GOPSNAP_CONTINUITY		0x0040
+#define GOPSNAP_HANDLEONLY		0x0080
 
 #define GOPSNAPPED_OBJ			0x0100
 #define GOPSNAPPED_POINT		0x0200
@@ -148,17 +149,19 @@ private:
 public:
     void SetSnapTo(int snapto){SetSnapTo(snapto, true);};
     void SetSnapTo(int snapto, bool bSet);
-    inline bool isSnapToGrid(){return snaptoflag&GOPSNAP_GRID;};
-    inline bool isSnapToGeometry(){return snaptoflag&GOPSNAP_GEOMETRY;};
-    inline bool isSnapToCoord(){return snaptoflag&GOPSNAP_COORD;};
-    inline bool isSnapToContinuity(){return snaptoflag&GOPSNAP_CONTINUITY;};
-	inline bool isSnapToGeometryCoord(){return snaptoflag&GOPSNAP_GEOMETRYCOORD;};
-	inline bool isSnapToVirtualCoord(){return snaptoflag&GOPSNAP_VIRTUALCOORD;};
+    bool isSnapToGrid(){return snaptoflag&GOPSNAP_GRID;};
+    bool isSnapToGeometry(){return snaptoflag&GOPSNAP_GEOMETRY;};
+    bool isSnapToCoord(){return snaptoflag&GOPSNAP_COORD;};
+    bool isSnapToContinuity(){return snaptoflag&GOPSNAP_CONTINUITY;};
+    bool isSnapToGeometryCoord(){return snaptoflag&GOPSNAP_GEOMETRYCOORD;};
+    bool isSnapToVirtualCoord(){return snaptoflag&GOPSNAP_VIRTUALCOORD;};
+    bool isSnapToHandleOnly(){return snaptoflag&GOPSNAP_HANDLEONLY;};
 private:
 	float snaprange_c;
 	float snaprange_s;
 public:
 	void SetSnapRange_S(float range_s){snaprange_s=range_s;};
+    float GetSnapRange_S(){return snaprange_s;};
 private:
 	bool IsInSnapRangePoint_C(float x, float y);
 	bool IsInSnapRangeAngle_C(float x, float y, int angle, float * plx, float * ply);
@@ -183,7 +186,7 @@ public:
 	int PickPoint(PickFilterCallback pfunc=NULL);
 	int UpdatePickPoint();
 	int TestPickPoint(float x, float y, float *pfProportion=0, PickFilterCallback pfunc=NULL, float range_s=0);
-	void OnDeleteNode( GObject * node );
+	void OnDeleteNode( GObject * pDeletedObj );
 
 	bool IsPickReady(int iret=-1);
 	bool IsMouseDownReady();
@@ -214,5 +217,5 @@ private:
 
 	int nOnLine;
 
-	GStraightLine * pFakeLine[GOPONLINE_MAX];
+	GBezierLine * pFakeLine[GOPONLINE_MAX];
 };

@@ -155,6 +155,7 @@ public:
 
 public:
 	bool isModified(){return bModified;};
+	int getModifyVersion(){return nModifyVersion;};
 	GObject * getParent(){return pParent;};
 	int getID(){return nID;};
 	list<GObject *> * getChildren(){return &listChildren;};
@@ -217,6 +218,7 @@ protected:
 	int nID;
 	GObject * pParent;
 	bool bModified;
+	int nModifyVersion;
 
 	int nTryState;
 	float fTryMove_bx;

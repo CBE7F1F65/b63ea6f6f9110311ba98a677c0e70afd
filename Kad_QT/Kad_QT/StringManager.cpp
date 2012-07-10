@@ -122,6 +122,9 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_MOVENODEBYOFFSET,	"MOVEBYOFFSET",	"MOFF",	"Move Node Offset",	""	);
 	_BSET(	COMM_MOVENODEBYOFFSET_BATCH,	"MOVEBYOFFSET_BATCH",	"MOFF_BATCH",	"Move Node Offset Batch",	""	);
 
+	_BSET(	COMM_TOBEZIER,	"TOBEZIER", "TOB",	"Straight Line To Bezier",	""	);
+	_BSET(	COMM_TOSTRAIGHTLINE,	"TOSTRAIGHTLINE", "TOS",	"Bezier To Straight Line",	""	);
+
 	_BSET(	COMM_SETWORKINGLAYER,	"SETWORKINGLAYER",	"",	"Set Working Layer",	""	);
 	_BSET(	COMM_NEWLAYER,	"NEWLAYER", "NL",	"New Layer",	""	);
 	_BSET(	COMM_NEWSUBLAYER,	"NEWSUBLAYER",	"NSL",	"New Sub Layer", ""	);

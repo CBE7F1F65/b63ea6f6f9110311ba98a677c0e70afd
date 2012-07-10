@@ -304,7 +304,7 @@ void QTUI_NodeInfoFloating_Tree::SLT_ItemDoubleClicked(QTreeWidgetItem *pItem, i
     }
 }
 
-void QTUI_NodeInfoFloating_Tree::SLT_ButtonClicked()
+void QTUI_NodeInfoFloating_Tree::SLT_CalculateLengthButtonClicked()
 {
 	QPushButton * pButton = (QPushButton *)this->sender();
 	QTUIUD_NIFT_PushButton * pData = (QTUIUD_NIFT_PushButton *)pButton->userData(_UINIFT_PBDATAID_TREEWIDGETITEM);
@@ -322,6 +322,34 @@ void QTUI_NodeInfoFloating_Tree::SLT_ButtonClicked()
 	}
 }
 
+void QTUI_NodeInfoFloating_Tree::SLT_TransformButtonClicked( bool bChecked )
+{
+	QPushButton * pButton = (QPushButton *)this->sender();
+	QTUIUD_NIFT_PushButton * pData = (QTUIUD_NIFT_PushButton *)pButton->userData(_UINIFT_PBDATAID_TREEWIDGETITEM);
+	QTreeWidgetItem * pSenderItem = pData->pParentItem;
+	if (pSenderItem)
+	{
+		QTUIUD_NIFT_NodeRelationship * pRel = GetRelationshipFromItem(pSenderItem);
+		if (pRel)
+		{
+			GLine * pLine = (GLine *)pRel->pThis;
+			StringManager * psm = &StringManager::getInstance();
+			if (bChecked)
+			{
+				pButton->setText(psm->GetNodeInfoToStrightLineName());
+			}
+			else
+			{
+				pButton->setText(psm->GetNodeInfoToBezierName());
+			}
+			
+			MainInterface::getInstance().OnCommandWithParam(
+				bChecked?COMM_TOBEZIER:COMM_TOSTRAIGHTLINE,
+				CCCWPARAM_I(pRel->pThis->getID())
+				);
+		}
+	}
+}
 void QTUI_NodeInfoFloating_Tree::Clear()
 {
 	nRelIndex = 0;
@@ -362,21 +390,23 @@ void QTUI_NodeInfoFloating_Tree::UpdateNodeInfo(GObject *pObj, QTreeWidgetItem *
 		GLine * pLine = (GLine *)pObj;
 		int relID = -1;
 		QPushButton * pButton = NULL;
-		if (pLine->isLengthCalculated())
-		{
+//		if (pLine->isLengthCalculated())
+//		{
 			str.sprintf("%s: %f", psm->GetNodeInfoLengthName(), pLine->getLength());
-		}
-		else
-		{
-			str.sprintf("%s: %s", psm->GetNodeInfoLengthName(), psm->GetNodeInfoLengthCalculatePromptName());
-			relID = NewRelationship(pObj);
-		}
+//		}
+//		else
+//		{
+// 			str.sprintf("%s: %s", psm->GetNodeInfoLengthName(), psm->GetNodeInfoLengthCalculatePromptName());
+// 			relID = NewRelationship(pObj);
+// 		}
 		QTreeWidgetItem * pLengthItem = NewItemWithText(pInfoItem, str, relID);
+		/*
 		if (relID >= 0)
 		{
 			pButton = NewButton(0, psm->GetNodeInfoLengthCalculatePromptName(), pLengthItem);
 			this->setItemWidget(pLengthItem, _UINIFT_COLUMN_BUTTON, pButton);
 		}
+		*/
 	}
 
     if (pObj->canAttach())
@@ -481,6 +511,28 @@ void QTUI_NodeInfoFloating_Tree::UpdateNodeInfo(GObject *pObj, QTreeWidgetItem *
 		}
 	}
 
+	/************************************************************************/
+	/* Transform                                                            */
+	/************************************************************************/
+
+	if (pObj->isLine())
+	{
+		GLine * pLine = (GLine *)pObj;
+		QTreeWidgetItem * pTranslationItem = NewItemWithText(pParent, psm->GetNodeInfoTransformName(), NewRelationship(pObj));
+
+		QTreeWidgetItem * pBezierStraightLineItem = NewItemWithText(pTranslationItem, "");
+		QPushButton * pButton=NULL;
+		if (pLine->isStraightLine())
+		{
+			pButton = NewTransformButton(psm->GetNodeInfoToBezierName(), pTranslationItem, false);
+		}
+		else
+		{
+			pButton = NewTransformButton(psm->GetNodeInfoToStrightLineName(), pTranslationItem, true);
+		}
+		this->setItemWidget(pBezierStraightLineItem, _UINIFT_COLUMN_NAME, pButton);
+	}
+
     AdjustSize();
 }
 
@@ -539,18 +591,6 @@ int QTUI_NodeInfoFloating_Tree::NewRelationship(GObject *pObj, GObject *pRelatio
 	return nRelIndex-1;
 }
 
-QPushButton * QTUI_NodeInfoFloating_Tree::NewButton( int iconID, QString strTooltip, QTreeWidgetItem * pParentItem )
-{
-	QPushButton * pButton = new QPushButton();
-	pButton->setToolTip(strTooltip);
-	pButton->setMaximumSize(_UINIFT_ICONSIZE, _UINIFT_ICONSIZE);
-	pButton->setMinimumSize(_UINIFT_ICONSIZE, _UINIFT_ICONSIZE);
-	connect(pButton, SIGNAL(clicked(bool)), this, SLOT(SLT_ButtonClicked()));
-	QTUIUD_NIFT_PushButton * pData = new QTUIUD_NIFT_PushButton(pParentItem);
-	pButton->setUserData(_UINIFT_PBDATAID_TREEWIDGETITEM, pData);
-	return pButton;
-}
-
 int QTUI_NodeInfoFloating_Tree::CalculateTotalHeight(QTreeWidgetItem *pParent, int height)
 {
     if (!pParent)
@@ -580,4 +620,30 @@ QTUIUD_NIFT_NodeRelationship * QTUI_NodeInfoFloating_Tree::GetRelationshipFromIt
         return (QTUIUD_NIFT_NodeRelationship *)userData(relID);
     }
     return NULL;
+}
+
+QPushButton * QTUI_NodeInfoFloating_Tree::NewCalculateLengthButton( QString strTooltip, QTreeWidgetItem * pParentItem )
+{
+	QPushButton * pButton = new QPushButton();
+	pButton->setToolTip(strTooltip);
+	pButton->setMaximumSize(_UINIFT_ICONSIZE, _UINIFT_ICONSIZE);
+	pButton->setMinimumSize(_UINIFT_ICONSIZE, _UINIFT_ICONSIZE);
+	connect(pButton, SIGNAL(clicked(bool)), this, SLOT(SLT_CalculateLengthButtonClicked()));
+	QTUIUD_NIFT_PushButton * pData = new QTUIUD_NIFT_PushButton(pParentItem);
+	pButton->setUserData(_UINIFT_PBDATAID_TREEWIDGETITEM, pData);
+	return pButton;
+}
+
+QPushButton * QTUI_NodeInfoFloating_Tree::NewTransformButton( QString str, QTreeWidgetItem * pParentItem, bool bChecked )
+{
+	QPushButton * pButton = new QPushButton();
+	pButton->setText(str);
+	pButton->setCheckable(true);
+	pButton->setChecked(bChecked);
+	pButton->setMaximumHeight(_UINIFT_ICONSIZE);
+	pButton->setMinimumHeight(_UINIFT_ICONSIZE);
+	connect(pButton, SIGNAL(clicked(bool)), this, SLOT(SLT_TransformButtonClicked(bool)));
+	QTUIUD_NIFT_PushButton * pData = new QTUIUD_NIFT_PushButton(pParentItem);
+	pButton->setUserData(_UINIFT_PBDATAID_TREEWIDGETITEM, pData);
+	return pButton;
 }

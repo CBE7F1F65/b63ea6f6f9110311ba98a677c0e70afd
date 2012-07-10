@@ -8,6 +8,8 @@
 #include "GObjectManager.h"
 #include "PickFilterTemplate.h"
 
+GBaseNode CommandTemplate::tBaseNode;
+
 CommandTemplate::CommandTemplate(void)
 {
 	pguic = &GUICoordinate::getInstance();
@@ -572,6 +574,14 @@ bool CommandTemplate::BindNewAnchorPoint( GAnchorPoint * pFrom, GAnchorPoint * p
 
 	GHandlePoint * pFromHandle = pFrom->GetHandle();
 	GHandlePoint * pToHandle = pTo->GetHandle();
+	if (((GLine *)pTo->getLine())->isStraightLine())
+	{
+		return false;
+	}
+	if (pToHandle->getBindWith())
+	{
+		return false;
+	}
 	if (!pFromHandle->getBindWith() && !pToHandle->getBindWith())
 	{
 		CommitFrontCommand(
@@ -583,4 +593,9 @@ bool CommandTemplate::BindNewAnchorPoint( GAnchorPoint * pFrom, GAnchorPoint * p
 		return true;
 	}
 	return false;
+}
+
+void CommandTemplate::Release()
+{
+	tBaseNode.RemoveAllChildren(true);
 }

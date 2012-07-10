@@ -254,6 +254,10 @@ public:
 	_SMNODEINFODEF(	Parent,	"Parent"	);
 	_SMNODEINFODEF(	Children,	"Children"	);
 
+	_SMNODEINFODEF(	Transform,	"Transform"	);
+	_SMNODEINFODEF(	ToBezier,	"To Bezier"	);
+	_SMNODEINFODEF(	ToStrightLine,	"To Straight Line"	);
+
 #undef _SMNODEINFODEF
 
 #define _SMMBDEF(STRNAME, DEF)	\

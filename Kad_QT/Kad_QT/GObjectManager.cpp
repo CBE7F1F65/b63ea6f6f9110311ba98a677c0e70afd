@@ -9,6 +9,7 @@
 #include "CommandTemplate.h"
 #include "MarqueeSelect.h"
 #include "Command.h"
+#include "MarkingManager.h"
 
 #define GMLOCKTREESTATE_NULL			0x00
 #define GMLOCKTREESTATE_REQUIRELOCK		0x01
@@ -132,14 +133,15 @@ void GObjectManager::Delete()
 	}
 }
 
-void GObjectManager::AddNodeToDelete( GObject * node )
+void GObjectManager::AddNodeToDelete( GObject * pDeletedObj )
 {
-	if (node)
+	if (pDeletedObj)
 	{
-		nodetodelete.push_back(node);
-		GObjectManager::getInstance().OnDeleteNode(node);
-		MarqueeSelect::getInstance().OnDeleteNode(node);
-		GObjectPicker::getInstance().OnDeleteNode(node);
+		nodetodelete.push_back(pDeletedObj);
+		GObjectManager::getInstance().OnDeleteNode(pDeletedObj);
+		MarqueeSelect::getInstance().OnDeleteNode(pDeletedObj);
+		GObjectPicker::getInstance().OnDeleteNode(pDeletedObj);
+		MarkingManager::getInstance().OnDeleteNode(pDeletedObj);
 	}
 }
 
@@ -559,15 +561,19 @@ void GObjectManager::DoMoveNodeByOffsetBatch()
 
 }
 
-void GObjectManager::OnDeleteNode( GObject * node )
+void GObjectManager::OnDeleteNode( GObject * pDeletedObj )
 {
+	if (pLastToSetActiveNode == pDeletedObj)
+	{
+		pLastToSetActiveNode = NULL;
+	}
 	if (pushedmovenodebyoffset.empty())
 	{
 		return;
 	}
 	for (list<MoveNodeByOffsetInfo>::iterator it=pushedmovenodebyoffset.begin(); it!=pushedmovenodebyoffset.end();)
 	{
-		if (it->GetObj() == node)
+		if (it->GetObj() == pDeletedObj)
 		{
 			it = pushedmovenodebyoffset.erase(it);
 		}

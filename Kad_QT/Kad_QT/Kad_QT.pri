@@ -134,7 +134,11 @@ HEADERS += ./Const.h \
     BindHandleCommand.h \
     BezierCommand.h \
     QTUI_NodeInfoFloating_Widget.h \
-    QTUI_NodeInfoFloating_Tree.h
+    QTUI_NodeInfoFloating_Tree.h \
+    MarkingObject.h \
+    MarkingManager.h \
+    QTUI_MarkingFloating_Widget.h \
+    LineTransformCommand.h
 SOURCES += ./InitDllLoader.cpp \
     ./kad_qt.cpp \
     ./main.cpp \
@@ -260,7 +264,11 @@ SOURCES += ./InitDllLoader.cpp \
     BindHandleCommand.cpp \
     BezierCommand.cpp \
     QTUI_NodeInfoFloating_Widget.cpp \
-    QTUI_NodeInfoFloating_Tree.cpp
+    QTUI_NodeInfoFloating_Tree.cpp \
+    MarkingObject.cpp \
+    MarkingManager.cpp \
+    QTUI_MarkingFloating_Widget.cpp \
+    LineTransformCommand.cpp
 FORMS += ./kad_qt.ui \
     qtui_commanddockable.ui \
     qtui_commandfloating_widget.ui \
@@ -268,5 +276,6 @@ FORMS += ./kad_qt.ui \
     qtui_layer_dockablepane.ui \
     QTUI_StatusBar.ui \
     QTDLG_LayerProperty.ui \
-    QTUI_NodeInfoFloating_Widget.ui
+    QTUI_NodeInfoFloating_Widget.ui \
+    QTUI_MarkingFloating_Widget.ui
 RESOURCES += kad_qt.qrc

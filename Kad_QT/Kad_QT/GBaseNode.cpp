@@ -4,6 +4,7 @@
 
 GBaseNode::GBaseNode()
 {
+	setLineColor(ColorManager::getInstance().GetLayerLineColorSetByIndex());
 }
 
 

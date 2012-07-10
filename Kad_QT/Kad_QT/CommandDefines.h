@@ -56,6 +56,10 @@ enum{
 	COMM_MOVENODEBYOFFSET,
 	COMM_MOVENODEBYOFFSET_BATCH,
 
+	// Transform
+	COMM_TOBEZIER,
+	COMM_TOSTRAIGHTLINE,
+
 	// Layers
 	COMM_NEWLAYER,		// new layer
 	COMM_NEWSUBLAYER,	// new sub layer
@@ -320,6 +324,19 @@ enum{
 	CSI_SETWORKINGLAYER_DUMMY=0,
 	CSI_SETWORKINGLAYER_WANTNEWINDEX,
 	CSI_SETWORKINGLAYER_WANTLASTINDEX,
+};
+
+/************************************************************************/
+/* LINETRANSFORM                                                        */
+/************************************************************************/
+
+enum{
+	CSP_LINETRANSFORM_I_INDEX=0,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_LINETRANSFORM_DUMMY=0,
+	CSI_LINETRANSFORM_WANTNEWINDEX,
 };
 
 /************************************************************************/

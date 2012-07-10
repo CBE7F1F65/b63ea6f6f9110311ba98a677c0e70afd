@@ -18,6 +18,7 @@
 #include "SeparateCommand.h"
 #include "TestCommand.h"
 #include "BindHandleCommand.h"
+#include "LineTransformCommand.h"
 
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
@@ -48,6 +49,10 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 		return &MoveNodeCommand::getInstance();
 	case COMM_MOVENODEBYOFFSET_BATCH:
 		return &MoveNodeBatchCommand::getInstance();
+
+	case COMM_TOBEZIER:
+	case COMM_TOSTRAIGHTLINE:
+		return &LineTransformCommand::getInstance();
 
 	case COMM_NEWLAYER:
 	case COMM_NEWSUBLAYER:

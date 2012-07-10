@@ -21,6 +21,10 @@ public:
 	virtual void OnInitCommand();
 	virtual void OnTerminalCommand();
 
+private:
+
+	void ClearTemp();
+
 	GObject * pMergeToBegin;
 	GObject * pMergeToEnd;
 	GObject * pNextMergeToBegin;
@@ -32,4 +36,8 @@ public:
 	float fProportionEnd;
 
 	GLine * pNCLine;
+
+	GBezierLine * pTempLine;
+	bool bDrawTempBezierLine;
+	bool bDrawTempLineHandle;
 };

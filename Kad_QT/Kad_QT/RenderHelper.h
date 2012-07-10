@@ -86,7 +86,7 @@ public:
 	void RenderArrowT_S(float x, float y, float length, float arrowsize, DWORD col);
 
 //	void RenderBezier(PointF2D pb, PointF2D pbh, PointF2D peh, PointF2D pe, DWORD col, float precisemul=1.0f);
-	void RenderBezierByInfo(BezierSublinesInfo * bsinfo, DWORD col);
+	void RenderBezierByInfo(BezierSublinesInfo * bsinfo, DWORD col, PointF2D *ptOffset=0);
 
 	void RenderAttributePoint_S(float x, float y, DWORD col);
 	void RenderSubstantivePoint_S(float x, float y, DWORD col);
@@ -110,6 +110,8 @@ public:
 
 	void SetLineStyle(int style=0);
 	void RenderLineMeasureMark( float x1, float y1, float x2, float y2, DWORD col );
+	int getLineStyle(){return style;};
+private:
 	int style;
 
 	HGE * hge;
