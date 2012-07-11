@@ -30,7 +30,7 @@
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="QLineEdit" name="lineEdit"/>
+    <widget class="QTUI_MarkingFloating_Edit" name="lineEdit"/>
    </item>
    <item row="0" column="1">
     <widget class="QPushButton" name="pushButton">
@@ -59,6 +59,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QTUI_MarkingFloating_Edit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">qtui_markingfloating_edit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

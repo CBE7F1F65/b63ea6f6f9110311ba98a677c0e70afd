@@ -11,7 +11,14 @@ QTUI_CommandPanel_CommandEdit::QTUI_CommandPanel_CommandEdit(QWidget *parent) :
 
 void QTUI_CommandPanel_CommandEdit::keyPressEvent(QKeyEvent *e)
 {
-    QPlainTextEdit::keyPressEvent(e);
+	if (e->key() == Qt::Key_Tab)
+	{
+//		this->insertPlainText("\t");
+	}
+	else
+	{
+		QPlainTextEdit::keyPressEvent(e);
+	}
     if (e->key() == Qt::Key_Return)
     {
         MainInterface::getInstance().OnCommitCommand(this->toPlainText().toStdString().c_str());

@@ -27,7 +27,7 @@ public:
 	virtual bool toStraightLine();
 	virtual bool toBezierLine() = 0;
 
-	virtual void SetBeginEnd(float xb, float yb, float xe, float ye);
+	virtual void SetBeginEnd(float xb, float yb, float xe, float ye, float fAllowance=-1);
 	virtual void UpdateMidPoint() = 0;
 	virtual bool CheckNearTo(float px, float py, float r, float *plx, float *ply, int *isec=NULL) = 0;
 	virtual bool CheckIntersectWithRect(float xl, float yt, float xr, float yb) = 0;
@@ -133,10 +133,10 @@ public:
 
 	virtual void OnRender(int iHighlightLevel=0);
 
-	virtual void SetBeginEnd(float xb, float yb, float xe, float ye);
+	virtual void SetBeginEnd(float xb, float yb, float xe, float ye, float fAllowance=-1);
 
-	virtual void SetBeginHandlePos(float x, float y);
-	virtual void SetEndHandlePos(float x, float y);
+	virtual void SetBeginHandlePos(float x, float y, float fAllowance=-1);
+	virtual void SetEndHandlePos(float x, float y, float fAllowance=-1);
 
 	virtual bool CheckNearTo(float px, float py, float r, float *plx, float *ply, int * isec=NULL);
 	virtual bool CheckIntersectWithRect(float xl, float yt, float xr, float yb);

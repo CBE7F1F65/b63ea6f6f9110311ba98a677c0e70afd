@@ -20,15 +20,27 @@ GLine::~GLine(void)
 {
 }
 
-void GLine::SetBeginEnd( float xb, float yb, float xe, float ye )
+void GLine::SetBeginEnd( float xb, float yb, float xe, float ye, float fAllowance/*=-1*/ )
 {
 	if (plbegin)
 	{
-		plbegin->CallMoveTo(xb, yb, false);
+		if (fAllowance >= 0 && fabsf(xb-plbegin->getX()) <= fAllowance && fabsf(yb-plbegin->getY()) <= fAllowance)
+		{
+		}
+		else
+		{
+			plbegin->CallMoveTo(xb, yb, false);
+		}
 	}
 	if (plend)
 	{
-		plend->CallMoveTo(xe, ye, false);
+		if (fAllowance >= 0 && fabsf(xe-plend->getX()) <= fAllowance && fabsf(ye-plend->getY()) <= fAllowance)
+		{
+		}
+		else
+		{
+			plend->CallMoveTo(xe, ye, false);
+		}
 	}
 //	UpdateMidPoint();
 }
@@ -546,21 +558,21 @@ bool GBezierLine::Clone( GObject * pNewParent )
 	return true;	
 }
 
-void GBezierLine::SetBeginEnd( float xb, float yb, float xe, float ye )
+void GBezierLine::SetBeginEnd( float xb, float yb, float xe, float ye, float fAllowance/*=-1*/ )
 {
-	GLine::SetBeginEnd(xb, yb, xe, ye);
-	SetBeginHandlePos(xb, yb);
-	SetEndHandlePos(xe, ye);
+	GLine::SetBeginEnd(xb, yb, xe, ye, fAllowance);
+	SetBeginHandlePos(xb, yb, fAllowance);
+	SetEndHandlePos(xe, ye, fAllowance);
 }
 
-void GBezierLine::SetBeginHandlePos( float x, float y )
+void GBezierLine::SetBeginHandlePos( float x, float y, float fAllowance/*=-1*/ )
 {
-	plbegin->SetHandlePosition(x, y);
+	plbegin->SetHandlePosition(x, y, fAllowance);
 }
 
-void GBezierLine::SetEndHandlePos( float x, float y )
+void GBezierLine::SetEndHandlePos( float x, float y, float fAllowance/*=-1*/ )
 {
-	plend->SetHandlePosition(x, y);
+	plend->SetHandlePosition(x, y, fAllowance);
 }
 
 bool GBezierLine::isStraightLine()

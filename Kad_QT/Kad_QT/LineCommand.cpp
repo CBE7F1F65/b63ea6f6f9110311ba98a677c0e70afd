@@ -198,8 +198,7 @@ void LineCommand::OnProcessCommand()
 
 		float x2 = pgp->GetPickX_C();
 		float y2 = pgp->GetPickY_C();
-		pTempLine->SetBeginEnd(x1, y1, x2, y2);
-
+		pTempLine->SetBeginEnd(x1, y1, x2, y2, 0);
 	}
 
 	RenderToTarget();

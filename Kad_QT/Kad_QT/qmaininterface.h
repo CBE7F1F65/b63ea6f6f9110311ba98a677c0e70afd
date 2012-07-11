@@ -13,6 +13,7 @@
 #include "QTUI_StatusBar.h"
 #include "QTUI_NodeInfoFloating_Widget.h"
 #include "QTUI_NodeInfoFloating_Tree.h"
+#include "QTUI_MarkingFloating_Widget.h"
 
 class QMainInterface
 {
@@ -28,6 +29,11 @@ private:
 public:
 
     void OnMainFrameSetupUIDone();
+
+	list<QTUI_MarkingFloating_Widget *> lstMarkingFloating;
+	bool RegisterPMarkingWidget(QTUI_MarkingFloating_Widget * pWidget);
+	QTUI_MarkingFloating_Widget * GetNextPMarkingWidget(QTUI_MarkingFloating_Widget * pWidget=NULL);
+	bool UnregisterPMarkingWidget(QTUI_MarkingFloating_Widget * pWidget=NULL);
 
     /*
     Kad_QT * pMainWindow;

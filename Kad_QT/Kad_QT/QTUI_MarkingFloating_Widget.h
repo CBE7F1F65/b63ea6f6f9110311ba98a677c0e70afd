@@ -14,9 +14,12 @@ class QTUI_MarkingFloating_Widget : public QWidget
 public:
     explicit QTUI_MarkingFloating_Widget(QWidget *parent = 0);
     ~QTUI_MarkingFloating_Widget();
+
 	void SetEditString( QString str );
 	void MoveTo(float x, float y);
-
+	void OnTabFocus();
+	void OnChangeTabFocus();
+	
 private:
     Ui::QTUI_MarkingFloating_Widget *ui;
 };

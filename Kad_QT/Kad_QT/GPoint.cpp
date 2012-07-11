@@ -66,6 +66,12 @@ bool GPoint::MoveTo( float newx, float newy, bool bTry, int moveActionID/*=-1 */
 		return false;
 	}
 	*/
+	/*
+	if (x == newx && y == newy)
+	{
+		return true;
+	}
+	*/
 
 	ToggleTryMoveState(bTry);
 	x = newx;
@@ -426,9 +432,16 @@ bool GAnchorPoint::Clone( GObject * pNewParent )
     return true;
 }
 
-void GAnchorPoint::SetHandlePosition( float _x, float _y )
+void GAnchorPoint::SetHandlePosition( float hx, float hy, float fAllowance/*=-1 */ )
 {
-	phandle->CallMoveTo(_x, _y, false);
+	if (fAllowance >= 0)
+	{
+		if (fabsf(hx-x) <= fAllowance && fabsf(hy-y) <= fAllowance)
+		{
+			return;
+		}
+	}
+	phandle->CallMoveTo(hx, hy, false);
 }
 
 bool GAnchorPoint::isHandleIdentical()

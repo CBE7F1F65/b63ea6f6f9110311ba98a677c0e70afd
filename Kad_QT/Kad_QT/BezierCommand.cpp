@@ -368,9 +368,9 @@ void BezierCommand::OnProcessCommand()
 			nhy = 2*yn-ty;
 		}
 
-		pTempLine->SetBeginEnd(xb, yb, xn, yn);
-		pTempLine->SetBeginHandlePos(bhx, bhy);
-		pTempLine->SetEndHandlePos(nhx, nhy);
+		pTempLine->SetBeginEnd(xb, yb, xn, yn, 0);
+		pTempLine->SetBeginHandlePos(bhx, bhy, 0);
+		pTempLine->SetEndHandlePos(nhx, nhy, 0);
 	}
 
 	RenderToTarget();

@@ -1,16 +1,19 @@
 #include "stdafx.h"
 #include "QTUI_MarkingFloating_Widget.h"
 #include "ui_QTUI_MarkingFloating_Widget.h"
+#include "qmaininterface.h"
 
 QTUI_MarkingFloating_Widget::QTUI_MarkingFloating_Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::QTUI_MarkingFloating_Widget)
 {
     ui->setupUi(this);
+	QMainInterface::getInstance().RegisterPMarkingWidget(this);		// Editable?
 }
 
 QTUI_MarkingFloating_Widget::~QTUI_MarkingFloating_Widget()
 {
+	QMainInterface::getInstance().UnregisterPMarkingWidget(this);
     delete ui;
 }
 
@@ -54,4 +57,16 @@ void QTUI_MarkingFloating_Widget::MoveTo( float x, float y )
 		y = pParentWidget->height()-this->height();
 	}
 	this->move(x, y);
+}
+
+void QTUI_MarkingFloating_Widget::OnTabFocus()
+{
+	ui->pushButton->setChecked(false);
+	ui->lineEdit->OnTabFocus();
+}
+
+void QTUI_MarkingFloating_Widget::OnChangeTabFocus()
+{
+	ui->pushButton->setChecked(true);
+	QMainInterface::getInstance().GetNextPMarkingWidget(this)->OnTabFocus();
 }

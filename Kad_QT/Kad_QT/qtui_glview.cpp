@@ -174,6 +174,22 @@ bool QTUI_GLView::eventFilter(QObject *target, QEvent *e)
         QKeyStateManager * qksm = &QKeyStateManager::getInstance();
         qksm->SetKey(ekey);
 
+		QMainInterface * pqm = &QMainInterface::getInstance();
+
+		if (ekey == Qt::Key_Tab)
+		{
+			QTUI_MarkingFloating_Widget * pMarkingWidget = pqm->GetNextPMarkingWidget();
+			if (pMarkingWidget)
+			{
+				pMarkingWidget->OnTabFocus();
+			}
+			else
+			{
+				pqm->GetPCommandFloatingWidget()->OnReceiveTextFromGL("");
+			}
+			return true;
+		}
+
         Qt::KeyboardModifiers km = pke->modifiers();
         if (km)
         {
@@ -201,7 +217,7 @@ bool QTUI_GLView::eventFilter(QObject *target, QEvent *e)
 		{
 			if (!pke->text().isEmpty())
 			{
-				QMainInterface::getInstance().GetPCommandFloatingWidget()->OnReceiveTextFromGL(pke->text());
+				pqm->GetPCommandFloatingWidget()->OnReceiveTextFromGL(pke->text());
 			}
 		}
     }

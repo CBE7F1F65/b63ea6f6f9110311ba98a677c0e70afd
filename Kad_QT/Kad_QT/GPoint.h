@@ -175,7 +175,7 @@ public:
 	virtual bool isAnchorPoint(){return true;};
 
 	GHandlePoint * GetHandle(){return phandle;};
-	void SetHandlePosition( float x, float y );
+	void SetHandlePosition( float hx, float hy, float fAllowance=-1 );
 	bool isHandleIdentical();
 protected:
 	GHandlePoint * phandle;

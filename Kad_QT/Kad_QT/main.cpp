@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
 #if defined(_MSC_VER)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	prevHook = _CrtSetReportHook(customReportHook);
-    //_CrtSetBreakAlloc(31565); // Use this line to break at the nth memory allocation
+    //_CrtSetBreakAlloc(18416); // Use this line to break at the nth memory allocation
 #endif
 
 	QApplication* app = new QApplication(argc, argv);
