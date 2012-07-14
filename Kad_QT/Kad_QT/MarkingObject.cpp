@@ -5,10 +5,24 @@
 #include "RenderHelper.h"
 #include "qmaininterface.h"
 
+MarkingUI::MarkingUI( MarkingObject * p )
+{
+	pWidget = NULL;
+	cb = NULL;
+	ASSERT(p);
+	pMarking = p;
+	bEditable = false;
+}
+
+MarkingUI::~MarkingUI()
+{
+	DeleteUI();
+}
+
 void MarkingUI::UseUI()
 {
 	DeleteUI();
-    pWidget = new QTUI_MarkingFloating_Widget(QMainInterface::getInstance().GetPGLView());
+    pWidget = new QTUI_MarkingFloating_Widget(this, QMainInterface::getInstance().GetPGLView());
 }
 
 void MarkingUI::DeleteUI()
@@ -40,6 +54,36 @@ void MarkingUI::SetString( QString * pStr )
 		pWidget->SetEditString(str);
 	}
 }
+
+bool MarkingUI::DoCallback( bool bAccept )
+{
+	if (cb)
+	{
+		return cb(this, bAccept);
+	}
+	return false;
+}
+
+void MarkingUI::SetEditable( bool bSet )
+{
+	bEditable = bSet;
+	pWidget->OnSetEditable(bEditable);
+}
+
+float MarkingUI::getFloat( bool * bOk/*=NULL*/ )
+{
+	float fval = 0;
+	fval = str.toFloat(bOk);
+	return fval;
+}
+
+int MarkingUI::getInt( bool *bOk/*=NULL*/ )
+{
+	int ival = 0;
+	ival = str.toInt(bOk);
+	return ival;
+}
+
 #define _MARKLENGTH_OFFSETLENGTH	48
 
 MarkingObject::MarkingObject()
@@ -47,14 +91,31 @@ MarkingObject::MarkingObject()
 	pTargetObj = NULL;
 	nMarkFlag = -1;
 	nModifyVersion = -1;
+
+	pmuiPositionX = new MarkingUI(this);
+	pmuiPositionY = new MarkingUI(this);
+	pmuiLength = new MarkingUI(this);
+	pmuiAngle = new MarkingUI(this);
 }
 
 MarkingObject::~MarkingObject()
 {
-	muiPositionX.DeleteUI();
-	muiPositionY.DeleteUI();
-	muiLength.DeleteUI();
-	muiAngle.DeleteUI();
+	if (pmuiPositionX)
+	{
+		delete pmuiPositionX;
+	}
+	if (pmuiPositionY)
+	{
+		delete pmuiPositionY;
+	}
+	if (pmuiLength)
+	{
+		delete pmuiLength;
+	}
+	if (pmuiAngle)
+	{
+		delete pmuiAngle;
+	}
 }
 
 void MarkingObject::SetValue( GObject * pObj, int nFlag )
@@ -63,18 +124,21 @@ void MarkingObject::SetValue( GObject * pObj, int nFlag )
 	pTargetObj = pObj;
 	nMarkFlag = nFlag;
 
-	if (nFlag & MARKFLAG_POSITION)
+	if (nFlag & MARKFLAG_POSITIONX)
 	{
-		muiPositionX.UseUI();
-		muiPositionY.UseUI();
+		pmuiPositionX->UseUI();
+	}
+	if (nFlag & MARKFLAG_POSITIONY)
+	{
+		pmuiPositionY->UseUI();
 	}
 	if (nFlag & MARKFLAG_LENGTH)
 	{
-		muiLength.UseUI();
+		pmuiLength->UseUI();
 	}
 	if (nFlag & MARKFLAG_ANGLE)
 	{
-		muiAngle.UseUI();
+		pmuiAngle->UseUI();
 	}
 }
 
@@ -91,6 +155,46 @@ void MarkingObject::Render()
 void MarkingObject::SetRedraw()
 {
 	MarkingManager::getInstance().SetRedraw();
+}
+
+void MarkingObject::SetEditable( int nFlag, bool bSet )
+{
+	if (nFlag & MARKFLAG_POSITIONX)
+	{
+		pmuiPositionX->SetEditable(bSet);
+	}
+	if (nFlag & MARKFLAG_POSITIONY)
+	{
+		pmuiPositionY->SetEditable(bSet);
+	}
+	if (nFlag & MARKFLAG_LENGTH)
+	{
+		pmuiLength->SetEditable(bSet);
+	}
+	if (nFlag & MARKFLAG_ANGLE)
+	{
+		pmuiAngle->SetEditable(bSet);
+	}
+}
+
+void MarkingObject::SetCallback( int nFlag, MarkingInputDoneCallback cb )
+{
+	if (nFlag & MARKFLAG_POSITIONX)
+	{
+		pmuiPositionX->SetCallback(cb);
+	}
+	if (nFlag & MARKFLAG_POSITIONY)
+	{
+		pmuiPositionY->SetCallback(cb);
+	}
+	if (nFlag & MARKFLAG_LENGTH)
+	{
+		pmuiLength->SetCallback(cb);
+	}
+	if (nFlag & MARKFLAG_ANGLE)
+	{
+		pmuiAngle->SetCallback(cb);
+	}
 }
 /************************************************************************/
 /* MARKINGLINE                                                          */
@@ -110,8 +214,8 @@ void MarkingLine::Update()
 
 		GLine * pLine = (GLine *)pTargetObj;
 
-		muiPositionX.SetPosition(PointF2D(pLine->getX(), pLine->getY()));
-		muiPositionY.SetPosition(PointF2D(pLine->getX(), pLine->getY()));
+		pmuiPositionX->SetPosition(PointF2D(pLine->getX(), pLine->getY()));
+		pmuiPositionY->SetPosition(PointF2D(pLine->getX(), pLine->getY()));
 
 		MathHelper * pmh = &MathHelper::getInstance();
 
@@ -129,39 +233,42 @@ void MarkingLine::Update()
 		}
 
 		float l = GUICoordinate::getInstance().StoCs(_MARKLENGTH_OFFSETLENGTH);
-		float xdiff = l*cosf(ARC(angle));
-		float ydiff = l*sinf(ARC(angle));
+		float xdiff = l*cost(angle);
+		float ydiff = l*sint(angle);
 		ptLengthDiff.x = xdiff;
 		ptLengthDiff.y = ydiff;
 
 		QString str;
-		if (nMarkFlag & MARKFLAG_POSITION)
+		if (nMarkFlag & MARKFLAG_POSITIONX)
 		{
 			str.sprintf("%f", pLine->GetMidPoint()->getX());
-			muiPositionX.SetString(&str);
+			pmuiPositionX->SetString(&str);
+			pmuiPositionX->DoMove();
+		}
+		if (nMarkFlag & MARKFLAG_POSITIONY)
+		{
 			str.sprintf("%f", pLine->GetMidPoint()->getY());
-			muiPositionY.SetString(&str);
-			muiPositionX.DoMove();
-			muiPositionY.DoMove();
+			pmuiPositionY->SetString(&str);
+			pmuiPositionY->DoMove();
 		}
 
 		if (nMarkFlag & MARKFLAG_LENGTH)
 		{
-			muiLength.SetPosition(pLine->GetMidPoint()->GetPointF2D() + ptLengthDiff);
+			pmuiLength->SetPosition(pLine->GetMidPoint()->GetPointF2D() + ptLengthDiff);
 			str.sprintf("%f", pLine->getLength());
-			muiLength.SetString(&str);
-			muiLength.DoMove();
+			pmuiLength->SetString(&str);
+			pmuiLength->DoMove();
 		}
 
 		if (nMarkFlag & MARKFLAG_ANGLE)
 		{
 			fStraightLineLength = pmh->LineSegmentLength(pt1, pt2);
 			ptArcPoint = PointF2D(pt1.x+fStraightLineLength, pt1.y);
-			muiAngle.SetPosition(PointF2D(pt1.x+fStraightLineLength*cosf(ARC(nLineAngle/2)), pt1.y+fStraightLineLength*sinf(ARC(nLineAngle/2))));
+			pmuiAngle->SetPosition(PointF2D(pt1.x+fStraightLineLength*cost(nLineAngle/2), pt1.y+fStraightLineLength*sint(nLineAngle/2)));
 
 			str.sprintf("%f", (float)(nLineAngle)/(ANGLEBASE_90/90));
-			muiAngle.SetString(&str);
-			muiAngle.DoMove();
+			pmuiAngle->SetString(&str);
+			pmuiAngle->DoMove();
 		}
 
 		SetRedraw();

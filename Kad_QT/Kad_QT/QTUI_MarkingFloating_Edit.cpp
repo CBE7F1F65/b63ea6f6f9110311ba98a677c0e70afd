@@ -15,7 +15,12 @@ bool QTUI_MarkingFloating_Edit::eventFilter( QObject *pQObj, QEvent *e )
 		QKeyEvent * pke = static_cast<QKeyEvent *>(e);
 		if (pke->key() == Qt::Key_Tab)
 		{
-			OnChangeTabFocus();
+			DoneEdit(false);
+			return true;
+		}
+		if (pke->key() == Qt::Key_Return)
+		{
+			DoneEdit(true);
 			return true;
 		}
 	}
@@ -28,7 +33,7 @@ void QTUI_MarkingFloating_Edit::OnTabFocus()
 	this->selectAll();
 }
 
-void QTUI_MarkingFloating_Edit::OnChangeTabFocus()
+void QTUI_MarkingFloating_Edit::DoneEdit( bool bAccept )
 {
-	((QTUI_MarkingFloating_Widget *)parentWidget())->OnChangeTabFocus();
+	((QTUI_MarkingFloating_Widget *)parentWidget())->OnDoneEdit(bAccept);
 }

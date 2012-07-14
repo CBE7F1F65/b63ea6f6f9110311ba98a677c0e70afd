@@ -14,7 +14,7 @@ protected:
 
 public:
 	void OnTabFocus();
-	void OnChangeTabFocus();
+	void DoneEdit(bool bAccept);
     
 signals:
     

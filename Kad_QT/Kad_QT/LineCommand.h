@@ -22,6 +22,8 @@ public:
 	virtual void OnInitCommand();
 	virtual void OnTerminalCommand();
 
+	bool MIDCBLength(MarkingUI * pmui, bool bAccept);
+	bool MIDCBAngle(MarkingUI * pmui, bool bAccept);
 
 private:
 
@@ -36,4 +38,9 @@ private:
 	GLine * pNCLine;
 
 	GBezierLine * pTempLine;
+
+	bool bLengthLocked;
+	float fLockedLength;
+	bool bAngleLocked;
+	int nLockedAngle;
 };

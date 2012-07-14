@@ -111,6 +111,12 @@
     <Filter Include="Main\Command\Transform">
       <UniqueIdentifier>{0079d06f-594d-49ea-a980-67c120bfb1ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\Helper\GObjectPicker">
+      <UniqueIdentifier>{39e7c4fc-edd6-471a-844a-a22d9178dadf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Helper\GObjectPicker\Template">
+      <UniqueIdentifier>{976dec8d-1ec3-4be0-815b-8b18f1d8fb82}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_kad_qt.cpp">
@@ -229,9 +235,6 @@
     </ClCompile>
     <ClCompile Include="StringManager.cpp">
       <Filter>Main\Helper\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="GObjectPicker.cpp">
-      <Filter>Main\Helper</Filter>
     </ClCompile>
     <ClCompile Include="Command.cpp">
       <Filter>Main\Command</Filter>
@@ -392,9 +395,6 @@
     <ClCompile Include="TestCommand.cpp">
       <Filter>Main\Command\Test</Filter>
     </ClCompile>
-    <ClCompile Include="PickFilterTemplate.cpp">
-      <Filter>Main\Helper</Filter>
-    </ClCompile>
     <ClCompile Include="BindHandleCommand.cpp">
       <Filter>Main\Command\Combination</Filter>
     </ClCompile>
@@ -442,6 +442,21 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_QTUI_MarkingFloating_Edit.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GObjectPicker.cpp">
+      <Filter>Main\Helper\GObjectPicker</Filter>
+    </ClCompile>
+    <ClCompile Include="PickFilterTemplate.cpp">
+      <Filter>Main\Helper\GObjectPicker\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GObjectPicker_Update.cpp">
+      <Filter>Main\Helper\GObjectPicker</Filter>
+    </ClCompile>
+    <ClCompile Include="GObjectPicker_Check.cpp">
+      <Filter>Main\Helper\GObjectPicker</Filter>
+    </ClCompile>
+    <ClCompile Include="GObjectPicker_Sub.cpp">
+      <Filter>Main\Helper\GObjectPicker</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -559,9 +574,6 @@
     <ClInclude Include="MarqueeSelect.h">
       <Filter>Main\Helper</Filter>
     </ClInclude>
-    <ClInclude Include="GObjectPicker.h">
-      <Filter>Main\Helper</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Main\Core\StdAfx</Filter>
     </ClInclude>
@@ -619,9 +631,6 @@
     <ClInclude Include="TestCommand.h">
       <Filter>Main\Command\Test</Filter>
     </ClInclude>
-    <ClInclude Include="PickFilterTemplate.h">
-      <Filter>Main\Helper</Filter>
-    </ClInclude>
     <ClInclude Include="BindHandleCommand.h">
       <Filter>Main\Command\Combination</Filter>
     </ClInclude>
@@ -639,6 +648,12 @@
     </ClInclude>
     <ClInclude Include="LineTransformCommand.h">
       <Filter>Main\Command\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="GObjectPicker.h">
+      <Filter>Main\Helper\GObjectPicker</Filter>
+    </ClInclude>
+    <ClInclude Include="PickFilterTemplate.h">
+      <Filter>Main\Helper\GObjectPicker\Template</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

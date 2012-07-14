@@ -21,7 +21,15 @@
 #define GOPSNAPPED_YAXIS		0x2000
 #define GOPSNAPPED_CONTINUITY	0x4000
 
-#define GOPSNAPINDEX_SHIFT		0x010000
+#define GOPSNAPPED_LENGTHLOCK			0x010000
+#define GOPSNAPPED_ANGLESLOCK			0x020000
+/*
+#define GOPSNAPPED_PERPENDICULARLOCK	0x040000	// To Bezier Only (= Multiple Angle Lock)
+#define GOPSNAPPED_TANGENTIALLOCK		0x080000	// To Bezier Only (= Multiple Angle Lock)
+*/
+// Parallel, Perpendicular, Tangential, Axis, Continuity are all ANGLELOCK
+
+#define GOPSNAPINDEX_SHIFT		0x01000000
 
 
 #define PICKSTATE_NULL				0x00
@@ -95,8 +103,6 @@ private:
 
 	int mousestate;
 
-	float pickx_s;
-	float picky_s;
 	float pickx_c;
 	float picky_c;
 
@@ -176,6 +182,7 @@ private:
 	bool CheckSnapGrid();
 	bool CheckCoord_Obj(GObject * pObj);
 	bool CheckSnapContinuity();
+
 public:
 	void ClearSet();
 
@@ -208,14 +215,44 @@ public:
 	bool SubFindLinePIP( GLine * pLine, PickerInterestPointInfo * pPIP, int iIndex );
 	bool SubFindLineLine( GLine * pLine1, GLine * pLine2 );
 	bool SubFindPIPPIP( PickerInterestPointInfo * pPIP1, PickerInterestPointInfo * pPIP2 );
+
+	bool SubFindLengthLockX( float y );
+	bool SubFindAnglesLockX( float y );
+	bool SubFindLengthLockY( float x );
+	bool SubFindAnglesLockY( float x );
+	bool SubFindLineLengthLock( GLine * pLine, int iIndex );
+	bool SubFindLineAnglesLock( GLine * pLine, int iIndex );
+	bool SubFindPIPLengthLock( PickerInterestPointInfo * pPIP );
+	bool SubFindPIPAnglesLock( PickerInterestPointInfo * pPIP );
+
 	void TraslateLineToStraightLine( GLine * pLine, int index, int isec );
 	float CalculateProportion( int index=0 );
+
+	void SetLockOrigin(float x, float y);
+	void SetLockLength(float fLength);
+	void SetLockAngle(int nAngle){SetLockAngles(1, &nAngle);};
+	void SetLockAngles(int nLocks, int * pAngles);
+	void UnlockLength();
+	void UnlockAngles();
+
+	void AdjustPositionToLocks();
+	bool IsAngleInBetween( int angle, int nBeginAngle, int nMidAngle, int nNextAngle );
 private:
 	list<PickerInterestPointInfo> pipinfo;
 	bool bCheckMouseDown;
 	bool bRenderMouseDown;
 
 	int nOnLine;
+
+	float lockOriginX_c;
+	float lockOriginY_c;
+
+	float fLockLength;
+	bool bLockLength;
+
+	int * pLockAngles;
+	int numLockAngles;
+	int nCurrentLockAngleIndex;
 
 	GBezierLine * pFakeLine[GOPONLINE_MAX];
 };

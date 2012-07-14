@@ -299,8 +299,8 @@ void MathHelper::GetPerpendicularPointForLine( PointF2D pt1, PointF2D pt2, float
 	{
 		angle += ANGLEBASE_180;
 	}
-	float xdiff = l*cosf(ARC(angle));
-	float ydiff = l*sinf(ARC(angle));
+	float xdiff = l*cost(angle);
+	float ydiff = l*sint(angle);
 	float xbase = (pt2.x-pt1.x)*s+pt1.x;
 	float ybase = (pt2.y-pt1.y)*s+pt1.y;
 	if (ptp)
@@ -318,6 +318,7 @@ int MathHelper::GetLineAngle( PointF2D pt1, PointF2D pt2 )
 		return 0;
 	}
 	*/
+	// Range: [-pi, pi]
 	return ANGLE(atan2f(pt2.y-pt1.y, pt2.x-pt1.x));
 }
 
@@ -449,6 +450,22 @@ float MathHelper::CalculateProportionOnStraightLine( float xb, float yb, float x
 	}
 	return 0;
 }
+
+bool MathHelper::FindPerpendicularPoint( float x, float y, float lx, float ly, int langle, float * px/*=NULL*/, float * py/*=NULL */ )
+{
+	PointF2D v(lx, ly);
+	PointF2D w(lx+cost(langle), ly+sint(langle));
+	PointF2D p(x, y);
+	
+	float length2 = 1.0f;
+	float t = (p-v).Dot(w-v)/length2;
+
+	PointF2D proj = v+(w-v)*t;
+	if (px) { *px = proj.x; }
+	if (py) { *py = proj.y; }
+	return true;
+}
+
 BezierSublinesInfo::BezierSublinesInfo()
 {
 	ptPoints = NULL;

@@ -258,6 +258,42 @@ void LineCommand::OnDoneCommand()
 
 }
 
+bool staticMIDCBLength(MarkingUI * pmui, bool bAccept)
+{
+	return LineCommand::getInstance().MIDCBLength(pmui, bAccept);
+}
+bool staticMIDCBAngle(MarkingUI * pmui, bool bAccept)
+{
+	return LineCommand::getInstance().MIDCBAngle(pmui, bAccept);
+}
+
+bool LineCommand::MIDCBLength( MarkingUI * pmui, bool bAccept )
+{
+	fLockedLength = pmui->getFloat(&bLengthLocked);
+	if (bLengthLocked)
+	{
+		float x1, y1;
+		pcommand->GetParamXY(CSP_LINE_XY_B, &x1, &y1);
+		GObjectPicker::getInstance().SetLockOrigin(x1, y1);
+		GObjectPicker::getInstance().SetLockLength(fLockedLength);
+	}
+	return true;
+}
+
+bool LineCommand::MIDCBAngle( MarkingUI * pmui, bool bAccept )
+{
+	float fAngle = pmui->getFloat(&bAngleLocked);
+	if (bAngleLocked)
+	{
+		nLockedAngle = fAngle * ANGLEBASE_90/90;
+		float x1, y1;
+		pcommand->GetParamXY(CSP_LINE_XY_B, &x1, &y1);
+		GObjectPicker::getInstance().SetLockOrigin(x1, y1);
+		GObjectPicker::getInstance().SetLockAngle(nLockedAngle);
+	}
+	return true;
+}
+
 void LineCommand::OnInitCommand()
 {
 	pMergeToBegin = NULL;
@@ -267,7 +303,13 @@ void LineCommand::OnInitCommand()
 	ClearTemp();
 	pTempLine = new GBezierLine(&tBaseNode, PointF2D(), PointF2D());
 	MarkingLine * pMarking = new MarkingLine(pTempLine, MARKFLAG_LENGTH|MARKFLAG_ANGLE);
+	pMarking->SetEditable(MARKFLAG_LENGTH|MARKFLAG_ANGLE, true);
+	pMarking->SetCallback(MARKFLAG_LENGTH, staticMIDCBLength);
+	pMarking->SetCallback(MARKFLAG_ANGLE, staticMIDCBAngle);
 	MarkingManager::getInstance().EnableMarking(pMarking);
+
+	bLengthLocked = false;
+	bAngleLocked = false;
 }
 
 void LineCommand::OnTerminalCommand()

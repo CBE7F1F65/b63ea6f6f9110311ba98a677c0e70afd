@@ -472,6 +472,7 @@ void BezierCommand::OnInitCommand()
 	pTempLine = new GBezierLine(&tBaseNode, PointF2D(), PointF2D());
 
 	MarkingLine * pMarking = new MarkingLine(pTempLine, MARKFLAG_LENGTH);
+	pMarking->SetEditable(MARKFLAG_LENGTH, false);
 	MarkingManager::getInstance().EnableMarking(pMarking);
 }
 

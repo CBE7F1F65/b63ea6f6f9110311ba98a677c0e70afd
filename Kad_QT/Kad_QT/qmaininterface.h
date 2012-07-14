@@ -32,7 +32,7 @@ public:
 
 	list<QTUI_MarkingFloating_Widget *> lstMarkingFloating;
 	bool RegisterPMarkingWidget(QTUI_MarkingFloating_Widget * pWidget);
-	QTUI_MarkingFloating_Widget * GetNextPMarkingWidget(QTUI_MarkingFloating_Widget * pWidget=NULL);
+	QTUI_MarkingFloating_Widget * GetNextPMarkingWidget(QTUI_MarkingFloating_Widget * pWidget=NULL, bool bEditableOnly=true);
 	bool UnregisterPMarkingWidget(QTUI_MarkingFloating_Widget * pWidget=NULL);
 
     /*

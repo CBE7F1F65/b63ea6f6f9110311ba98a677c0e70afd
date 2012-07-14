@@ -141,4 +141,5 @@ public:
 	void RestrictAngle( int* angle );
 	bool GetLineSegmentInRect( float x, float y, int angle, float lx, float ty, float rx, float by, float* x1, float* y1, float* x2, float* y2 );
 	float CalculateProportionOnStraightLine( float xb, float yb, float xe, float ye, float x, float y );
+	bool FindPerpendicularPoint( float x, float y, float lx, float ly, int langle, float * px=NULL, float * py=NULL );
 };

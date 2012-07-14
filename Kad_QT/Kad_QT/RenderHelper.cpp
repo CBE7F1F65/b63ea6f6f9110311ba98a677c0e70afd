@@ -422,8 +422,8 @@ void RenderHelper::RenderArc_S( float x, float y, float r, int beginangle, int e
 	int nseg = (int)(fPrecision*fArcLength+1.0f);
 	int anglediff = endangle-beginangle;
 
-	float bx = x+r*cosf(ARC(beginangle));
-	float by = y+r*sinf(ARC(beginangle));
+	float bx = x+r*cost(beginangle);
+	float by = y+r*sint(beginangle);
 
 	PointF2D pqlast(bx, by);
 	PointF2D pq(bx, by);
@@ -440,8 +440,8 @@ void RenderHelper::RenderArc_S( float x, float y, float r, int beginangle, int e
 				pqlast = pq;
 				float s = (float)i/(float)nseg;
 				int nowangle = anglediff*s+beginangle;
-				pq.x = x+r*cosf(ARC(nowangle));
-				pq.y = y+r*sinf(ARC(nowangle));
+				pq.x = x+r*cost(nowangle);
+				pq.y = y+r*sint(nowangle);
 				RenderLine_S(pqlast.x, pqlast.y, pq.x, pq.y, col);
 			}
 		}
@@ -458,8 +458,8 @@ void RenderHelper::RenderArc_S( float x, float y, float r, int beginangle, int e
 			for (int i=endangle; i>beginangle; i-=angledotted)
 			{
 				int nowangle = i;
-				pq.x = x+r*cosf(ARC(nowangle));
-				pq.y = y+r*sinf(ARC(nowangle));
+				pq.x = x+r*cost(nowangle);
+				pq.y = y+r*sint(nowangle);
 				RenderPoint_S(pq.x, pq.y, col);
 			}
 		}
@@ -472,8 +472,8 @@ void RenderHelper::RenderArc_S( float x, float y, float r, int beginangle, int e
 				pqlast = pq;
 				float s = (float)i/(float)nseg;
 				int nowangle = anglediff*s+beginangle;
-				pq.x = x+r*cosf(ARC(nowangle));
-				pq.y = y+r*sinf(ARC(nowangle));
+				pq.x = x+r*cost(nowangle);
+				pq.y = y+r*sint(nowangle);
 				if (fSpace < _RHSLASHLINE_SPACE)
 				{
 					RenderLine_S(pqlast.x, pqlast.y, pq.x, pq.y, col);
@@ -521,8 +521,8 @@ void RenderHelper::RenderLineMeasureMark( float x1, float y1, float x2, float y2
 	{
 		angle += ANGLEBASE_180;
 	}
-	float xdiff = l*cosf(ARC(angle));
-	float ydiff = l*sinf(ARC(angle));
+	float xdiff = l*cost(angle);
+	float ydiff = l*sint(angle);
 
 	PointF2D ptdiff(xdiff, ydiff);
 	ptp1 = pt1+ptdiff;

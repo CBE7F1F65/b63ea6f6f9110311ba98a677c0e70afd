@@ -20,3 +20,6 @@
 #define ANGLEBASE_360	360000
 #define ARC(X)		((X) * 0.00001745329251994329f)
 #define ANGLE(X)	(int)((X) * 57295.77951308232f)
+
+#define cost(X)	cosf(ARC(X))
+#define sint(X)	sinf(ARC(X))

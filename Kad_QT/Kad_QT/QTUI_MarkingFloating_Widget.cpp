@@ -2,12 +2,22 @@
 #include "QTUI_MarkingFloating_Widget.h"
 #include "ui_QTUI_MarkingFloating_Widget.h"
 #include "qmaininterface.h"
+#include "MarkingObject.h"
 
 QTUI_MarkingFloating_Widget::QTUI_MarkingFloating_Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::QTUI_MarkingFloating_Widget)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
+	ASSERT(true);
+}
+
+QTUI_MarkingFloating_Widget::QTUI_MarkingFloating_Widget(MarkingUI * p, QWidget *parent) :
+	QWidget(parent),
+	ui(new Ui::QTUI_MarkingFloating_Widget)
+{
+	ui->setupUi(this);
+	pMarkingUI = p;
 	QMainInterface::getInstance().RegisterPMarkingWidget(this);		// Editable?
 }
 
@@ -69,4 +79,35 @@ void QTUI_MarkingFloating_Widget::OnChangeTabFocus()
 {
 	ui->pushButton->setChecked(true);
 	QMainInterface::getInstance().GetNextPMarkingWidget(this)->OnTabFocus();
+}
+
+void QTUI_MarkingFloating_Widget::OnDoneEdit( bool bAccept )
+{
+	if (!bAccept)
+	{
+		OnChangeTabFocus();
+	}
+	DoCallback(bAccept);
+}
+
+void QTUI_MarkingFloating_Widget::DoCallback( bool bAccept )
+{
+	pMarkingUI->DoCallback(bAccept);
+}
+
+bool QTUI_MarkingFloating_Widget::isEditable()
+{
+	return pMarkingUI->isEditable();
+}
+
+void QTUI_MarkingFloating_Widget::OnSetEditable( bool bEditable )
+{
+	if (bEditable)
+	{
+		ui->lineEdit->setReadOnly(false);
+	}
+	else
+	{
+		ui->lineEdit->setReadOnly(true);
+	}
 }

@@ -212,6 +212,9 @@
     <ClCompile Include="GObject.cpp" />
     <ClCompile Include="GObjectManager.cpp" />
     <ClCompile Include="GObjectPicker.cpp" />
+    <ClCompile Include="GObjectPicker_Check.cpp" />
+    <ClCompile Include="GObjectPicker_Sub.cpp" />
+    <ClCompile Include="GObjectPicker_Update.cpp" />
     <ClCompile Include="GPiece.cpp" />
     <ClCompile Include="GPoint.cpp" />
     <ClCompile Include="GShape.cpp" />

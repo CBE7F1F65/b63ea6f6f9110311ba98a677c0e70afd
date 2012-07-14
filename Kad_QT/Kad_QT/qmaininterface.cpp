@@ -47,29 +47,41 @@ bool QMainInterface::RegisterPMarkingWidget( QTUI_MarkingFloating_Widget * pWidg
 	return true;
 }
 
-QTUI_MarkingFloating_Widget * QMainInterface::GetNextPMarkingWidget( QTUI_MarkingFloating_Widget * pWidget/*=NULL*/ )
+QTUI_MarkingFloating_Widget * QMainInterface::GetNextPMarkingWidget( QTUI_MarkingFloating_Widget * pWidget/*=NULL*/, bool bEditableOnly/*=true*/ )
 {
 	if (lstMarkingFloating.empty())
 	{
 		return NULL;
 	}
+	bool bReturnNext = false;
 	if (!pWidget)
 	{
-		return lstMarkingFloating.front();
+		bReturnNext = true;
 	}
-	bool bReturnNext = false;
+	QTUI_MarkingFloating_Widget * pFirst = NULL;
 	for (list<QTUI_MarkingFloating_Widget *>::iterator it=lstMarkingFloating.begin(); it!=lstMarkingFloating.end(); ++it)
 	{
+		QTUI_MarkingFloating_Widget * pIt = *it;
 		if (bReturnNext)
 		{
-			return *it;
+			if (!bEditableOnly || pIt->isEditable())
+			{
+				return pIt;
+			}
 		}
-		if (*it == pWidget)
+		if (pIt == pWidget)
 		{
 			bReturnNext = true;
 		}
+		if (!pFirst)
+		{
+			if (!bEditableOnly || pIt->isEditable())
+			{
+				pFirst = pIt;
+			}
+		}
 	}
-	return lstMarkingFloating.front();
+	return pFirst;
 }
 
 bool QMainInterface::UnregisterPMarkingWidget( QTUI_MarkingFloating_Widget * pWidget/*=NULL*/ )
