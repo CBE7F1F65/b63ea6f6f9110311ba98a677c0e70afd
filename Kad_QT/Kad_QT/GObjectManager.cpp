@@ -165,7 +165,7 @@ void GObjectManager::OnTreeWillChange()
 
 void GObjectManager::OnTreeChanged( GObject * changingbase, GObject * activeitem, bool bSetActiveLayer/*=true*/ )
 {
-	if (!changingbase || !pBaseNode)
+	if (!changingbase || !pBaseNode || activeitem==pBaseNode)
 	{
 		return;
 	}

@@ -84,6 +84,19 @@ int MarkingUI::getInt( bool *bOk/*=NULL*/ )
 	return ival;
 }
 
+void MarkingUI::OnDoneEdit( QString strEdit )
+{
+	str = strEdit;
+}
+
+bool MarkingUI::IsValueLocked()
+{
+	if (pWidget)
+	{
+		return pWidget->IsValueLocked();
+	}
+	return false;
+}
 #define _MARKLENGTH_OFFSETLENGTH	48
 
 MarkingObject::MarkingObject()

@@ -22,10 +22,13 @@ public:
 	void MoveTo(float x, float y);
 	void OnTabFocus();
 	void OnChangeTabFocus();
-	void OnDoneEdit(bool bAccept);
+	void OnDoneEdit( bool bAccept);
 	void DoCallback( bool bAccept );
 	bool isEditable();
 	void OnSetEditable( bool bEditable );
+	void LockValue();
+	void UnlockValue();
+	bool IsValueLocked();
 private:
     Ui::QTUI_MarkingFloating_Widget *ui;
 	MarkingUI * pMarkingUI;

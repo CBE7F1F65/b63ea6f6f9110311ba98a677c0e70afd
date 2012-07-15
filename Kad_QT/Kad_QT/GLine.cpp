@@ -6,6 +6,8 @@
 #include "ColorManager.h"
 #include "MainInterface.h"
 #include "Command.h"
+#include "GBaseNode.h"
+
 /************************************************************************/
 /* GLINE                                                                */
 /************************************************************************/
@@ -334,6 +336,12 @@ float GStraightLine::CalculateMidPointProportion()
 {
 	return 0.5f;
 }
+
+PointF2D GStraightLine::GetTangentPointF2D( float t )
+{
+	return plend->GetPointF2D()-plbegin->GetPointF2D();
+}
+
 /************************************************************************/
 /* GBEZEIERLINE                                                         */
 /************************************************************************/
@@ -366,6 +374,19 @@ GBezierLine::GBezierLine(GObject * parent, PointF2D pb, PointF2D pbh, PointF2D p
 
 	parent->AddChild(this);
 	OnInit();
+}
+
+GBezierLine::GBezierLine( GObject * parent, float cx, float cy, float r, int quadrant )
+{
+	ASSERT(parent!=NULL);
+
+	plbegin = new GAnchorPoint(this, cx, cy);
+	plend = new GAnchorPoint(this, cx, cy);
+	pmid = new GMidPoint(this);
+	SetPosByQuarterCircle(cx, cy, r, quadrant);
+
+	parent->AddChild(this);
+
 }
 
 GBezierLine::~GBezierLine()
@@ -575,6 +596,63 @@ void GBezierLine::SetEndHandlePos( float x, float y, float fAllowance/*=-1*/ )
 	plend->SetHandlePosition(x, y, fAllowance);
 }
 
+void GBezierLine::SetPosByQuarterCircle( float cx, float cy, float r, int quadrant )
+{
+	float pbx, pby, pex, pey, pbhx, pbhy, pehx, pehy;
+	float rk = r*M_BEZIERCIRCLE_KAPPA;
+
+	switch (quadrant)
+	{
+	case QUADRANT_1:
+		pbx = cx + r;
+		pby = cy;
+		pex = cx;
+		pey = cy + r;
+		pbhx = cx + r;
+		pbhy = cy+rk;
+		pehx = cx+rk;
+		pehy = cy + r;
+		break;
+	case QUADRANT_2:
+		pbx = cx;
+		pby = cy + r;
+		pex = cx - r;
+		pey = cy;
+		pbhx = cx-rk;
+		pbhy = cy + r;
+		pehx = cx - r;
+		pehy = cy+rk;
+		break;
+	case QUADRANT_3:
+		pbx = cx - r;
+		pby = cy;
+		pex = cx;
+		pey = cy - r;
+		pbhx = cx - r;
+		pbhy = cy-rk;
+		pehx = cx-rk;
+		pehy = cy - r;
+		break;
+	case QUADRANT_4:
+		pbx = cx;
+		pby = cy - r;
+		pex = cx + r;
+		pey = cy;
+		pbhx = cx+rk;
+		pbhy = cy - r;
+		pehx = cx + r;
+		pehy = cy-rk;
+		break;
+	default:
+		ASSERT(true);
+	}
+
+	SetBeginEnd(pbx, pby, pex, pey);
+	SetBeginHandlePos(pbhx, pbhy);
+	SetEndHandlePos(pehx, pehy);
+
+}
+
 bool GBezierLine::isStraightLine()
 {
 	if (plbegin->isHandleIdentical() && plend->isHandleIdentical())
@@ -586,12 +664,42 @@ bool GBezierLine::isStraightLine()
 
 bool GBezierLine::CheckIntersectBezierStraight( GStraightLine * pLine, list<PointF2D> *pPoints )
 {
-	return false;
+	bool bHaveIntersection = false;
+
+	GBaseNode tbasenode;
+	GBezierLine * pfakeline = new GBezierLine(&tbasenode, PointF2D(0, 0), PointF2D(0, 0));
+
+	int npts = bsinfo.GetSubPointsCount();
+	for (int i=0; i<npts-1; i++)
+	{
+		pfakeline->SetBeginEnd(bsinfo.GetX(i), bsinfo.GetY(i), bsinfo.GetX(i+1), bsinfo.GetY(i+1));
+		if (pLine->CheckIntersectStraightStraight(pfakeline, pPoints))
+		{
+			bHaveIntersection = true;
+		}
+	}
+	tbasenode.RemoveAllChildren(true);
+	return bHaveIntersection;
 }
 
 bool GBezierLine::CheckIntersectBezierBezier( GBezierLine * pLine, list<PointF2D> *pPoints )
 {
-	return false;
+	bool bHaveIntersection = false;
+
+	GBaseNode tbasenode;
+	GBezierLine * pfakeline = new GBezierLine(&tbasenode, PointF2D(0, 0), PointF2D(0, 0));
+
+	int npts = bsinfo.GetSubPointsCount();
+	for (int i=0; i<npts-1; i++)
+	{
+		pfakeline->SetBeginEnd(bsinfo.GetX(i), bsinfo.GetY(i), bsinfo.GetX(i+1), bsinfo.GetY(i+1));
+		if (pLine->CheckIntersectBezierStraight(pfakeline, pPoints))
+		{
+			bHaveIntersection = true;
+		}
+	}
+	tbasenode.RemoveAllChildren(true);
+	return bHaveIntersection;
 }
 
 float GBezierLine::CalculateProportion( float x, float y, int iSec )
@@ -714,4 +822,19 @@ bool GBezierLine::toBezierLine()
 	SetBeginHandlePos(hxb, hyb);
 	SetEndHandlePos(hxe, hye);
 	return true;
+}
+
+PointF2D GBezierLine::GetTangentPointF2D( float t )
+{
+	if (isStraightLine())
+	{
+		return GStraightLine::GetTangentPointF2D(t);
+	}
+	PointF2D p0 = plbegin->GetPointF2D();
+	PointF2D p1 = plbegin->GetHandle()->GetPointF2D();
+	PointF2D p2 = plend->GetHandle()->GetPointF2D();
+	PointF2D p3 = plend->GetPointF2D();
+	//dP(t) / dt =  -3(1-t)^2 * P0 + 3(1-t)^2 * P1 - 6t(1-t) * P1 - 3t^2 * P2 + 6t(1-t) * P2 + 3t^2 * P3
+	float t2 = t*t;
+	return p0*(-3*(t2-2*t+1))+p1*(3*(3*t2-4*t+1))+p2*(-3*(3*t2-2*t))+p3*(3*t2);
 }

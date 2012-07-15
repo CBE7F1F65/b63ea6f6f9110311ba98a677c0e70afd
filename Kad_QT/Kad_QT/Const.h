@@ -23,3 +23,12 @@
 
 #define cost(X)	cosf(ARC(X))
 #define sint(X)	sinf(ARC(X))
+
+enum{
+	QUADRANT_1,
+	QUADRANT_2,
+	QUADRANT_3,
+	QUADRANT_4,
+};
+
+#define M_BEZIERCIRCLE_KAPPA	0.5522847498307933984022516322796f	// 4*(sqrt(2)-1)/3

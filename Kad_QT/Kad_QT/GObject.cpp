@@ -37,6 +37,7 @@ GObject::GObject(void)
 
 GObject::~GObject(void)
 {
+//	RemoveAllChildren(true);
 }
 
 #define _FOREACH_L(T, IT, L)	\

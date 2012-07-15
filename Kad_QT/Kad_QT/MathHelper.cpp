@@ -466,6 +466,91 @@ bool MathHelper::FindPerpendicularPoint( float x, float y, float lx, float ly, i
 	return true;
 }
 
+bool MathHelper::LineIntersectCircle( PointF2D lO, PointF2D lD, PointF2D C, float r, PointF2D * ptIntersections/*=NULL*/, PointF2D * ptNormals/*=NULL*/ )
+{
+	PointF2D d = lO-C;
+	float a = lD.Dot(lD);
+	float b = d.Dot(lD);
+	float c = d.Dot(d) - r*r;
+
+	float disc = b*b-a*c;
+	if (disc < 0.0f)
+	{
+		return false;
+	}
+
+	if (ptIntersections || ptNormals)
+	{
+		float t[2];
+		float sqrtDisc = sqrtf(disc);
+		t[0] = (-b-sqrtDisc) / a;
+		t[1] = (-b+sqrtDisc) / a;
+
+		for (int i=0; i<2; i++)
+		{
+			if (ptIntersections)
+			{
+				ptIntersections[i] = lO+lD*t[i];
+			}
+			if (ptNormals)
+			{
+				ptNormals[i] = (ptIntersections[i]-C)/r;
+			}
+		}
+	}
+
+	return true;
+}
+
+bool MathHelper::LineIntersectLine( PointF2D p, PointF2D u, PointF2D q, PointF2D v, PointF2D * ptIntersection/*=NULL*/, float * pfs/*=NULL*/ )
+{
+	float D = u.y*v.x-u.x*v.y;
+	if (fabsf(D) < M_FLOATEPS)
+	{
+		return false;
+	}
+	float Ds = (q.y - p.y) * v.x - (q.x - p.x) * v.y;
+	float s = Ds / D;
+	/*
+	if (s < 0.0f || s > 1.0f)
+	{
+		return false;
+	}
+	float Dt = (q.y - p.y) * u.x - (q.x - p.x) * u.y;
+	float t = Dt / D;
+	if (t < 0.0f || t > 1.0f)
+	{
+		return false;
+	}
+	*/
+	if (ptIntersection)
+	{
+		*ptIntersection = p+u*s;
+	}
+	if (pfs)
+	{
+		*pfs = s;
+	}
+	return true;
+}
+
+int MathHelper::GetQuadrant( float x, float y, float xo/*=0*/, float yo/*=0 */ )
+{
+	if (x>=xo)
+	{
+		if (y>=yo)
+		{
+			return QUADRANT_1;
+		}
+		return QUADRANT_4;
+	}
+	if (y>=yo)
+	{
+		return QUADRANT_2;
+	}
+	return QUADRANT_3;
+}
+
 BezierSublinesInfo::BezierSublinesInfo()
 {
 	ptPoints = NULL;

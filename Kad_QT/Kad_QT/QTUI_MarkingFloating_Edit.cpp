@@ -6,6 +6,7 @@ QTUI_MarkingFloating_Edit::QTUI_MarkingFloating_Edit(QWidget *parent) :
     QLineEdit(parent)
 {
 	this->installEventFilter(this);
+	bEdited = false;
 }
 
 bool QTUI_MarkingFloating_Edit::eventFilter( QObject *pQObj, QEvent *e )
@@ -16,11 +17,6 @@ bool QTUI_MarkingFloating_Edit::eventFilter( QObject *pQObj, QEvent *e )
 		if (pke->key() == Qt::Key_Tab)
 		{
 			DoneEdit(false);
-			return true;
-		}
-		if (pke->key() == Qt::Key_Return)
-		{
-			DoneEdit(true);
 			return true;
 		}
 	}
@@ -36,4 +32,25 @@ void QTUI_MarkingFloating_Edit::OnTabFocus()
 void QTUI_MarkingFloating_Edit::DoneEdit( bool bAccept )
 {
 	((QTUI_MarkingFloating_Widget *)parentWidget())->OnDoneEdit(bAccept);
+	bEdited = false;
+}
+
+void QTUI_MarkingFloating_Edit::SetText_External( QString str )
+{
+	this->setText(str);
+	if (this->hasFocus())
+	{
+		this->selectAll();
+	}
+	bEdited = false;
+}
+
+void QTUI_MarkingFloating_Edit::SLT_ReturnPressed()
+{
+	DoneEdit(true);
+}
+
+void QTUI_MarkingFloating_Edit::SLT_TextEdited( QString str )
+{
+	bEdited = true;
 }

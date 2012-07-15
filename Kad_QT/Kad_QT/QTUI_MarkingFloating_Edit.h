@@ -15,10 +15,18 @@ protected:
 public:
 	void OnTabFocus();
 	void DoneEdit(bool bAccept);
+	void SetText_External(QString str);
+
+	bool IsEdited(){return bEdited;};
+
+private:
+	bool bEdited;
     
 signals:
     
 public slots:
+	void SLT_ReturnPressed();
+	void SLT_TextEdited(QString str);
     
 };
 

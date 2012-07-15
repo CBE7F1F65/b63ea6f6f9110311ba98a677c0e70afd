@@ -39,8 +39,4 @@ private:
 
 	GBezierLine * pTempLine;
 
-	bool bLengthLocked;
-	float fLockedLength;
-	bool bAngleLocked;
-	int nLockedAngle;
 };

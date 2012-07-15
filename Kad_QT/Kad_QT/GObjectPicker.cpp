@@ -132,23 +132,33 @@ void GObjectPicker::AdjustPositionToLocks()
 			}
 		}
 
-		if (angle != pLockAngles[nCurrentLockAngleIndex])
-		{
-			float tx;
-			float ty;
-			if (MathHelper::getInstance().FindPerpendicularPoint(pickx_c, picky_c, lockOriginX_c, lockOriginY_c, pLockAngles[nCurrentLockAngleIndex], &tx, &ty))
-			{
-				pickx_c = tx;
-				picky_c = ty;
-				snappedstate |= GOPSNAPPED_ANGLESLOCK;
-				nOnLine++;
-			}
-		}
-		else
+		if (nCurrentLockAngleIndex >= 0)
 		{
 			snappedstate |= GOPSNAPPED_ANGLESLOCK;
 			nOnLine++;
+
+			ptCurrentLockAngleDir = PointF2D(pLockAngles[nCurrentLockAngleIndex]);
 		}
+
+		if (angle != pLockAngles[nCurrentLockAngleIndex])
+		{
+			if (bLockLength)
+			{
+				pickx_c = lockOriginX_c+fLockLength*ptCurrentLockAngleDir.x;//cost(pLockAngles[nCurrentLockAngleIndex]);
+				picky_c = lockOriginY_c+fLockLength*ptCurrentLockAngleDir.y;//sint(pLockAngles[nCurrentLockAngleIndex]);
+			}
+			else
+			{
+				float tx;
+				float ty;
+				if (MathHelper::getInstance().FindPerpendicularPoint(pickx_c, picky_c, lockOriginX_c, lockOriginY_c, pLockAngles[nCurrentLockAngleIndex], &tx, &ty))
+				{
+					pickx_c = tx;
+					picky_c = ty;
+				}
+			}
+		}
+
 	}
 }
 
@@ -356,6 +366,21 @@ void GObjectPicker::TraslateLineToStraightLine( GLine * pLine, int index, int is
 		GBezierLine * pBLine = (GBezierLine *)pLine;
 		pFakeLine[index]->SetBeginEnd(pBLine->getBSInfo()->GetX(isec), pBLine->getBSInfo()->GetY(isec), pBLine->getBSInfo()->GetX(isec+1), pBLine->getBSInfo()->GetY(isec+1));
 	}
+}
+
+void GObjectPicker::TraslatePIPToStraightLine( PickerInterestPointInfo * pPIP, int index, float fLength/*=-1 */ )
+{
+	int angle = pPIP->GetAngle();
+	if (fLength < 0)
+	{
+		fLength = snaprange_c;
+	}
+	float fcos = cost(angle) * fLength;
+	float fsin = sint(angle) * fLength;
+	float xbase = pPIP->GetX();
+	float ybase = pPIP->GetY();
+
+	pFakeLine[index]->SetBeginEnd(xbase-fcos, ybase-fsin, xbase+fcos, ybase+fsin);
 }
 
 float GObjectPicker::CalculateProportion( int index/*=0 */ )

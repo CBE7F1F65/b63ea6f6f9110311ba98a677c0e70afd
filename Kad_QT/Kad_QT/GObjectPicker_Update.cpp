@@ -50,8 +50,6 @@ int GObjectPicker::UpdatePickPoint()
 	}
 
 	FillInitialPosition();
-	nCurrentLockAngleIndex = 0;
-	AdjustPositionToLocks();
 
 	GUICoordinate * pguic = &GUICoordinate::getInstance();
 	snaprange_c = pguic->StoCs(snaprange_s);
@@ -71,6 +69,9 @@ int GObjectPicker::UpdatePickPoint()
 	{
 		pickCoordEntityObj[i] = NULL;
 	}
+
+	nCurrentLockAngleIndex = 0;
+	AdjustPositionToLocks();
 
 	int restoreSnapto = -1;
 	if (!bTestMode)

@@ -226,6 +226,7 @@ public:
 	bool SubFindPIPAnglesLock( PickerInterestPointInfo * pPIP );
 
 	void TraslateLineToStraightLine( GLine * pLine, int index, int isec );
+	void TraslatePIPToStraightLine( PickerInterestPointInfo * pPIP, int index, float fLength=-1 );
 	float CalculateProportion( int index=0 );
 
 	void SetLockOrigin(float x, float y);
@@ -253,6 +254,7 @@ private:
 	int * pLockAngles;
 	int numLockAngles;
 	int nCurrentLockAngleIndex;
+	PointF2D ptCurrentLockAngleDir;
 
 	GBezierLine * pFakeLine[GOPONLINE_MAX];
 };

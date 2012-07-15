@@ -269,27 +269,45 @@ bool staticMIDCBAngle(MarkingUI * pmui, bool bAccept)
 
 bool LineCommand::MIDCBLength( MarkingUI * pmui, bool bAccept )
 {
-	fLockedLength = pmui->getFloat(&bLengthLocked);
-	if (bLengthLocked)
+	GObjectPicker * pgp = &GObjectPicker::getInstance();
+	if (pmui->IsValueLocked())
 	{
-		float x1, y1;
-		pcommand->GetParamXY(CSP_LINE_XY_B, &x1, &y1);
-		GObjectPicker::getInstance().SetLockOrigin(x1, y1);
-		GObjectPicker::getInstance().SetLockLength(fLockedLength);
+		bool bOk;
+		float fLockedLength = pmui->getFloat(&bOk);
+		if (bOk)
+		{
+			float x1, y1;
+			pcommand->GetParamXY(CSP_LINE_XY_B, &x1, &y1);
+			pgp->SetLockOrigin(x1, y1);
+			pgp->SetLockLength(fLockedLength);
+		}
+	}
+	else
+	{
+		pgp->UnlockLength();
 	}
 	return true;
 }
 
 bool LineCommand::MIDCBAngle( MarkingUI * pmui, bool bAccept )
 {
-	float fAngle = pmui->getFloat(&bAngleLocked);
-	if (bAngleLocked)
+	GObjectPicker * pgp = &GObjectPicker::getInstance();
+	if (pmui->IsValueLocked())
 	{
-		nLockedAngle = fAngle * ANGLEBASE_90/90;
-		float x1, y1;
-		pcommand->GetParamXY(CSP_LINE_XY_B, &x1, &y1);
-		GObjectPicker::getInstance().SetLockOrigin(x1, y1);
-		GObjectPicker::getInstance().SetLockAngle(nLockedAngle);
+		bool bOk;
+		float fAngle = pmui->getFloat(&bOk);
+		if (bOk)
+		{
+			int nLockedAngle = fAngle * ANGLEBASE_90/90;
+			float x1, y1;
+			pcommand->GetParamXY(CSP_LINE_XY_B, &x1, &y1);
+			pgp->SetLockOrigin(x1, y1);
+			pgp->SetLockAngle(nLockedAngle);
+		}
+	}
+	else
+	{
+		pgp->UnlockAngles();
 	}
 	return true;
 }
@@ -308,14 +326,16 @@ void LineCommand::OnInitCommand()
 	pMarking->SetCallback(MARKFLAG_ANGLE, staticMIDCBAngle);
 	MarkingManager::getInstance().EnableMarking(pMarking);
 
-	bLengthLocked = false;
-	bAngleLocked = false;
+	GObjectPicker::getInstance().UnlockLength();
+	GObjectPicker::getInstance().UnlockAngles();
 }
 
 void LineCommand::OnTerminalCommand()
 {
 	pNextMergeToBegin = NULL;
 	ClearTemp();
+	GObjectPicker::getInstance().UnlockLength();
+	GObjectPicker::getInstance().UnlockAngles();
 }
 
 void LineCommand::ClearTemp()

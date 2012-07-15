@@ -29,7 +29,7 @@ QTUI_MarkingFloating_Widget::~QTUI_MarkingFloating_Widget()
 
 void QTUI_MarkingFloating_Widget::SetEditString( QString str )
 {
-	ui->lineEdit->setText(str);
+	ui->lineEdit->SetText_External(str);
 	QFontMetrics fm = ui->lineEdit->fontMetrics();
 	this->resize(fm.boundingRect(str).width()+ui->pushButton->width()+16, this->height());
 }
@@ -71,23 +71,34 @@ void QTUI_MarkingFloating_Widget::MoveTo( float x, float y )
 
 void QTUI_MarkingFloating_Widget::OnTabFocus()
 {
-	ui->pushButton->setChecked(false);
 	ui->lineEdit->OnTabFocus();
 }
 
 void QTUI_MarkingFloating_Widget::OnChangeTabFocus()
 {
-	ui->pushButton->setChecked(true);
 	QMainInterface::getInstance().GetNextPMarkingWidget(this)->OnTabFocus();
 }
 
 void QTUI_MarkingFloating_Widget::OnDoneEdit( bool bAccept )
 {
+	QString str = ui->lineEdit->text();
+	if (ui->lineEdit->IsEdited())
+	{
+		pMarkingUI->OnDoneEdit(ui->lineEdit->text());
+		if (!str.length())
+		{
+			UnlockValue();
+		}
+		else
+		{
+			LockValue();
+		}
+		DoCallback(bAccept);
+	}
 	if (!bAccept)
 	{
 		OnChangeTabFocus();
 	}
-	DoCallback(bAccept);
 }
 
 void QTUI_MarkingFloating_Widget::DoCallback( bool bAccept )
@@ -110,4 +121,19 @@ void QTUI_MarkingFloating_Widget::OnSetEditable( bool bEditable )
 	{
 		ui->lineEdit->setReadOnly(true);
 	}
+}
+
+void QTUI_MarkingFloating_Widget::LockValue()
+{
+	ui->pushButton->setChecked(true);
+}
+
+void QTUI_MarkingFloating_Widget::UnlockValue()
+{
+	ui->pushButton->setChecked(false);
+}
+
+bool QTUI_MarkingFloating_Widget::IsValueLocked()
+{
+	return ui->pushButton->isChecked();
 }

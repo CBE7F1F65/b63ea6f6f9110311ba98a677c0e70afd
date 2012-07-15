@@ -154,13 +154,7 @@ bool GObjectPicker::SubFindPIPX( PickerInterestPointInfo * pPIP, float y )
 {
 	list<PointF2D> pts;
 
-	int angle = pPIP->GetAngle();
-	float fcos = cost(angle) * snaprange_c;
-	float fsin = sint(angle) * snaprange_c;
-	float xbase = pPIP->GetX();
-	float ybase = pPIP->GetY();
-
-	pFakeLine[0]->SetBeginEnd(xbase-fcos, ybase-fsin, xbase+fcos, ybase+fsin);
+	TraslatePIPToStraightLine(pPIP, 0);
 	pFakeLine[1]->SetBeginEnd(pickx_c-snaprange_c, y, pickx_c+snaprange_c, y);
 	if (pFakeLine[1]->CheckIntersectWithLineObj(pFakeLine[0], &pts))
 	{
@@ -175,13 +169,7 @@ bool GObjectPicker::SubFindPIPY( PickerInterestPointInfo * pPIP, float x )
 {
 	list<PointF2D> pts;
 
-	float arc = ARC(pPIP->GetAngle());
-	float fcos = cosf(arc) * snaprange_c;
-	float fsin = sinf(arc) * snaprange_c;
-	float xbase = pPIP->GetX();
-	float ybase = pPIP->GetY();
-
-	pFakeLine[0]->SetBeginEnd(xbase-fcos, ybase-fsin, xbase+fcos, ybase+fsin);
+	TraslatePIPToStraightLine(pPIP, 0);
 	pFakeLine[1]->SetBeginEnd(x, picky_c-snaprange_c, x, picky_c+snaprange_c);
 	if (pFakeLine[1]->CheckIntersectWithLineObj(pFakeLine[0], &pts))
 	{
@@ -196,13 +184,7 @@ bool GObjectPicker::SubFindLinePIP( GLine * pLine, PickerInterestPointInfo * pPI
 {
 	list<PointF2D> pts;
 
-	int angle = pPIP->GetAngle();
-	float fcos = cost(angle) * snaprange_c;
-	float fsin = sint(angle) * snaprange_c;
-	float xbase = pPIP->GetX();
-	float ybase = pPIP->GetY();
-
-	pFakeLine[iIndex]->SetBeginEnd(xbase-fcos, ybase-fsin, xbase+fcos, ybase+fsin);
+	TraslatePIPToStraightLine(pPIP, iIndex);
 
 	if (pLine->CheckIntersectWithLineObj(pFakeLine[iIndex], &pts))
 	{
@@ -230,21 +212,8 @@ bool GObjectPicker::SubFindPIPPIP( PickerInterestPointInfo * pPIP1, PickerIntere
 {
 	list<PointF2D> pts;
 
-	int angle1 = pPIP1->GetAngle();
-	float fcos1 = cost(angle1) * snaprange_c;
-	float fsin1 = sint(angle1) * snaprange_c;
-	float xbase1 = pPIP1->GetX();
-	float ybase1 = pPIP1->GetY();
-
-	pFakeLine[0]->SetBeginEnd(xbase1-fcos1, ybase1-fsin1, xbase1+fcos1, ybase1+fsin1);
-
-	int angle2 = pPIP2->GetAngle();
-	float fcos2 = cost(angle2) * snaprange_c;
-	float fsin2 = sint(angle2) * snaprange_c;
-	float xbase2 = pPIP2->GetX();
-	float ybase2 = pPIP2->GetY();
-
-	pFakeLine[1]->SetBeginEnd(xbase2-fcos2, ybase2-fsin2, xbase2+fcos2, ybase2+fsin2);
+	TraslatePIPToStraightLine(pPIP1, 0);
+	TraslatePIPToStraightLine(pPIP2, 1);
 
 	if (pFakeLine[1]->CheckIntersectWithLineObj(pFakeLine[0], &pts))
 	{
@@ -258,40 +227,153 @@ bool GObjectPicker::SubFindPIPPIP( PickerInterestPointInfo * pPIP1, PickerIntere
 
 bool GObjectPicker::SubFindLengthLockX( float y )
 {
+	if (fabsf(y-lockOriginY_c) > fLockLength)
+	{
+		return false;
+	}
+	PointF2D ptIntersection[2];
+	PointF2D ptC(lockOriginX_c, lockOriginY_c);
+	PointF2D ptNow(pickx_c, picky_c);
+	MathHelper * pmh = &MathHelper::getInstance();
+	bool bIntersect = pmh->LineIntersectCircle(PointF2D(0, y), PointF2D(1, 0), ptC, fLockLength, ptIntersection);
+	if (bIntersect)
+	{
+		if (pmh->LineSegmentLengthPow2(ptNow, ptIntersection[0]) <= pmh->LineSegmentLengthPow2(ptNow, ptIntersection[1]))
+		{
+			pickx_c = ptIntersection[0].x;
+		}
+		else
+		{
+			pickx_c = ptIntersection[1].x;
+		}
+		picky_c = y;
+		return true;
+	}
 	return false;
 }
 
 bool GObjectPicker::SubFindAnglesLockX( float y )
 {
+	MathHelper * pmh = &MathHelper::getInstance();
+	PointF2D ptIntersection;
+	PointF2D ptC(lockOriginX_c, lockOriginY_c);
+	bool bIntersect = pmh->LineIntersectLine(PointF2D(0, y), PointF2D(1, 0), ptC, ptCurrentLockAngleDir, &ptIntersection);
+	if (bIntersect)
+	{
+		pickx_c = ptIntersection.x;
+		picky_c = y;
+		return true;
+	}
 	return false;
 }
 
 bool GObjectPicker::SubFindLengthLockY( float x )
 {
+	if (fabsf(x-lockOriginX_c) > fLockLength)
+	{
+		return false;
+	}
+	PointF2D ptIntersection[2];
+	PointF2D ptC(lockOriginX_c, lockOriginY_c);
+	PointF2D ptNow(pickx_c, picky_c);
+	MathHelper * pmh = &MathHelper::getInstance();
+	bool bIntersect = pmh->LineIntersectCircle(PointF2D(x, 0), PointF2D(0, 1), ptC, fLockLength, ptIntersection);
+	if (bIntersect)
+	{
+		if (pmh->LineSegmentLengthPow2(ptNow, ptIntersection[0]) <= pmh->LineSegmentLengthPow2(ptNow, ptIntersection[1]))
+		{
+			picky_c = ptIntersection[0].y;
+		}
+		else
+		{
+			picky_c = ptIntersection[1].y;
+		}
+		pickx_c = x;
+		return true;
+	}
 	return false;
 }
 
 bool GObjectPicker::SubFindAnglesLockY( float x )
 {
+	MathHelper * pmh = &MathHelper::getInstance();
+	PointF2D ptIntersection;
+	PointF2D ptC(lockOriginX_c, lockOriginY_c);
+	bool bIntersect = pmh->LineIntersectLine(PointF2D(x, 0), PointF2D(0, 1), ptC, ptCurrentLockAngleDir, &ptIntersection);
+	if (bIntersect)
+	{
+		pickx_c = x;
+		picky_c = ptIntersection.y;
+		return true;
+	}
 	return false;
 }
 
 bool GObjectPicker::SubFindLineLengthLock( GLine * pLine, int iIndex )
 {
+	list<PointF2D>pts;
+	MathHelper * pmh = &MathHelper::getInstance();
+	int quadrant = pmh->GetQuadrant(pickx_c, picky_c, lockOriginX_c, lockOriginY_c);
+	pFakeLine[iIndex]->SetPosByQuarterCircle(lockOriginX_c, lockOriginY_c, fLockLength, quadrant);
+
+	if (pLine->CheckIntersectWithLineObj(pFakeLine[iIndex], &pts))
+	{
+		pickx_c = pts.front().x;
+		picky_c = pts.front().y;
+		return true;
+	}
 	return false;
 }
 
 bool GObjectPicker::SubFindLineAnglesLock( GLine * pLine, int iIndex )
 {
+	MathHelper * pmh = &MathHelper::getInstance();
+	PointF2D ptIntersection;
+	PointF2D ptC(lockOriginX_c, lockOriginY_c);
+	float s;
+	bool bIntersect = pmh->LineIntersectLine(pLine->GetBeginPoint()->GetPointF2D(), pLine->GetTangentPointF2D(0), ptC, ptCurrentLockAngleDir, &ptIntersection, &s);
+	if (bIntersect && s >= 0.0f && s <= 1.0f)
+	{
+		pickx_c = ptIntersection.x;
+		picky_c = ptIntersection.y;
+		return true;
+	}
+	
 	return false;
 }
 
 bool GObjectPicker::SubFindPIPLengthLock( PickerInterestPointInfo * pPIP )
 {
+	TraslatePIPToStraightLine(pPIP, 0);
+
+	list<PointF2D>pts;
+	MathHelper * pmh = &MathHelper::getInstance();
+	int quadrant = pmh->GetQuadrant(pickx_c, picky_c, lockOriginX_c, lockOriginY_c);
+	pFakeLine[1]->SetPosByQuarterCircle(lockOriginX_c, lockOriginY_c, fLockLength, quadrant);
+
+	if (pFakeLine[0]->CheckIntersectWithLineObj(pFakeLine[1], &pts))
+	{
+		pickx_c = pts.front().x;
+		picky_c = pts.front().y;
+		return true;
+	}
 	return false;
 }
 
 bool GObjectPicker::SubFindPIPAnglesLock( PickerInterestPointInfo * pPIP )
 {
+	TraslatePIPToStraightLine(pPIP, 0);
+
+	MathHelper * pmh = &MathHelper::getInstance();
+	PointF2D ptIntersection;
+	PointF2D ptC(lockOriginX_c, lockOriginY_c);
+	float s;
+	bool bIntersect = pmh->LineIntersectLine(pFakeLine[0]->GetBeginPoint()->GetPointF2D(), pFakeLine[0]->GetTangentPointF2D(0), ptC, ptCurrentLockAngleDir, &ptIntersection, &s);
+	if (bIntersect && s >= 0.0f && s <= 1.0f)
+	{
+		pickx_c = ptIntersection.x;
+		picky_c = ptIntersection.y;
+		return true;
+	}
 	return false;
 }

@@ -42,7 +42,8 @@ public:
 	void UseUI();
 	void DeleteUI();
 	void DoMove();
-
+	void OnDoneEdit( QString strEdit );
+	bool IsValueLocked();
 private:
     PointF2D ptPos;
     QTUI_MarkingFloating_Widget * pWidget;

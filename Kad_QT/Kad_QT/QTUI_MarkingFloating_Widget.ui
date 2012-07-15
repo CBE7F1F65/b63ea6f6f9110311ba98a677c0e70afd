@@ -64,8 +64,45 @@
    <class>QTUI_MarkingFloating_Edit</class>
    <extends>QLineEdit</extends>
    <header location="global">qtui_markingfloating_edit.h</header>
+   <slots>
+    <slot>SLT_ReturnPressed()</slot>
+    <slot>SLT_TextEdited(QString)</slot>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>lineEdit</sender>
+   <signal>returnPressed()</signal>
+   <receiver>lineEdit</receiver>
+   <slot>SLT_ReturnPressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>28</x>
+     <y>7</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>39</x>
+     <y>7</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEdit</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>lineEdit</receiver>
+   <slot>SLT_TextEdited(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>9</x>
+     <y>9</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>13</x>
+     <y>9</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

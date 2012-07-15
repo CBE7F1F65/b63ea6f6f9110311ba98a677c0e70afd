@@ -39,6 +39,8 @@ public:
 	virtual bool isLengthCalculated(){return true;};
 	virtual float getLength() = 0;
 
+	virtual PointF2D GetTangentPointF2D(float t) = 0;
+
 	virtual const char * getDisplayName();
 
 	virtual void OnModify();
@@ -112,6 +114,8 @@ public:
 	virtual void GetBoundingBox(float *xl, float *yt, float *xr, float * yb);
 
 	virtual float getLength();
+
+	virtual PointF2D GetTangentPointF2D(float t);
 };
 /************************************************************************/
 /* GBezierLine                                                          */
@@ -122,6 +126,7 @@ public:
 	GBezierLine();
 	GBezierLine(GObject * parent, PointF2D pb, PointF2D pe);
 	GBezierLine(GObject * parent, PointF2D pb, PointF2D pbh, PointF2D peh, PointF2D pe);
+	GBezierLine(GObject * parent, float cx, float cy, float r, int quadrant);
 	virtual ~GBezierLine();
 
     virtual void OnPrecisionChanged(float fPrecision);
@@ -134,6 +139,7 @@ public:
 	virtual void OnRender(int iHighlightLevel=0);
 
 	virtual void SetBeginEnd(float xb, float yb, float xe, float ye, float fAllowance=-1);
+	virtual void SetPosByQuarterCircle(float cx, float cy, float r, int quadrant);
 
 	virtual void SetBeginHandlePos(float x, float y, float fAllowance=-1);
 	virtual void SetEndHandlePos(float x, float y, float fAllowance=-1);
@@ -150,6 +156,8 @@ public:
 
 	virtual bool isLengthCalculated();
 	virtual float getLength();
+
+	virtual PointF2D GetTangentPointF2D(float t);
 
 	virtual bool Clone( GObject * pNewParent );
 
