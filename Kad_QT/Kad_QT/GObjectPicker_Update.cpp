@@ -5,6 +5,7 @@
 #include "GObjectManager.h"
 #include "MarqueeSelect.h"
 #include "RenderHelper.h"
+#include "MarkingManager.h"
 
 int GObjectPicker::PickPoint( PickFilterCallback pfunc/*=NULL*/ )
 {
@@ -73,7 +74,10 @@ int GObjectPicker::UpdatePickPoint()
 	nCurrentLockAngleIndex = 0;
 	AdjustPositionToLocks();
 
+	bSplitMarkingInUse = false;
+
 	int restoreSnapto = -1;
+
 	if (!bTestMode)
 	{
 		if (!Command::getInstance().GetCurrentCommand() && !MarqueeSelect::getInstance().marqueestate)
@@ -170,6 +174,15 @@ int GObjectPicker::UpdatePickPoint()
 	{
 		mousestate = GOPMOUSE_UP;
 		state = PICKSTATE_READY;
+	}
+
+	if (!bSplitMarkingInUse)
+	{
+		if (pSplitMarking)
+		{
+			MarkingManager::getInstance().DisableMarking(pSplitMarking);
+			pSplitMarking = NULL;
+		}
 	}
 
 	pipinfo.clear();

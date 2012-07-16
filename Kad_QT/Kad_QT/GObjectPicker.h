@@ -2,6 +2,7 @@
 
 #include "GLine.h"
 #include "GBaseNode.h"
+#include "MarkingObject.h"
 
 #define GOPSNAP_NONE			0x0000
 #define GOPSNAP_SELF			0x0001
@@ -238,6 +239,9 @@ public:
 
 	void AdjustPositionToLocks();
 	bool IsAngleInBetween( int angle, int nBeginAngle, int nMidAngle, int nNextAngle );
+
+	void AddSplitUI(GObject * pObj);
+
 private:
 	list<PickerInterestPointInfo> pipinfo;
 	bool bCheckMouseDown;
@@ -255,6 +259,9 @@ private:
 	int numLockAngles;
 	int nCurrentLockAngleIndex;
 	PointF2D ptCurrentLockAngleDir;
+
+	MarkingSplitLine * pSplitMarking;
+	bool bSplitMarkingInUse;
 
 	GBezierLine * pFakeLine[GOPONLINE_MAX];
 };

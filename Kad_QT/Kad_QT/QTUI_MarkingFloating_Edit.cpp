@@ -19,6 +19,11 @@ bool QTUI_MarkingFloating_Edit::eventFilter( QObject *pQObj, QEvent *e )
 			DoneEdit(false);
 			return true;
 		}
+		if (pke->key() == Qt::Key_Return || pke->key() == Qt::Key_Enter)
+		{
+			DoneEdit(true);
+			return true;
+		}
 	}
 	return QLineEdit::eventFilter(pQObj, e);
 }
@@ -43,11 +48,6 @@ void QTUI_MarkingFloating_Edit::SetText_External( QString str )
 		this->selectAll();
 	}
 	bEdited = false;
-}
-
-void QTUI_MarkingFloating_Edit::SLT_ReturnPressed()
-{
-	DoneEdit(true);
 }
 
 void QTUI_MarkingFloating_Edit::SLT_TextEdited( QString str )

@@ -2,6 +2,7 @@
 #include "GObjectPicker.h"
 #include "GObjectManager.h"
 #include "GUICoordinate.h"
+#include "MarkingManager.h"
 
 
 GObjectPicker::GObjectPicker(void)
@@ -22,6 +23,9 @@ GObjectPicker::GObjectPicker(void)
 	numLockAngles = 0;
 	nCurrentLockAngleIndex = 0;
 	pLockAngles = NULL;
+
+	pSplitMarking = NULL;
+	bSplitMarkingInUse = false;
 }
 
 GObjectPicker::~GObjectPicker(void)
@@ -452,6 +456,29 @@ void GObjectPicker::UnlockAngles()
 bool GObjectPicker::IsAngleInBetween( int angle, int nBeginAngle, int nMidAngle, int nNextAngle )
 {
 	return angle >= (nBeginAngle+nMidAngle)/2 && angle < (nMidAngle+nNextAngle)/2;
+}
+
+void GObjectPicker::AddSplitUI( GObject * pObj )
+{
+	if (pSplitMarking)
+	{
+		if (pSplitMarking->getTargetObj() == pObj)
+		{
+		}
+		else
+		{
+			MarkingManager::getInstance().DisableMarking(pSplitMarking);
+			pSplitMarking = NULL;
+		}
+	}
+	if (!pSplitMarking)
+	{
+		pSplitMarking = new MarkingSplitLine((GLine *)pObj, MARKFLAG_SPLITLENGTH);
+		pSplitMarking->SetEditable(MARKFLAG_SPLITLENGTH, true);
+		MarkingManager::getInstance().EnableMarking(pSplitMarking);
+	}
+	pSplitMarking->SetSplitPoint(pickx_c, picky_c, pickSection[0]);
+	bSplitMarkingInUse = true;
 }
 
 bool PickerInterestPointInfo::Equals( PickerInterestPointInfo & r )

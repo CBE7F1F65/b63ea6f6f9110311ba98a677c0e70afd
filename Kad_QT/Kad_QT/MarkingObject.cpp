@@ -109,6 +109,8 @@ MarkingObject::MarkingObject()
 	pmuiPositionY = new MarkingUI(this);
 	pmuiLength = new MarkingUI(this);
 	pmuiAngle = new MarkingUI(this);
+	pmuiSplitB = new MarkingUI(this);
+	pmuiSplitE = new MarkingUI(this);
 }
 
 MarkingObject::~MarkingObject()
@@ -128,6 +130,14 @@ MarkingObject::~MarkingObject()
 	if (pmuiAngle)
 	{
 		delete pmuiAngle;
+	}
+	if (pmuiSplitB)
+	{
+		delete pmuiSplitB;
+	}
+	if (pmuiSplitE)
+	{
+		delete pmuiSplitE;
 	}
 }
 
@@ -152,6 +162,14 @@ void MarkingObject::SetValue( GObject * pObj, int nFlag )
 	if (nFlag & MARKFLAG_ANGLE)
 	{
 		pmuiAngle->UseUI();
+	}
+	if (nFlag & MARKFLAG_SPLITLENGTH_B)
+	{
+		pmuiSplitB->UseUI();
+	}
+	if (nFlag & MARKFLAG_SPLITLENGTH_E)
+	{
+		pmuiSplitE->UseUI();
 	}
 }
 
@@ -188,6 +206,14 @@ void MarkingObject::SetEditable( int nFlag, bool bSet )
 	{
 		pmuiAngle->SetEditable(bSet);
 	}
+	if (nFlag & MARKFLAG_SPLITLENGTH_B)
+	{
+		pmuiSplitB->SetEditable(bSet);
+	}
+	if (nFlag & MARKFLAG_SPLITLENGTH_E)
+	{
+		pmuiSplitE->SetEditable(bSet);
+	}
 }
 
 void MarkingObject::SetCallback( int nFlag, MarkingInputDoneCallback cb )
@@ -207,6 +233,14 @@ void MarkingObject::SetCallback( int nFlag, MarkingInputDoneCallback cb )
 	if (nFlag & MARKFLAG_ANGLE)
 	{
 		pmuiAngle->SetCallback(cb);
+	}
+	if (nFlag & MARKFLAG_SPLITLENGTH_B)
+	{
+		pmuiSplitB->SetCallback(cb);
+	}
+	if (nFlag & MARKFLAG_SPLITLENGTH_E)
+	{
+		pmuiSplitE->SetCallback(cb);
 	}
 }
 /************************************************************************/
@@ -232,10 +266,10 @@ void MarkingLine::Update()
 
 		MathHelper * pmh = &MathHelper::getInstance();
 
-		PointF2D pt1 = pLine->GetBeginPoint()->GetPointF2D();
-		PointF2D pt2 = pLine->GetEndPoint()->GetPointF2D();
+		PointF2D ptBegin = pLine->GetBeginPoint()->GetPointF2D();
+		PointF2D ptEnd = pLine->GetEndPoint()->GetPointF2D();
 
-		int angle = pmh->GetLineAngle(pt1, pt2);
+		int angle = pmh->GetLineAngle(ptBegin, ptEnd);
 		nLineAngle = angle;
 
 		angle += ANGLEBASE_90;
@@ -275,9 +309,9 @@ void MarkingLine::Update()
 
 		if (nMarkFlag & MARKFLAG_ANGLE)
 		{
-			fStraightLineLength = pmh->LineSegmentLength(pt1, pt2);
-			ptArcPoint = PointF2D(pt1.x+fStraightLineLength, pt1.y);
-			pmuiAngle->SetPosition(PointF2D(pt1.x+fStraightLineLength*cost(nLineAngle/2), pt1.y+fStraightLineLength*sint(nLineAngle/2)));
+			fStraightLineLength = pmh->LineSegmentLength(ptBegin, ptEnd);
+			ptArcPoint = PointF2D(ptBegin.x+fStraightLineLength, ptBegin.y);
+			pmuiAngle->SetPosition(PointF2D(ptBegin.x+fStraightLineLength*cost(nLineAngle/2), ptBegin.y+fStraightLineLength*sint(nLineAngle/2)));
 
 			str.sprintf("%f", (float)(nLineAngle)/(ANGLEBASE_90/90));
 			pmuiAngle->SetString(&str);
@@ -330,4 +364,82 @@ void MarkingLine::Render()
 		prh->RenderArc(ptBegin.x, ptBegin.y, fStraightLineLength, 0, nLineAngle, col);
 	}
 	prh->SetLineStyle(savedstyle);
+}
+
+MarkingSplitLine::MarkingSplitLine( GLine * pLine, int nFlag )
+{
+	ASSERT(pLine);
+	SetValue(pLine, nFlag);
+}
+
+void MarkingSplitLine::Update()
+{
+	bool bRecalcPosition = false;
+	GLine * pLine = (GLine *)pTargetObj;
+	if (nModifyVersion != pTargetObj->getModifyVersion())
+	{
+		nModifyVersion = pTargetObj->getModifyVersion();
+		bRecalcPosition = true;
+
+
+		MathHelper * pmh = &MathHelper::getInstance();
+
+		PointF2D ptBegin = pLine->GetBeginPoint()->GetPointF2D();
+		PointF2D ptEnd = pLine->GetEndPoint()->GetPointF2D();
+
+		fLineLength = pLine->getLength();
+		int angle = pmh->GetLineAngle(ptBegin, ptEnd);
+
+		angle += ANGLEBASE_90;
+		pmh->RestrictAngle(&angle);
+		if (angle >= 0)
+		{
+			angle += ANGLEBASE_180;
+		}
+
+		float l = GUICoordinate::getInstance().StoCs(_MARKLENGTH_OFFSETLENGTH);
+		float xdiff = l*cost(angle);
+		float ydiff = l*sint(angle);
+		ptPosDiff.x = xdiff;
+		ptPosDiff.y = ydiff;
+	}
+
+	if (bRecalcPosition || bSplitPointChanged)
+	{
+		float fProp = pLine->CalculateProportion(ptSplitPoint.x, ptSplitPoint.y, iSplitSec);
+
+		float bx, by, ex, ey;
+		pLine->GetPositionAtProportion(fProp/2, &bx, &by);
+		pLine->GetPositionAtProportion((1+fProp)/2, &ex, &ey);
+
+		QString str;
+
+		if (nMarkFlag & MARKFLAG_SPLITLENGTH_B)
+		{
+			pmuiSplitB->SetPosition(PointF2D(bx, by)+ptPosDiff);
+			str.sprintf("%f(%f%%)", fProp*fLineLength, fProp*100);
+			pmuiSplitB->SetString(&str);
+			pmuiSplitB->DoMove();
+		}
+		if (nMarkFlag & MARKFLAG_SPLITLENGTH_E)
+		{
+			pmuiSplitE->SetPosition(PointF2D(ex, ey)+ptPosDiff);
+			str.sprintf("%f(%f%%)", (1-fProp)*fLineLength, (1-fProp)*100);
+			pmuiSplitE->SetString(&str);
+			pmuiSplitE->DoMove();
+		}
+	}
+}
+
+void MarkingSplitLine::Render()
+{
+
+}
+
+void MarkingSplitLine::SetSplitPoint( float x, float y, int isec/*=0*/ )
+{
+	ptSplitPoint.x = x;
+	ptSplitPoint.y = y;
+	iSplitSec = isec;
+	bSplitPointChanged = true;
 }

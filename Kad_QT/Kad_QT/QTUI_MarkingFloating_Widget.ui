@@ -74,22 +74,6 @@
  <connections>
   <connection>
    <sender>lineEdit</sender>
-   <signal>returnPressed()</signal>
-   <receiver>lineEdit</receiver>
-   <slot>SLT_ReturnPressed()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>28</x>
-     <y>7</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>39</x>
-     <y>7</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>lineEdit</sender>
    <signal>textEdited(QString)</signal>
    <receiver>lineEdit</receiver>
    <slot>SLT_TextEdited(QString)</slot>

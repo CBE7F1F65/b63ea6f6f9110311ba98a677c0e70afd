@@ -25,7 +25,6 @@ private:
 signals:
     
 public slots:
-	void SLT_ReturnPressed();
 	void SLT_TextEdited(QString str);
     
 };

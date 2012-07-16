@@ -9,6 +9,9 @@
 #define MARKFLAG_POSITION	(MARKFLAG_POSITIONX|MARKFLAG_POSITIONY)
 #define MARKFLAG_LENGTH		0x04
 #define MARKFLAG_ANGLE		0x08
+#define MARKFLAG_SPLITLENGTH_B	0x10
+#define MARKFLAG_SPLITLENGTH_E	0x20
+#define MARKFLAG_SPLITLENGTH	(MARKFLAG_SPLITLENGTH_B|MARKFLAG_SPLITLENGTH_E)
 
 class MarkingUI;
 class MarkingObject;
@@ -72,12 +75,12 @@ public:
 
 	void SetEditable(int nFlag, bool bSet);
 	void SetCallback(int nFlag, MarkingInputDoneCallback cb);
-
+	/*
 	PointF2D * getPositionXMark(){return pmuiPositionX->getPos();};
 	PointF2D * getPositionYMark(){return pmuiPositionY->getPos();};
 	PointF2D * getLengthMark(){return pmuiLength->getPos();};
 	PointF2D * getAngleMark(){return pmuiAngle->getPos();};
-
+	*/
 	void SetRedraw();
 
 protected:
@@ -88,7 +91,9 @@ protected:
 	MarkingUI *pmuiPositionX;
 	MarkingUI *pmuiPositionY;
     MarkingUI *pmuiLength;
-    MarkingUI *pmuiAngle;
+	MarkingUI *pmuiAngle;
+	MarkingUI *pmuiSplitB;
+	MarkingUI *pmuiSplitE;
 };
 
 class MarkingLine : public MarkingObject
@@ -105,4 +110,22 @@ protected:
 	PointF2D ptArcPoint;
 	float fStraightLineLength;
 	int nLineAngle;
+};
+
+class MarkingSplitLine : public MarkingObject
+{
+public:
+	MarkingSplitLine(GLine * pLine, int nFlag);
+
+	virtual void Update();
+	virtual void Render();
+
+	virtual void SetSplitPoint(float x, float y, int isec=0);
+
+protected:
+	PointF2D ptSplitPoint;
+	int iSplitSec;
+	PointF2D ptPosDiff;
+	bool bSplitPointChanged;
+	float fLineLength;
 };

@@ -229,6 +229,7 @@ bool GObjectPicker::CheckSnapGeometryLine( GObject * pObj )
 						pickx_c = neartox;
 						picky_c = neartoy;
 						nOnLine++;
+						AddSplitUI(pObj);
 					}
 				}
 			}
