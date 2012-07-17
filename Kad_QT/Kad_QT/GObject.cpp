@@ -309,7 +309,7 @@ void GObject::OnUpdate()
 		{
 			nTryState = GOBJTRYSTATE_MOVE_AFTERUPDATE;
 		}
-		else if (nTryState == GOBJTRYSTATE_MOVE_AFTERUPDATE)
+		else if (nTryState == GOBJTRYSTATE_MOVE_AFTERUPDATE && !GObjectManager::getInstance().IsTryMoving())
 		{
 			// Add Command
 			float tx = getX();

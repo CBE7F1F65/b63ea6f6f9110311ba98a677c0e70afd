@@ -42,6 +42,12 @@ void QTUI_MarkingFloating_Widget::MoveTo( float x, float y )
 	}
 	QWidget * pParentWidget = this->parentWidget();
 	QPoint pt = pParentWidget->mapFromGlobal(QCursor::pos());
+
+	int w = this->width();
+	int h = this->height();
+	x -= w/2;
+	y -= h/2;
+
 	if (fabsf(pt.x()-x) < 15)
 	{
 		x = pt.x()+15;
@@ -58,13 +64,13 @@ void QTUI_MarkingFloating_Widget::MoveTo( float x, float y )
 	{
 		y = 0;
 	}
-	if (x+this->width() > pParentWidget->width())
+	if (x+w > pParentWidget->width())
 	{
-		x = pParentWidget->width()-this->width();
+		x = pParentWidget->width()-w;
 	}
-	if (y+this->height() > pParentWidget->height())
+	if (y+h > pParentWidget->height())
 	{
-		y = pParentWidget->height()-this->height();
+		y = pParentWidget->height()-h;
 	}
 	this->move(x, y);
 }

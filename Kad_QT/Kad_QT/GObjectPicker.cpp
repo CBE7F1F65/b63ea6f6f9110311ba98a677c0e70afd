@@ -3,6 +3,7 @@
 #include "GObjectManager.h"
 #include "GUICoordinate.h"
 #include "MarkingManager.h"
+#include "MainInterface.h"
 
 
 GObjectPicker::GObjectPicker(void)
@@ -23,6 +24,7 @@ GObjectPicker::GObjectPicker(void)
 	numLockAngles = 0;
 	nCurrentLockAngleIndex = 0;
 	pLockAngles = NULL;
+	nSplitLockType = -1;
 
 	pSplitMarking = NULL;
 	bSplitMarkingInUse = false;
@@ -92,75 +94,122 @@ void GObjectPicker::FillInitialPosition()
 
 void GObjectPicker::AdjustPositionToLocks()
 {
-	if (bLockLength)
+	MainInterface * pmain = &MainInterface::getInstance();
+	if (pmain->hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_UP) || pmain->hge->Input_GetDIKey(DIK_ESCAPE))
 	{
-		int angle = MathHelper::getInstance().GetLineAngle(PointF2D(lockOriginX_c, lockOriginY_c), PointF2D(pickx_c, picky_c));
-		pickx_c = lockOriginX_c+fLockLength*cost(angle);
-		picky_c = lockOriginY_c+fLockLength*sint(angle);
-
-		snappedstate |= GOPSNAPPED_LENGTHLOCK;
-		nOnLine++;
+		ClearSplitMarking();
+		UnLockSplitLine();
 	}
-	if (numLockAngles)
+
+	if (nSplitLockType >= 0 && pSplitMarking)
 	{
-		int angle = MathHelper::getInstance().GetLineAngle(PointF2D(lockOriginX_c, lockOriginY_c), PointF2D(pickx_c, picky_c));
-		// Angle: [-pi, pi];
+		GLine * pLine = (GLine *)pSplitMarking->getTargetObj();
+		PointF2D ptBegin = pLine->GetBeginPoint()->GetPointF2D();
+		PointF2D ptEnd = pLine->GetEndPoint()->GetPointF2D();
+		float fLength = 0;
+		float fProp = 0;
 
-		nCurrentLockAngleIndex = -1;
-		if (numLockAngles == 1)
+		switch (nSplitLockType)
 		{
-			nCurrentLockAngleIndex = 0;
+		case MARKSPLITLINETYPE_BEGIN:
+			fLength = pLine->getLength();
+			fProp = fSplitValue/fLength;
+			break;
+		case MARKSPLITLINETYPE_BEGINPROP:
+			fProp = fSplitValue;
+			break;
+		case MARKSPLITLINETYPE_END:
+			fLength = pLine->getLength();
+			fProp = (fLength-fSplitValue)/fLength;
+			break;
+		case MARKSPLITLINETYPE_ENDPROP:
+			fProp = 1-fSplitValue;
+			break;
 		}
-		else
-		{
-			int tangle = pLockAngles[numLockAngles-1]-ANGLEBASE_360;
-			for (int i=0; i<numLockAngles-2; i++)
-			{
-				if (IsAngleInBetween(angle, tangle, pLockAngles[i], pLockAngles[i+1]))
-				{
-					nCurrentLockAngleIndex = i;
-					break;
-				}
-				tangle = pLockAngles[i];
-			}
-			if (nCurrentLockAngleIndex < 0)
-			{
-				if (IsAngleInBetween(angle, pLockAngles[numLockAngles-2], pLockAngles[numLockAngles-1], pLockAngles[0]+ANGLEBASE_360))
-				{
-					nCurrentLockAngleIndex = numLockAngles-2;
-				}
-				else
-				{
-					nCurrentLockAngleIndex = numLockAngles-1;
-				}
-			}
-		}
+		int isec = 0;
+		pLine->GetPositionAtProportion(fProp, &pickx_c, &picky_c, &isec);
 
-		if (nCurrentLockAngleIndex >= 0)
+		snappedstate |= GOPSNAPPED_LINE|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
+		pSplitMarking->SetSplitPoint(pickx_c, picky_c, isec);
+		SetPickObj(pLine);
+
+		bSplitMarkingInUse = true;
+		nOnLine = GOPONLINE_MAX;
+
+	}
+	else
+	{
+		if (bLockLength)
 		{
-			snappedstate |= GOPSNAPPED_ANGLESLOCK;
+			int angle = MathHelper::getInstance().GetLineAngle(PointF2D(lockOriginX_c, lockOriginY_c), PointF2D(pickx_c, picky_c));
+			pickx_c = lockOriginX_c+fLockLength*cost(angle);
+			picky_c = lockOriginY_c+fLockLength*sint(angle);
+
+			snappedstate |= GOPSNAPPED_LENGTHLOCK;
 			nOnLine++;
-
-			ptCurrentLockAngleDir = PointF2D(pLockAngles[nCurrentLockAngleIndex]);
 		}
-
-		if (angle != pLockAngles[nCurrentLockAngleIndex])
+		if (numLockAngles)
 		{
-			if (bLockLength)
+			int angle = MathHelper::getInstance().GetLineAngle(PointF2D(lockOriginX_c, lockOriginY_c), PointF2D(pickx_c, picky_c));
+			// Angle: [-pi, pi];
+
+			nCurrentLockAngleIndex = -1;
+			if (numLockAngles == 1)
 			{
-				pickx_c = lockOriginX_c+fLockLength*ptCurrentLockAngleDir.x;//cost(pLockAngles[nCurrentLockAngleIndex]);
-				picky_c = lockOriginY_c+fLockLength*ptCurrentLockAngleDir.y;//sint(pLockAngles[nCurrentLockAngleIndex]);
+				nCurrentLockAngleIndex = 0;
 			}
 			else
 			{
-				float tx;
-				float ty;
-				if (MathHelper::getInstance().FindPerpendicularPoint(pickx_c, picky_c, lockOriginX_c, lockOriginY_c, pLockAngles[nCurrentLockAngleIndex], &tx, &ty))
+				int tangle = pLockAngles[numLockAngles-1]-ANGLEBASE_360;
+				for (int i=0; i<numLockAngles-2; i++)
 				{
-					pickx_c = tx;
-					picky_c = ty;
+					if (IsAngleInBetween(angle, tangle, pLockAngles[i], pLockAngles[i+1]))
+					{
+						nCurrentLockAngleIndex = i;
+						break;
+					}
+					tangle = pLockAngles[i];
+				}
+				if (nCurrentLockAngleIndex < 0)
+				{
+					if (IsAngleInBetween(angle, pLockAngles[numLockAngles-2], pLockAngles[numLockAngles-1], pLockAngles[0]+ANGLEBASE_360))
+					{
+						nCurrentLockAngleIndex = numLockAngles-2;
+					}
+					else
+					{
+						nCurrentLockAngleIndex = numLockAngles-1;
+					}
 				}
 			}
+
+			if (nCurrentLockAngleIndex >= 0)
+			{
+				snappedstate |= GOPSNAPPED_ANGLESLOCK;
+				nOnLine++;
+
+				ptCurrentLockAngleDir = PointF2D(pLockAngles[nCurrentLockAngleIndex]);
+			}
+
+			if (angle != pLockAngles[nCurrentLockAngleIndex])
+			{
+				if (bLockLength)
+				{
+					pickx_c = lockOriginX_c+fLockLength*ptCurrentLockAngleDir.x;//cost(pLockAngles[nCurrentLockAngleIndex]);
+					picky_c = lockOriginY_c+fLockLength*ptCurrentLockAngleDir.y;//sint(pLockAngles[nCurrentLockAngleIndex]);
+				}
+				else
+				{
+					float tx;
+					float ty;
+					if (MathHelper::getInstance().FindPerpendicularPoint(pickx_c, picky_c, lockOriginX_c, lockOriginY_c, pLockAngles[nCurrentLockAngleIndex], &tx, &ty))
+					{
+						pickx_c = tx;
+						picky_c = ty;
+					}
+				}
+			}
+
 		}
 
 	}
@@ -453,13 +502,81 @@ void GObjectPicker::UnlockAngles()
 	nCurrentLockAngleIndex = 0;
 }
 
+void GObjectPicker::SetLockSplitLine( int splitlocktype, float fval )
+{
+	ASSERT(splitlocktype >= MARKSPLITLINETYPE_BEGIN && splitlocktype <= MARKSPLITLINETYPE_ENDPROP);
+	nSplitLockType = splitlocktype;
+	fSplitValue = fval;
+}
+
+void GObjectPicker::UnLockSplitLine()
+{
+	if (pSplitMarking)
+	{
+		pSplitMarking->getMarkingUI(MARKFLAG_SPLITLENGTH_B)->SetLock(false);
+		pSplitMarking->getMarkingUI(MARKFLAG_SPLITLENGTH_E)->SetLock(false);
+	}
+	nSplitLockType = -1;
+}
+
 bool GObjectPicker::IsAngleInBetween( int angle, int nBeginAngle, int nMidAngle, int nNextAngle )
 {
 	return angle >= (nBeginAngle+nMidAngle)/2 && angle < (nMidAngle+nNextAngle)/2;
 }
 
+
+bool staticMIDCBSplit(MarkingUI * pmui, bool bAccept)
+{
+	return GObjectPicker::getInstance().MIDCBSplit(pmui, bAccept);
+}
+
+bool GObjectPicker::MIDCBSplit( MarkingUI * pmui, bool bAccept )
+{
+	int typeflag = pmui->getTypeFlag();
+	bool bBegin = (typeflag==MARKFLAG_SPLITLENGTH_B);
+	if (pmui->IsValueLocked())
+	{
+		if (bBegin)
+		{
+			pmui->getMarking()->getMarkingUI(MARKFLAG_SPLITLENGTH_E)->SetLock(false);
+		}
+		else
+		{
+			pmui->getMarking()->getMarkingUI(MARKFLAG_SPLITLENGTH_B)->SetLock(false);
+		}
+		QString str = pmui->getStr();
+		bool bOk;
+		if (str.endsWith("%"))
+		{
+			string s = str.toStdString();
+			sscanf_s(s.c_str(), "%f%%", &fSplitValue);
+			fSplitValue/=100.0f;
+			bOk = true;
+			nSplitLockType = bBegin?MARKSPLITLINETYPE_BEGINPROP:MARKSPLITLINETYPE_ENDPROP;
+		}
+		else
+		{
+			fSplitValue = str.toFloat(&bOk);
+			nSplitLockType = bBegin?MARKSPLITLINETYPE_BEGIN:MARKSPLITLINETYPE_END;
+		}
+		if (!bOk)
+		{
+			UnLockSplitLine();
+		}
+	}
+	else
+	{
+		UnLockSplitLine();
+	}
+	return true;
+}
+
 void GObjectPicker::AddSplitUI( GObject * pObj )
 {
+	if (bTestMode)
+	{
+		return;
+	}
 	if (pSplitMarking)
 	{
 		if (pSplitMarking->getTargetObj() == pObj)
@@ -467,20 +584,33 @@ void GObjectPicker::AddSplitUI( GObject * pObj )
 		}
 		else
 		{
-			MarkingManager::getInstance().DisableMarking(pSplitMarking);
-			pSplitMarking = NULL;
+			ClearSplitMarking();
 		}
 	}
 	if (!pSplitMarking)
 	{
 		pSplitMarking = new MarkingSplitLine((GLine *)pObj, MARKFLAG_SPLITLENGTH);
-		pSplitMarking->SetEditable(MARKFLAG_SPLITLENGTH, true);
+		MarkingUI * pmuiSplitB = pSplitMarking->getMarkingUI(MARKFLAG_SPLITLENGTH_B);
+		MarkingUI * pmuiSplitE = pSplitMarking->getMarkingUI(MARKFLAG_SPLITLENGTH_E);
+		pmuiSplitB->SetEditable(true);
+		pmuiSplitE->SetEditable(true);
+		pmuiSplitB->SetCallback(staticMIDCBSplit);
+		pmuiSplitE->SetCallback(staticMIDCBSplit);
 		MarkingManager::getInstance().EnableMarking(pSplitMarking);
 	}
 	pSplitMarking->SetSplitPoint(pickx_c, picky_c, pickSection[0]);
 	bSplitMarkingInUse = true;
 }
 
+void GObjectPicker::ClearSplitMarking()
+{
+	if (pSplitMarking)
+	{
+		MarkingManager::getInstance().DisableMarking(pSplitMarking);
+		pSplitMarking = NULL;
+	}
+	bSplitMarkingInUse = false;
+}
 bool PickerInterestPointInfo::Equals( PickerInterestPointInfo & r )
 {
 	PointF2D p1(x, y);

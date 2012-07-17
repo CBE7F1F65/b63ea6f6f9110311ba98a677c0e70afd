@@ -57,6 +57,7 @@ bool MarkingManager::DisableMarking( MarkingObject * pMarking/*=NULL*/ )
 			}
 		}
 	}
+	DASSERT(true);
 	return false;
 }
 

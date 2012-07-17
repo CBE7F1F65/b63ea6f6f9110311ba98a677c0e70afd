@@ -280,7 +280,7 @@ bool CALL HGE_Impl::Input_GetDIMouseKey(int key, BYTE stateType /* = DIKEY_PRESS
 	return false;
 }
 
-bool CALL HGE_Impl::Input_SetDIMouseKey(int key, bool set /* = true */)
+bool CALL HGE_Impl::Input_SetDIMouseKey(int key, bool set /* = true */, bool bLast/*=false*/)
 {
 	if (!bUseDInput)
 	{
@@ -289,9 +289,27 @@ bool CALL HGE_Impl::Input_SetDIMouseKey(int key, bool set /* = true */)
 	if(key >=0 && key < nMouseButtons)
 	{
 		if(set)
-			mouseState.rgbButtons[key] |= 1<<7;
+		{
+			if (bLast)
+			{
+				lastMouseState.rgbButtons[key] |= 1<<7;
+			}
+			else
+			{
+				mouseState.rgbButtons[key] |= 1<<7;
+			}
+		}
 		else
-			mouseState.rgbButtons[key] = 0;
+		{
+			if (bLast)
+			{
+				lastMouseState.rgbButtons[key] = 0;
+			}
+			else
+			{
+				mouseState.rgbButtons[key] = 0;
+			}
+		}
 	}
 	return true;
 }

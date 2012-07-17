@@ -92,6 +92,10 @@ public:
 	GLayer * NewLayer(GObject * node, const char * layername, int layerIndex=-1);
 	GLayer * NewSubLayer(GObject * node, const char * layername, int layerIndex=-1);
 
+	void BeginTryMove();
+	void EndTryMove();
+	bool IsTryMoving(){return bTryMove;};
+
 public:
 	GMainBaseNode * GetMainBaseNode(){return pBaseNode;};
 private:
@@ -142,6 +146,8 @@ private:
 	HTARGET tarObjs;
     bool bRenderUILayerIndicators;
     bool bRedraw;
+
+	bool bTryMove;
 
 	int nMoveActionID;
 };

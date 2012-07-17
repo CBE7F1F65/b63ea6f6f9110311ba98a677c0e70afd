@@ -22,7 +22,12 @@ bool QTUI_MarkingFloating_Edit::eventFilter( QObject *pQObj, QEvent *e )
 		if (pke->key() == Qt::Key_Return || pke->key() == Qt::Key_Enter)
 		{
 			DoneEdit(true);
+			QMainInterface::getInstance().GetPGLView()->setFocus();
 			return true;
+		}
+		if (pke->key() == Qt::Key_Escape)
+		{
+			QMainInterface::getInstance().GetPGLView()->setFocus();
 		}
 	}
 	return QLineEdit::eventFilter(pQObj, e);

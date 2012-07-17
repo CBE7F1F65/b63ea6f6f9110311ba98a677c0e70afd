@@ -58,7 +58,8 @@ MainInterface::~MainInterface()
 
 bool RenderFunc()
 {
-	return MainInterface::getInstance().Render();
+//	return MainInterface::getInstance().Render();
+	return false;
 }
 
 bool FrameFunc()
@@ -146,12 +147,7 @@ bool MainInterface::Frame()
 			toactivedelay = -1;
 		}
 	}
-
-	if (hge->Input_GetDIKey(DIK_ESCAPE, DIKEY_UP))
-	{
-//		parentview->GetMainFrame()->m_wndUIFloatingEdit.Hide();
-	}
-
+	/*
 	if (hge->Input_IsMouseOver() && bActive)
 	{
 		HWND hwnd = hge->System_GetState(HGE_HWND);
@@ -162,7 +158,16 @@ bool MainInterface::Frame()
 			hge->Input_ClearLastDIMouseState();
 		}
 	}
-
+	*/
+	/*
+	if (QApplication::focusWidget() != QMainInterface::getInstance().GetPGLView())
+	{
+		if (hge->Input_GetDIMouseKey(cursorleftkeyindex, DIKEY_UP))
+		{
+			hge->Input_SetDIKey(cursorleftkeyindex);
+		}
+	}
+	*/
 	if (IsMainViewActive())
 	{
 		hge->System_SetState(HGE_HIDEMOUSE, true);
@@ -236,12 +241,6 @@ bool MainInterface::Frame()
 		GObjectManager::getInstance().SetHandleVisible(false);
 	}
 
-	if (hge->Input_GetDIMouseKey(cursorrightkeyindex, DIKEY_UP) && hge->Input_IsMouseOver()
-		|| hge->Input_GetDIKey(DIK_APPS, DIKEY_UP)
-		)
-	{
-		CallContextMenu(mousex, mousey);
-	}
 	return false;
 }
 
@@ -365,24 +364,6 @@ void MainInterface::OnUpdateTimer()
 	{
 		hge->System_Start();
 	}
-}
-
-void MainInterface::OnMouseActivate()
-{
-//	parentview->GetMainFrame()->m_wndUIFloatingEdit.Hide();
-//	hge->System_SetState(HGE_HIDEMOUSE, true);
-}
-
-void MainInterface::CallContextMenu(float x, float y)
-{
-	// MFC
-	int px = (int)x;
-	int py = (int)y;
-	POINT point;
-	point.x = (LONG)px;
-	point.y = (LONG)py;
-//	ClientToScreen(parentview->m_hWnd, &point);
-//	PostMessage(parentview->m_hWnd, WM_CONTEXTMENU, (WPARAM)parentview->m_hWnd, MAKELONG(point.x, point.y));
 }
 
 void MainInterface::CallUpdateStatusBarText( int id, const char * text )
@@ -536,14 +517,11 @@ void MainInterface::OnTreeLockChange( bool toLock )
 void MainInterface::OnRebuildLayerTree( GObject * changebase, GObject * activeitem )
 {
     QMainInterface::getInstance().GetPLayerTree()->RebuildTree(changebase, activeitem);
-//	parentview->GetMainFrame()->RebuildLayerTree(changebase, activeitem);
 }
 
 list<GObject *> * MainInterface::OnGetSelectedNodes()
 {
     return QMainInterface::getInstance().GetPLayerTree()->GetActiveNodes();
-//	return parentview->GetMainFrame()->GetActiveNodes(pnextfromIndex);
-    //	return NULL;
 }
 
 GObject *MainInterface::OnGetHoveringNode()
@@ -559,8 +537,6 @@ GObject *MainInterface::OnGetHoveringNode()
 bool MainInterface::OnGetDragDroppedNodes( GLayer ** pLayerNode, GObject ** pAfterNode )
 {
     return QMainInterface::getInstance().GetPLayerTree()->GetDragDroppedNodes(pLayerNode, pAfterNode);
-//	return parentview->GetMainFrame()->GetDragDropNodes(pLayerNode, pAfterNode);
-//	return false;
 }
 
 void MainInterface::OnSetActiveLayer_Internal( GLayer * pLayer )

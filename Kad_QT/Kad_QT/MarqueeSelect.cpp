@@ -180,6 +180,10 @@ void MarqueeSelect::Update()
 		{
 			marqueestate = MARQSTATE_NONE;
 		}
+		if (itemmovestate == MARQMOVESTATE_BEGAN)
+		{
+			GObjectManager::getInstance().EndTryMove();
+		}
 		itemmovestate = MARQMOVESTATE_NONE;
 	}
 	
@@ -187,7 +191,7 @@ void MarqueeSelect::Update()
 	{
 		int iret = pgp->PickPoint(staticPickFilterCallback);
 
-        if (baltdown || pmain->hge->Input_GetDIMouseKey(pmain->cursorrightkeyindex, DIKEY_DOWN))
+        if (itemmovestate==MARQMOVESTATE_NONE && (baltdown || pmain->hge->Input_GetDIMouseKey(pmain->cursorrightkeyindex, DIKEY_DOWN)))
         {
             GObject * pPickedObj = pgp->GetPickedObj();
             MainInterface::getInstance().CallShowNodeInfo(pPickedObj, !baltdown);
@@ -249,6 +253,7 @@ void MarqueeSelect::Update()
 						mousey_c = pgp->GetPickY_C();
 					}
 					MoveSelected(mousex_c-lastmx_c, mousey_c-lastmy_c);
+					GObjectManager::getInstance().BeginTryMove();
 				}
 				else 
 				{

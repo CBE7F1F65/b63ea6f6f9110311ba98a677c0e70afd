@@ -237,11 +237,15 @@ public:
 	void UnlockLength();
 	void UnlockAngles();
 
+	void SetLockSplitLine(int splitlocktype, float fval);
+	void ClearSplitMarking();
+	void UnLockSplitLine();
+
 	void AdjustPositionToLocks();
 	bool IsAngleInBetween( int angle, int nBeginAngle, int nMidAngle, int nNextAngle );
 
 	void AddSplitUI(GObject * pObj);
-
+	bool MIDCBSplit( MarkingUI * pmui, bool bAccept );
 private:
 	list<PickerInterestPointInfo> pipinfo;
 	bool bCheckMouseDown;
@@ -259,6 +263,9 @@ private:
 	int numLockAngles;
 	int nCurrentLockAngleIndex;
 	PointF2D ptCurrentLockAngleDir;
+
+	int nSplitLockType;
+	float fSplitValue;
 
 	MarkingSplitLine * pSplitMarking;
 	bool bSplitMarkingInUse;

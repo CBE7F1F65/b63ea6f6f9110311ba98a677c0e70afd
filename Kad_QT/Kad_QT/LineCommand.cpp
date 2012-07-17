@@ -321,9 +321,12 @@ void LineCommand::OnInitCommand()
 	ClearTemp();
 	pTempLine = new GBezierLine(&tBaseNode, PointF2D(), PointF2D());
 	MarkingLine * pMarking = new MarkingLine(pTempLine, MARKFLAG_LENGTH|MARKFLAG_ANGLE);
-	pMarking->SetEditable(MARKFLAG_LENGTH|MARKFLAG_ANGLE, true);
-	pMarking->SetCallback(MARKFLAG_LENGTH, staticMIDCBLength);
-	pMarking->SetCallback(MARKFLAG_ANGLE, staticMIDCBAngle);
+	MarkingUI * pmuiLength = pMarking->getMarkingUI(MARKFLAG_LENGTH);
+	MarkingUI * pmuiAngle = pMarking->getMarkingUI(MARKFLAG_ANGLE);
+	pmuiLength->SetEditable(true);
+	pmuiAngle->SetEditable(true);
+	pmuiLength->SetCallback(staticMIDCBLength);
+	pmuiAngle->SetCallback(staticMIDCBAngle);
 	MarkingManager::getInstance().EnableMarking(pMarking);
 
 	GObjectPicker::getInstance().UnlockLength();

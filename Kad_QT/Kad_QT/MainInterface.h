@@ -32,7 +32,6 @@ public:
 	bool OnInit(void * parent, int w, int h);
 	void OnResizeWindow(int x, int y);
 	void OnUpdateTimer();
-	void OnMouseActivate();
 	void OnDoScroll(bool horz, int pos, int range);
 
 	void OnChangeMouseCursor(HWND hwnd, int mousecursor=-1);
@@ -66,7 +65,6 @@ public:
 	void OnSetActiveLayerFromUI();
 
 	// To Frame
-	void CallContextMenu(float x, float y);
 	void CallUpdateStatusBarText(int id, const char * text);
 	void CallAppendCommandLogText(const char * text, bool bNewLine=true);
 	void CallChangeNode( GObject * pObj );

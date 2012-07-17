@@ -34,7 +34,7 @@ public:
 	virtual bool CheckIntersectWithLineObj( GLine * pLine, list<PointF2D> *pPoints );
 	virtual float CalculateProportion( float x, float y, int iSec ) = 0;
 	virtual float CalculateMidPointProportion() = 0;
-	virtual bool GetPositionAtProportion( float fClingToProportion, float* tox, float* toy ) = 0;
+	virtual bool GetPositionAtProportion( float fClingToProportion, float* tox, float* toy, int*isec=NULL ) = 0;
 
 	virtual bool isLengthCalculated(){return true;};
 	virtual float getLength() = 0;
@@ -104,7 +104,7 @@ public:
 
 	virtual float CalculateProportion( float x, float y, int iSec );
 	virtual float CalculateMidPointProportion();
-	virtual bool GetPositionAtProportion( float fClingToProportion, float* tox, float* toy );
+	virtual bool GetPositionAtProportion( float fClingToProportion, float* tox, float* toy, int*isec=NULL );
 
 	virtual void OnRender(int iHighlightLevel=0);
 
@@ -152,7 +152,7 @@ public:
 
 	virtual float CalculateProportion( float x, float y, int iSec );
 	virtual float CalculateMidPointProportion();
-	virtual bool GetPositionAtProportion( float fClingToProportion, float* tox, float* toy );
+	virtual bool GetPositionAtProportion( float fClingToProportion, float* tox, float* toy, int*isec=NULL );
 
 	virtual bool isLengthCalculated();
 	virtual float getLength();

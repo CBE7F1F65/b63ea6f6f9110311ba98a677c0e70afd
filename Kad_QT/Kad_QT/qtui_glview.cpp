@@ -41,7 +41,7 @@ void QTUI_GLView::OnMainFrameSetupUIDone()
     {
         updatetimer = new QTimer(this);
         connect( updatetimer, SIGNAL(timeout()), SLOT(SLT_OnUpdate()) );
-        updatetimer->start( 4 );
+        updatetimer->start( 12 );
     }
 }
 

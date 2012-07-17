@@ -37,6 +37,11 @@ int GObjectPicker::UpdatePickPoint()
 
 	if (state != PICKSTATE_REQUIREUPDATE)
 	{
+		if (bSplitMarkingInUse || pSplitMarking)
+		{
+			ClearSplitMarking();
+			UnLockSplitLine();
+		}
 		return mousestate|state;
 	}
 	state = PICKSTATE_AFTERUPDATE;
@@ -72,9 +77,9 @@ int GObjectPicker::UpdatePickPoint()
 	}
 
 	nCurrentLockAngleIndex = 0;
+	bSplitMarkingInUse = false;
 	AdjustPositionToLocks();
 
-	bSplitMarkingInUse = false;
 
 	int restoreSnapto = -1;
 
@@ -180,8 +185,8 @@ int GObjectPicker::UpdatePickPoint()
 	{
 		if (pSplitMarking)
 		{
-			MarkingManager::getInstance().DisableMarking(pSplitMarking);
-			pSplitMarking = NULL;
+			ClearSplitMarking();
+			UnLockSplitLine();
 		}
 	}
 

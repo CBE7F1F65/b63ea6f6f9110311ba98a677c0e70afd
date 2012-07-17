@@ -13,6 +13,13 @@
 #define MARKFLAG_SPLITLENGTH_E	0x20
 #define MARKFLAG_SPLITLENGTH	(MARKFLAG_SPLITLENGTH_B|MARKFLAG_SPLITLENGTH_E)
 
+enum{
+	MARKSPLITLINETYPE_BEGIN,
+	MARKSPLITLINETYPE_BEGINPROP,
+	MARKSPLITLINETYPE_END,
+	MARKSPLITLINETYPE_ENDPROP,
+};
+
 class MarkingUI;
 class MarkingObject;
 
@@ -21,7 +28,7 @@ typedef bool (*MarkingInputDoneCallback)(MarkingUI * pmui, bool bAccept);
 class MarkingUI
 {
 public:
-	MarkingUI(MarkingObject * p);
+	MarkingUI(MarkingObject * p, int typeflag);
 	~MarkingUI();
 
 public:
@@ -37,10 +44,12 @@ public:
 
 	void SetEditable(bool bSet);
 	bool isEditable(){return bEditable;};
+	void SetLock(bool bSet);
 
 	bool DoCallback(bool bAccept);
 
 	MarkingObject * getMarking(){return pMarking;};
+	int getTypeFlag(){return nTypeFlag;};
 
 	void UseUI();
 	void DeleteUI();
@@ -53,6 +62,7 @@ private:
 	MarkingInputDoneCallback cb;
 	QString str;
 	bool bEditable;
+	int nTypeFlag;
 
 	MarkingObject * pMarking;
 };
@@ -72,9 +82,8 @@ public:
 
 	GObject * getTargetObj(){return pTargetObj;};
 	int getMarkFlag(){return nMarkFlag;};
-
-	void SetEditable(int nFlag, bool bSet);
-	void SetCallback(int nFlag, MarkingInputDoneCallback cb);
+	
+	MarkingUI * getMarkingUI(int nFlag);
 	/*
 	PointF2D * getPositionXMark(){return pmuiPositionX->getPos();};
 	PointF2D * getPositionYMark(){return pmuiPositionY->getPos();};

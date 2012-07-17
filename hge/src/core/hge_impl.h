@@ -231,7 +231,7 @@ public:
 	virtual bool		CALL	Input_ClearLastDIKeyState();
 
 	virtual bool		CALL	Input_GetDIMouseKey(int key, BYTE stateType = DIKEY_PRESSED);
-	virtual bool		CALL	Input_SetDIMouseKey(int key, bool set = true);
+	virtual bool		CALL	Input_SetDIMouseKey(int key, bool set = true, bool bLast=false);
 	virtual LONG		CALL	Input_GetDIMouseAxis(int axis, bool relative=false);
 	virtual bool		CALL	Input_SetDIMouseAxis(int axis, LONG value, bool relative=false);
 	virtual bool		CALL	Input_ClearLastDIMouseState();

@@ -307,10 +307,15 @@ float GStraightLine::CalculateProportion( float x, float y, int iSec )
 
 float GStraightLine::getLength()
 {
-	return MathHelper::getInstance().LineSegmentLength(plbegin->GetPointF2D(), plend->GetPointF2D());
+	float fLength = MathHelper::getInstance().LineSegmentLength(plbegin->GetPointF2D(), plend->GetPointF2D());
+	if (fLength <= 0)
+	{
+		fLength = M_FLOATEPS;
+	}
+	return fLength;
 }
 
-bool GStraightLine::GetPositionAtProportion( float fClingToProportion, float* tox, float* toy )
+bool GStraightLine::GetPositionAtProportion( float fClingToProportion, float* tox, float* toy, int *isec/*=NULL*/ )
 {
 	if (fClingToProportion < 0 || fClingToProportion > 1)
 	{
@@ -328,6 +333,10 @@ bool GStraightLine::GetPositionAtProportion( float fClingToProportion, float* to
 	if (toy)
 	{
 		*toy = (fey-fby)*fClingToProportion+fby;
+	}
+	if (isec)
+	{
+		*isec = 0;
 	}
 	return true;
 }
@@ -729,10 +738,15 @@ float GBezierLine::getLength()
 	{
 		return GStraightLine::getLength();
 	}
-	return bsinfo.GetLength();
+	float fLength = bsinfo.GetLength();
+	if (fLength <= 0)
+	{
+		fLength = M_FLOATEPS;
+	}
+	return fLength;
 }
 
-bool GBezierLine::GetPositionAtProportion( float fClingToProportion, float* tox, float* toy )
+bool GBezierLine::GetPositionAtProportion( float fClingToProportion, float* tox, float* toy, int *isec/*=NULL*/ )
 {
 	if (fClingToProportion < 0 || fClingToProportion > 1)
 	{
@@ -741,7 +755,7 @@ bool GBezierLine::GetPositionAtProportion( float fClingToProportion, float* tox,
 	}
 	if (isStraightLine())
 	{
-		return GStraightLine::GetPositionAtProportion(fClingToProportion, tox, toy);
+		return GStraightLine::GetPositionAtProportion(fClingToProportion, tox, toy, isec);
 	}
 
 	float fTotalLength = bsinfo.GetLength();
@@ -773,6 +787,10 @@ bool GBezierLine::GetPositionAtProportion( float fClingToProportion, float* tox,
 	if (toy)
 	{
 		*toy = (fey-fby)*fRestProportion+fby;
+	}
+	if (isec)
+	{
+		*isec = i;
 	}
 
 

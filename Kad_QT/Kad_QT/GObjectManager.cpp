@@ -20,6 +20,7 @@ GObjectManager::GObjectManager()
 	// Put all to Release
 	pBaseNode = NULL;
 	nLockTreeChangeState = GMLOCKTREESTATE_NULL;
+	bRenderUILayerIndicators = false;
 	Release();
 }
 GObjectManager::~GObjectManager()
@@ -55,6 +56,7 @@ void GObjectManager::Release()
     bRenderUILayerIndicators = false;
 	bHandleVisible = true;
 	nMoveActionID = 0;
+	bTryMove = false;
 //	bLockTreeChange = false;
 }
 
@@ -596,4 +598,14 @@ void GObjectManager::SetHandleVisible( bool bSet )
 int GObjectManager::GetNextMoveActionID()
 {
 	return nMoveActionID++;
+}
+
+void GObjectManager::BeginTryMove()
+{
+	bTryMove = true;
+}
+
+void GObjectManager::EndTryMove()
+{
+	bTryMove = false;
 }

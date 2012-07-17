@@ -5,13 +5,16 @@
 #include "RenderHelper.h"
 #include "qmaininterface.h"
 
-MarkingUI::MarkingUI( MarkingObject * p )
+
+MarkingUI::MarkingUI( MarkingObject * p, int typeflag )
 {
 	pWidget = NULL;
 	cb = NULL;
 	ASSERT(p);
 	pMarking = p;
 	bEditable = false;
+
+	nTypeFlag = typeflag;
 }
 
 MarkingUI::~MarkingUI()
@@ -70,6 +73,18 @@ void MarkingUI::SetEditable( bool bSet )
 	pWidget->OnSetEditable(bEditable);
 }
 
+void MarkingUI::SetLock( bool bSet )
+{
+	if (bSet)
+	{
+		pWidget->LockValue();
+	}
+	else
+	{
+		pWidget->UnlockValue();
+	}
+}
+
 float MarkingUI::getFloat( bool * bOk/*=NULL*/ )
 {
 	float fval = 0;
@@ -97,48 +112,65 @@ bool MarkingUI::IsValueLocked()
 	}
 	return false;
 }
+
 #define _MARKLENGTH_OFFSETLENGTH	48
 
+/************************************************************************/
+/*                                                                      */
+/************************************************************************/
+
+#define MARKBUNCH_CALLFUNC(FLAG, FUNC)	\
+	if ((FLAG)&MARKFLAG_POSITIONX)	\
+	{	\
+		pmuiPositionX->FUNC;	\
+	}	\
+	if ((FLAG)&MARKFLAG_POSITIONY)	\
+	{	\
+		pmuiPositionY->FUNC;	\
+	}	\
+	if ((FLAG)&MARKFLAG_LENGTH)	\
+	{	\
+		pmuiLength->FUNC;	\
+	}	\
+	if ((FLAG)&MARKFLAG_ANGLE)	\
+	{	\
+		pmuiAngle->FUNC;	\
+	}	\
+	if ((FLAG)&MARKFLAG_SPLITLENGTH_B)	\
+	{	\
+		pmuiSplitB->FUNC;	\
+	}	\
+	if ((FLAG)&MARKFLAG_SPLITLENGTH_E)	\
+	{	\
+		pmuiSplitE->FUNC;	\
+	}
+
+
+/************************************************************************/
+/*                                                                      */
+/************************************************************************/
 MarkingObject::MarkingObject()
 {
 	pTargetObj = NULL;
 	nMarkFlag = -1;
 	nModifyVersion = -1;
 
-	pmuiPositionX = new MarkingUI(this);
-	pmuiPositionY = new MarkingUI(this);
-	pmuiLength = new MarkingUI(this);
-	pmuiAngle = new MarkingUI(this);
-	pmuiSplitB = new MarkingUI(this);
-	pmuiSplitE = new MarkingUI(this);
+	pmuiPositionX = new MarkingUI(this, MARKFLAG_POSITIONX);
+	pmuiPositionY = new MarkingUI(this, MARKFLAG_POSITIONY);
+	pmuiLength = new MarkingUI(this, MARKFLAG_LENGTH);
+	pmuiAngle = new MarkingUI(this, MARKFLAG_ANGLE);
+	pmuiSplitB = new MarkingUI(this, MARKFLAG_SPLITLENGTH_B);
+	pmuiSplitE = new MarkingUI(this, MARKFLAG_SPLITLENGTH_E);
 }
 
 MarkingObject::~MarkingObject()
 {
-	if (pmuiPositionX)
-	{
-		delete pmuiPositionX;
-	}
-	if (pmuiPositionY)
-	{
-		delete pmuiPositionY;
-	}
-	if (pmuiLength)
-	{
-		delete pmuiLength;
-	}
-	if (pmuiAngle)
-	{
-		delete pmuiAngle;
-	}
-	if (pmuiSplitB)
-	{
-		delete pmuiSplitB;
-	}
-	if (pmuiSplitE)
-	{
-		delete pmuiSplitE;
-	}
+	if (pmuiPositionX) { delete pmuiPositionX; }
+	if (pmuiPositionY) { delete pmuiPositionY; }
+	if (pmuiLength) { delete pmuiLength; }
+	if (pmuiAngle) { delete pmuiAngle; }
+	if (pmuiSplitB) { delete pmuiSplitB; }
+	if (pmuiSplitE) { delete pmuiSplitE; }
 }
 
 void MarkingObject::SetValue( GObject * pObj, int nFlag )
@@ -147,31 +179,10 @@ void MarkingObject::SetValue( GObject * pObj, int nFlag )
 	pTargetObj = pObj;
 	nMarkFlag = nFlag;
 
-	if (nFlag & MARKFLAG_POSITIONX)
-	{
-		pmuiPositionX->UseUI();
-	}
-	if (nFlag & MARKFLAG_POSITIONY)
-	{
-		pmuiPositionY->UseUI();
-	}
-	if (nFlag & MARKFLAG_LENGTH)
-	{
-		pmuiLength->UseUI();
-	}
-	if (nFlag & MARKFLAG_ANGLE)
-	{
-		pmuiAngle->UseUI();
-	}
-	if (nFlag & MARKFLAG_SPLITLENGTH_B)
-	{
-		pmuiSplitB->UseUI();
-	}
-	if (nFlag & MARKFLAG_SPLITLENGTH_E)
-	{
-		pmuiSplitE->UseUI();
-	}
+	MARKBUNCH_CALLFUNC(nFlag, UseUI());
 }
+
+#undef MARKBUNCH_CALLFUNC
 
 void MarkingObject::Update()
 {
@@ -188,61 +199,27 @@ void MarkingObject::SetRedraw()
 	MarkingManager::getInstance().SetRedraw();
 }
 
-void MarkingObject::SetEditable( int nFlag, bool bSet )
+MarkingUI * MarkingObject::getMarkingUI( int nFlag )
 {
-	if (nFlag & MARKFLAG_POSITIONX)
+	switch (nFlag)
 	{
-		pmuiPositionX->SetEditable(bSet);
+	case MARKFLAG_POSITIONX:
+		return pmuiPositionX;
+	case MARKFLAG_POSITIONY:
+		return pmuiPositionY;
+	case MARKFLAG_LENGTH:
+		return pmuiLength;
+	case MARKFLAG_ANGLE:
+		return pmuiAngle;
+	case MARKFLAG_SPLITLENGTH_B:
+		return pmuiSplitB;
+	case MARKFLAG_SPLITLENGTH_E:
+		return pmuiSplitE;
 	}
-	if (nFlag & MARKFLAG_POSITIONY)
-	{
-		pmuiPositionY->SetEditable(bSet);
-	}
-	if (nFlag & MARKFLAG_LENGTH)
-	{
-		pmuiLength->SetEditable(bSet);
-	}
-	if (nFlag & MARKFLAG_ANGLE)
-	{
-		pmuiAngle->SetEditable(bSet);
-	}
-	if (nFlag & MARKFLAG_SPLITLENGTH_B)
-	{
-		pmuiSplitB->SetEditable(bSet);
-	}
-	if (nFlag & MARKFLAG_SPLITLENGTH_E)
-	{
-		pmuiSplitE->SetEditable(bSet);
-	}
+	ASSERT(true);
+	return NULL;
 }
 
-void MarkingObject::SetCallback( int nFlag, MarkingInputDoneCallback cb )
-{
-	if (nFlag & MARKFLAG_POSITIONX)
-	{
-		pmuiPositionX->SetCallback(cb);
-	}
-	if (nFlag & MARKFLAG_POSITIONY)
-	{
-		pmuiPositionY->SetCallback(cb);
-	}
-	if (nFlag & MARKFLAG_LENGTH)
-	{
-		pmuiLength->SetCallback(cb);
-	}
-	if (nFlag & MARKFLAG_ANGLE)
-	{
-		pmuiAngle->SetCallback(cb);
-	}
-	if (nFlag & MARKFLAG_SPLITLENGTH_B)
-	{
-		pmuiSplitB->SetCallback(cb);
-	}
-	if (nFlag & MARKFLAG_SPLITLENGTH_E)
-	{
-		pmuiSplitE->SetCallback(cb);
-	}
-}
 /************************************************************************/
 /* MARKINGLINE                                                          */
 /************************************************************************/
@@ -428,18 +405,58 @@ void MarkingSplitLine::Update()
 			pmuiSplitE->SetString(&str);
 			pmuiSplitE->DoMove();
 		}
+
+		SetRedraw();
 	}
+	bSplitPointChanged = false;
 }
 
 void MarkingSplitLine::Render()
 {
+	if (nMarkFlag <= 0)
+	{
+		return;
+	}
+	RenderHelper * prh = &RenderHelper::getInstance();
+	DWORD col = pTargetObj->getLineColor();
+	col = SETA(col, ColorManager::getInstance().GetMarkingAlpha());
+
+	int savedstyle = prh->getLineStyle();
+	prh->SetLineStyle(RHLINESTYLE_DOTTEDLINE);
+	GLine * pLine = (GLine *)pTargetObj;
+	PointF2D ptBegin = pLine->GetBeginPoint()->GetPointF2D();
+	PointF2D ptEnd = pLine->GetEndPoint()->GetPointF2D();
+
+	if (nMarkFlag & MARKFLAG_SPLITLENGTH)
+	{
+		PointF2D ptBeginPlusOff = ptBegin + ptPosDiff;
+		PointF2D ptEndPlusOff = ptEnd + ptPosDiff;
+		PointF2D ptSplitPlusOff = ptSplitPoint + ptPosDiff;
+
+		prh->RenderLine(ptBegin.x, ptBegin.y, ptBeginPlusOff.x, ptBeginPlusOff.y, col);
+		prh->RenderLine(ptEnd.x, ptEnd.y, ptEndPlusOff.x, ptEndPlusOff.y, col);
+		prh->RenderLine(ptSplitPoint.x, ptSplitPoint.y, ptSplitPlusOff.x, ptSplitPlusOff.y, col);
+		if (pLine->isStraightLine())
+		{
+			prh->RenderLine(ptBeginPlusOff.x, ptBeginPlusOff.y, ptEndPlusOff.x, ptEndPlusOff.y, col);
+		}
+		else
+		{
+			GBezierLine * pBezier = (GBezierLine *)pLine;
+			prh->RenderBezierByInfo(pBezier->getBSInfo(), col, &ptPosDiff);
+		}
+	}
+	prh->SetLineStyle(savedstyle);
 
 }
 
 void MarkingSplitLine::SetSplitPoint( float x, float y, int isec/*=0*/ )
 {
-	ptSplitPoint.x = x;
-	ptSplitPoint.y = y;
-	iSplitSec = isec;
-	bSplitPointChanged = true;
+	if (x != ptSplitPoint.x || y != ptSplitPoint.y || isec != iSplitSec)
+	{
+		ptSplitPoint.x = x;
+		ptSplitPoint.y = y;
+		iSplitSec = isec;
+		bSplitPointChanged = true;
+	}
 }
