@@ -94,13 +94,6 @@ void GObjectPicker::FillInitialPosition()
 
 void GObjectPicker::AdjustPositionToLocks()
 {
-	MainInterface * pmain = &MainInterface::getInstance();
-	if (pmain->hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_UP) || pmain->hge->Input_GetDIKey(DIK_ESCAPE))
-	{
-		ClearSplitMarking();
-		UnLockSplitLine();
-	}
-
 	if (nSplitLockType >= 0 && pSplitMarking)
 	{
 		GLine * pLine = (GLine *)pSplitMarking->getTargetObj();

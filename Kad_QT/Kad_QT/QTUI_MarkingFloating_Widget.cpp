@@ -17,6 +17,7 @@ QTUI_MarkingFloating_Widget::QTUI_MarkingFloating_Widget(MarkingUI * p, QWidget 
 	ui(new Ui::QTUI_MarkingFloating_Widget)
 {
 	ui->setupUi(this);
+	ui->pushButton->setCursor(Qt::ArrowCursor);
 	pMarkingUI = p;
 	QMainInterface::getInstance().RegisterPMarkingWidget(this);		// Editable?
 }
@@ -142,4 +143,16 @@ void QTUI_MarkingFloating_Widget::UnlockValue()
 bool QTUI_MarkingFloating_Widget::IsValueLocked()
 {
 	return ui->pushButton->isChecked();
+}
+
+void QTUI_MarkingFloating_Widget::SLT_LockButtonClicked( bool bChecked )
+{
+	if (bChecked)
+	{
+		LockValue();
+	}
+	else
+	{
+		UnlockValue();
+	}
 }

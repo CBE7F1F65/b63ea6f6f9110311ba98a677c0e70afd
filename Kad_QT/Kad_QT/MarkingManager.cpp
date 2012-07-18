@@ -87,7 +87,7 @@ void MarkingManager::Update()
 		for (list<MarkingObject *>::iterator it=lstMarkings.begin(); it!=lstMarkings.end(); ++it)
 		{
 			MarkingObject * pMarking = *it;
-			pMarking->Update();
+			pMarking->CallUpdate();
 		}
 	}
 
@@ -102,7 +102,7 @@ void MarkingManager::Update()
 			for (list<MarkingObject *>::iterator it=lstMarkings.begin(); it!=lstMarkings.end(); ++it)
 			{
 				MarkingObject * pMarking = *it;
-				pMarking->Render();
+				pMarking->CallRender();
 			}
 			RenderHelper::getInstance().EndRenderTar();
 		}

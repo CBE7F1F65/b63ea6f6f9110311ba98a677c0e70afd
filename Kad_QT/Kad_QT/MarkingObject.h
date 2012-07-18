@@ -4,14 +4,22 @@
 #include "MathHelper.h"
 #include "QTUI_MarkingFloating_Widget.h"
 
-#define MARKFLAG_POSITIONX	0x01
-#define MARKFLAG_POSITIONY	0x02
+#define MARKFLAG_POSITIONX	0x0001
+#define MARKFLAG_POSITIONY	0x0002
 #define MARKFLAG_POSITION	(MARKFLAG_POSITIONX|MARKFLAG_POSITIONY)
-#define MARKFLAG_LENGTH		0x04
-#define MARKFLAG_ANGLE		0x08
-#define MARKFLAG_SPLITLENGTH_B	0x10
-#define MARKFLAG_SPLITLENGTH_E	0x20
+#define MARKFLAG_LENGTH		0x0004
+#define MARKFLAG_ANGLE		0x0008
+
+#define MARKFLAG_SPLITLENGTH_B	0x0010
+#define MARKFLAG_SPLITLENGTH_E	0x0020
 #define MARKFLAG_SPLITLENGTH	(MARKFLAG_SPLITLENGTH_B|MARKFLAG_SPLITLENGTH_E)
+#define MARKFLAG_XOFFSET		0x0040
+#define MARKFLAG_YOFFSET		0x0080
+#define MARKFLAG_OFFSET			(MARKFLAG_XOFFSET|MARKFLAG_YOFFSET)
+
+#define MARKFLAG_HORZVAL		0x0100
+#define MARKFLAG_VERTVAL		0x0200
+#define MARKFLAG_SHAPEVAL		(MARKFLAG_HORZVAL|MARKFLAG_VERTVAL)
 
 enum{
 	MARKSPLITLINETYPE_BEGIN,
@@ -75,6 +83,11 @@ public:
 
 protected:
 	void SetValue(GObject * pObj, int nFlag);
+
+public:
+	void CallUpdate();
+	void CallRender();
+
 public:
 
 	virtual void Update();
@@ -84,12 +97,6 @@ public:
 	int getMarkFlag(){return nMarkFlag;};
 	
 	MarkingUI * getMarkingUI(int nFlag);
-	/*
-	PointF2D * getPositionXMark(){return pmuiPositionX->getPos();};
-	PointF2D * getPositionYMark(){return pmuiPositionY->getPos();};
-	PointF2D * getLengthMark(){return pmuiLength->getPos();};
-	PointF2D * getAngleMark(){return pmuiAngle->getPos();};
-	*/
 	void SetRedraw();
 
 protected:
@@ -97,12 +104,19 @@ protected:
 	int nMarkFlag;
 	int nModifyVersion;
 
+	bool bRedraw;
+	bool bUpdate;
+
 	MarkingUI *pmuiPositionX;
 	MarkingUI *pmuiPositionY;
     MarkingUI *pmuiLength;
 	MarkingUI *pmuiAngle;
 	MarkingUI *pmuiSplitB;
 	MarkingUI *pmuiSplitE;
+	MarkingUI *pmuiXOffset;
+	MarkingUI *pmuiYOffset;
+	MarkingUI *pmuiHorzVal;
+	MarkingUI *pmuiVertVal;
 };
 
 class MarkingLine : public MarkingObject
@@ -137,4 +151,20 @@ protected:
 	PointF2D ptPosDiff;
 	bool bSplitPointChanged;
 	float fLineLength;
+};
+
+class MarkingOffset : public MarkingObject
+{
+public:
+	MarkingOffset(GObject * pObj, int nFlag);
+
+	virtual void Update();
+	virtual void Render();
+
+	virtual void SetMoveOrigin(float x, float y);
+	virtual void SetNowPos(float x, float y);
+
+protected:
+	PointF2D ptMoveOrigin;
+	PointF2D ptNow;
 };

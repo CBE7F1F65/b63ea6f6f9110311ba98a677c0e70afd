@@ -66,12 +66,12 @@ bool GPoint::MoveTo( float newx, float newy, bool bTry, int moveActionID/*=-1 */
 		return false;
 	}
 	*/
-	/*
+	
 	if (x == newx && y == newy)
 	{
 		return true;
 	}
-	*/
+	
 
 	ToggleTryMoveState(bTry);
 	x = newx;

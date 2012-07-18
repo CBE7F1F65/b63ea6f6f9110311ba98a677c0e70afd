@@ -8,6 +8,7 @@
 #include "GObjectManager.h"
 #include "GLine.h"
 #include "MathHelper.h"
+#include "MarkingManager.h"
 
 #define MARQSTATE_NONE				0x00
 #define MARQSTATE_LEFTKEYDOWN		0x01
@@ -28,6 +29,8 @@ bool staticPickFilterCallback(GObject * pObj)
 
 MarqueeSelect::MarqueeSelect(void)
 {
+	pBeginObj = NULL;
+	pMarkingOffset = NULL;
 }
 
 
@@ -172,6 +175,9 @@ void MarqueeSelect::Update()
 
 		beginx_c = pguic->GetCursorX_C();
 		beginy_c = pguic->GetCursorY_C();
+
+		pBeginObj = pgp->GetPickedObj();
+
 		marqueestate = MARQSTATE_LEFTKEYDOWN;
 	}
 	if (mlkeynotpressed)
@@ -182,9 +188,10 @@ void MarqueeSelect::Update()
 		}
 		if (itemmovestate == MARQMOVESTATE_BEGAN)
 		{
-			GObjectManager::getInstance().EndTryMove();
+			EndMove();
 		}
 		itemmovestate = MARQMOVESTATE_NONE;
+		pBeginObj = NULL;
 	}
 	
 	if (marqueestate != MARQSTATE_BEGAN)
@@ -225,20 +232,19 @@ void MarqueeSelect::Update()
 
 				if (mlkeydown)
 				{
-					GObject * pObj = pgp->GetPickedObj();
-					if (!bctrldown && !baltdown && (!pObj || !CheckObjInSelection(pObj, true, false, true)))
+					if (!bctrldown && !baltdown && (!pBeginObj || !CheckObjInSelection(pBeginObj, true, false, true)))
 					{
 						DeSelectAll();
 					}
-					if (pObj)
+					if (pBeginObj)
 					{
 						if (baltdown)
 						{
-							DeSelect(pObj);
+							DeSelect(pBeginObj);
 						}
 						else
 						{
-							AddSelect(pObj);
+							AddSelect(pBeginObj);
 							lastmx_c = mousex_c = pgp->GetPickX_C();
 							lastmy_c = mousey_c = pgp->GetPickY_C();
 						}
@@ -252,8 +258,8 @@ void MarqueeSelect::Update()
 						mousex_c = pgp->GetPickX_C();
 						mousey_c = pgp->GetPickY_C();
 					}
+					BeginMove(mousex_c, mousey_c);
 					MoveSelected(mousex_c-lastmx_c, mousey_c-lastmy_c);
-					GObjectManager::getInstance().BeginTryMove();
 				}
 				else 
 				{
@@ -693,27 +699,27 @@ void MarqueeSelect::OnDeleteNode( GObject * pDeletedObj )
 	}
 }
 
-void MarqueeSelect::PushSelectCling( GObject * pObj )
+void MarqueeSelect::BeginMove( float nowx, float nowy )
 {
-	/*
-	if (!pObj)
+	GObjectManager::getInstance().BeginTryMove();
+	if (!pMarkingOffset)
 	{
-		return;
+		ASSERT(pBeginObj);
+		pMarkingOffset = new MarkingOffset(pBeginObj, MARKFLAG_OFFSET);
+		pMarkingOffset->getMarkingUI(MARKFLAG_XOFFSET)->SetEditable(true);
+		pMarkingOffset->getMarkingUI(MARKFLAG_YOFFSET)->SetEditable(true);
+		pMarkingOffset->SetMoveOrigin(beginx_c, beginy_c);
+		MarkingManager::getInstance().EnableMarking(pMarkingOffset);
 	}
-	if (!pObj->getChildren()->empty())
+	pMarkingOffset->SetNowPos(nowx, nowy);
+}
+
+void MarqueeSelect::EndMove()
+{
+	GObjectManager::getInstance().EndTryMove();
+	if (pMarkingOffset)
 	{
-		for (list<GObject *>::iterator it=pObj->getChildren()->begin(); it!=pObj->getChildren()->end(); ++it)
-		{
-			PushSelectCling(*it);
-		}
+		MarkingManager::getInstance().DisableMarking(pMarkingOffset);
+		pMarkingOffset = NULL;
 	}
-	if (pObj->getClingBy()->empty())
-	{
-		return;
-	}
-	for (list<GObject *>::iterator it=pObj->getClingBy()->begin(); it!=pObj->getClingBy()->end(); ++it)
-	{
-		selectednodes.push_back(*it);
-	}
-	*/
 }

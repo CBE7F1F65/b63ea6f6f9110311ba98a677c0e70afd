@@ -181,6 +181,12 @@ int GObjectPicker::UpdatePickPoint()
 		state = PICKSTATE_READY;
 	}
 
+	if (pmain->hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_UP) || pmain->hge->Input_GetDIKey(DIK_ESCAPE))
+	{
+		ClearSplitMarking();
+		UnLockSplitLine();
+	}
+
 	if (!bSplitMarkingInUse)
 	{
 		if (pSplitMarking)

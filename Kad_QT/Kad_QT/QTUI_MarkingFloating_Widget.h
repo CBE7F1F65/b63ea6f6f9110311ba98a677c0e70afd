@@ -32,6 +32,9 @@ public:
 private:
     Ui::QTUI_MarkingFloating_Widget *ui;
 	MarkingUI * pMarkingUI;
+
+public slots:
+	void SLT_LockButtonClicked(bool bChecked);
 };
 
 #endif // QTUI_MARKINGFLOATING_WIDGET_H

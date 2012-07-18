@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GPiece.h"
+#include "MarkingObject.h"
 
 class MarqueeSelect
 {
@@ -25,13 +26,14 @@ public:
 	float endx_c;
 	float endy_c;
 
+	GObject * pBeginObj;
+
 	float lastmx_c;
 	float lastmy_c;
 
 	void DeSelect(GObject * pObj);
 	void DeSelectAll();
 	void AddSelect(GObject * pObj, int level=-1);
-	void PushSelectCling( GObject * pObj );
 
 	int nomoveflag;
 
@@ -48,8 +50,13 @@ public:
 	void MoveSelected( float movedx_c, float movedy_c );
 	void CheckValid();
 
+	void BeginMove(float nowx, float nowy);
+	void EndMove();
+
 	bool PickFilterCallback(GObject * pObj);
 
 	void OnDeleteNode(GObject * pDeletedObj);
+
+	MarkingOffset * pMarkingOffset;
 };
 

@@ -115,52 +115,22 @@ bool MarkingUI::IsValueLocked()
 
 #define _MARKLENGTH_OFFSETLENGTH	48
 
-/************************************************************************/
-/*                                                                      */
-/************************************************************************/
-
-#define MARKBUNCH_CALLFUNC(FLAG, FUNC)	\
-	if ((FLAG)&MARKFLAG_POSITIONX)	\
-	{	\
-		pmuiPositionX->FUNC;	\
-	}	\
-	if ((FLAG)&MARKFLAG_POSITIONY)	\
-	{	\
-		pmuiPositionY->FUNC;	\
-	}	\
-	if ((FLAG)&MARKFLAG_LENGTH)	\
-	{	\
-		pmuiLength->FUNC;	\
-	}	\
-	if ((FLAG)&MARKFLAG_ANGLE)	\
-	{	\
-		pmuiAngle->FUNC;	\
-	}	\
-	if ((FLAG)&MARKFLAG_SPLITLENGTH_B)	\
-	{	\
-		pmuiSplitB->FUNC;	\
-	}	\
-	if ((FLAG)&MARKFLAG_SPLITLENGTH_E)	\
-	{	\
-		pmuiSplitE->FUNC;	\
-	}
-
-
-/************************************************************************/
-/*                                                                      */
-/************************************************************************/
 MarkingObject::MarkingObject()
 {
 	pTargetObj = NULL;
 	nMarkFlag = -1;
 	nModifyVersion = -1;
 
-	pmuiPositionX = new MarkingUI(this, MARKFLAG_POSITIONX);
-	pmuiPositionY = new MarkingUI(this, MARKFLAG_POSITIONY);
-	pmuiLength = new MarkingUI(this, MARKFLAG_LENGTH);
-	pmuiAngle = new MarkingUI(this, MARKFLAG_ANGLE);
-	pmuiSplitB = new MarkingUI(this, MARKFLAG_SPLITLENGTH_B);
-	pmuiSplitE = new MarkingUI(this, MARKFLAG_SPLITLENGTH_E);
+	pmuiPositionX = NULL;
+	pmuiPositionY = NULL;
+	pmuiLength = NULL;
+	pmuiAngle = NULL;
+	pmuiSplitB = NULL;
+	pmuiSplitE = NULL;
+	pmuiXOffset = NULL;
+	pmuiYOffset = NULL;
+	pmuiHorzVal = NULL;
+	pmuiVertVal = NULL;
 }
 
 MarkingObject::~MarkingObject()
@@ -171,6 +141,11 @@ MarkingObject::~MarkingObject()
 	if (pmuiAngle) { delete pmuiAngle; }
 	if (pmuiSplitB) { delete pmuiSplitB; }
 	if (pmuiSplitE) { delete pmuiSplitE; }
+	if (pmuiXOffset) { delete pmuiXOffset; }
+	if (pmuiYOffset) { delete pmuiYOffset; }
+	if (pmuiHorzVal) { delete pmuiHorzVal; }
+	if (pmuiVertVal) { delete pmuiVertVal; }
+
 }
 
 void MarkingObject::SetValue( GObject * pObj, int nFlag )
@@ -179,10 +154,68 @@ void MarkingObject::SetValue( GObject * pObj, int nFlag )
 	pTargetObj = pObj;
 	nMarkFlag = nFlag;
 
-	MARKBUNCH_CALLFUNC(nFlag, UseUI());
-}
+	if ((nFlag)&MARKFLAG_POSITIONX)
+	{
+		ASSERT(!pmuiPositionX);
+		pmuiPositionX = new MarkingUI(this, MARKFLAG_POSITIONX);
+		pmuiPositionX->UseUI();
+	}
+	if ((nFlag)&MARKFLAG_POSITIONY)
+	{
+		ASSERT(!pmuiPositionY);
+		pmuiPositionY = new MarkingUI(this, MARKFLAG_POSITIONY);
+		pmuiPositionY->UseUI();
+	}
+	if ((nFlag)&MARKFLAG_LENGTH)
+	{
+		ASSERT(!pmuiLength);
+		pmuiLength = new MarkingUI(this, MARKFLAG_LENGTH);
+		pmuiLength->UseUI();
+	}
+	if ((nFlag)&MARKFLAG_ANGLE)
+	{
+		ASSERT(!pmuiAngle);
+		pmuiAngle = new MarkingUI(this, MARKFLAG_ANGLE);
+		pmuiAngle->UseUI();
+	}
+	if ((nFlag)&MARKFLAG_SPLITLENGTH_B)
+	{
+		ASSERT(!pmuiSplitB);
+		pmuiSplitB = new MarkingUI(this, MARKFLAG_SPLITLENGTH_B);
+		pmuiSplitB->UseUI();
+	}
+	if ((nFlag)&MARKFLAG_SPLITLENGTH_E)
+	{
+		ASSERT(!pmuiSplitE);
+		pmuiSplitE = new MarkingUI(this, MARKFLAG_SPLITLENGTH_E);
+		pmuiSplitE->UseUI();
+	}
+	if (nFlag&MARKFLAG_XOFFSET)
+	{
+		ASSERT(!pmuiXOffset);
+		pmuiXOffset = new MarkingUI(this, MARKFLAG_XOFFSET);
+		pmuiXOffset->UseUI();
+	}
+	if (nFlag&MARKFLAG_YOFFSET)
+	{
+		ASSERT(!pmuiYOffset);
+		pmuiYOffset = new MarkingUI(this, MARKFLAG_YOFFSET);
+		pmuiYOffset->UseUI();
+	}
+	if (nFlag&MARKFLAG_HORZVAL)
+	{
+		ASSERT(!pmuiHorzVal);
+		pmuiHorzVal = new MarkingUI(this, MARKFLAG_HORZVAL);
+		pmuiHorzVal->UseUI();
+	}
+	if (nFlag&MARKFLAG_VERTVAL)
+	{
+		ASSERT(!pmuiVertVal);
+		pmuiVertVal = new MarkingUI(this, MARKFLAG_VERTVAL);
+		pmuiVertVal->UseUI();
+	}
 
-#undef MARKBUNCH_CALLFUNC
+}
 
 void MarkingObject::Update()
 {
@@ -196,6 +229,8 @@ void MarkingObject::Render()
 
 void MarkingObject::SetRedraw()
 {
+	bUpdate = true;
+	bRedraw = true;
 	MarkingManager::getInstance().SetRedraw();
 }
 
@@ -215,13 +250,32 @@ MarkingUI * MarkingObject::getMarkingUI( int nFlag )
 		return pmuiSplitB;
 	case MARKFLAG_SPLITLENGTH_E:
 		return pmuiSplitE;
+	case MARKFLAG_XOFFSET:
+		return pmuiXOffset;
+	case MARKFLAG_YOFFSET:
+		return pmuiYOffset;
+	case MARKFLAG_HORZVAL:
+		return pmuiHorzVal;
+	case MARKFLAG_VERTVAL:
+		return pmuiVertVal;
 	}
 	ASSERT(true);
 	return NULL;
 }
 
+void MarkingObject::CallUpdate()
+{
+	Update();
+	bUpdate = false;
+}
+
+void MarkingObject::CallRender()
+{
+	Render();
+	bRedraw = false;
+}
 /************************************************************************/
-/* MARKINGLINE                                                          */
+/* MarkingLine                                                          */
 /************************************************************************/
 
 MarkingLine::MarkingLine(GLine * pLine, int nFlag)
@@ -238,8 +292,6 @@ void MarkingLine::Update()
 
 		GLine * pLine = (GLine *)pTargetObj;
 
-		pmuiPositionX->SetPosition(PointF2D(pLine->getX(), pLine->getY()));
-		pmuiPositionY->SetPosition(PointF2D(pLine->getX(), pLine->getY()));
 
 		MathHelper * pmh = &MathHelper::getInstance();
 
@@ -265,12 +317,14 @@ void MarkingLine::Update()
 		QString str;
 		if (nMarkFlag & MARKFLAG_POSITIONX)
 		{
+			pmuiPositionX->SetPosition(PointF2D(pLine->getX(), pLine->getY()));
 			str.sprintf("%f", pLine->GetMidPoint()->getX());
 			pmuiPositionX->SetString(&str);
 			pmuiPositionX->DoMove();
 		}
 		if (nMarkFlag & MARKFLAG_POSITIONY)
 		{
+			pmuiPositionY->SetPosition(PointF2D(pLine->getX(), pLine->getY()));
 			str.sprintf("%f", pLine->GetMidPoint()->getY());
 			pmuiPositionY->SetString(&str);
 			pmuiPositionY->DoMove();
@@ -342,6 +396,10 @@ void MarkingLine::Render()
 	}
 	prh->SetLineStyle(savedstyle);
 }
+
+/************************************************************************/
+/* MarkingSplitLine                                                     */
+/************************************************************************/
 
 MarkingSplitLine::MarkingSplitLine( GLine * pLine, int nFlag )
 {
@@ -458,5 +516,83 @@ void MarkingSplitLine::SetSplitPoint( float x, float y, int isec/*=0*/ )
 		ptSplitPoint.y = y;
 		iSplitSec = isec;
 		bSplitPointChanged = true;
+	}
+}
+/************************************************************************/
+/* MarkingOffset                                                        */
+/************************************************************************/
+MarkingOffset::MarkingOffset( GObject * pObj, int nFlag )
+{
+	ASSERT(pObj);
+	SetValue(pObj, nFlag);
+}
+
+void MarkingOffset::Update()
+{
+	if (nModifyVersion != pTargetObj->getModifyVersion() || bUpdate)
+	{
+		nModifyVersion = pTargetObj->getModifyVersion();
+
+		QString str;
+
+		if (nMarkFlag & MARKFLAG_XOFFSET)
+		{
+			float xdiff = ptNow.x-ptMoveOrigin.x;
+			pmuiXOffset->SetPosition(PointF2D(ptMoveOrigin.x+xdiff/2, ptMoveOrigin.y));
+			str.sprintf("%f", xdiff);
+			pmuiXOffset->SetString(&str);
+			pmuiXOffset->DoMove();
+		}
+		if (nMarkFlag & MARKFLAG_YOFFSET)
+		{
+			float ydiff = ptNow.y-ptMoveOrigin.y;
+			pmuiYOffset->SetPosition(PointF2D(ptNow.x, ptMoveOrigin.y+ydiff/2));
+			str.sprintf("%f", ydiff);
+			pmuiYOffset->SetString(&str);
+			pmuiYOffset->DoMove();
+		}
+	}
+
+}
+
+void MarkingOffset::Render()
+{
+	if (nMarkFlag <= 0)
+	{
+		return;
+	}
+	RenderHelper * prh = &RenderHelper::getInstance();
+	DWORD col = pTargetObj->getLineColor();
+	col = SETA(col, ColorManager::getInstance().GetMarkingAlpha());
+
+	int savedstyle = prh->getLineStyle();
+	prh->SetLineStyle(RHLINESTYLE_DOTTEDLINE);
+
+	if (nMarkFlag & MARKFLAG_XOFFSET)
+	{
+		prh->RenderLineR(ptMoveOrigin.x, ptMoveOrigin.y, ptNow.x-ptMoveOrigin.x, col);
+	}
+	if (nMarkFlag & MARKFLAG_YOFFSET)
+	{
+		prh->RenderLineB(ptNow.x, ptMoveOrigin.y, ptNow.y-ptMoveOrigin.y, col);
+	}
+
+	prh->SetLineStyle(savedstyle);
+}
+
+void MarkingOffset::SetMoveOrigin( float x, float y )
+{
+	ptMoveOrigin.x = x;
+	ptMoveOrigin.y = y;
+	SetRedraw();
+}
+
+void MarkingOffset::SetNowPos(float x, float y)
+{
+	if (ptNow.x != x || ptNow.y != y)
+	{
+		ptNow.x = x;
+		ptNow.y = y;
+		SetRedraw();
 	}
 }

@@ -88,5 +88,24 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>QTUI_MarkingFloating_Widget</receiver>
+   <slot>SLT_LockButtonClicked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>75</x>
+     <y>10</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>78</x>
+     <y>30</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <slots>
+  <slot>SLT_LockButtonClicked(bool)</slot>
+ </slots>
 </ui>
