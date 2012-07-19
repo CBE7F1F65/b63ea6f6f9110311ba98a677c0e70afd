@@ -435,7 +435,7 @@ bool CommandTemplate::MergeClingNewPoint( GPoint * pFrom, GObject * pTo, float f
 	{
 		if (!pTo->isMidPoint())
 		{
-			ASSERT(true);
+			ASSERT(false);
 			return false;
 		}
 		pTo = pTo->getLine();
@@ -510,16 +510,6 @@ void CommandTemplate::ReAttachAfterMoveNode( GObject * pObj, bool bFindMerge/*=t
 			{
 				return;
 			}
-			/*
-			if (pAnotherObj->isAnchorPoint() || pAnotherObj->isHandlePoint() || pAnotherObj->isMidPoint())
-			{
-				pAnotherLine = (GLine *)pAnotherObj->getLine();
-				if (pPoint->isClingTo(pAnotherLine))
-				{
-					return;
-				}
-			}
-			*/
 	}
 	}
 
@@ -574,7 +564,7 @@ bool CommandTemplate::BindNewAnchorPoint( GAnchorPoint * pFrom, GAnchorPoint * p
 
 	GHandlePoint * pFromHandle = pFrom->GetHandle();
 	GHandlePoint * pToHandle = pTo->GetHandle();
-	if (((GLine *)pTo->getLine())->isStraightLine())
+	if ((pTo->getLine())->isStraightLine())
 	{
 		return false;
 	}

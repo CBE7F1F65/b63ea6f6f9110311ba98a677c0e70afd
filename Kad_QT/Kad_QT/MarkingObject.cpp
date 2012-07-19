@@ -259,7 +259,7 @@ MarkingUI * MarkingObject::getMarkingUI( int nFlag )
 	case MARKFLAG_VERTVAL:
 		return pmuiVertVal;
 	}
-	ASSERT(true);
+	ASSERT(false);
 	return NULL;
 }
 

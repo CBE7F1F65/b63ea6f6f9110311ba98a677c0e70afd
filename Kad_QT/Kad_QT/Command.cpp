@@ -527,7 +527,7 @@ int Command::GetIvalFromRC( RevertableCommand * rc, int csp )
 			return it->ival;
 		}
 	}
-	ASSERT(true);
+	ASSERT(false);
 	return 0;
 }
 
@@ -545,7 +545,7 @@ float Command::GetFvalFromRC( RevertableCommand * rc, int csp )
 			return it->fval;
 		}
 	}
-	ASSERT(true);
+	ASSERT(false);
 	return 0;
 
 }
@@ -564,7 +564,7 @@ const char * Command::GetSvalFromRC( RevertableCommand * rc, int csp )
 			return it->sval.c_str();
 		}
 	}
-	ASSERT(true);
+	ASSERT(false);
 	return "";
 
 }
@@ -583,7 +583,7 @@ int Command::GetCSubFromRC( RevertableCommand * rc, int csp )
 			return it->csub;
 		}
 	}
-	ASSERT(true);
+	ASSERT(false);
 	return 0;
 
 }

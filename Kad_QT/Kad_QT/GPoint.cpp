@@ -82,7 +82,7 @@ bool GPoint::MoveTo( float newx, float newy, bool bTry, int moveActionID/*=-1 */
 		CallModify();
 		if (isHandlePoint())
 		{
-			GLine * pLine = (GLine *)getLine();
+			GLine * pLine = getLine();
 			list<GPoint *> * pClingByList = pLine->getClingBy();
 			if (!pClingByList->empty())
 			{
@@ -225,12 +225,12 @@ bool GPoint::MergeWith( GPoint * pPoint, bool bNoBackward/*=false*/ )
 						}
 						else
 						{
-							ASSERT(true);
+							ASSERT(false);
 						}
 					}
 					else
 					{
-						ASSERT(true);
+						ASSERT(false);
 					}
 				}
 				if (!pSelfMerged->isMergeWith(pPoint))
@@ -242,12 +242,12 @@ bool GPoint::MergeWith( GPoint * pPoint, bool bNoBackward/*=false*/ )
 					}
 					else
 					{
-						ASSERT(true);
+						ASSERT(false);
 					}
 				}
 				else
 				{
-					ASSERT(true);
+					ASSERT(false);
 				}
 			}
 		}
@@ -264,12 +264,12 @@ bool GPoint::MergeWith( GPoint * pPoint, bool bNoBackward/*=false*/ )
 			}
 			else
 			{
-				ASSERT(true);
+				ASSERT(false);
 			}
 		}
 		else
 		{
-			ASSERT(true);
+			ASSERT(false);
 		}
 	}
 	if (!isMergeWith(pPoint))
@@ -281,12 +281,12 @@ bool GPoint::MergeWith( GPoint * pPoint, bool bNoBackward/*=false*/ )
 		}
 		else
 		{
-			ASSERT(true);
+			ASSERT(false);
 		}
 	}
 	else
 	{
-		ASSERT(true);
+		ASSERT(false);
 	}
 	return true;
 }
@@ -351,28 +351,28 @@ bool GPoint::SeperateFrom( GPoint * pPoint/*=NULL*/, bool bNoBackward/*=false*/ 
 	return false;
 }
 
-GObject * GPoint::getLine()
+GLine * GPoint::getLine()
 {
 	GObject * pObj = pParent;
 	while (pObj)
 	{
 		if (pObj->isLine())
 		{
-			return pObj;
+			return (GLine *)pObj;
 		}
 		pObj = pObj->getParent();
 	}
 	return NULL;
 }
 
-GObject * GPoint::getPiece()
+GPiece * GPoint::getPiece()
 {
 	GObject * pObj = pParent;
 	while (pObj)
 	{
 		if (pObj->isPiece())
 		{
-			return pObj;
+			return (GPiece *)pObj;
 		}
 		pObj = pObj->getParent();
 	}
@@ -468,7 +468,7 @@ bool GAnchorPoint::MoveTo( float newx, float newy, bool bTry, int moveActionID/*
 
 			if (bret)
 			{
-				GLine * pLine = (GLine *)getLine();
+				GLine * pLine = getLine();
 				list<GPoint *> * pClingByList = pLine->getClingBy();
 				if (!pClingByList->empty())
 				{

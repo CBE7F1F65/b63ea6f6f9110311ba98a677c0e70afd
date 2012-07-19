@@ -25,6 +25,9 @@ public:
 	bool MIDCBLength(MarkingUI * pmui, bool bAccept);
 	bool MIDCBAngle(MarkingUI * pmui, bool bAccept);
 
+	static bool staticMIDCBLength(MarkingUI * pmui, bool bAccept);
+	static bool staticMIDCBAngle(MarkingUI * pmui, bool bAccept);
+
 private:
 
 	void ClearTemp();

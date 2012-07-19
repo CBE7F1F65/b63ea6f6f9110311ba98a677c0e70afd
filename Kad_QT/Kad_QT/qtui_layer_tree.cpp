@@ -275,7 +275,7 @@ GObject *QTUI_Layer_Tree::GetObjFromItem(QTreeWidgetItem *pItem)
         Q_ASSERT(bOk);
         return pObj;
     }
-    Q_ASSERT(true);
+    Q_ASSERT(false);
     return NULL;
 }
 

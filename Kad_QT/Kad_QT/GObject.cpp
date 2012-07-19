@@ -634,7 +634,7 @@ void GObject::CallRedrawModify()
     GObjectManager::getInstance().SetRedraw();
 }
 
-GObject * GObject::GetLayer( bool bIncludingSelf/*=true*/ )
+GLayer * GObject::GetLayer( bool bIncludingSelf/*=true*/ )
 {
 	GObject * pobj = this;
 	while (pobj)
@@ -643,7 +643,7 @@ GObject * GObject::GetLayer( bool bIncludingSelf/*=true*/ )
 		{
 			if (bIncludingSelf || pobj != this)
 			{
-				return pobj;
+				return (GLayer *)pobj;
 			}
 		}
 		pobj = pobj->pParent;
@@ -661,7 +661,7 @@ GObject * GObject::GetBase()
 	return pobj;
 }
 
-GObject * GObject::GetNonAttributeObj()
+GObject * GObject::GetNonAttributeParentObj()
 {
 	GObject * pobj = this;
 	while (pobj)

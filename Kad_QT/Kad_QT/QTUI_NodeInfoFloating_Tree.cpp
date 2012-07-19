@@ -345,7 +345,8 @@ void QTUI_NodeInfoFloating_Tree::SLT_TransformButtonClicked( bool bChecked )
 			
 			MainInterface::getInstance().OnCommandWithParam(
 				bChecked?COMM_TOBEZIER:COMM_TOSTRAIGHTLINE,
-				CCCWPARAM_I(pRel->pThis->getID())
+				CCCWPARAM_I(pRel->pThis->getID()),
+				NULL
 				);
 		}
 	}
@@ -460,7 +461,7 @@ void QTUI_NodeInfoFloating_Tree::UpdateNodeInfo(GObject *pObj, QTreeWidgetItem *
     if (pObj->isHandlePoint())
     {
         GHandlePoint * pHandle = (GHandlePoint *)pObj;
-        GAnchorPoint * pAnchor = (GAnchorPoint *)pHandle->GetAnchor();
+        GAnchorPoint * pAnchor = pHandle->GetAnchor();
         list<GPoint *> * plMergeWith = pAnchor->getMergeWith();
         GHandlePoint * pBindHandle = pHandle->getBindWith();
 
@@ -473,7 +474,7 @@ void QTUI_NodeInfoFloating_Tree::UpdateNodeInfo(GObject *pObj, QTreeWidgetItem *
                 GPoint * pMergedPoint = *it;
                 if (pMergedPoint->isAnchorPoint())
                 {
-                    GLine * pLine = (GLine *)pMergedPoint->getLine();
+                    GLine * pLine = pMergedPoint->getLine();
                     if (!pLine->isStraightLine())
                     {
                         GHandlePoint * pMergedHandle = ((GAnchorPoint *)pMergedPoint)->GetHandle();

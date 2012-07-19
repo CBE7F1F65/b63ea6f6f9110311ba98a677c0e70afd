@@ -67,7 +67,8 @@ private:
 	float fBoundingBY;
 };
 
-
+class GLine;
+class GBezierLine;
 
 class MathHelper
 {
@@ -112,4 +113,8 @@ public:
 	float CalculateProportionOnStraightLine( float xb, float yb, float xe, float ye, float x, float y );
 	bool FindPerpendicularPoint( float x, float y, float lx, float ly, int langle, float * px=NULL, float * py=NULL );
 	int GetQuadrant( float x, float y, float xo=0, float yo=0 );
+
+	bool FindNearestHandlePointForGivenBezierLength_TwoPoint(float fLength, PointF2D ptFirstAnchor, PointF2D ptFirstHandle, PointF2D ptSecondAnchor, PointF2D ptNear, PointF2D ptFar, float * px=NULL, float * py=NULL);
+	bool FindNearestHandlePointForGivenBezierLength(float fLength, PointF2D ptFirstAnchor, PointF2D ptFirstHandle, PointF2D ptSecondAnchor, float cx, float cy, float * px=NULL, float * py=NULL, bool bCheckLengthAvailableOnly=false);
+	bool FindSubNHPFGBL( GBezierLine * pBezier, float fTargetLength, PointF2D ptNear, PointF2D ptFar, float * px, float * py, float fNearLength=-1, float fFarLength=-1 );
 };

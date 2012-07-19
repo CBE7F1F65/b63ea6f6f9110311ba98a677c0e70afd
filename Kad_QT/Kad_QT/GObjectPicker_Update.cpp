@@ -85,7 +85,7 @@ int GObjectPicker::UpdatePickPoint()
 
 	if (!bTestMode)
 	{
-		if (!Command::getInstance().GetCurrentCommand() && !MarqueeSelect::getInstance().marqueestate)
+		if (!Command::getInstance().GetCurrentCommand() && !MarqueeSelect::getInstance().marqueestate && !MarqueeSelect::getInstance().itemmovestate)
 		{
 			restoreSnapto = snaptoflag;
 			SetSnapTo(snaptoflag, false);

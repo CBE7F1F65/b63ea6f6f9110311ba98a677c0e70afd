@@ -148,7 +148,7 @@ bool GLine::AddClingBy( GPoint * pPoint )
 	{
 		if (*it == pPoint)
 		{
-			DASSERT(true);
+			DASSERT(false);
 			return false;
 		}
 	}
@@ -188,14 +188,14 @@ bool GLine::isClingBy( GPoint * pPoint )
 	return pPoint->isClingTo(this);
 }
 
-GObject * GLine::getPiece()
+GPiece * GLine::getPiece()
 {
 	GObject * pObj = pParent;
 	while (pObj)
 	{
 		if (pObj->isPiece())
 		{
-			return pObj;
+			return (GPiece *)pObj;
 		}
 		pObj = pObj->getParent();
 	}
@@ -319,7 +319,7 @@ bool GStraightLine::GetPositionAtProportion( float fClingToProportion, float* to
 {
 	if (fClingToProportion < 0 || fClingToProportion > 1)
 	{
-		ASSERT(true);
+		ASSERT(false);
 		return false;
 	}
 	float fbx = plbegin->getX();
@@ -356,7 +356,7 @@ PointF2D GStraightLine::GetTangentPointF2D( float t )
 /************************************************************************/
 GBezierLine::GBezierLine()
 {
-	ASSERT(true);
+	ASSERT(false);
 }
 
 GBezierLine::GBezierLine(GObject * parent, PointF2D pb, PointF2D pe)
@@ -565,7 +565,7 @@ void GBezierLine::GetBoundingBox( float *xl, float *yt, float *xr, float * yb )
 	{
 		if (!bsinfo.GetBoundingBox(xl, yt, xr, yb))
 		{
-			ASSERT(true);
+			ASSERT(false);
 		}
 	}
 }
@@ -653,7 +653,7 @@ void GBezierLine::SetPosByQuarterCircle( float cx, float cy, float r, int quadra
 		pehy = cy-rk;
 		break;
 	default:
-		ASSERT(true);
+		ASSERT(false);
 	}
 
 	SetBeginEnd(pbx, pby, pex, pey);
@@ -726,7 +726,12 @@ float GBezierLine::CalculateProportion( float x, float y, int iSec )
 		}
 		float fsubproportion = MathHelper::getInstance().CalculateProportionOnStraightLine(bsinfo.GetX(iSec), bsinfo.GetY(iSec), bsinfo.GetX(iSec+1), bsinfo.GetY(iSec+1), x, y);
 		float fSectionLength = bsinfo.GetLength(iSec);
-		float fProportionLength = bsinfo.GetLength(0, iSec-1)+fsubproportion * fSectionLength;
+		float fPreLength = 0.0f;
+		if (iSec > 1)
+		{
+			fPreLength = bsinfo.GetLength(0, iSec-1);
+		}
+		float fProportionLength = fPreLength+fsubproportion * fSectionLength;
 		return fProportionLength/fTotalLength;
 	}
 	return 0;
@@ -750,7 +755,7 @@ bool GBezierLine::GetPositionAtProportion( float fClingToProportion, float* tox,
 {
 	if (fClingToProportion < 0 || fClingToProportion > 1)
 	{
-		ASSERT(true);
+		ASSERT(false);
 		return false;
 	}
 	if (isStraightLine())

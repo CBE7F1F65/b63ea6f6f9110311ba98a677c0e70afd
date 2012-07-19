@@ -18,7 +18,7 @@ public:
 
 protected:
 //    virtual void mousePressEvent( QMouseEvent *e );
-//    virtual void enterEvent(QEvent * e);
+	virtual void leaveEvent(QEvent * e);
 
 public:
     void ShowWidgetWindow(bool bContext);

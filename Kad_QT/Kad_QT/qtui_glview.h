@@ -21,7 +21,9 @@ protected:
     virtual void wheelEvent(QWheelEvent *e);
     virtual void enterEvent(QEvent *e);
     virtual void leaveEvent(QEvent *e);
-    virtual bool eventFilter(QObject *target, QEvent *e);
+	virtual bool eventFilter(QObject *target, QEvent *e);
+	virtual void focusInEvent ( QFocusEvent * e );
+	virtual void focusOutEvent ( QFocusEvent * e );
 
 signals:
     void SIG_OnChar(QString);

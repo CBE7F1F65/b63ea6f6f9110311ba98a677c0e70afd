@@ -38,7 +38,7 @@ bool QMainInterface::RegisterPMarkingWidget( QTUI_MarkingFloating_Widget * pWidg
 		{
 			if (*it == pWidget)
 			{
-				DASSERT(true);
+				DASSERT(false);
 				return false;
 			}
 		}
@@ -97,6 +97,6 @@ bool QMainInterface::UnregisterPMarkingWidget( QTUI_MarkingFloating_Widget * pWi
 			return true;
 		}
 	}
-	DASSERT(true);
+	DASSERT(false);
 	return false;
 }

@@ -3,6 +3,9 @@
 
 #include "Const.h"
 
+#include "GBaseNode.h"
+#include "GLine.h"
+
 MathHelper::MathHelper(void)
 {
 }
@@ -551,6 +554,139 @@ int MathHelper::GetQuadrant( float x, float y, float xo/*=0*/, float yo/*=0 */ )
 	return QUADRANT_3;
 }
 
+bool MathHelper::FindNearestHandlePointForGivenBezierLength_TwoPoint( float fLength, PointF2D ptFirstAnchor, PointF2D ptFirstHandle, PointF2D ptSecondAnchor, PointF2D ptNear, PointF2D ptFar, float * px/*=NULL*/, float * py/*=NULL*/ )
+{
+	// !!TODO??
+	return false;
+
+
+	GBaseNode tbase;
+
+	GBezierLine * pBezier = new GBezierLine(&tbase, ptFirstAnchor, ptFirstHandle, ptSecondAnchor, ptSecondAnchor);
+	float fMinimalLength = pBezier->getLength();
+	if (fLength < fMinimalLength)
+	{
+		tbase.RemoveAllChildren(true);
+		return false;
+	}
+
+	if (ptNear.Equals(ptFar))
+	{
+		tbase.RemoveAllChildren(true);
+		return false;
+	}
+
+	bool bRet = false;
+	if (FindSubNHPFGBL(pBezier, fLength, ptNear, ptFar, px, py))
+	{
+		bRet = true;
+	}
+	tbase.RemoveAllChildren(true);
+	return bRet;
+
+}
+
+bool MathHelper::FindNearestHandlePointForGivenBezierLength( float fLength, PointF2D ptFirstAnchor, PointF2D ptFirstHandle, PointF2D ptSecondAnchor, float cx, float cy, float * px/*=NULL*/, float * py/*=NULL*/, bool bCheckLengthAvailableOnly/*=false*/ )
+{
+	GBaseNode tbase;
+
+	GBezierLine * pBezier = new GBezierLine(&tbase, ptFirstAnchor, ptFirstHandle, ptSecondAnchor, ptSecondAnchor);
+	float fMinimalLength = pBezier->getLength();
+	if (fLength < fMinimalLength)
+	{
+		tbase.RemoveAllChildren(true);
+		return false;
+	}
+	if (bCheckLengthAvailableOnly)
+	{
+		tbase.RemoveAllChildren(true);
+		return true;
+	}
+
+	PointF2D ptNow(cx, cy);
+	PointF2D ptDiff = ptNow-ptSecondAnchor;
+	PointF2D ptFar(ptSecondAnchor.x+fLength*2, ptSecondAnchor.y);
+
+	if (ptDiff.x > ptDiff.y)
+	{
+		float fmul = fabsf(2*fLength / ptDiff.x);
+		ptFar = ptDiff*fmul+ptSecondAnchor;
+	}
+	else if (ptDiff.y)
+	{
+		float fmul = fabsf(2*fLength / ptDiff.y);
+		ptFar = ptDiff*fmul+ptSecondAnchor;
+	}
+
+	bool bRet = false;
+	if (FindSubNHPFGBL(pBezier, fLength, ptSecondAnchor, ptFar, px, py, fMinimalLength))
+	{
+		bRet = true;
+	}
+
+	tbase.RemoveAllChildren(true);
+	return bRet;
+}
+
+bool MathHelper::FindSubNHPFGBL( GBezierLine * pBezier, float fTargetLength, PointF2D ptNear, PointF2D ptFar, float * px, float * py, float fNearLength/*=-1*/, float fFarLength/*=-1 */ )
+{
+	if (ptFar.Equals(ptNear))
+	{
+//		DASSERT(false);
+		if (px) { *px = ptNear.x; }
+		if (py) { *py = ptNear.y; }
+		return false;
+	}
+	if (fNearLength < 0)
+	{
+		pBezier->SetEndHandlePos(ptNear.x, ptNear.y);
+		fNearLength = pBezier->getLength();
+	}
+	if (fFarLength < 0)
+	{
+		pBezier->SetEndHandlePos(ptFar.x, ptFar.y);
+		fNearLength = pBezier->getLength();
+	}
+
+	PointF2D ptMid = (ptFar+ptNear)/2.0f;
+	pBezier->SetEndHandlePos(ptMid.x, ptMid.y);
+	float fMidLength = pBezier->getLength();
+	if (fabsf(fMidLength-fTargetLength)<M_FLOATEPS)
+	{
+		if (px) { *px = ptMid.x; }
+		if (py) { *py = ptMid.y; }
+		return true;
+	}
+
+	if (fMidLength > fTargetLength)
+	{
+		ptFar = ptMid;
+		fFarLength = fMidLength;
+	}
+	else
+	{
+		ptNear = ptMid;
+		fNearLength = fMidLength;
+	}
+
+	if (ptFar.x != ptFar.x || ptFar.y != ptFar.y)
+	{
+		qWarning();
+	}
+
+	if (ptNear.x != ptNear.x || ptNear.y != ptNear.y)
+	{
+		qWarning();
+	}
+
+	if (FindSubNHPFGBL(pBezier, fTargetLength, ptNear, ptFar, px, py, fNearLength, fFarLength))
+	{
+		return true;
+	}
+
+	return false;
+}
+
 BezierSublinesInfo::BezierSublinesInfo()
 {
 	ptPoints = NULL;
@@ -662,7 +798,7 @@ int BezierSublinesInfo::CalculateLengths()
 
 	if (!nPoints)
 	{
-		ASSERT(true);
+		ASSERT(false);
 		return 0;
 	}
 
@@ -691,7 +827,7 @@ float BezierSublinesInfo::GetX( int i )
 	{
 		return ptPoints[i].x;
 	}
-	ASSERT(true);
+	ASSERT(false);
 	return 0;
 }
 
@@ -701,7 +837,7 @@ float BezierSublinesInfo::GetY( int i )
 	{
 		return ptPoints[i].y;
 	}
-	ASSERT(true);
+	ASSERT(false);
 	return 0;
 }
 
@@ -719,7 +855,7 @@ float BezierSublinesInfo::GetLength( int i/*=-1*/ )
 	{
 		return GetLength(0, nPoints-2);
 	}
-	ASSERT(true);
+	ASSERT(false);
 	return 0;
 }
 
@@ -734,7 +870,7 @@ float BezierSublinesInfo::GetLength( int ibegin, int iend )
 		}
 		return fRet;
 	}
-	ASSERT(true);
+	ASSERT(false);
 	return 0;
 
 }
@@ -744,7 +880,7 @@ const PointF2D & BezierSublinesInfo::GetPoint( int i )
 	{
 		return ptPoints[i];
 	}
-	ASSERT(true);
+	ASSERT(false);
 	return ptPoints[0];
 }
 

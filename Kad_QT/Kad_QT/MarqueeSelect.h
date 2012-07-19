@@ -56,7 +56,14 @@ public:
 	bool PickFilterCallback(GObject * pObj);
 
 	void OnDeleteNode(GObject * pDeletedObj);
+	bool MIDCBLength( MarkingUI * pmui, bool bAccept );
+	bool MIDCBAngle( MarkingUI * pmui, bool bAccept );
+	bool MIDCBOffset( MarkingUI * pmui, bool bAccept );
+	static bool staticMIDCBLength( MarkingUI * pmui, bool bAccept );
+	static bool staticMIDCBAngle( MarkingUI * pmui, bool bAccept );
+	static bool staticMIDCBOffset( MarkingUI * pmui, bool bAccept );
 
 	MarkingOffset * pMarkingOffset;
+	MarkingLine * pMarkingLine;
 };
 

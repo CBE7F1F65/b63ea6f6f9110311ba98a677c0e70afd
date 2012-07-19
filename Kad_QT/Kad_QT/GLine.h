@@ -18,7 +18,7 @@ public:
 	virtual bool isLine(){return true;};
 
 
-	virtual GObject * getPiece();
+	virtual GPiece * getPiece();
 
 	virtual bool MoveTo(float newx, float newy, bool bTry, int moveActionID=-1);
 	virtual bool CallMoveTo(float newx, float newy, bool bTry, int moveActionID=-1);

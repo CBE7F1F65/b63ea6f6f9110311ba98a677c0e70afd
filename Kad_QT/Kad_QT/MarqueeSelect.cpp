@@ -31,6 +31,7 @@ MarqueeSelect::MarqueeSelect(void)
 {
 	pBeginObj = NULL;
 	pMarkingOffset = NULL;
+	pMarkingLine = NULL;
 }
 
 
@@ -173,8 +174,8 @@ void MarqueeSelect::Update()
 		lastmx_c = mousex_c;
 		lastmy_c = mousey_c;
 
-		beginx_c = pguic->GetCursorX_C();
-		beginy_c = pguic->GetCursorY_C();
+		beginx_c = pgp->GetPickX_C();//pguic->GetCursorX_C();
+		beginy_c = pgp->GetPickY_C();//pguic->GetCursorY_C();
 
 		pBeginObj = pgp->GetPickedObj();
 
@@ -493,19 +494,19 @@ void MarqueeSelect::MoveSelected( float movedx_c, float movedy_c )
 	}
 }
 
-bool MarqueeSelect::CheckObjInSelection( GObject * pObj, bool bFindAncestor/*=false*/, bool bFindUpperClass/*=false*/, bool bFindMerge/*=false*/, bool bFindCling/*=false*/ )
+bool MarqueeSelect::CheckObjInSelection( GObject * pTestObj, bool bFindAncestor/*=false*/, bool bFindUpperClass/*=false*/, bool bFindMerge/*=false*/, bool bFindCling/*=false*/ )
 {
-	if (!pObj)
+	if (!pTestObj)
 	{
 		return false;
 	}
-	if (pObj->isSlaveToLine())
+	if (pTestObj->isSlaveToLine())
 	{
-		pObj = pObj->getLine();
+		pTestObj = pTestObj->getLine();
 	}
-	else if (pObj->isSlaveToPiece())
+	else if (pTestObj->isSlaveToPiece())
 	{
-		pObj = pObj->getPiece();
+		pTestObj = pTestObj->getPiece();
 	}
 	
 	GPoint * pItPoint = NULL;
@@ -516,7 +517,7 @@ bool MarqueeSelect::CheckObjInSelection( GObject * pObj, bool bFindAncestor/*=fa
 	for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end(); ++it)
 	{
 		pItObj = *it;
-		if (pItObj == pObj)
+		if (pItObj == pTestObj)
 		{
 			return true;
 		}
@@ -527,23 +528,41 @@ bool MarqueeSelect::CheckObjInSelection( GObject * pObj, bool bFindAncestor/*=fa
 
 		if (bFindAncestor)
 		{
-			if (pItObj->isAncestorOf(pObj))
+			if (pItObj->isAncestorOf(pTestObj))
 			{
 				return true;
+			}
+			if (bFindMerge)
+			{
+				if (pTestObj->isPoint())
+				{
+					GPoint * pTestPoint = (GPoint *)pTestObj;
+					list<GPoint *> * lstMerge = pTestPoint->getMergeWith();
+					if (!lstMerge->empty())
+					{
+						for (list<GPoint *>::iterator it=lstMerge->begin(); it!=lstMerge->end(); ++it)
+						{
+							if (pItObj->isAncestorOf(*it))
+							{
+								return true;
+							}
+						}
+					}
+				}
 			}
 		}
 		if (bFindUpperClass)
 		{
 			if (pItPoint)
 			{
-				if (pItPoint->getLine() == pObj)
+				if (pItPoint->getLine() == pTestObj)
 				{
 					return true;
 				}
 			}
 			if (pItLine)
 			{
-				if (pItLine->getPiece() == pObj)
+				if (pItLine->getPiece() == pTestObj)
 				{
 					return true;
 				}
@@ -553,9 +572,9 @@ bool MarqueeSelect::CheckObjInSelection( GObject * pObj, bool bFindAncestor/*=fa
 		{
 			if (pItPoint)
 			{
-				if (pObj->isPoint())
+				if (pTestObj->isPoint())
 				{
-					GPoint * pPoint = (GPoint *)pObj;
+					GPoint * pPoint = (GPoint *)pTestObj;
 					if (pPoint->isMergeWith(pItPoint))
 					{
 						return true;
@@ -569,14 +588,14 @@ bool MarqueeSelect::CheckObjInSelection( GObject * pObj, bool bFindAncestor/*=fa
 						{
 							if (bFindAncestor)
 							{
-								if ((*jt)->isAncestorOf(pObj))
+								if ((*jt)->isAncestorOf(pTestObj))
 								{
 									return true;
 								}
 							}
 							if (bFindUpperClass)
 							{
-								if ((*jt)->getLine() == pObj)
+								if ((*jt)->getLine() == pTestObj)
 								{
 									return true;
 								}
@@ -590,7 +609,7 @@ bool MarqueeSelect::CheckObjInSelection( GObject * pObj, bool bFindAncestor/*=fa
 		{
 			if (pItPoint)
 			{
-				if (pObj->isLine())
+				if (pTestObj->isLine())
 				{
 					GLine * pLine = (GLine *)pItLine;
 
@@ -610,23 +629,13 @@ void MarqueeSelect::DoMovePoint( GPoint * pPoint, float movedx_c, float movedy_c
 {
 	if (pPoint->isSlaveToLine())
 	{
-		DoMoveLine((GLine *)pPoint->getLine(), movedx_c, movedy_c, nMoveActionID);
+		DoMoveLine(pPoint->getLine(), movedx_c, movedy_c, nMoveActionID);
 	}
 	else
 	{
 		if (nomoveflag < MARQNOMOVE_POINT)
 		{
 			pPoint->CallMoveByOffset(movedx_c, movedy_c, true, nMoveActionID);
-			/*
-			if (pPoint->isHandlePoint())
-			{
-				GHandlePoint * pBindWith = ((GHandlePoint *)pPoint)->getBindWith();
-				if (pBindWith)
-				{
-					pBindWith->CallMoveByOffset(-movedx_c, -movedy_c, true, nMoveActionID);
-				}
-			}
-			*/
 		}
 	}
 }
@@ -699,6 +708,19 @@ void MarqueeSelect::OnDeleteNode( GObject * pDeletedObj )
 	}
 }
 
+bool MarqueeSelect::staticMIDCBLength(MarkingUI * pmui, bool bAccept)
+{
+	return MarqueeSelect::getInstance().MIDCBLength(pmui, bAccept);
+}
+bool MarqueeSelect::staticMIDCBAngle(MarkingUI * pmui, bool bAccept)
+{
+	return MarqueeSelect::getInstance().MIDCBAngle(pmui, bAccept);
+}
+bool MarqueeSelect::staticMIDCBOffset(MarkingUI * pmui, bool bAccept)
+{
+	return MarqueeSelect::getInstance().MIDCBOffset(pmui, bAccept);
+}
+
 void MarqueeSelect::BeginMove( float nowx, float nowy )
 {
 	GObjectManager::getInstance().BeginTryMove();
@@ -706,20 +728,208 @@ void MarqueeSelect::BeginMove( float nowx, float nowy )
 	{
 		ASSERT(pBeginObj);
 		pMarkingOffset = new MarkingOffset(pBeginObj, MARKFLAG_OFFSET);
+
 		pMarkingOffset->getMarkingUI(MARKFLAG_XOFFSET)->SetEditable(true);
 		pMarkingOffset->getMarkingUI(MARKFLAG_YOFFSET)->SetEditable(true);
+		pMarkingOffset->getMarkingUI(MARKFLAG_XOFFSET)->SetCallback(staticMIDCBOffset);
+		pMarkingOffset->getMarkingUI(MARKFLAG_YOFFSET)->SetCallback(staticMIDCBOffset);
 		pMarkingOffset->SetMoveOrigin(beginx_c, beginy_c);
+
 		MarkingManager::getInstance().EnableMarking(pMarkingOffset);
 	}
+
+	if (!pMarkingLine)
+	{
+		if (selectednodes.size() == 1)
+		{
+			ASSERT(pBeginObj);
+			bool bAnchor=false;
+			bool bStraightLine=true;
+			bool bHandle=false;
+			int nFlag = 0;
+			GLine * pLine = NULL;
+			if (pBeginObj->isAnchorPoint())
+			{
+				bAnchor = true;
+				pLine = pBeginObj->getLine();
+				ASSERT(pLine);
+				nFlag |= MARKFLAG_LENGTH;
+				if (!pLine->isStraightLine())
+				{
+					bStraightLine = false;
+				}
+				else
+				{
+					nFlag |= MARKFLAG_ANGLE;
+				}
+			}
+			else if (pBeginObj->isHandlePoint())
+			{
+				bHandle = true;
+				pLine = pBeginObj->getLine();
+				nFlag |= MARKFLAG_LENGTH;
+			}
+
+			if (pLine)
+			{
+				pMarkingLine = new MarkingLine(pLine, nFlag);
+
+				if (bAnchor)
+				{
+					if (bStraightLine)
+					{
+						pMarkingLine->getMarkingUI(MARKFLAG_ANGLE)->SetEditable(true);
+						pMarkingLine->getMarkingUI(MARKFLAG_ANGLE)->SetCallback(staticMIDCBAngle);
+					}
+				}
+				if (bAnchor || bHandle)
+				{
+					pMarkingLine->getMarkingUI(MARKFLAG_LENGTH)->SetEditable(true);
+					pMarkingLine->getMarkingUI(MARKFLAG_LENGTH)->SetCallback(staticMIDCBLength);
+				}
+
+				MarkingManager::getInstance().EnableMarking(pMarkingLine);
+			}
+		}
+
+	}
+
 	pMarkingOffset->SetNowPos(nowx, nowy);
 }
 
 void MarqueeSelect::EndMove()
 {
 	GObjectManager::getInstance().EndTryMove();
+	GObjectPicker * pgp = &GObjectPicker::getInstance();
 	if (pMarkingOffset)
 	{
 		MarkingManager::getInstance().DisableMarking(pMarkingOffset);
 		pMarkingOffset = NULL;
+		pgp->UnlockXAxis();
+		pgp->UnlockYAxis();
 	}
+	if (pMarkingLine)
+	{
+		MarkingManager::getInstance().DisableMarking(pMarkingLine);
+		pMarkingLine = NULL;
+		pgp->UnlockLength();
+		pgp->UnlockAngles();
+	}
+}
+
+bool MarqueeSelect::MIDCBLength( MarkingUI * pmui, bool bAccept )
+{
+	GObjectPicker * pgp = &GObjectPicker::getInstance();
+	if (pmui->IsValueLocked())
+	{
+		bool bOk;
+		float fLockedLength = pmui->getFloat(&bOk);
+		if (bOk)
+		{
+			GLine * pLine = pBeginObj->getLine();
+			PointF2D ptLineBegin = pLine->GetBeginPoint()->GetPointF2D();
+			pgp->SetLockOrigin(ptLineBegin.x, ptLineBegin.y);
+			if (pBeginObj->isHandlePoint())
+			{
+				GHandlePoint * pBeginHandle = pLine->GetBeginPoint()->GetHandle();
+				GHandlePoint * pEndHandle = pLine->GetEndPoint()->GetHandle();
+
+				GHandlePoint * pAnotherHandle = pBeginObj==pBeginHandle?pEndHandle:pBeginHandle;
+				GHandlePoint * pThisHandle = (GHandlePoint *)pBeginObj;
+
+				bool bRet = MathHelper::getInstance().FindNearestHandlePointForGivenBezierLength(fLockedLength, pAnotherHandle->GetAnchor()->GetPointF2D(), pAnotherHandle->GetPointF2D(), pThisHandle->GetAnchor()->GetPointF2D(), 0, 0, NULL, NULL, true);
+				if (!bRet)
+				{
+					pgp->UnlockLength();
+					return false;
+				}
+				else
+				{
+					pgp->SetLockLength(fLockedLength, pThisHandle);
+				}
+			}
+			else
+			{
+				pgp->SetLockLength(fLockedLength);
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		pgp->UnlockLength();
+	}
+	return true;
+}
+
+bool MarqueeSelect::MIDCBAngle( MarkingUI * pmui, bool bAccept )
+{
+	GObjectPicker * pgp = &GObjectPicker::getInstance();
+	if (pmui->IsValueLocked())
+	{
+		bool bOk;
+		float fAngle = pmui->getFloat(&bOk);
+		if (bOk)
+		{
+			int nLockedAngle = fAngle * ANGLEBASE_90/90;
+			PointF2D ptLineBegin = pBeginObj->getLine()->GetBeginPoint()->GetPointF2D();
+			pgp->SetLockOrigin(ptLineBegin.x, ptLineBegin.y);
+			pgp->SetLockAngle(nLockedAngle);
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		pgp->UnlockAngles();
+	}
+	return true;
+}
+
+bool MarqueeSelect::MIDCBOffset( MarkingUI * pmui, bool bAccept )
+{
+	bool bxoffset = true;
+	GObjectPicker * pgp = &GObjectPicker::getInstance();
+	if (pmui->getTypeFlag() == MARKFLAG_YOFFSET)
+	{
+		bxoffset = false;
+	}
+
+	if (pmui->IsValueLocked())
+	{
+		bool bOk;
+		float fLockedVal = pmui->getFloat(&bOk);
+		if (bOk)
+		{
+			if (bxoffset)
+			{
+				pgp->SetLockYAxis(fLockedVal+beginx_c);
+			}
+			else
+			{
+				pgp->SetLockXAxis(fLockedVal+beginy_c);
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		if (bxoffset)
+		{
+			pgp->UnlockYAxis();
+		}
+		else
+		{
+			pgp->UnlockXAxis();
+		}
+	}
+	return true;
 }

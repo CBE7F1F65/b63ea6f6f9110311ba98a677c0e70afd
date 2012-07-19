@@ -9,7 +9,7 @@ QTUI_MarkingFloating_Widget::QTUI_MarkingFloating_Widget(QWidget *parent) :
     ui(new Ui::QTUI_MarkingFloating_Widget)
 {
 	ui->setupUi(this);
-	ASSERT(true);
+	ASSERT(false);
 }
 
 QTUI_MarkingFloating_Widget::QTUI_MarkingFloating_Widget(MarkingUI * p, QWidget *parent) :
@@ -49,13 +49,9 @@ void QTUI_MarkingFloating_Widget::MoveTo( float x, float y )
 	x -= w/2;
 	y -= h/2;
 
-	if (fabsf(pt.x()-x) < 15)
+	if (fabsf(pt.y()-y)<h*1.5f)
 	{
-		x = pt.x()+15;
-	}
-	if (fabsf(pt.y()-y)<15)
-	{
-		y = pt.y()+15;
+		y = pt.y()+h*1.5f;
 	}
 	if (x < 0)
 	{
@@ -73,6 +69,7 @@ void QTUI_MarkingFloating_Widget::MoveTo( float x, float y )
 	{
 		y = pParentWidget->height()-h;
 	}
+
 	this->move(x, y);
 }
 

@@ -81,7 +81,7 @@ void QTUI_History_Table::ClearLaterHistory(int ndelete)
     int laterrows = rowCount()-nowrow-1;
     if (ndelete > laterrows)
     {
-        Q_ASSERT(true);
+        Q_ASSERT(false);
         ndelete = laterrows;
     }
     for (int i=0; i<ndelete; i++)
@@ -99,7 +99,7 @@ void QTUI_History_Table::ClearPreviousHistory(int ndelete)
     int nowrow = this->currentRow();
     if (ndelete > nowrow)
     {
-        Q_ASSERT(true);
+        Q_ASSERT(false);
         ndelete = nowrow;
     }
     for (int i=0; i<ndelete; i++)

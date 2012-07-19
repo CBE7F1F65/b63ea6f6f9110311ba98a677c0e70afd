@@ -33,6 +33,15 @@
 #define GOBJTRYSTATE_MOVE_REQUIREUPDATE	0x01
 #define GOBJTRYSTATE_MOVE_AFTERUPDATE	0x02
 
+class GPoint;
+class GAnchorPoint;
+class GHandlePoint;
+class GLine;
+class GStraightLine;
+class GBezierLine;
+class GLayer;
+class GPiece;
+
 class GObject
 {
 public:
@@ -80,7 +89,7 @@ public:
 	// Should be derived:
 	virtual bool canMove(){return false;};
 public:
-	virtual bool MoveTo(float newx, float newy, bool bTry, int moveActionID=-1){DASSERT(true); return false;};
+	virtual bool MoveTo(float newx, float newy, bool bTry, int moveActionID=-1){DASSERT(false); return false;};
 	virtual bool CallMoveTo(float newx, float newy, bool bTry, int moveActionID=-1){return MoveTo(newx, newy, bTry, moveActionID);};
 	virtual bool CallMoveByOffset(float xoffset, float yoffset, bool bTry, int moveActionID=-1){return CallMoveTo(getX()+xoffset, getY()+yoffset, bTry, moveActionID);};
 	int nMoveActionID;
@@ -90,15 +99,15 @@ public:
 	virtual bool isLine(){return false;};
 	virtual bool isPoint(){return false;};
 	virtual bool isPiece(){return false;};
-	virtual GObject * getLine(){return NULL;};
-	virtual GObject * getPiece(){return NULL;};
+	virtual GLine * getLine(){return NULL;};
+	virtual GPiece * getPiece(){return NULL;};
 	virtual GObject * getEntity(){return this;};
 	// A point represent the position
 	virtual bool isRepresentablePoint(){return false;};
 	virtual bool isRepresentableLine(){return false;};
 	virtual bool isRepresentablePiece(){return false;};
-	virtual float getX(){DASSERT(true); return 0;};
-	virtual float getY(){DASSERT(true); return 0;};
+	virtual float getX(){DASSERT(false); return 0;};
+	virtual float getY(){DASSERT(false); return 0;};
 	virtual bool isAttributeNode(){return false;};
 	virtual bool isModifyParent(){return true;};
 	virtual bool isSlaveToLine(){return false;};
@@ -111,10 +120,10 @@ public:
 	virtual bool canBeMergedWith(){return false;};
 	virtual bool canBeClingTo(){return false;};
 
-	virtual GObject * GetLayer(bool bIncludingSelf=true);
-	virtual GObject * GetContainerLayer(){return GetLayer(false);};
+	virtual GLayer * GetLayer(bool bIncludingSelf=true);
+	virtual GLayer * GetContainerLayer(){return GetLayer(false);};
 	virtual GObject * GetBase();
-	virtual GObject * GetNonAttributeObj();
+	virtual GObject * GetNonAttributeParentObj();
 	// ToDo!!
 	virtual bool isSelected(){return false;};
 

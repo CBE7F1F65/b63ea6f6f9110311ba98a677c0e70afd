@@ -231,11 +231,15 @@ public:
 	float CalculateProportion( int index=0 );
 
 	void SetLockOrigin(float x, float y);
-	void SetLockLength(float fLength);
+	void SetLockLength(float fLength, GHandlePoint * pHandle=NULL);
 	void SetLockAngle(int nAngle){SetLockAngles(1, &nAngle);};
 	void SetLockAngles(int nLocks, int * pAngles);
 	void UnlockLength();
 	void UnlockAngles();
+	void SetLockXAxis(float y);
+	void SetLockYAxis(float x);
+	void UnlockXAxis();
+	void UnlockYAxis();
 
 	void SetLockSplitLine(int splitlocktype, float fval);
 	void ClearSplitMarking();
@@ -245,7 +249,10 @@ public:
 	bool IsAngleInBetween( int angle, int nBeginAngle, int nMidAngle, int nNextAngle );
 
 	void AddSplitUI(GObject * pObj);
+
 	bool MIDCBSplit( MarkingUI * pmui, bool bAccept );
+	static bool staticMIDCBSplit( MarkingUI * pmui, bool bAccept );
+
 private:
 	list<PickerInterestPointInfo> pipinfo;
 	bool bCheckMouseDown;
@@ -253,16 +260,25 @@ private:
 
 	int nOnLine;
 
-	float lockOriginX_c;
-	float lockOriginY_c;
+
+
+	float fLockOriginX_c;
+	float fLockOriginY_c;
 
 	float fLockLength;
 	bool bLockLength;
+	GHandlePoint * pLockLengthHandle;
+	GHandlePoint * pLockLengthAnotherHandle;
 
 	int * pLockAngles;
 	int numLockAngles;
 	int nCurrentLockAngleIndex;
 	PointF2D ptCurrentLockAngleDir;
+
+	float fLockXAxis_y;
+	bool bLockXAxis;
+	float fLockYAxis_x;
+	bool bLockYAxis;
 
 	int nSplitLockType;
 	float fSplitValue;

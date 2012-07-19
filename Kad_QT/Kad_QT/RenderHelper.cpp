@@ -240,7 +240,7 @@ void RenderHelper::EndRenderTar()
 /*
 void RenderHelper::RenderBezier( PointF2D pb, PointF2D pbh, PointF2D peh, PointF2D pe, DWORD col/ *=0* /, float precisemul/ *=1.0f* / )
 {
-	ASSERT(true);
+	ASSERT(false);
 	// Do Not Use
 
 	// Anchor: p1, p4
@@ -451,7 +451,7 @@ void RenderHelper::RenderArc_S( float x, float y, float r, int beginangle, int e
 			int angledotted = ANGLE((float)_RHDOTTEDLINE_SPACE)/r;
 			if (!angledotted)
 			{
-				DASSERT(true);
+				DASSERT(false);
 				angledotted = 1;
 			}
 			RenderPoint_S(pqlast.x, pqlast.y, col);

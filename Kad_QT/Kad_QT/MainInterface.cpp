@@ -183,9 +183,7 @@ bool MainInterface::Frame()
 
 	lastmousevwheel = mousevwheel;
 	mousevwheel = hge->Input_GetMouseWheel();
-
-	DoCheckFloatCommand();
-
+	
 	Command * pcommand = &Command::getInstance();
 
 	GUICoordinate * pguic = &GUICoordinate::getInstance();
@@ -452,12 +450,12 @@ int MainInterface::OnCommandWithParam( int comm, int firsttype, ... )
 // 				}
 // 				else
 // 				{
-// 					DASSERT(true);
+// 					DASSERT(false);
 // 				}
 			}
 			break;
 		default:
-			ASSERT(true);
+			ASSERT(false);
 		}
 		vait = (int)va_arg(ap, int);
 	}
@@ -499,7 +497,7 @@ int MainInterface::OnCommandSingleParamSubCommand( int ssc )
 	}
 	else
 	{
-		DASSERT(true);
+		DASSERT(false);
 	}
 	return 0;
 }
@@ -616,155 +614,6 @@ void MainInterface::SetMainViewActive( bool _bActive, int reason )
 			toactivedelay = MV_ACTIVEDELAY;
 		}
 		inactivereason = 0;
-	}
-}
-
-void MainInterface::DoCheckFloatCommand()
-{
-	if (!IsMainViewActive())
-	{
-		return;
-	}
-
-	WPARAM vk=0;
-	int dik=-1;
-
-#define _SETVKBYKEY(DIK)	\
-	if (hge->Input_GetDIKey(DIK, DIKEY_DOWN))	\
-	{	\
-		vk = i;	\
-		dik = DIK;	\
-		break;	\
-	}	\
-	i++;
-
-	do
-	{
-		int i=0x41;
-		_SETVKBYKEY(DIK_A);
-		_SETVKBYKEY(DIK_B);
-		_SETVKBYKEY(DIK_C);
-		_SETVKBYKEY(DIK_D);
-		_SETVKBYKEY(DIK_E);
-		_SETVKBYKEY(DIK_F);
-		_SETVKBYKEY(DIK_G);
-		_SETVKBYKEY(DIK_H);
-		_SETVKBYKEY(DIK_I);
-		_SETVKBYKEY(DIK_J);
-		_SETVKBYKEY(DIK_K);
-		_SETVKBYKEY(DIK_L);
-		_SETVKBYKEY(DIK_M);
-		_SETVKBYKEY(DIK_N);
-		_SETVKBYKEY(DIK_O);
-		_SETVKBYKEY(DIK_P);
-		_SETVKBYKEY(DIK_Q);
-		_SETVKBYKEY(DIK_R);
-		_SETVKBYKEY(DIK_S);
-		_SETVKBYKEY(DIK_T);
-		_SETVKBYKEY(DIK_U);
-		_SETVKBYKEY(DIK_V);
-		_SETVKBYKEY(DIK_W);
-		_SETVKBYKEY(DIK_X);
-		_SETVKBYKEY(DIK_Y);
-		_SETVKBYKEY(DIK_Z);
-
-		i=0x30;
-		_SETVKBYKEY(DIK_0);
-		_SETVKBYKEY(DIK_1);
-		_SETVKBYKEY(DIK_2);
-		_SETVKBYKEY(DIK_3);
-		_SETVKBYKEY(DIK_4);
-		_SETVKBYKEY(DIK_5);
-		_SETVKBYKEY(DIK_6);
-		_SETVKBYKEY(DIK_7);
-		_SETVKBYKEY(DIK_8);
-		_SETVKBYKEY(DIK_9);
-
-		i=VK_NUMPAD0;
-		_SETVKBYKEY(DIK_NUMPAD0);
-		_SETVKBYKEY(DIK_NUMPAD1);
-		_SETVKBYKEY(DIK_NUMPAD2);
-		_SETVKBYKEY(DIK_NUMPAD3);
-		_SETVKBYKEY(DIK_NUMPAD4);
-		_SETVKBYKEY(DIK_NUMPAD5);
-		_SETVKBYKEY(DIK_NUMPAD6);
-		_SETVKBYKEY(DIK_NUMPAD7);
-		_SETVKBYKEY(DIK_NUMPAD8);
-		_SETVKBYKEY(DIK_NUMPAD9);
-
-		i=VK_MULTIPLY;
-		_SETVKBYKEY(DIK_MULTIPLY);
-		_SETVKBYKEY(DIK_ADD);
-		i=VK_SUBTRACT;
-		_SETVKBYKEY(DIK_SUBTRACT);
-		_SETVKBYKEY(DIK_DECIMAL);
-		_SETVKBYKEY(DIK_DIVIDE);
-
-		i=VK_OEM_1;
-		_SETVKBYKEY(DIK_SEMICOLON);
-		_SETVKBYKEY(DIK_EQUALS);
-		_SETVKBYKEY(DIK_COMMA);
-		_SETVKBYKEY(DIK_MINUS);
-		_SETVKBYKEY(DIK_PERIOD);
-		_SETVKBYKEY(DIK_SLASH);
-		_SETVKBYKEY(DIK_GRAVE);
-
-		i=VK_OEM_4;
-		_SETVKBYKEY(DIK_LBRACKET);
-		_SETVKBYKEY(DIK_BACKSLASH);
-		_SETVKBYKEY(DIK_RBRACKET);
-		_SETVKBYKEY(DIK_APOSTROPHE);
-	} while(false);
-
-	bool bctrl=false;
-	bool bshift=false;
-	bool balt=false;
-
-	if (hge->Input_GetDIKey(DIK_LCONTROL) || hge->Input_GetDIKey(DIK_RCONTROL))
-	{
-		bctrl = true;
-	}
-	if (hge->Input_GetDIKey(DIK_LSHIFT) || hge->Input_GetDIKey(DIK_RSHIFT))
-	{
-		bshift = true;
-	}
-	if (hge->Input_GetDIKey(DIK_LMENU) || hge->Input_GetDIKey(DIK_RMENU))
-	{
-		balt = true;
-	}
-
-	if (bctrl)
-	{
-		if (dik == DIK_Z)
-		{
-			if (!balt)
-			{
-				if (!bshift)
-				{
-					Command::getInstance().CreateUnDoCommandCommit();
-//					Command::getInstance().CreateCommandCommit(COMM_UNDO);
-//					Command::getInstance().DoUnDo();
-				}
-				else
-				{
-					Command::getInstance().CreateReDoCommandCommit();
-//					Command::getInstance().CreateCommandCommit(COMM_REDO);
-//					Command::getInstance().DoReDo();
-				}
-			}
-		}
-		else if (dik == DIK_Y)
-		{
-			if (!balt && !bshift)
-            {
-                Command::getInstance().CreateReDoCommandCommit();
-			}
-		}
-	}
-
-	if (vk && !bctrl && !balt)
-	{
-//		parentview->GetMainFrame()->CallEnableFloatCommand(vk);
 	}
 }
 

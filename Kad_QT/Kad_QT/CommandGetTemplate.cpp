@@ -72,7 +72,7 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 		return &TestCommand::getInstance();
 #endif //DEBUGTEST
 	default:
-		ASSERT(true);
+		ASSERT(false);
 	}
 	return NULL;
 }

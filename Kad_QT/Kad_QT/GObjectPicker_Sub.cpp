@@ -227,12 +227,29 @@ bool GObjectPicker::SubFindPIPPIP( PickerInterestPointInfo * pPIP1, PickerIntere
 
 bool GObjectPicker::SubFindLengthLockX( float y )
 {
-	if (fabsf(y-lockOriginY_c) > fLockLength)
+	if (fabsf(y-fLockOriginY_c) > fLockLength)
 	{
 		return false;
 	}
+	if (pLockLengthHandle)
+	{
+		float tx, ty;
+		bool bret = MathHelper::getInstance().FindNearestHandlePointForGivenBezierLength_TwoPoint(
+			fLockLength, pLockLengthAnotherHandle->GetAnchor()->GetPointF2D(), pLockLengthAnotherHandle->GetPointF2D(),
+			pLockLengthHandle->GetPointF2D(),
+			PointF2D(pickx_c, y-snaprange_c), PointF2D(pickx_c, y+snaprange_c),
+			&tx, &ty);
+
+		if (bret)
+		{
+			pickx_c = tx;
+			picky_c = ty;
+			return true;
+		}
+		return false;
+	}
 	PointF2D ptIntersection[2];
-	PointF2D ptC(lockOriginX_c, lockOriginY_c);
+	PointF2D ptC(fLockOriginX_c, fLockOriginY_c);
 	PointF2D ptNow(pickx_c, picky_c);
 	MathHelper * pmh = &MathHelper::getInstance();
 	bool bIntersect = pmh->LineIntersectCircle(PointF2D(0, y), PointF2D(1, 0), ptC, fLockLength, ptIntersection);
@@ -256,7 +273,7 @@ bool GObjectPicker::SubFindAnglesLockX( float y )
 {
 	MathHelper * pmh = &MathHelper::getInstance();
 	PointF2D ptIntersection;
-	PointF2D ptC(lockOriginX_c, lockOriginY_c);
+	PointF2D ptC(fLockOriginX_c, fLockOriginY_c);
 	bool bIntersect = pmh->LineIntersectLine(PointF2D(0, y), PointF2D(1, 0), ptC, ptCurrentLockAngleDir, &ptIntersection);
 	if (bIntersect)
 	{
@@ -269,12 +286,29 @@ bool GObjectPicker::SubFindAnglesLockX( float y )
 
 bool GObjectPicker::SubFindLengthLockY( float x )
 {
-	if (fabsf(x-lockOriginX_c) > fLockLength)
+	if (fabsf(x-fLockOriginX_c) > fLockLength)
 	{
 		return false;
 	}
+	if (pLockLengthHandle)
+	{
+		float tx, ty;
+		bool bret = MathHelper::getInstance().FindNearestHandlePointForGivenBezierLength_TwoPoint(
+			fLockLength, pLockLengthAnotherHandle->GetAnchor()->GetPointF2D(), pLockLengthAnotherHandle->GetPointF2D(),
+			pLockLengthHandle->GetPointF2D(),
+			PointF2D(x-snaprange_c, picky_c), PointF2D(x+snaprange_c, picky_c),
+			&tx, &ty);
+
+		if (bret)
+		{
+			pickx_c = tx;
+			picky_c = ty;
+			return true;
+		}
+		return false;
+	}
 	PointF2D ptIntersection[2];
-	PointF2D ptC(lockOriginX_c, lockOriginY_c);
+	PointF2D ptC(fLockOriginX_c, fLockOriginY_c);
 	PointF2D ptNow(pickx_c, picky_c);
 	MathHelper * pmh = &MathHelper::getInstance();
 	bool bIntersect = pmh->LineIntersectCircle(PointF2D(x, 0), PointF2D(0, 1), ptC, fLockLength, ptIntersection);
@@ -298,7 +332,7 @@ bool GObjectPicker::SubFindAnglesLockY( float x )
 {
 	MathHelper * pmh = &MathHelper::getInstance();
 	PointF2D ptIntersection;
-	PointF2D ptC(lockOriginX_c, lockOriginY_c);
+	PointF2D ptC(fLockOriginX_c, fLockOriginY_c);
 	bool bIntersect = pmh->LineIntersectLine(PointF2D(x, 0), PointF2D(0, 1), ptC, ptCurrentLockAngleDir, &ptIntersection);
 	if (bIntersect)
 	{
@@ -311,10 +345,33 @@ bool GObjectPicker::SubFindAnglesLockY( float x )
 
 bool GObjectPicker::SubFindLineLengthLock( GLine * pLine, int iIndex )
 {
+	if (pLockLengthHandle)
+	{
+		return false;
+	}
+
+	if (pLockLengthHandle)
+	{
+		float tx, ty;
+		bool bret = MathHelper::getInstance().FindNearestHandlePointForGivenBezierLength_TwoPoint(
+			fLockLength, pLockLengthAnotherHandle->GetAnchor()->GetPointF2D(), pLockLengthAnotherHandle->GetPointF2D(),
+			pLockLengthHandle->GetPointF2D(),
+			pLine->GetBeginPoint()->GetPointF2D(), pLine->GetEndPoint()->GetPointF2D(),		// Can be wrong
+			&tx, &ty);
+
+		if (bret)
+		{
+			pickx_c = tx;
+			picky_c = ty;
+			return true;
+		}
+		return false;
+	}
+
 	list<PointF2D>pts;
 	MathHelper * pmh = &MathHelper::getInstance();
-	int quadrant = pmh->GetQuadrant(pickx_c, picky_c, lockOriginX_c, lockOriginY_c);
-	pFakeLine[iIndex]->SetPosByQuarterCircle(lockOriginX_c, lockOriginY_c, fLockLength, quadrant);
+	int quadrant = pmh->GetQuadrant(pickx_c, picky_c, fLockOriginX_c, fLockOriginY_c);
+	pFakeLine[iIndex]->SetPosByQuarterCircle(fLockOriginX_c, fLockOriginY_c, fLockLength, quadrant);
 
 	if (pLine->CheckIntersectWithLineObj(pFakeLine[iIndex], &pts))
 	{
@@ -327,9 +384,13 @@ bool GObjectPicker::SubFindLineLengthLock( GLine * pLine, int iIndex )
 
 bool GObjectPicker::SubFindLineAnglesLock( GLine * pLine, int iIndex )
 {
+	if (pLockLengthHandle)
+	{
+		return false;
+	}
 	MathHelper * pmh = &MathHelper::getInstance();
 	PointF2D ptIntersection;
-	PointF2D ptC(lockOriginX_c, lockOriginY_c);
+	PointF2D ptC(fLockOriginX_c, fLockOriginY_c);
 	float s;
 	bool bIntersect = pmh->LineIntersectLine(pLine->GetBeginPoint()->GetPointF2D(), pLine->GetTangentPointF2D(0), ptC, ptCurrentLockAngleDir, &ptIntersection, &s);
 	if (bIntersect && s >= 0.0f && s <= 1.0f)
@@ -348,8 +409,26 @@ bool GObjectPicker::SubFindPIPLengthLock( PickerInterestPointInfo * pPIP )
 
 	list<PointF2D>pts;
 	MathHelper * pmh = &MathHelper::getInstance();
-	int quadrant = pmh->GetQuadrant(pickx_c, picky_c, lockOriginX_c, lockOriginY_c);
-	pFakeLine[1]->SetPosByQuarterCircle(lockOriginX_c, lockOriginY_c, fLockLength, quadrant);
+
+	if (pLockLengthHandle)
+	{
+		float tx, ty;
+		bool bret = pmh->FindNearestHandlePointForGivenBezierLength_TwoPoint(
+			fLockLength, pLockLengthAnotherHandle->GetAnchor()->GetPointF2D(), pLockLengthAnotherHandle->GetPointF2D(),
+			pLockLengthHandle->GetPointF2D(),
+			pFakeLine[0]->GetBeginPoint()->GetPointF2D(), pFakeLine[0]->GetEndPoint()->GetPointF2D(),
+			&tx, &ty);
+		if (bret)
+		{
+			pickx_c = tx;
+			picky_c = ty;
+			return true;
+		}
+		return false;
+	}
+
+	int quadrant = pmh->GetQuadrant(pickx_c, picky_c, fLockOriginX_c, fLockOriginY_c);
+	pFakeLine[1]->SetPosByQuarterCircle(fLockOriginX_c, fLockOriginY_c, fLockLength, quadrant);
 
 	if (pFakeLine[0]->CheckIntersectWithLineObj(pFakeLine[1], &pts))
 	{
@@ -366,7 +445,7 @@ bool GObjectPicker::SubFindPIPAnglesLock( PickerInterestPointInfo * pPIP )
 
 	MathHelper * pmh = &MathHelper::getInstance();
 	PointF2D ptIntersection;
-	PointF2D ptC(lockOriginX_c, lockOriginY_c);
+	PointF2D ptC(fLockOriginX_c, fLockOriginY_c);
 	float s;
 	bool bIntersect = pmh->LineIntersectLine(pFakeLine[0]->GetBeginPoint()->GetPointF2D(), pFakeLine[0]->GetTangentPointF2D(0), ptC, ptCurrentLockAngleDir, &ptIntersection, &s);
 	if (bIntersect && s >= 0.0f && s <= 1.0f)

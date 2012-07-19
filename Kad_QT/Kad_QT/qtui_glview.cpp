@@ -256,6 +256,18 @@ bool QTUI_GLView::eventFilter(QObject *target, QEvent *e)
     return QGLWidget::eventFilter(target, e);
 }
 
+void QTUI_GLView::focusInEvent( QFocusEvent * e )
+{
+	QGLWidget::focusInEvent(e);
+	setCursor(Qt::BlankCursor);
+}
+
+void QTUI_GLView::focusOutEvent( QFocusEvent * e )
+{
+	QGLWidget::focusOutEvent(e);
+	setCursor(Qt::ArrowCursor);
+}
+
 void QTUI_GLView::OnFrame()
 {
 	if (QApplication::mouseButtons() & Qt::LeftButton)

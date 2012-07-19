@@ -22,8 +22,8 @@ public:
 	virtual bool CallMoveTo( float newx, float newy, bool bTry, int moveActionID=-1 );
 	virtual bool isPoint(){return true;};
 
-	virtual GObject * getLine();
-	virtual GObject * getPiece();
+	virtual GLine * getLine();
+	virtual GPiece * getPiece();
 
 	virtual const char * getDisplayName();
 
@@ -118,7 +118,7 @@ public:
 
 	virtual bool canBeMergedWith(){return true;};
 
-	virtual GObject * getEntity(){return getLine();};
+	virtual GObject * getEntity(){return (GObject *)getLine();};
 
 	virtual bool isMidPoint(){return true;};
 	virtual bool isModifyParent(){return false;};
@@ -138,10 +138,10 @@ public:
 	GHandlePoint(GObject * parent, float x, float y);
 	virtual ~GHandlePoint();
 
-	virtual GObject * getEntity(){return getLine();};
+	virtual GObject * getEntity(){return (GObject *)getLine();};
 
 	virtual void OnRender(int iHighlightLevel/* =0 */);
-	GObject * GetAnchor(){return getParent();};
+	GAnchorPoint * GetAnchor(){return (GAnchorPoint *)getParent();};
 	virtual bool isHandlePoint(){return true;};
 
 	virtual bool MoveTo( float newx, float newy, bool bTry, int moveActionID=-1 );
@@ -167,7 +167,7 @@ public:
 
 	virtual bool canAttach(){return true;};
 	virtual bool canBeMergedWith(){return true;};
-	virtual GObject * getEntity(){return getLine();};
+	virtual GObject * getEntity(){return (GObject *)getLine();};
 
 	virtual bool MoveTo( float newx, float newy, bool bTry, int moveActionID=-1 );
 	virtual const char * getDisplayName();

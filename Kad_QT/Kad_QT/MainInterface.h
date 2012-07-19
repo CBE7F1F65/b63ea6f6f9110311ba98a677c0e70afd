@@ -78,8 +78,6 @@ public:
 	void DoResizeWindow();
 	void DoUpdateFPS();
 	void DoUpdateStatusInfo();
-	
-	void DoCheckFloatCommand();
 
 	bool HGEThreadFunc();
 

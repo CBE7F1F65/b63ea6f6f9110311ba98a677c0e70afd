@@ -14,6 +14,9 @@ class QTUI_CommandDockable : public QWidget
 public:
     explicit QTUI_CommandDockable(QWidget *parent = 0);
     ~QTUI_CommandDockable();
+
+	virtual void enterEvent(QEvent * e);
+	virtual void leaveEvent(QEvent * e);
     
 public slots:
 

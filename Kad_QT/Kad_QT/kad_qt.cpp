@@ -4,6 +4,7 @@
 #include "StringManager.h"
 #include "MainInterface.h"
 #include "qmaininterface.h"
+#include "Command.h"
 
 #define _UISCROLL_FAR	1000
 #define _UISCROLL_PAGE	100
@@ -24,6 +25,14 @@ Kad_QT::Kad_QT(QWidget *parent, Qt::WFlags flags)
     QSettings settings(psm->GetRegistryKeyName(), psm->GetAppIDName());
     restoreGeometry(settings.value(psm->GetRegistryGeometryName()).toByteArray());
     restoreState(settings.value(psm->GetRegistryWindowStateName()).toByteArray());
+
+
+	QShortcut * undoShortcut = new QShortcut(QKeySequence(tr("Ctrl+Z", "Edit|Undo")), this);
+	QShortcut * redoShortcut_1 = new QShortcut(QKeySequence(tr("Ctrl+Shift+Z", "Edit|Redo")), this);
+	QShortcut * redoShortcut_2 = new QShortcut(QKeySequence(tr("Ctrl+Y", "Edit|Redo")), this);
+	connect(undoShortcut, SIGNAL(activated()), this, SLOT(SLT_UndoShortcutActivated()));
+	connect(redoShortcut_1, SIGNAL(activated()), this, SLOT(SLT_RedoShortcutActivated()));
+	connect(redoShortcut_2, SIGNAL(activated()), this, SLOT(SLT_RedoShortcutActivated()));
 
     this->installEventFilter(this);
 }
@@ -50,4 +59,14 @@ bool Kad_QT::eventFilter(QObject *target, QEvent *e)
 void Kad_QT::on_action_Command_Line_triggered()
 {
     MainInterface::getInstance().OnCommand(COMM_LINE);
+}
+
+void Kad_QT::SLT_UndoShortcutActivated()
+{
+	Command::getInstance().CreateUnDoCommandCommit();
+}
+
+void Kad_QT::SLT_RedoShortcutActivated()
+{
+	Command::getInstance().CreateReDoCommandCommit();
 }

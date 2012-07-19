@@ -20,6 +20,9 @@ protected:
 private slots:
     void on_action_Command_Line_triggered();
 
+	void SLT_UndoShortcutActivated();
+	void SLT_RedoShortcutActivated();
+
 private:
 	Ui::Kad_QTClass ui;
 };

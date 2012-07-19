@@ -407,7 +407,7 @@ bool Command::DoUnDoReparentNode( int objid, int oparentid, int afterid )
 	else
 	{
 		// ToDo!
-		ASSERT(true);
+		ASSERT(false);
 	}
 
 	return true;

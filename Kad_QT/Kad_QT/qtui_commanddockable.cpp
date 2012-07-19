@@ -15,3 +15,13 @@ QTUI_CommandDockable::~QTUI_CommandDockable()
 {
     delete ui;
 }
+
+void QTUI_CommandDockable::enterEvent( QEvent * e )
+{
+	ui->plainTextEdit->setFocus();
+}
+
+void QTUI_CommandDockable::leaveEvent( QEvent * e )
+{
+	QMainInterface::getInstance().GetPGLView()->setFocus();
+}

@@ -20,7 +20,12 @@ GObjectPicker::GObjectPicker(void)
 		pFakeLine[i] = new GBezierLine(&(GObjectManager::getInstance().fakebasenode), PointF2D(0, 0), PointF2D(0, 0));
 	}
 
+	bLockXAxis = false;
+	bLockYAxis = false;
+
 	bLockLength = false;
+	pLockLengthHandle = NULL;
+	pLockLengthAnotherHandle = NULL;
 	numLockAngles = 0;
 	nCurrentLockAngleIndex = 0;
 	pLockAngles = NULL;
@@ -130,20 +135,62 @@ void GObjectPicker::AdjustPositionToLocks()
 		nOnLine = GOPONLINE_MAX;
 
 	}
-	else
+	if (bLockXAxis)
 	{
-		if (bLockLength)
+		if (nOnLine < GOPONLINE_MAX)
 		{
-			int angle = MathHelper::getInstance().GetLineAngle(PointF2D(lockOriginX_c, lockOriginY_c), PointF2D(pickx_c, picky_c));
-			pickx_c = lockOriginX_c+fLockLength*cost(angle);
-			picky_c = lockOriginY_c+fLockLength*sint(angle);
-
-			snappedstate |= GOPSNAPPED_LENGTHLOCK;
+			picky_c = fLockXAxis_y;
+			snappedstate |= GOPSNAPPED_XAXIS;
 			nOnLine++;
 		}
-		if (numLockAngles)
+	}
+	if (bLockYAxis)
+	{
+		if (nOnLine < GOPONLINE_MAX)
 		{
-			int angle = MathHelper::getInstance().GetLineAngle(PointF2D(lockOriginX_c, lockOriginY_c), PointF2D(pickx_c, picky_c));
+			pickx_c = fLockYAxis_x;
+			snappedstate |= GOPSNAPPED_YAXIS;
+			nOnLine++;
+		}
+	}
+	if (bLockLength)
+	{
+		if (nOnLine < GOPONLINE_MAX)
+		{
+			if (pLockLengthHandle)
+			{
+				GLine * pLine = pLockLengthHandle->getLine();
+				float tx, ty;
+				bool bRet = MathHelper::getInstance().FindNearestHandlePointForGivenBezierLength(fLockLength, pLockLengthAnotherHandle->GetAnchor()->GetPointF2D(), pLockLengthAnotherHandle->GetPointF2D(), pLockLengthHandle->GetAnchor()->GetPointF2D(), pickx_c, picky_c, &tx, &ty);
+				if (bRet)
+				{
+					pickx_c = tx;
+					picky_c = ty;
+
+					snappedstate |= GOPSNAPPED_LENGTHLOCK;
+					nOnLine++;
+				}
+				else
+				{
+//					DASSERT(false);
+				}
+			}
+			else
+			{
+				int angle = MathHelper::getInstance().GetLineAngle(PointF2D(fLockOriginX_c, fLockOriginY_c), PointF2D(pickx_c, picky_c));
+				pickx_c = fLockOriginX_c+fLockLength*cost(angle);
+				picky_c = fLockOriginY_c+fLockLength*sint(angle);
+
+				snappedstate |= GOPSNAPPED_LENGTHLOCK;
+				nOnLine++;
+			}
+		}
+	}
+	if (numLockAngles)
+	{
+		if (nOnLine < GOPONLINE_MAX)
+		{
+			int angle = MathHelper::getInstance().GetLineAngle(PointF2D(fLockOriginX_c, fLockOriginY_c), PointF2D(pickx_c, picky_c));
 			// Angle: [-pi, pi];
 
 			nCurrentLockAngleIndex = -1;
@@ -188,23 +235,21 @@ void GObjectPicker::AdjustPositionToLocks()
 			{
 				if (bLockLength)
 				{
-					pickx_c = lockOriginX_c+fLockLength*ptCurrentLockAngleDir.x;//cost(pLockAngles[nCurrentLockAngleIndex]);
-					picky_c = lockOriginY_c+fLockLength*ptCurrentLockAngleDir.y;//sint(pLockAngles[nCurrentLockAngleIndex]);
+					pickx_c = fLockOriginX_c+fLockLength*ptCurrentLockAngleDir.x;//cost(pLockAngles[nCurrentLockAngleIndex]);
+					picky_c = fLockOriginY_c+fLockLength*ptCurrentLockAngleDir.y;//sint(pLockAngles[nCurrentLockAngleIndex]);
 				}
 				else
 				{
 					float tx;
 					float ty;
-					if (MathHelper::getInstance().FindPerpendicularPoint(pickx_c, picky_c, lockOriginX_c, lockOriginY_c, pLockAngles[nCurrentLockAngleIndex], &tx, &ty))
+					if (MathHelper::getInstance().FindPerpendicularPoint(pickx_c, picky_c, fLockOriginX_c, fLockOriginY_c, pLockAngles[nCurrentLockAngleIndex], &tx, &ty))
 					{
 						pickx_c = tx;
 						picky_c = ty;
 					}
 				}
 			}
-
 		}
-
 	}
 }
 
@@ -446,11 +491,11 @@ float GObjectPicker::CalculateProportion( int index/*=0 */ )
 
 void GObjectPicker::SetLockOrigin( float x, float y )
 {
-	lockOriginX_c = x;
-	lockOriginY_c = y;
+	fLockOriginX_c = x;
+	fLockOriginY_c = y;
 }
 
-void GObjectPicker::SetLockLength( float fLength )
+void GObjectPicker::SetLockLength( float fLength, GHandlePoint * pHandle/*=NULL*/ )
 {
 	ASSERT(fLength >= 0);
 	if (!fLength)
@@ -459,6 +504,14 @@ void GObjectPicker::SetLockLength( float fLength )
 		return;
 	}
 	fLockLength = fLength;
+	pLockLengthHandle = pHandle;
+	if (pLockLengthHandle)
+	{
+		GLine * pLine = pLockLengthHandle->getLine();
+		GHandlePoint * pBeginHandle = pLine->GetBeginPoint()->GetHandle();
+		GHandlePoint * pEndHandle = pLine->GetEndPoint()->GetHandle();
+		pLockLengthAnotherHandle = pLockLengthHandle==pBeginHandle?pEndHandle:pBeginHandle;
+	}
 	bLockLength = true;
 }
 
@@ -482,6 +535,8 @@ void GObjectPicker::SetLockAngles( int nLocks, int * pAngles )
 void GObjectPicker::UnlockLength()
 {
 	bLockLength = false;
+	pLockLengthHandle = NULL;
+	pLockLengthAnotherHandle = NULL;
 }
 
 void GObjectPicker::UnlockAngles()
@@ -493,6 +548,28 @@ void GObjectPicker::UnlockAngles()
 	}
 	numLockAngles = 0;
 	nCurrentLockAngleIndex = 0;
+}
+
+void GObjectPicker::SetLockXAxis( float y )
+{
+	fLockXAxis_y = y;
+	bLockXAxis = true;
+}
+
+void GObjectPicker::SetLockYAxis( float x )
+{
+	fLockYAxis_x = x;
+	bLockYAxis = true;
+}
+
+void GObjectPicker::UnlockXAxis()
+{
+	bLockXAxis = false;
+}
+
+void GObjectPicker::UnlockYAxis()
+{
+	bLockYAxis = false;
 }
 
 void GObjectPicker::SetLockSplitLine( int splitlocktype, float fval )
@@ -518,7 +595,7 @@ bool GObjectPicker::IsAngleInBetween( int angle, int nBeginAngle, int nMidAngle,
 }
 
 
-bool staticMIDCBSplit(MarkingUI * pmui, bool bAccept)
+bool GObjectPicker::staticMIDCBSplit(MarkingUI * pmui, bool bAccept)
 {
 	return GObjectPicker::getInstance().MIDCBSplit(pmui, bAccept);
 }
@@ -555,6 +632,7 @@ bool GObjectPicker::MIDCBSplit( MarkingUI * pmui, bool bAccept )
 		if (!bOk)
 		{
 			UnLockSplitLine();
+			return false;
 		}
 	}
 	else

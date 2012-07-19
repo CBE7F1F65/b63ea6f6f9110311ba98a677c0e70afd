@@ -37,7 +37,8 @@ void QTUI_NodeInfoFloating_Widget::ShowWidgetWindow(bool bContext)
 
 void QTUI_NodeInfoFloating_Widget::HideWidgetWindow()
 {
-    hide();
+	hide();
+	QMainInterface::getInstance().GetPGLView()->setFocus();
 }
 
 bool QTUI_NodeInfoFloating_Widget::isWidgetWindowHidden()
@@ -68,4 +69,9 @@ void QTUI_NodeInfoFloating_Widget::AdjustSize(int w, int h)
     {
         move(this->pos()+QPoint(0, ymove));
     }
+}
+
+void QTUI_NodeInfoFloating_Widget::leaveEvent( QEvent * e )
+{
+	HideWidgetWindow();
 }

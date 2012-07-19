@@ -258,11 +258,11 @@ void LineCommand::OnDoneCommand()
 
 }
 
-bool staticMIDCBLength(MarkingUI * pmui, bool bAccept)
+bool LineCommand::staticMIDCBLength(MarkingUI * pmui, bool bAccept)
 {
 	return LineCommand::getInstance().MIDCBLength(pmui, bAccept);
 }
-bool staticMIDCBAngle(MarkingUI * pmui, bool bAccept)
+bool LineCommand::staticMIDCBAngle(MarkingUI * pmui, bool bAccept)
 {
 	return LineCommand::getInstance().MIDCBAngle(pmui, bAccept);
 }
@@ -280,6 +280,10 @@ bool LineCommand::MIDCBLength( MarkingUI * pmui, bool bAccept )
 			pcommand->GetParamXY(CSP_LINE_XY_B, &x1, &y1);
 			pgp->SetLockOrigin(x1, y1);
 			pgp->SetLockLength(fLockedLength);
+		}
+		else
+		{
+			return false;
 		}
 	}
 	else
@@ -303,6 +307,10 @@ bool LineCommand::MIDCBAngle( MarkingUI * pmui, bool bAccept )
 			pcommand->GetParamXY(CSP_LINE_XY_B, &x1, &y1);
 			pgp->SetLockOrigin(x1, y1);
 			pgp->SetLockAngle(nLockedAngle);
+		}
+		else
+		{
+			return false;
 		}
 	}
 	else
