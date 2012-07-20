@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "ColorManager.h"
 #include "GObject.h"
+#include "MarkingObject.h"
 
 ColorManager::ColorManager(void)
 {
@@ -294,4 +295,31 @@ float ColorManager::HueToRGB( float p, float q, float t )
 	if(t < 2/3.0f) return p + (q - p) * (2/3.0f - t) * 6;
 	return p;
 
+}
+
+DWORD ColorManager::GetMarkingBackgroundColor( int typeflag )
+{
+	switch (typeflag)
+	{
+	case MARKFLAG_POSITIONX:
+	case MARKFLAG_POSITIONY:
+		return 0xffff4f4f;	// Light Red
+	case MARKFLAG_LENGTH:
+//		return 0xff4fffff;	// Cyan
+		return 0xff7fffff;	// Cyan
+	case MARKFLAG_ANGLE:
+//		return 0xff9999ff;	// Lavender
+		return 0xffccccff;	// Lavender
+	case MARKFLAG_XOFFSET:
+	case MARKFLAG_YOFFSET:
+		return 0xffffffff;
+	case MARKFLAG_SPLITLENGTH_B:
+	case MARKFLAG_SPLITLENGTH_E:
+//		return 0xff99cc00;	// Grass Green
+		return 0xff99cc7f;	// Grass Green
+	case MARKFLAG_HORZVAL:
+	case MARKFLAG_VERTVAL:
+		return 0xffff4fff;	// Magenta
+	}
+	return 0xffffffff;
 }

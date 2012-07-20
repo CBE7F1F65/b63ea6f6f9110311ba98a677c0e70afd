@@ -34,6 +34,7 @@ public:
 	bool RegisterPMarkingWidget(QTUI_MarkingFloating_Widget * pWidget);
 	QTUI_MarkingFloating_Widget * GetNextPMarkingWidget(QTUI_MarkingFloating_Widget * pWidget=NULL, bool bEditableOnly=true);
 	bool UnregisterPMarkingWidget(QTUI_MarkingFloating_Widget * pWidget=NULL);
+	void ResolveMarkingOverlapping();
 
     /*
     Kad_QT * pMainWindow;

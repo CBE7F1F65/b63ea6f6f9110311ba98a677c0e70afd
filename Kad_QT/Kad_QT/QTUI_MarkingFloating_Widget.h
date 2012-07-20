@@ -29,9 +29,13 @@ public:
 	void LockValue();
 	void UnlockValue();
 	bool IsValueLocked();
+
+	void SetBGColor(DWORD col);
+
 private:
     Ui::QTUI_MarkingFloating_Widget *ui;
 	MarkingUI * pMarkingUI;
+	QColor bgcol;
 
 public slots:
 	void SLT_LockButtonClicked(bool bChecked);

@@ -11,12 +11,13 @@ public:
 
 protected:
 	virtual bool eventFilter(QObject *pQObj, QEvent *e);
+	virtual void keyReleaseEvent(QKeyEvent * e);
 
 public:
 	void OnTabFocus();
 	void DoneEdit(bool bAccept);
 	void SetText_External(QString str);
-
+	
 	bool IsEdited(){return bEdited;};
 
 private:
@@ -26,7 +27,7 @@ signals:
     
 public slots:
 	void SLT_TextEdited(QString str);
-    
+	void SetReadOnly( bool bReadOnly );
 };
 
 #endif // QTUI_MARKINGFLOATING_EDIT_H

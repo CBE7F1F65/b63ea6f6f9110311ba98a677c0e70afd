@@ -19,6 +19,7 @@ QTUI_MarkingFloating_Widget::QTUI_MarkingFloating_Widget(MarkingUI * p, QWidget 
 	ui->setupUi(this);
 	ui->pushButton->setCursor(Qt::ArrowCursor);
 	pMarkingUI = p;
+	SetBGColor(p->getBGColor());
 	QMainInterface::getInstance().RegisterPMarkingWidget(this);		// Editable?
 }
 
@@ -107,7 +108,10 @@ void QTUI_MarkingFloating_Widget::OnDoneEdit( bool bAccept )
 
 void QTUI_MarkingFloating_Widget::DoCallback( bool bAccept )
 {
-	pMarkingUI->DoCallback(bAccept);
+	if (!pMarkingUI->DoCallback(bAccept))
+	{
+		UnlockValue();
+	}
 }
 
 bool QTUI_MarkingFloating_Widget::isEditable()
@@ -117,14 +121,7 @@ bool QTUI_MarkingFloating_Widget::isEditable()
 
 void QTUI_MarkingFloating_Widget::OnSetEditable( bool bEditable )
 {
-	if (bEditable)
-	{
-		ui->lineEdit->setReadOnly(false);
-	}
-	else
-	{
-		ui->lineEdit->setReadOnly(true);
-	}
+	ui->lineEdit->SetReadOnly(!bEditable);
 }
 
 void QTUI_MarkingFloating_Widget::LockValue()
@@ -152,4 +149,12 @@ void QTUI_MarkingFloating_Widget::SLT_LockButtonClicked( bool bChecked )
 	{
 		UnlockValue();
 	}
+}
+
+void QTUI_MarkingFloating_Widget::SetBGColor( DWORD col )
+{
+	bgcol.setRgba(col);
+	QPalette pal = palette();
+	pal.setColor(backgroundRole(), bgcol);
+	setPalette(pal);
 }

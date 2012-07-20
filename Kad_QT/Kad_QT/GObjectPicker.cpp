@@ -160,12 +160,27 @@ void GObjectPicker::AdjustPositionToLocks()
 			if (pLockLengthHandle)
 			{
 				GLine * pLine = pLockLengthHandle->getLine();
-				float tx, ty;
-				bool bRet = MathHelper::getInstance().FindNearestHandlePointForGivenBezierLength(fLockLength, pLockLengthAnotherHandle->GetAnchor()->GetPointF2D(), pLockLengthAnotherHandle->GetPointF2D(), pLockLengthHandle->GetAnchor()->GetPointF2D(), pickx_c, picky_c, &tx, &ty);
+				float tx = pickx_c;
+				float ty = picky_c;
+				PointF2D ptLockAnchor = pLockLengthHandle->GetAnchor()->GetPointF2D();
+				if (bLockLengthHandleInvert)
+				{
+					tx = 2*ptLockAnchor.x-tx;
+					ty = 2*ptLockAnchor.y-ty;
+				}
+				bool bRet = MathHelper::getInstance().FindNearestHandlePointForGivenBezierLength(
+					fLockLength, pLockLengthAnotherHandle->GetAnchor()->GetPointF2D(), pLockLengthAnotherHandle->GetPointF2D(),
+					ptLockAnchor,
+					tx, ty, &tx, &ty);
 				if (bRet)
 				{
 					pickx_c = tx;
 					picky_c = ty;
+					if (bLockLengthHandleInvert)
+					{
+						pickx_c = 2*ptLockAnchor.x-pickx_c;
+						picky_c = 2*ptLockAnchor.y-picky_c;
+					}
 
 					snappedstate |= GOPSNAPPED_LENGTHLOCK;
 					nOnLine++;
@@ -495,7 +510,7 @@ void GObjectPicker::SetLockOrigin( float x, float y )
 	fLockOriginY_c = y;
 }
 
-void GObjectPicker::SetLockLength( float fLength, GHandlePoint * pHandle/*=NULL*/ )
+void GObjectPicker::SetLockLength( float fLength, GHandlePoint * pHandle/*=NULL*/, bool bInvert/*=false*/ )
 {
 	ASSERT(fLength >= 0);
 	if (!fLength)
@@ -511,6 +526,7 @@ void GObjectPicker::SetLockLength( float fLength, GHandlePoint * pHandle/*=NULL*
 		GHandlePoint * pBeginHandle = pLine->GetBeginPoint()->GetHandle();
 		GHandlePoint * pEndHandle = pLine->GetEndPoint()->GetHandle();
 		pLockLengthAnotherHandle = pLockLengthHandle==pBeginHandle?pEndHandle:pBeginHandle;
+		bLockLengthHandleInvert = bInvert;
 	}
 	bLockLength = true;
 }

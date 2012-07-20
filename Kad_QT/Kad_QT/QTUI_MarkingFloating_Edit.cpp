@@ -25,10 +25,6 @@ bool QTUI_MarkingFloating_Edit::eventFilter( QObject *pQObj, QEvent *e )
 			QMainInterface::getInstance().GetPGLView()->setFocus();
 			return true;
 		}
-		if (pke->key() == Qt::Key_Escape)
-		{
-			QMainInterface::getInstance().GetPGLView()->setFocus();
-		}
 	}
 	return QLineEdit::eventFilter(pQObj, e);
 }
@@ -58,4 +54,27 @@ void QTUI_MarkingFloating_Edit::SetText_External( QString str )
 void QTUI_MarkingFloating_Edit::SLT_TextEdited( QString str )
 {
 	bEdited = true;
+}
+
+void QTUI_MarkingFloating_Edit::SetReadOnly( bool bReadOnly )
+{
+	setReadOnly(bReadOnly);
+	QPalette pal = palette();
+	if (bReadOnly)
+	{
+		pal.setColor(backgroundRole(), Qt::lightGray);
+	}
+	else
+	{
+		pal.setColor(backgroundRole(), Qt::white);
+	}
+	setPalette(pal);
+}
+
+void QTUI_MarkingFloating_Edit::keyReleaseEvent( QKeyEvent * e )
+{
+	if (e->key() == Qt::Key_Escape)
+	{
+		QMainInterface::getInstance().GetPGLView()->setFocus();
+	}
 }

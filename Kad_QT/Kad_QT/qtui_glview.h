@@ -34,7 +34,9 @@ public slots:
     void SLT_VScrollValueChanged(int val);
 
 public:
-    void OnFrame();
+	void OnFrame();
+	void OnFrameEnd();
+
     void OnMainFrameSetupUIDone();
 
 private:

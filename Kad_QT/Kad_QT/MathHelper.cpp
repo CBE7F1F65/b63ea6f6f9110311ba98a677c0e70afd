@@ -607,7 +607,7 @@ bool MathHelper::FindNearestHandlePointForGivenBezierLength( float fLength, Poin
 	PointF2D ptDiff = ptNow-ptSecondAnchor;
 	PointF2D ptFar(ptSecondAnchor.x+fLength*2, ptSecondAnchor.y);
 
-	if (ptDiff.x > ptDiff.y)
+	if (fabsf(ptDiff.x) > fabsf(ptDiff.y))
 	{
 		float fmul = fabsf(2*fLength / ptDiff.x);
 		ptFar = ptDiff*fmul+ptSecondAnchor;
@@ -667,16 +667,6 @@ bool MathHelper::FindSubNHPFGBL( GBezierLine * pBezier, float fTargetLength, Poi
 	{
 		ptNear = ptMid;
 		fNearLength = fMidLength;
-	}
-
-	if (ptFar.x != ptFar.x || ptFar.y != ptFar.y)
-	{
-		qWarning();
-	}
-
-	if (ptNear.x != ptNear.x || ptNear.y != ptNear.y)
-	{
-		qWarning();
 	}
 
 	if (FindSubNHPFGBL(pBezier, fTargetLength, ptNear, ptFar, px, py, fNearLength, fFarLength))

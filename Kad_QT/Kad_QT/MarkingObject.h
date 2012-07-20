@@ -58,6 +58,7 @@ public:
 
 	MarkingObject * getMarking(){return pMarking;};
 	int getTypeFlag(){return nTypeFlag;};
+	DWORD getBGColor();
 
 	void UseUI();
 	void DeleteUI();

@@ -316,3 +316,8 @@ void QTUI_GLView::OnFrame()
 
     qksm->Flush();
 }
+
+void QTUI_GLView::OnFrameEnd()
+{
+	QMainInterface::getInstance().ResolveMarkingOverlapping();
+}

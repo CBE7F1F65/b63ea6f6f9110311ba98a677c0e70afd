@@ -239,6 +239,8 @@ bool MainInterface::Frame()
 		GObjectManager::getInstance().SetHandleVisible(false);
 	}
 
+	parentview->OnFrameEnd();
+
 	return false;
 }
 

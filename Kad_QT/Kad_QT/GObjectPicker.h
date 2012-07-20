@@ -231,7 +231,7 @@ public:
 	float CalculateProportion( int index=0 );
 
 	void SetLockOrigin(float x, float y);
-	void SetLockLength(float fLength, GHandlePoint * pHandle=NULL);
+	void SetLockLength(float fLength, GHandlePoint * pHandle=NULL, bool bInvert=false);
 	void SetLockAngle(int nAngle){SetLockAngles(1, &nAngle);};
 	void SetLockAngles(int nLocks, int * pAngles);
 	void UnlockLength();
@@ -269,6 +269,7 @@ private:
 	bool bLockLength;
 	GHandlePoint * pLockLengthHandle;
 	GHandlePoint * pLockLengthAnotherHandle;
+	bool bLockLengthHandleInvert;
 
 	int * pLockAngles;
 	int numLockAngles;

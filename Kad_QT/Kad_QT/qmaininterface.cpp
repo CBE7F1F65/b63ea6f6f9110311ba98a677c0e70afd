@@ -100,3 +100,33 @@ bool QMainInterface::UnregisterPMarkingWidget( QTUI_MarkingFloating_Widget * pWi
 	DASSERT(false);
 	return false;
 }
+
+void QMainInterface::ResolveMarkingOverlapping()
+{
+	if (lstMarkingFloating.empty())
+	{
+		return;
+	}
+	for (list<QTUI_MarkingFloating_Widget *>::iterator it=lstMarkingFloating.begin(); it!=lstMarkingFloating.end(); ++it)
+	{
+		QTUI_MarkingFloating_Widget * piw = *it;
+		for (list<QTUI_MarkingFloating_Widget *>::iterator jt=lstMarkingFloating.begin(); jt!=it; ++jt)
+		{
+			QTUI_MarkingFloating_Widget * pjw = *jt;
+			QRect irect = piw->rect();
+			QRect jrect = pjw->rect();
+			irect.moveTo(piw->pos());
+			jrect.moveTo(pjw->pos());
+			if (irect.intersects(jrect))
+			{
+				float toy = pjw->y()-piw->height();
+				if (toy < 0)
+				{
+					toy = pjw->y()+pjw->height();
+				}
+				piw->move(piw->x(), toy);
+			}
+		}
+	}
+
+}

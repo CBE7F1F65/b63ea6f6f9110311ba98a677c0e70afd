@@ -30,8 +30,9 @@ void QTUI_NodeInfoFloating_Widget::ShowWidgetWindow(bool bContext)
     else
     {
         pt+=QPoint(-10, -10);
-    }
-    move(pt);
+	}
+	move(pt);
+	raise();
     show();
 }
 

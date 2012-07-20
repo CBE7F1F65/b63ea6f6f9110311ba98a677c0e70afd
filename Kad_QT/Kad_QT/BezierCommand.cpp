@@ -373,6 +373,21 @@ void BezierCommand::OnProcessCommand()
 		pTempLine->SetEndHandlePos(nhx, nhy, 0);
 	}
 
+	if (step >= CSI_BEZIER_WANTNHX)
+	{
+		if (pMarking)
+		{
+			pMarking->getMarkingUI(MARKFLAG_LENGTH)->SetEditable(true);
+		}
+	}
+	else
+	{
+		if (pMarking)
+		{
+			pMarking->getMarkingUI(MARKFLAG_LENGTH)->SetEditable(false);
+		}
+	}
+
 	RenderToTarget();
 }
 
@@ -471,8 +486,9 @@ void BezierCommand::OnInitCommand()
 	ClearTemp();
 	pTempLine = new GBezierLine(&tBaseNode, PointF2D(), PointF2D());
 
-	MarkingLine * pMarking = new MarkingLine(pTempLine, MARKFLAG_LENGTH);
+	pMarking = new MarkingLine(pTempLine, MARKFLAG_LENGTH);
 	pMarking->getMarkingUI(MARKFLAG_LENGTH)->SetEditable(false);
+	pMarking->getMarkingUI(MARKFLAG_LENGTH)->SetCallback(staticMIDCBLength);
 	MarkingManager::getInstance().EnableMarking(pMarking);
 }
 
@@ -486,9 +502,52 @@ void BezierCommand::ClearTemp()
 {
 	if (pTempLine)
 	{
+		pgp->UnlockLength();
 		pTempLine->RemoveFromParent(true);
 		pTempLine = NULL;
+		pMarking = NULL;
 	}
 	bDrawTempBezierLine = false;
 	bDrawTempLineHandle = false;
+}
+
+bool BezierCommand::staticMIDCBLength( MarkingUI * pmui, bool bAccept )
+{
+	return BezierCommand::getInstance().MIDCBLength(pmui, bAccept);
+}
+
+bool BezierCommand::MIDCBLength( MarkingUI * pmui, bool bAccept )
+{
+	GObjectPicker * pgp = &GObjectPicker::getInstance();
+	if (pmui->IsValueLocked())
+	{
+		bool bOk;
+		float fLockedLength = pmui->getFloat(&bOk);
+		if (bOk)
+		{
+			bool bRet = MathHelper::getInstance().FindNearestHandlePointForGivenBezierLength(
+				fLockedLength, pTempLine->GetBeginPoint()->GetPointF2D(), pTempLine->GetBeginPoint()->GetHandle()->GetPointF2D(),
+				pTempLine->GetEndPoint()->GetPointF2D(),
+				0, 0, NULL, NULL, true);
+			if (!bRet)
+			{
+				pgp->UnlockLength();
+				return false;
+			}
+			else
+			{
+				pgp->SetLockOrigin(pTempLine->GetBeginPoint()->getX(), pTempLine->GetBeginPoint()->getY());
+				pgp->SetLockLength(fLockedLength, pTempLine->GetEndPoint()->GetHandle(), true);
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		pgp->UnlockLength();
+	}
+	return true;
 }

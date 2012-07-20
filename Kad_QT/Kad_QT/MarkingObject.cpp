@@ -113,6 +113,11 @@ bool MarkingUI::IsValueLocked()
 	return false;
 }
 
+DWORD MarkingUI::getBGColor()
+{
+	return ColorManager::getInstance().GetMarkingBackgroundColor(nTypeFlag);
+}
+
 #define _MARKLENGTH_OFFSETLENGTH	48
 
 MarkingObject::MarkingObject()

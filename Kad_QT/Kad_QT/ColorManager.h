@@ -193,6 +193,8 @@ public:
     DWORD GetLayerLineIndicatingColor(int layer=-1);
 	LineColorSet GetLayerLineColorSetByIndex( int layerID=-1 );
 
+	DWORD GetMarkingBackgroundColor(int typeflag);
+
 #undef _CMFDEF
 
 	DWORD ARGBToABGR(DWORD col);

@@ -21,6 +21,9 @@ public:
 	virtual void OnInitCommand();
 	virtual void OnTerminalCommand();
 
+	bool MIDCBLength(MarkingUI * pmui, bool bAccept);
+	static bool staticMIDCBLength(MarkingUI * pmui, bool bAccept);
+
 private:
 
 	void ClearTemp();
@@ -40,4 +43,6 @@ private:
 	GBezierLine * pTempLine;
 	bool bDrawTempBezierLine;
 	bool bDrawTempLineHandle;
+
+	MarkingLine * pMarking;
 };

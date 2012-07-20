@@ -837,7 +837,10 @@ bool MarqueeSelect::MIDCBLength( MarkingUI * pmui, bool bAccept )
 				GHandlePoint * pAnotherHandle = pBeginObj==pBeginHandle?pEndHandle:pBeginHandle;
 				GHandlePoint * pThisHandle = (GHandlePoint *)pBeginObj;
 
-				bool bRet = MathHelper::getInstance().FindNearestHandlePointForGivenBezierLength(fLockedLength, pAnotherHandle->GetAnchor()->GetPointF2D(), pAnotherHandle->GetPointF2D(), pThisHandle->GetAnchor()->GetPointF2D(), 0, 0, NULL, NULL, true);
+				bool bRet = MathHelper::getInstance().FindNearestHandlePointForGivenBezierLength(
+					fLockedLength, pAnotherHandle->GetAnchor()->GetPointF2D(), pAnotherHandle->GetPointF2D(),
+					pThisHandle->GetAnchor()->GetPointF2D(),
+					0, 0, NULL, NULL, true);
 				if (!bRet)
 				{
 					pgp->UnlockLength();
