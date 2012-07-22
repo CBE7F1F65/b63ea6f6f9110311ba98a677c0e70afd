@@ -20,7 +20,6 @@ GObjectManager::GObjectManager()
 	// Put all to Release
 	pBaseNode = NULL;
 	nLockTreeChangeState = GMLOCKTREESTATE_NULL;
-	bRenderUILayerIndicators = false;
 	Release();
 }
 GObjectManager::~GObjectManager()
@@ -105,17 +104,20 @@ void GObjectManager::RenderIndication()
 	if (bRenderUILayerIndicators)
 	{
 		list<GObject *> * lstSelectedNodes = GetSelectedNodes();
-		GObject * pHover = MainInterface::getInstance().OnGetHoveringNode();
-		for (list<GObject *>::iterator it=lstSelectedNodes->begin(); it!=lstSelectedNodes->end(); ++it)
+		if (lstSelectedNodes)
 		{
-			if (pHover != *it)
+			GObject * pHover = MainInterface::getInstance().OnGetHoveringNode();
+			for (list<GObject *>::iterator it=lstSelectedNodes->begin(); it!=lstSelectedNodes->end(); ++it)
 			{
-				(*it)->CallRender(LINECOLOR_UISELECT);
+				if (pHover != *it)
+				{
+					(*it)->CallRender(LINECOLOR_UISELECT);
+				}
 			}
-		}
-		if (pHover)
-		{
-			pHover->CallRender(LINECOLOR_INDICATING);
+			if (pHover)
+			{
+				pHover->CallRender(LINECOLOR_INDICATING);
+			}
 		}
 	}
 }
@@ -173,7 +175,7 @@ void GObjectManager::OnTreeChanged( GObject * changingbase, GObject * activeitem
 	}
 
 	MainInterface::getInstance().OnTreeLockChange(false);
-	if (changingbase->GetBase() == (GObject *)pBaseNode)
+	if (changingbase->getBase() == (GObject *)pBaseNode)
 	{
 		pBaseNode->CallResetID();
 //		ASSERT(activeitem != NULL);
@@ -186,7 +188,7 @@ void GObjectManager::OnTreeChanged( GObject * changingbase, GObject * activeitem
 		{
 			if (activeitem)
 			{
-				pActiveLayer = (GLayer *)activeitem->GetLayer();
+				pActiveLayer = (GLayer *)activeitem->getLayer();
 				ASSERT(pActiveLayer);
 			}
 		}
@@ -311,7 +313,7 @@ void GObjectManager::SetActiveLayer_Internal( GObject * pObj/*=NULL*/, bool bCal
 	DASSERT(pObj);
 	if (pObj)
 	{
-		GLayer * pLayer = (GLayer *)pObj->GetLayer();
+		GLayer * pLayer = (GLayer *)pObj->getLayer();
 		DASSERT(pLayer);
 		if (pLayer)
 		{
@@ -414,7 +416,7 @@ GLayer * GObjectManager::GetActiveLayerFromUI()
 	GLayer * pLayer = NULL;
     for (list<GObject *>::iterator it=selectednodes->begin(); it!=selectednodes->end(); ++it)
 	{
-		pLayer = (GLayer *)(*it)->GetLayer();
+		pLayer = (GLayer *)(*it)->getLayer();
 		if (pLayer)
 		{
 			return pLayer;

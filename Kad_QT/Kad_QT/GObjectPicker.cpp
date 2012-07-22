@@ -496,6 +496,10 @@ float GObjectPicker::CalculateProportion( int index/*=0 */ )
 	{
 		return 0;
 	}
+	if (pObj->isMidPoint())
+	{
+		return pObj->getLine()->CalculateMidPointProportion();
+	}
 	if (!pObj->isLine())
 	{
 		return 0;

@@ -111,7 +111,7 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_REDO,	"REDO", "R",	"UnDo",	""	);
 
 	_BSET(	COMM_REPARENT,	"REPARENT",	"",	"Reparent Item",	""	);
-	_BSET(	COMM_CLING,	"CLING",	"CLI",	"Cling To",	""	);
+	_BSET(	COMM_CLING,	"CLING",	"CLIN",	"Cling To",	""	);
 	_BSET(	COMM_BINDHANDLE,	"BINDHANDLE",	"BH",	"Bind Handle",	""	);
 	_BSET(	COMM_MERGE,	"MERGE",	"MER",	"Merge With",	""	);
 	_BSET(	COMM_SEPARATE,	"SEPERATE",	"SEP",	"Separate From",	""	);
@@ -124,6 +124,8 @@ void StringManager::FillSCInfo()
 
 	_BSET(	COMM_TOBEZIER,	"TOBEZIER", "TOB",	"Straight Line To Bezier",	""	);
 	_BSET(	COMM_TOSTRAIGHTLINE,	"TOSTRAIGHTLINE", "TOS",	"Bezier To Straight Line",	""	);
+
+	_BSET(	COMM_CLIP,	"CLIP",	"C",	"Clip",	""	);
 
 	_BSET(	COMM_SETWORKINGLAYER,	"SETWORKINGLAYER",	"",	"Set Working Layer",	""	);
 	_BSET(	COMM_NEWLAYER,	"NEWLAYER", "NL",	"New Layer",	""	);

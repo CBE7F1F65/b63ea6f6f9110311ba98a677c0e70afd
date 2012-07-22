@@ -20,3 +20,13 @@ QTUI_History_DockablePane::~QTUI_History_DockablePane()
 {
     delete ui;
 }
+
+void QTUI_History_DockablePane::enterEvent( QEvent * e )
+{
+	setFocus();
+}
+
+void QTUI_History_DockablePane::leaveEvent( QEvent * e )
+{
+	QMainInterface::getInstance().GetPGLView()->setFocus();
+}

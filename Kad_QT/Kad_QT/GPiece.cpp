@@ -2,6 +2,8 @@
 #include "GPiece.h"
 #include "StringManager.h"
 
+#include "GBaseNode.h"
+
 GPiece::GPiece(void)
 {
 }
@@ -19,7 +21,7 @@ const char * GPiece::getDisplayName()
 	return StringManager::getInstance().GetNNPieceName();
 }
 
-bool GPiece::Clone( GObject * pNewParent )
+GObject * GPiece::CreateNewClone( GObject * pNewParent/*=NULL*/, GObject * pBeforeObj/*=NULL*/ )
 {
 	_GOBJ_CLONE_PRE(GPiece);
 	_GOBJ_CLONE_POST();

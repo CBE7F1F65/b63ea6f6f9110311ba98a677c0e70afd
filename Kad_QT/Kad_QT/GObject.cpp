@@ -30,7 +30,25 @@ GObject::GObject(void)
 	nUpdateMoveActionID = -1;
 
 	nModifyVersion = 0;
-
+	/*
+	int tsize = 0;
+	tsize += sizeof(nMoveActionID);
+	tsize += sizeof(nUpdateMoveActionID);
+	tsize += sizeof(nNonAttributeChildrenCount);
+	tsize += sizeof(strDisplayName);
+	tsize += sizeof(nDisplayState);
+	tsize += sizeof(lsLineColorSet);
+	tsize += sizeof(nID);
+	tsize += sizeof(bModified);
+	tsize += sizeof(nModifyVersion);
+	tsize += sizeof(nTryState);
+	tsize += sizeof(fTryMove_bx);
+	tsize += sizeof(fTryMove_by);
+	tsize += sizeof(bCloning);
+	tsize += sizeof(pParent);
+	tsize += sizeof(listChildren);
+	int size = sizeof(GObject);
+	*/
 	_SetID();
 	OnInit();
 }
@@ -43,12 +61,12 @@ GObject::~GObject(void)
 #define _FOREACH_L(T, IT, L)	\
 	for (list<T>::iterator IT=L.begin(); IT!=L.end(); ++IT)
 #define FOREACH_GOBJ_CHILDREN_IT()	\
-	_FOREACH_L(GObject*, it, listChildren)
+	_FOREACH_L(GObject*, it, lstChildren)
 
 #define _FOREACHREV_L(T, IT, L)	\
 	for (list<T>::reverse_iterator IT=L.rbegin(); IT!=L.rend(); ++IT)
 #define FOREACHREV_GOBJ_CHILDREN_IT()	\
-	_FOREACHREV_L(GObject*, it, listChildren)
+	_FOREACHREV_L(GObject*, it, lstChildren)
 
 int GObject::_ActualAddChildAfterObj( GObject * child, GObject * afterobj )
 {
@@ -66,7 +84,7 @@ int GObject::_ActualAddChildAfterObj( GObject * child, GObject * afterobj )
 		//
 		if (!afterobj)
 		{
-			listChildren.push_front(child);
+			lstChildren.push_front(child);
 		}
 		else
 		{
@@ -76,9 +94,9 @@ int GObject::_ActualAddChildAfterObj( GObject * child, GObject * afterobj )
 				if ((*it) == afterobj)
 				{
 					++it;
-					if (it!=listChildren.end())
+					if (it!=lstChildren.end())
 					{
-						listChildren.insert(it, child);
+						lstChildren.insert(it, child);
 						bdone = true;
 					}
 					break;
@@ -86,7 +104,7 @@ int GObject::_ActualAddChildAfterObj( GObject * child, GObject * afterobj )
 			}
 			if (!bdone)
 			{
-				listChildren.push_back(child);
+				lstChildren.push_back(child);
 			}
 		}
 
@@ -114,7 +132,7 @@ list<GObject *>::iterator GObject::_ActualRemoveChild( list<GObject *>::iterator
 		(*it)->OnRelease();
 	}
 	(*it)->pParent = NULL;
-	it = listChildren.erase(it);
+	it = lstChildren.erase(it);
 
 	// Add OnModify and OnTreeChanged after all operation done!!
 //	OnModify();
@@ -165,9 +183,9 @@ int GObject::RemoveChild( GObject * child, bool bRelease )
 int GObject::_RemoveChild( int _ID, bool bRelease )
 {
 	// Do not use FOREACH
-	if (!listChildren.empty())
+	if (!lstChildren.empty())
 	{
-		for (list<GObject*>::iterator it=listChildren.begin(); it!=listChildren.end();)
+		for (list<GObject*>::iterator it=lstChildren.begin(); it!=lstChildren.end();)
 		{
 			if ((*it)->nID == _ID)
 			{
@@ -189,7 +207,7 @@ int GObject::_RemoveChild( int _ID, bool bRelease )
 	CallModify();
 //	_CallTreeChanged(this, this);
 //	GObjectManager::getInstance().OnTreeChanged(this, this);
-	return listChildren.size();
+	return lstChildren.size();
 }
 
 int GObject::_RemoveChild( GObject * child, bool bRelease )
@@ -198,7 +216,7 @@ int GObject::_RemoveChild( GObject * child, bool bRelease )
 	{
 		return -1;
 	}
-	if (!listChildren.empty())
+	if (!lstChildren.empty())
 	{
 		FOREACH_GOBJ_CHILDREN_IT()
 		{
@@ -219,7 +237,7 @@ int GObject::_RemoveChild( GObject * child, bool bRelease )
 	CallModify();
 //	_CallTreeChanged(this, this);
 //	GObjectManager::getInstance().OnTreeChanged(this, this);
-	return listChildren.size();
+	return lstChildren.size();
 }
 int GObject::RemoveFromParent( bool bRelease )
 {
@@ -243,9 +261,9 @@ int GObject::RemoveAllChildren( bool bRelease )
 {
 	// Do not use FOREACH
 	_CallTreeWillChange();
-	if (!listChildren.empty())
+	if (!lstChildren.empty())
 	{
-		for (list<GObject*>::iterator it=listChildren.begin(); it!=listChildren.end();)
+		for (list<GObject*>::iterator it=lstChildren.begin(); it!=lstChildren.end();)
 		{
 			it = _ActualRemoveChild(it, bRelease);
 			/*
@@ -273,7 +291,7 @@ void GObject::OnEnter()
 
 	if (!lsLineColorSet.IsColorSet())
 	{
-		GObject * pLayer = GetLayer();
+		GObject * pLayer = getLayer();
 		if (pLayer)
 		{
 			setLineColor(pLayer->lsLineColorSet);
@@ -365,8 +383,9 @@ int GObject::Reparent( GObject * newparent )
 
 int GObject::ReparentAfterObject( GObject * newparent, GObject * afterobj )
 {
-	_CallTreeWillChange();
 	ASSERT(newparent != NULL);
+	ASSERT(newparent != pParent);
+	_CallTreeWillChange();
 	GObject * _pParent = pParent;
 	_RemoveFromParent(false);
 	if (!isLayer())
@@ -376,7 +395,33 @@ int GObject::ReparentAfterObject( GObject * newparent, GObject * afterobj )
 	int ret = newparent->AddChildAfterObj(this, afterobj);
 	_CallTreeChanged(_pParent, _pParent);
 	_CallTreeChanged(newparent, this);
+	
 	return ret;
+}
+
+
+int GObject::ReparentBeforeObject( GObject * newparent, GObject * beforeobj )
+{
+	ASSERT(newparent != NULL);
+	ASSERT(newparent != pParent);
+	GObject * pAfterObj = NULL;
+	if (!beforeobj)
+	{
+		list<GObject *> * plChildren = newparent->getChildren();
+		if (!plChildren->empty())
+		{
+			pAfterObj = plChildren->back();
+		}
+	}
+	else
+	{
+		pAfterObj = beforeobj->getYoungerSibling();
+	}
+	if (pAfterObj == this)
+	{
+		pAfterObj = pAfterObj->getYoungerSibling();
+	}
+	return ReparentAfterObject(newparent, pAfterObj);
 }
 
 const char * GObject::getDisplayName()
@@ -421,7 +466,7 @@ void GObject::setDisplayVisible( bool toDisplayVisible )
 
 	if (changed)
 	{
-		if (!listChildren.empty())
+		if (!lstChildren.empty())
 		{
 			FOREACH_GOBJ_CHILDREN_IT()
 			{
@@ -448,7 +493,7 @@ void GObject::setDisplayLock( bool toDisplayLock )
 
 	if (changed)
 	{
-		if (!listChildren.empty())
+		if (!lstChildren.empty())
 		{
 			FOREACH_GOBJ_CHILDREN_IT()
 			{
@@ -565,7 +610,7 @@ void GObject::CallRender( int iHighlightLevel/*=0*/ )
     {
         OnRender(iHighlightLevel);
 
-		if (!listChildren.empty())
+		if (!lstChildren.empty())
 		{
 			FOREACH_GOBJ_CHILDREN_IT()
 			{
@@ -581,7 +626,7 @@ void GObject::CallUpdate()
 	{
 		nUpdateMoveActionID = GObjectManager::getInstance().GetNextMoveActionID();
 		OnUpdate();
-		if (!listChildren.empty())
+		if (!lstChildren.empty())
 		{
 			FOREACH_GOBJ_CHILDREN_IT()
 			{
@@ -593,7 +638,7 @@ void GObject::CallUpdate()
 void GObject::CallPrecisionChanged(float fPrecision)
 {
     OnPrecisionChanged(fPrecision);
-    if (!listChildren.empty())
+    if (!lstChildren.empty())
     {
         FOREACH_GOBJ_CHILDREN_IT()
         {
@@ -616,7 +661,7 @@ void GObject::CallModify()
 
 void GObject::CallClearModify()
 {
-	if (!listChildren.empty())
+	if (!lstChildren.empty())
 	{
 		FOREACH_GOBJ_CHILDREN_IT()
 		{
@@ -634,7 +679,7 @@ void GObject::CallRedrawModify()
     GObjectManager::getInstance().SetRedraw();
 }
 
-GLayer * GObject::GetLayer( bool bIncludingSelf/*=true*/ )
+GLayer * GObject::getLayer( bool bIncludingSelf/*=true*/ )
 {
 	GObject * pobj = this;
 	while (pobj)
@@ -651,7 +696,7 @@ GLayer * GObject::GetLayer( bool bIncludingSelf/*=true*/ )
 	return NULL;
 }
 
-GObject * GObject::GetBase()
+GObject * GObject::getBase()
 {
 	GObject * pobj = this;
 	while (pobj->pParent)
@@ -661,7 +706,7 @@ GObject * GObject::GetBase()
 	return pobj;
 }
 
-GObject * GObject::GetNonAttributeParentObj()
+GObject * GObject::getNonAttributeParentObj()
 {
 	GObject * pobj = this;
 	while (pobj)
@@ -721,9 +766,9 @@ GObject * GObject::FindNodeByID( int id )
 	{
 		return this;
 	}
-	if (!listChildren.empty())
+	if (!lstChildren.empty())
 	{
-		if (listChildren.front()->getID() > id)
+		if (lstChildren.front()->getID() > id)
 		{
 			return NULL;
 		}
@@ -756,7 +801,7 @@ GObject * GObject::getOlderSiblingForChild( GObject* child )
 		if ((*it) == child)
 		{
 			++it;
-			if (it!=listChildren.end())
+			if (it!=lstChildren.end())
 			{
 				return (*it);
 			}
@@ -784,7 +829,7 @@ GObject * GObject::getYoungerSiblingForChild( GObject* child )
 		if ((*it) == child)
 		{
 			++it;
-			if (it!=listChildren.rend())
+			if (it!=lstChildren.rend())
 			{
 				return (*it);
 			}
@@ -829,7 +874,7 @@ void GObject::Independ()
 // 		return;
 // 	}
 	pParent = NULL;
-	listChildren.clear();
+	lstChildren.clear();
 // 	for (list<GObject *>::iterator it=listChildren.begin(); it!=listChildren.end(); )
 // 	{
 // 		if (!(*it)->isAttributeNode())
@@ -868,3 +913,30 @@ void GObject::ToggleTryMoveState( bool bTry )
 	}
 }
 
+bool GObject::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelationship/*=true*/ )
+{
+	pClone->strDisplayName = strDisplayName;
+	pClone->lsLineColorSet = lsLineColorSet;
+
+	pClone->nMoveActionID = nMoveActionID;
+	pClone->nUpdateMoveActionID = nUpdateMoveActionID;
+	pClone->nModifyVersion = nModifyVersion;
+
+	pClone->nTryState = nTryState;
+	pClone->fTryMove_bx = fTryMove_bx;
+	pClone->fTryMove_by = fTryMove_by;
+
+	pClone->nDisplayState = nDisplayState;
+	pClone->bDisplayFolded = bDisplayFolded;
+	pClone->bModified = bModified;
+	pClone->bCloning = true;
+
+	//////////////////////////////////////////////////////////////////////////
+	
+	for (list<GObject *>::reverse_iterator it=lstChildren.rbegin(); it!=lstChildren.rend(); ++it)
+	{
+		(*it)->CreateNewClone(pClone);
+	}
+
+	return true;
+}

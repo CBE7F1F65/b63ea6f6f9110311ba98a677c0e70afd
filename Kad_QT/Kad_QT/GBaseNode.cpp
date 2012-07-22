@@ -14,10 +14,10 @@ GBaseNode::~GBaseNode(void)
 
 void GBaseNode::CopyBaseTo( GBaseNode * pTo )
 {
-	Clone(pTo);
+	CreateNewClone(pTo);
 }
 
-bool GBaseNode::Clone( GObject * pNewParent )
+GObject * GBaseNode::CreateNewClone( GObject * pNewParent/*=NULL*/, GObject * pBeforeObj/*=NULL*/ )
 {
 	_GOBJ_CLONE_PRE(GBaseNode);
 	_GOBJ_CLONE_POST();
@@ -33,7 +33,7 @@ void GBaseNode::CopyBaseFrom( GBaseNode * pFrom )
 		{
 			for (list<GObject *>::reverse_iterator it=pOBase->getChildren()->rbegin(); it!=pOBase->getChildren()->rend(); ++it)
 			{
-				(*it)->Clone(this);
+				(*it)->CreateNewClone(this);
 			}
 		}
 	}
@@ -49,21 +49,8 @@ GMainBaseNode::~GMainBaseNode()
 
 }
 
-bool GMainBaseNode::Clone( GObject * pNewParent )
+GObject * GMainBaseNode::CreateNewClone( GObject * pNewParent/*=NULL*/, GObject * pBeforeObj/*=NULL*/ )
 {
-	_GOBJ_CLONE_PRE(GBaseNode);
+	_GOBJ_CLONE_PRE(GMainBaseNode);
 	_GOBJ_CLONE_POST();
-// 	GBaseNode * _node = new GBaseNode();
-// 	ASSERT(pNewParent);
-// 	ASSERT(pNewParent != this);
-// 	ASSERT(!(pNewParent->isDescendantOf(this)));
-// 	*_node = *this;
-// 	_node->Independ();
-// 
-// 	for (list<GObject *>::reverse_iterator it=getChildren()->rbegin(); it!=getChildren()->rend(); ++it)
-// 	{
-// 		(*it)->Clone(_node);
-// 	}
-// 	pNewParent->AddChild(_node);
-// 	return true;
 }

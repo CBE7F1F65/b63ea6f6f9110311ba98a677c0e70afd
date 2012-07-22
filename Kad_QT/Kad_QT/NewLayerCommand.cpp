@@ -69,7 +69,7 @@ void NewLayerCommand::OnDoneCommand()
 
 	if (layerIndex < 0)
 	{
-		layerIndex = pLayer->layerID;
+		layerIndex = pLayer->getLayerID();
 	}
 	PushRevertable(
 		CCMake_C(COMM_I_ADDNODE, 2),

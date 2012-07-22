@@ -9,14 +9,17 @@ class GLine :
 	public GObject
 {
 public:
+	typedef GObject super;
+public:
 	GLine(void);
 	virtual ~GLine(void);
+
+	virtual bool CloneData(GObject * pClone, GObject * pNewParent, bool bNoRelationship=true);
 
 	virtual float getX() { if (pmid) { return pmid->getX(); } return 0; };
 	virtual float getY() { if (pmid) { return pmid->getY(); } return 0; };
 
 	virtual bool isLine(){return true;};
-
 
 	virtual GPiece * getPiece();
 
@@ -45,24 +48,32 @@ public:
 
 	virtual void OnModify();
 
-public:
 	inline GAnchorPoint * GetBeginPoint(){return plbegin;};
 	inline GAnchorPoint * GetEndPoint(){return plend;};
 	inline GMidPoint * GetMidPoint(){return pmid;};
-protected:
-	GAnchorPoint * plbegin;
-	GAnchorPoint * plend;
-	GMidPoint * pmid;
 
-public:
 	virtual void OnRemove();
 
 	bool AddClingBy(GPoint * pPoint);
 	void DeclingByOther(GPoint * pPoint=NULL);
 	bool isClingBy(GPoint * pPoint);
 	list<GPoint *> * getClingBy(){return &clingByList;};
+
+	/************************************************************************/
+	/* Members                                                              */
+	/************************************************************************/
 protected:
+	//////////////////////////////////////////////////////////////////////////
+	GOBJM_CHILDPOINTERS();
+	GAnchorPoint * plbegin;
+	GAnchorPoint * plend;
+	GMidPoint * pmid;
+	GOBJM_CHILDPOINTERSEND();
+
+	//////////////////////////////////////////////////////////////////////////
+	GOBJM_DONOTCOPY();
 	list<GPoint *> clingByList;
+	GOBJM_DONOTCOPYEND();
 };
 /************************************************************************/
 /* GSubstantiveLine                                                     */
@@ -70,6 +81,8 @@ protected:
 class GSubstantiveLine :
 	public GLine
 {
+public:
+	typedef GLine super;
 public:
 	GSubstantiveLine(){};
 	virtual ~GSubstantiveLine(){};
@@ -83,6 +96,9 @@ public:
 class GVirtualLine : 
 	public GLine
 {
+public:
+	typedef GLine super;
+public:
 	GVirtualLine(){};
 	virtual ~GVirtualLine(){};
 };
@@ -93,8 +109,9 @@ class GVirtualLine :
 class GStraightLine : public GSubstantiveLine
 {
 public:
+	typedef GSubstantiveLine super;
+public:
 	GStraightLine();
-	GStraightLine(GObject * parent, PointF2D pb, PointF2D pe);
 	virtual ~GStraightLine();
 
 	virtual void UpdateMidPoint();
@@ -123,11 +140,16 @@ public:
 class GBezierLine : public GStraightLine
 {
 public:
+	typedef GStraightLine super;
+public:
 	GBezierLine();
 	GBezierLine(GObject * parent, PointF2D pb, PointF2D pe);
 	GBezierLine(GObject * parent, PointF2D pb, PointF2D pbh, PointF2D peh, PointF2D pe);
 	GBezierLine(GObject * parent, float cx, float cy, float r, int quadrant);
 	virtual ~GBezierLine();
+
+	virtual GObject * CreateNewClone(GObject * pNewParent=NULL, GObject * pBeforeObj=NULL);
+	virtual bool CloneData(GObject * pClone, GObject * pNewParent, bool bNoRelationship=true);
 
     virtual void OnPrecisionChanged(float fPrecision);
 	virtual void OnModify();
@@ -159,9 +181,14 @@ public:
 
 	virtual PointF2D GetTangentPointF2D(float t);
 
-	virtual bool Clone( GObject * pNewParent );
 
 	BezierSublinesInfo * getBSInfo(){return &bsinfo;};
-private:
+	/************************************************************************/
+	/* Members                                                              */
+	/************************************************************************/
+protected:
+	//////////////////////////////////////////////////////////////////////////
+	GOBJM_NONCOPYABLES();
 	BezierSublinesInfo bsinfo;
+	GOBJM_NONCOPYABLESEND();
 };

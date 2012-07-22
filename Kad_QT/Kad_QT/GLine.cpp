@@ -105,7 +105,7 @@ bool GLine::CallMoveTo( float newx, float newy, bool bTry, int moveActionID/*=-1
 
 void GLine::OnModify()
 {
-    if (!listChildren.empty())
+    if (!lstChildren.empty())
     {
         UpdateMidPoint();
     }
@@ -215,23 +215,35 @@ bool GLine::toStraightLine()
 	pBezier->SetEndHandlePos(pBezier->GetEndPoint()->getX(), pBezier->GetEndPoint()->getY());
 	return true;
 }
+
+bool GLine::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelationship/*=true*/ )
+{
+	if (super::CloneData(pClone, pNewParent, bNoRelationship))
+	{
+		GLine * pLine = (GLine *)pClone;
+		list<GObject *>::iterator it=pLine->lstChildren.begin();
+		pLine->plbegin = (GAnchorPoint *)*it;
+		++it;
+		pLine->plend = (GAnchorPoint *)*it;
+		++it;
+		pLine->pmid = (GMidPoint *)*it;
+		ASSERT((*it)->isMidPoint());
+
+		/*
+		for (list<GPoint *>::iterator it=clingByList.begin(); it!=clingByList.end(); ++it)
+		{
+			pLine->AddClingBy(*it);
+		}
+		*/
+		return true;
+	}
+	return false;
+}
 /************************************************************************/
 /* GSTRAIGHTLINE                                                        */
 /************************************************************************/
 GStraightLine::GStraightLine()
 {
-}
-
-GStraightLine::GStraightLine( GObject * parent, PointF2D pb, PointF2D pe )
-{
-	ASSERT(parent!=NULL);
-
-	plbegin = new GAnchorPoint(this, pb.x, pb.y);
-	plend = new GAnchorPoint(this, pe.x, pe.y);
-	pmid = new GMidPoint(this);
-
-	parent->AddChild(this);
-	OnInit();
 }
 
 GStraightLine::~GStraightLine()
@@ -286,10 +298,11 @@ bool GStraightLine::CheckIntersectWithRect( float xl, float yt, float xr, float 
 bool GStraightLine::CheckIntersectStraightStraight( GStraightLine * pLine, list<PointF2D> *pPoints )
 {
 	float ix, iy;
-	if (MathHelper::getInstance().LineSegmentIntersect(
+	int iret = MathHelper::getInstance().LineSegmentIntersect(
 		plbegin->getX(), plbegin->getY(), plend->getX(), plend->getY(),
 		pLine->plbegin->getX(), pLine->plbegin->getY(), pLine->plend->getX(), pLine->plend->getY(),
-		&ix, &iy))
+		&ix, &iy);
+	if (iret == MHLINEINTERSECT_INTERSECT)
 	{
 		if (pPoints)
 		{
@@ -319,8 +332,7 @@ bool GStraightLine::GetPositionAtProportion( float fClingToProportion, float* to
 {
 	if (fClingToProportion < 0 || fClingToProportion > 1)
 	{
-		ASSERT(false);
-		return false;
+//		DASSERT(false);
 	}
 	float fbx = plbegin->getX();
 	float fby = plbegin->getY();
@@ -356,7 +368,6 @@ PointF2D GStraightLine::GetTangentPointF2D( float t )
 /************************************************************************/
 GBezierLine::GBezierLine()
 {
-	ASSERT(false);
 }
 
 GBezierLine::GBezierLine(GObject * parent, PointF2D pb, PointF2D pe)
@@ -435,7 +446,7 @@ void GBezierLine::OnModify()
 {
 	GStraightLine::OnModify();
 
-    if (!listChildren.empty())
+    if (!lstChildren.empty())
     {
         if (plbegin && plend)
         {
@@ -570,22 +581,10 @@ void GBezierLine::GetBoundingBox( float *xl, float *yt, float *xr, float * yb )
 	}
 }
 
-bool GBezierLine::Clone( GObject * pNewParent )
+GObject * GBezierLine::CreateNewClone( GObject * pNewParent/*=NULL*/, GObject * pBeforeObj/*=NULL*/ )
 {
     _GOBJ_CLONE_PRE(GBezierLine);
-
-    _node->plbegin = NULL;
-    _node->plend = NULL;
-    _node->pmid = NULL;
-
-	_GOBJ_CLONE_POST_NORET();
-	list<GObject *>::reverse_iterator it=_node->listChildren.rbegin();
-	_node->plbegin = (GAnchorPoint *)*it;
-	++it;
-	_node->plend = (GAnchorPoint *)*it;
-	++it;
-	_node->pmid = (GMidPoint *)*it;
-	return true;	
+	_GOBJ_CLONE_POST();
 }
 
 void GBezierLine::SetBeginEnd( float xb, float yb, float xe, float ye, float fAllowance/*=-1*/ )
@@ -753,14 +752,14 @@ float GBezierLine::getLength()
 
 bool GBezierLine::GetPositionAtProportion( float fClingToProportion, float* tox, float* toy, int *isec/*=NULL*/ )
 {
+	if (isStraightLine())
+	{
+		return GStraightLine::GetPositionAtProportion(fClingToProportion, tox, toy, isec);
+	}
 	if (fClingToProportion < 0 || fClingToProportion > 1)
 	{
 		ASSERT(false);
 		return false;
-	}
-	if (isStraightLine())
-	{
-		return GStraightLine::GetPositionAtProportion(fClingToProportion, tox, toy, isec);
 	}
 
 	float fTotalLength = bsinfo.GetLength();
@@ -860,4 +859,16 @@ PointF2D GBezierLine::GetTangentPointF2D( float t )
 	//dP(t) / dt =  -3(1-t)^2 * P0 + 3(1-t)^2 * P1 - 6t(1-t) * P1 - 3t^2 * P2 + 6t(1-t) * P2 + 3t^2 * P3
 	float t2 = t*t;
 	return p0*(-3*(t2-2*t+1))+p1*(3*(3*t2-4*t+1))+p2*(-3*(3*t2-2*t))+p3*(3*t2);
+}
+
+bool GBezierLine::CloneData(GObject * pClone, GObject * pNewParent, bool bNoRelationship/*=true*/)
+{
+	if (super::CloneData(pClone, pNewParent, bNoRelationship))
+	{
+		GBezierLine * pBezier = (GBezierLine *)pClone;
+
+		pBezier->bsinfo = bsinfo;
+		return true;
+	}
+	return false;
 }

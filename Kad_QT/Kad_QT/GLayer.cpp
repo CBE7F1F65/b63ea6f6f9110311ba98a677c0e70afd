@@ -1,6 +1,8 @@
 #include "StdAfx.h"
 #include "GLayer.h"
 
+#include "GBaseNode.h"
+
 #include "StringManager.h"
 #include <sstream>
 #include "ColorManager.h"
@@ -43,9 +45,18 @@ const char * GLayer::getDisplayName()
 	return strDisplayName.c_str();
 }
 
-bool GLayer::Clone( GObject * pNewParent )
+GObject * GLayer::CreateNewClone( GObject * pNewParent/*=NULL*/, GObject * pBeforeObj/*=NULL*/ )
 {
 	_GOBJ_CLONE_PRE(GLayer);
-	_node->setInitial(layerID, strDisplayName.c_str());
 	_GOBJ_CLONE_POST();
+}
+
+bool GLayer::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelationship/*=true*/ )
+{
+	if (super::CloneData(pClone, pNewParent))
+	{
+		setInitial(layerID, strDisplayName.c_str());
+		return true;
+	}
+	return false;
 }

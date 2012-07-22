@@ -39,7 +39,7 @@ const char * GPoint::getDisplayName()
 	return StringManager::getInstance().GetNNPointName();
 }
 
-bool GPoint::Clone( GObject * pNewParent )
+GObject * GPoint::CreateNewClone( GObject * pNewParent/*=NULL*/, GObject * pBeforeObj/*=NULL*/ )
 {
 	_GOBJ_CLONE_PRE(GPoint);
 	_GOBJ_CLONE_POST();
@@ -145,7 +145,7 @@ bool GPoint::ClingTo( GObject * pObj, float fProp )
 		{
 			DeclingToOther();
 		}
-		pClingTo = pObj;
+		pClingTo = pLine;
 		fClingToProportion = fProp;
 		return true;
 	}
@@ -173,6 +173,10 @@ bool GPoint::isClingTo( GObject * pObj )
 	if (pClingTo == pObj)
 	{
 		return true;
+	}
+	if (!pClingTo)
+	{
+		return false;
 	}
 	if (pObj->getChildren()->empty())
 	{
@@ -324,29 +328,41 @@ bool GPoint::SeperateFrom( GPoint * pPoint/*=NULL*/, bool bNoBackward/*=false*/ 
 	}
 	else
 	{
+		if (!isMergeWith(pPoint))
+		{
+			return false;
+		}
 		for (list<GPoint *>::iterator it=mergeWithList.begin(); it!=mergeWithList.end();)
 		{
-			if (*it == pPoint)
+			GPoint * pAnotherPoint = *it;
+			//////////////////////////////////////////////////////////////////////////
+			if (this->isAnchorPoint() && pAnotherPoint->isAnchorPoint())
 			{
-				GPoint * pAnotherPoint = *it;
-				it = mergeWithList.erase(it);
-				//////////////////////////////////////////////////////////////////////////
-				if (this->isAnchorPoint() && pAnotherPoint->isAnchorPoint())
-				{
-					((GAnchorPoint *)this)->GetHandle()->UnbindTo(((GAnchorPoint *)pAnotherPoint)->GetHandle());
-				}
-				//////////////////////////////////////////////////////////////////////////
-				if (!bNoBackward)
-				{
-					return pAnotherPoint->SeperateFrom(this, true);
-				}
-				return true;
+				((GAnchorPoint *)this)->GetHandle()->UnbindTo(((GAnchorPoint *)pAnotherPoint)->GetHandle());
+			}
+			//////////////////////////////////////////////////////////////////////////
+			if (!bNoBackward)
+			{
+				pAnotherPoint->SeperateFrom(this, true);
+				++it;
 			}
 			else
 			{
-				++it;
+				if (pAnotherPoint == pPoint)
+				{
+					it = mergeWithList.erase(it);
+				}
+				else
+				{
+					++it;
+				}
 			}
 		}
+		if (!bNoBackward)
+		{
+			this->mergeWithList.clear();
+		}
+		return true;
 	}
 	return false;
 }
@@ -387,6 +403,27 @@ void GPoint::CallClingToMoved( bool bTry, int moveActionID )
 	CallMoveTo(tox, toy, bTry, moveActionID);
 }
 
+bool GPoint::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelationship/*=true*/ )
+{
+	if (super::CloneData(pClone, pNewParent))
+	{
+		GPoint * pPoint = (GPoint *)pClone;
+		pPoint->x = x;
+		pPoint->y = y;
+
+		if (!bNoRelationship)
+		{
+			pPoint->ClingTo(pClingTo, fClingToProportion);
+			if (pPoint->canBeMergedWith() && this->canBeMergedWith())
+			{
+				pPoint->MergeWith(this);
+			}
+		}
+
+		return true;
+	}
+	return false;
+}
 /************************************************************************/
 /* GANCHORPOINT                                                         */
 /************************************************************************/
@@ -420,16 +457,10 @@ const char * GAnchorPoint::getDisplayName()
 	return StringManager::getInstance().GetNNAnchorPointName();
 }
 
-bool GAnchorPoint::Clone( GObject * pNewParent )
+GObject * GAnchorPoint::CreateNewClone( GObject * pNewParent/*=NULL*/, GObject * pBeforeObj/*=NULL*/ )
 {
 	_GOBJ_CLONE_PRE(GAnchorPoint);
-
-    _node->phandle = NULL;
-
-    _GOBJ_CLONE_POST_NORET();
-	list<GObject *>::reverse_iterator it=_node->listChildren.rbegin();
-	_node->phandle = (GHandlePoint *)*it;
-    return true;
+    _GOBJ_CLONE_POST();
 }
 
 void GAnchorPoint::SetHandlePosition( float hx, float hy, float fAllowance/*=-1 */ )
@@ -489,6 +520,18 @@ bool GAnchorPoint::MoveTo( float newx, float newy, bool bTry, int moveActionID/*
 	return bret;
 
 }
+
+bool GAnchorPoint::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelationship/*=true*/ )
+{
+	if (super::CloneData(pClone, pNewParent))
+	{
+		GAnchorPoint * pAnchor = (GAnchorPoint *)pClone;
+		list<GObject *>::reverse_iterator it=pAnchor->lstChildren.rbegin();
+		pAnchor->phandle = (GHandlePoint *)*it;
+		return true;
+	}
+	return false;
+}
 /************************************************************************/
 /* GMIDPOINT                                                            */
 /************************************************************************/
@@ -521,7 +564,7 @@ const char * GMidPoint::getDisplayName()
 	return StringManager::getInstance().GetNNMidPointName();
 }
 
-bool GMidPoint::Clone( GObject * pNewParent )
+GObject * GMidPoint::CreateNewClone( GObject * pNewParent/*=NULL*/, GObject * pBeforeObj/*=NULL*/ )
 {
 	_GOBJ_CLONE_PRE(GMidPoint);
 	_GOBJ_CLONE_POST();
@@ -572,7 +615,7 @@ const char * GHandlePoint::getDisplayName()
 	return StringManager::getInstance().GetNNHandlePointName();
 }
 
-bool GHandlePoint::Clone( GObject * pNewParent )
+GObject * GHandlePoint::CreateNewClone( GObject * pNewParent/*=NULL*/, GObject * pBeforeObj/*=NULL*/ )
 {
 	_GOBJ_CLONE_PRE(GHandlePoint);
 	_GOBJ_CLONE_POST();
@@ -631,7 +674,7 @@ bool GHandlePoint::MoveTo( float newx, float newy, bool bTry, int moveActionID/*
 	{
         if (pBindWith)
 		{
-            if (GetAnchor()->nMoveActionID != moveActionID && pBindWith->GetAnchor()->nMoveActionID != moveActionID)
+            if (GetAnchor()->getMoveActionID() != moveActionID && pBindWith->GetAnchor()->getMoveActionID() != moveActionID)
 			{
                 pBindWith->CallMoveByOffset(-xoffset, -yoffset, false, moveActionID);
 			}
@@ -655,4 +698,14 @@ bool GHandlePoint::UnbindTo( GHandlePoint * pHandle )
     BindWith();
     pHandle->BindWith();
 	return true;
+}
+
+bool GHandlePoint::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelationship/*=true*/ )
+{
+	if (super::CloneData(pClone, pNewParent))
+	{
+		pBindWith = NULL;
+		return true;
+	}
+	return false;
 }

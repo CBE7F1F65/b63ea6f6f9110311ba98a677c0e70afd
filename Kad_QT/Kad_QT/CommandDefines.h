@@ -60,6 +60,8 @@ enum{
 	COMM_TOBEZIER,
 	COMM_TOSTRAIGHTLINE,
 
+	COMM_CLIP,
+
 	// Layers
 	COMM_NEWLAYER,		// new layer
 	COMM_NEWSUBLAYER,	// new sub layer
@@ -338,6 +340,21 @@ enum{
 	CSI_LINETRANSFORM_DUMMY=0,
 	CSI_LINETRANSFORM_WANTNEWINDEX,
 };
+
+/************************************************************************/
+/* CLIP                                                                 */
+/************************************************************************/
+
+enum{
+	CSP_CLIP_I_F_INDEX_PROPORTION=0,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_CLIP_DUMMY=0,
+	CSI_CLIP_WANTINDEX,
+	CSI_CLIP_WANTPROPORTION,
+};
+
 
 /************************************************************************/
 /* LINE                                                                 */

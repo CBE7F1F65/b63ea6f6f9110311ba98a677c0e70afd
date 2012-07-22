@@ -90,7 +90,7 @@ void QTUI_Layer_Tree::RebuildTree(GObject *changebase, GObject *activeitem)
 
 list<GObject *> * QTUI_Layer_Tree::GetActiveNodes()
 {
-    if (selectednodes.empty())
+    if (selectednodes.empty() && this->topLevelItem(0))
     {
         GObject * pObj = NULL;
         if (pPreferredNextSelectItem && FindItemByObj(pPreferredNextSelectItem))
@@ -147,7 +147,7 @@ void QTUI_Layer_Tree::dropEvent(QDropEvent *e)
             }
             else
             {
-                pDragDropLayer = (GLayer *)pObj->GetLayer();
+                pDragDropLayer = (GLayer *)pObj->getLayer();
                 pDragDropAfter = pObj;
             }
             MainInterface::getInstance().OnCommand(COMM_REPARENT);
@@ -355,7 +355,7 @@ void QTUI_Layer_Tree::UpdateNodeInfo(QTreeWidgetItem *pItem, GObject *pObj)
     SetItemLineColor(pItem, pObj->getLineColor(), pObj);
     SetItemTreeInfo(pItem, pObj->getDisplayName(), pObj->isDisplayFolded(), pObj);
     SetItemLineSelect(pItem, pObj->isSelected(), pObj);
-    SetItemFrameColor(pItem, pObj->GetLayer()->getLineColor(), pObj);
+    SetItemFrameColor(pItem, pObj->getLayer()->getLineColor(), pObj);
 }
 
 void QTUI_Layer_Tree::SetItemData(QTreeWidgetItem *pItem, GObject *pObj)
@@ -445,7 +445,7 @@ void QTUI_Layer_Tree::SLT_DeleteItems()
     {
         return;
     }
-    pPreferredNextSelectItem = selectednodes.front()->GetLayer(false);
+    pPreferredNextSelectItem = selectednodes.front()->getLayer(false);
     MainInterface::getInstance().OnCommand(COMM_DELETEITEM);
     /*
     selectednodes.clear();

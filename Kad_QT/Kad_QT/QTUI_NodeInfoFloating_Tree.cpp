@@ -415,13 +415,13 @@ void QTUI_NodeInfoFloating_Tree::UpdateNodeInfo(GObject *pObj, QTreeWidgetItem *
         if (pObj->isPoint())
         {
             GPoint * pPoint = (GPoint *)pObj;
-            GObject * pClingToObj = pPoint->getClingTo();
-            if (pClingToObj)
+            GLine * pClingToLine = pPoint->getClingTo();
+            if (pClingToLine)
             {
                 QTreeWidgetItem * pClingToItem = NewItemWithText(pInfoItem, psm->GetNodeInfoClingToName());
 
-                str.sprintf("%s: %d, %s: %s", strID, pClingToObj->getID(), strName, pClingToObj->getDisplayName());
-                NewItemWithText(pClingToItem, str, NewRelationship(pObj, pClingToObj, QTUINIFT_RELATIONSHIP_CLINGTO, pPoint->getClingProportion()));
+                str.sprintf("%s: %d, %s: %s", strID, pClingToLine->getID(), strName, pClingToLine->getDisplayName());
+                NewItemWithText(pClingToItem, str, NewRelationship(pObj, pClingToLine, QTUINIFT_RELATIONSHIP_CLINGTO, pPoint->getClingProportion()));
             }
             list<GPoint *> * plMergeWith = pPoint->getMergeWith();
             if (!plMergeWith->empty())

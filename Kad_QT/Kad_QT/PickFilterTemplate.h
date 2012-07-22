@@ -32,6 +32,7 @@ public:
 	GObject * pFilterObj;
 	bool bRecFind;
 
+	static bool staticPickFilterCallback(GObject * pObj);
 	bool FilterFunc(GObject * pObj);
 }; 
 
@@ -54,5 +55,24 @@ public:
 	bool bRecFind;
 	bool bEntityFind;
 
+	static bool staticPickFilterCallback(GObject * pObj);
+	bool FilterFunc(GObject * pObj);
+}; 
+
+class PickFilterOnLine : public PickFilterTemplate
+{
+public:
+	static PickFilterOnLine& getInstance() { static PickFilterOnLine instance; return instance; }
+
+private:
+	PickFilterOnLine();
+	~PickFilterOnLine();
+	PickFilterOnLine(PickFilterOnLine const&);
+	void operator=(PickFilterOnLine const&);
+
+public:
+	PickFilterCallback Use();
+
+	static bool staticPickFilterCallback(GObject * pObj);
 	bool FilterFunc(GObject * pObj);
 }; 

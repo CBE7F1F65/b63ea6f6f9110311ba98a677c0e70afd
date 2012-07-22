@@ -23,18 +23,22 @@ PickFilterCallback PickFilterTemplate::Use()
 
 void PickFilterTemplate::Dispose()
 {
-	DASSERT(bInUse);
+//	DASSERT(bInUse);
 	bInUse = false;
 }
 
-bool staticPickFilterCallback_SingleObj(GObject * pObj)
+/************************************************************************/
+/* SingleObj                                                            */
+/************************************************************************/
+
+bool PickFilterSingleObj::staticPickFilterCallback(GObject * pObj)
 {
-	return PickFilterSingleObj::getInstance().FilterFunc(pObj);
+	return getInstance().FilterFunc(pObj);
 }
 
 PickFilterSingleObj::PickFilterSingleObj()
 {
-	pfcb = staticPickFilterCallback_SingleObj;
+	pfcb = staticPickFilterCallback;
 }
 
 PickFilterSingleObj::~PickFilterSingleObj()
@@ -61,15 +65,18 @@ bool PickFilterSingleObj::FilterFunc( GObject * pObj )
 	return true;
 }
 
+/************************************************************************/
+/* SinglePoint                                                          */
+/************************************************************************/
 
-bool staticPickFilterCallback_SinglePoint(GObject * pObj)
+bool PickFilterSinglePoint::staticPickFilterCallback(GObject * pObj)
 {
-	return PickFilterSinglePoint::getInstance().FilterFunc(pObj);
+	return getInstance().FilterFunc(pObj);
 }
 
 PickFilterSinglePoint::PickFilterSinglePoint()
 {
-	pfcb = staticPickFilterCallback_SinglePoint;
+	pfcb = staticPickFilterCallback;
 }
 
 PickFilterSinglePoint::~PickFilterSinglePoint()
@@ -110,4 +117,37 @@ bool PickFilterSinglePoint::FilterFunc( GObject * pObj )
 		}
 	}
 	return true;
+}
+
+/************************************************************************/
+/* OnLine                                                               */
+/************************************************************************/
+
+PickFilterOnLine::PickFilterOnLine()
+{
+	pfcb = staticPickFilterCallback;
+}
+
+PickFilterOnLine::~PickFilterOnLine()
+{
+
+}
+
+PickFilterCallback PickFilterOnLine::Use()
+{
+	return PickFilterTemplate::Use();
+}
+
+bool PickFilterOnLine::staticPickFilterCallback( GObject * pObj )
+{
+	return getInstance().FilterFunc(pObj);
+}
+
+bool PickFilterOnLine::FilterFunc( GObject * pObj )
+{
+	if (!pObj->isLine() && !pObj->isMidPoint())
+	{
+		return true;
+	}
+	return false;
 }

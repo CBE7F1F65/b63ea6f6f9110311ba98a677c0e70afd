@@ -2,6 +2,8 @@
 #include "GShape.h"
 #include "StringManager.h"
 
+#include "GBaseNode.h"
+
 GShape::GShape(void)
 {
 }
@@ -19,7 +21,7 @@ const char * GShape::getDisplayName()
 	return StringManager::getInstance().GetNNShapeName();
 }
 
-bool GShape::Clone( GObject * pNewParent )
+GObject * GShape::CreateNewClone( GObject * pNewParent/*=NULL*/, GObject * pBeforeObj/*=NULL*/ )
 {
 	_GOBJ_CLONE_PRE(GShape);
 	_GOBJ_CLONE_POST();

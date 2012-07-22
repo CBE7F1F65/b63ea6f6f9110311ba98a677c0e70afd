@@ -458,6 +458,9 @@
     <ClCompile Include="GObjectPicker_Sub.cpp">
       <Filter>Main\Helper\GObjectPicker</Filter>
     </ClCompile>
+    <ClCompile Include="ClipCommand.cpp">
+      <Filter>Main\Command\Transform</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -654,6 +657,9 @@
     </ClInclude>
     <ClInclude Include="PickFilterTemplate.h">
       <Filter>Main\Helper\GObjectPicker\Template</Filter>
+    </ClInclude>
+    <ClInclude Include="ClipCommand.h">
+      <Filter>Main\Command\Transform</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

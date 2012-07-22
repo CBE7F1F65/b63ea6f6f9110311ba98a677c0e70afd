@@ -439,8 +439,9 @@ bool CommandTemplate::MergeClingNewPoint( GPoint * pFrom, GObject * pTo, float f
 			return false;
 		}
 		pTo = pTo->getLine();
-		fProportion = ((GLine *)pTo)->CalculateMidPointProportion();
+//		fProportion = ((GLine *)pTo)->CalculateMidPointProportion();
 	}
+	bool bRet = false;
 	if (pTo->isPoint())
 	{
 		CommitFrontCommand(
@@ -449,7 +450,18 @@ bool CommandTemplate::MergeClingNewPoint( GPoint * pFrom, GObject * pTo, float f
 			CCMake_O(pTo),
 			NULL
 			);
-		return true;
+		GPoint * pToPoint = (GPoint *)pTo;
+		GLine * pToCling = pToPoint->getClingTo();
+		if (pToCling)
+		{
+			CommitFrontCommand(
+				CCMake_C(COMM_CLING),
+				CCMake_O(pFrom),
+				CCMake_O(pToCling),
+				CCMake_F(pToPoint->getClingProportion()),
+				NULL);
+		}
+		bRet = true;
 	}
 	if (pTo->isLine())
 	{
@@ -460,9 +472,9 @@ bool CommandTemplate::MergeClingNewPoint( GPoint * pFrom, GObject * pTo, float f
 			CCMake_F(fProportion),
 			NULL
 			);
-		return true;
+		bRet = true;
 	}
-	return false;
+	return true;
 }
 
 void CommandTemplate::ReAttachAfterMoveNode( GObject * pObj, bool bFindMerge/*=true*/, list<GObject *>* lObjs/*=0 */ )
@@ -521,7 +533,7 @@ void CommandTemplate::ReAttachAfterMoveNode( GObject * pObj, bool bFindMerge/*=t
 		if (pTestPickedObj->isMidPoint())
 		{
 			pTestPickedObj = pTestPickedObj->getLine();
-			fProportion = ((GLine *)pTestPickedObj)->CalculateMidPointProportion();
+//			fProportion = ((GLine *)pTestPickedObj)->CalculateMidPointProportion();
 		}
 		if (!pTestPickedObj->canBeClingTo() && !pTestPickedObj->canBeMergedWith())
 		{

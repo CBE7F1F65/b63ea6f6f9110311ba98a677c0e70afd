@@ -100,16 +100,11 @@ void DuplicateCommand::OnDoneCommand()
 			continue;
 		}
 
-		GBaseNode tempholdplace;
-		pObj->Clone(&tempholdplace);
-		GObject * pDupObj = NULL;
-		if (tempholdplace.getChildren()->empty())
-		{
-			continue;
-		}
-		pDupObj = tempholdplace.getChildren()->front();
-		pDupObj->ReparentAfterObject(pParent, pObj);
-		tempholdplace.RemoveAllChildren(true);
+//		GBaseNode tempholdplace;
+//		GObject * pDupObj = pObj->CreateNewClone(&tempholdplace);
+//		pDupObj->ReparentBeforeObject(pParent, pObj);
+//		tempholdplace.RemoveAllChildren(true);
+		GObject * pDupObj = pObj->CreateNewClone(pParent, pObj);
 
 
 		PushRevertable(

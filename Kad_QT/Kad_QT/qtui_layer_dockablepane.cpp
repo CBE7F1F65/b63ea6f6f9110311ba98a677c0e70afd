@@ -25,9 +25,11 @@ QTUI_Layer_DockablePane::~QTUI_Layer_DockablePane()
 void QTUI_Layer_DockablePane::enterEvent(QEvent *e)
 {
     GObjectManager::getInstance().SetRenderUILayerIndicators(true);
+	setFocus();
 }
 
 void QTUI_Layer_DockablePane::leaveEvent(QEvent *e)
 {
-    GObjectManager::getInstance().SetRenderUILayerIndicators(false);
+	GObjectManager::getInstance().SetRenderUILayerIndicators(false);
+	QMainInterface::getInstance().GetPGLView()->setFocus();
 }

@@ -84,7 +84,7 @@ void ClingCommand::OnDoneCommand()
 	GPoint * pFromPoint = (GPoint *)pFromObj;
 //	GLine * pToLine = (GLine *)pToObj;
 
-	GObject * pOClingto = pFromPoint->getClingTo();
+	GLine * pOClingto = pFromPoint->getClingTo();
 	int oClingToIndex = -1;
 	float oClingToProportion = 0;
 	if (pOClingto)

@@ -143,7 +143,8 @@ void QTUI_GLView::wheelEvent( QWheelEvent *e )
 
 void QTUI_GLView::enterEvent( QEvent *e )
 {
-    setFocus();
+	setFocus();
+	this->activateWindow();
     QGLWidget::enterEvent(e);
 }
 

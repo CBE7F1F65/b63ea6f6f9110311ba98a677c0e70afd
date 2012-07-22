@@ -607,11 +607,30 @@ bool MarqueeSelect::CheckObjInSelection( GObject * pTestObj, bool bFindAncestor/
 		}
 		if (bFindCling)
 		{
+			GLine * pItAssumeLine = pItLine;
+			if (pItPoint)
+			{
+				if (pItPoint->isMidPoint() || pItPoint->isAnchorPoint())
+				{
+					pItAssumeLine = pItPoint->getLine();
+				}
+			}
+			if (pItAssumeLine)
+			{
+				if (pTestObj->isPoint())
+				{
+					if (pItAssumeLine->isClingBy((GPoint *)pTestObj))
+					{
+						return true;
+					}
+				}
+			}
+			/*
 			if (pItPoint)
 			{
 				if (pTestObj->isLine())
 				{
-					GLine * pLine = (GLine *)pItLine;
+					GLine * pLine = (GLine *)pTestObj;
 
 					if (pItPoint->isClingTo(pLine))
 					{
@@ -620,6 +639,7 @@ bool MarqueeSelect::CheckObjInSelection( GObject * pTestObj, bool bFindAncestor/
 
 				}
 			}
+			*/
 		}
 	}
 	return false;

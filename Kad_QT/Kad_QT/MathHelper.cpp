@@ -13,7 +13,6 @@ MathHelper::MathHelper(void)
 MathHelper::~MathHelper(void)
 {
 }
-
 int MathHelper::RestrictAngle( int angle )
 {
 	int anglebase_360 = ANGLEBASE_90*4;
@@ -28,7 +27,7 @@ int MathHelper::RestrictAngle( int angle )
 	return angle;
 }
 
-bool MathHelper::LineSegmentIntersect( float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float * intx/*=0*/, float * inty/*=0*/ )
+int MathHelper::LineSegmentIntersect( float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float * intx/*=0*/, float * inty/*=0*/ )
 {
 	/*
 	float s1_x, s1_y, s2_x, s2_y;
@@ -71,7 +70,7 @@ bool MathHelper::LineSegmentIntersect( float x1, float y1, float x2, float y2, f
 			*inty = rety;
 		}
 
-		return true;
+		return MHLINEINTERSECT_COINCIDENT;
 	}
 
 	/* Are the line parallel */
@@ -84,7 +83,7 @@ bool MathHelper::LineSegmentIntersect( float x1, float y1, float x2, float y2, f
 		{
 			*inty = 0;
 		}
-		return false;
+		return MHLINEINTERSECT_NOINTERSECT;
 	}
 
 	/* Is the intersection along the the segments */
@@ -99,7 +98,7 @@ bool MathHelper::LineSegmentIntersect( float x1, float y1, float x2, float y2, f
 		{
 			*inty = 0;
 		}
-		return false;
+		return MHLINEINTERSECT_NOINTERSECT;
 	}
 	if (intx)
 	{
@@ -109,7 +108,7 @@ bool MathHelper::LineSegmentIntersect( float x1, float y1, float x2, float y2, f
 	{
 		*inty = y1 + mua * (y2 - y1);
 	}
-	return true;
+	return MHLINEINTERSECT_INTERSECT;
 }
 
 bool MathHelper::LinePartialInRect( float x1, float y1, float x2, float y2, float xl, float yt, float xr, float yb, bool nocalc/*=false*/ )
@@ -677,6 +676,9 @@ bool MathHelper::FindSubNHPFGBL( GBezierLine * pBezier, float fTargetLength, Poi
 	return false;
 }
 
+/************************************************************************/
+/* BezierSublinesInfo                                                   */
+/************************************************************************/
 BezierSublinesInfo::BezierSublinesInfo()
 {
 	ptPoints = NULL;
@@ -687,6 +689,19 @@ BezierSublinesInfo::BezierSublinesInfo()
 BezierSublinesInfo::~BezierSublinesInfo()
 {
 	ClearSet();
+}
+
+
+BezierSublinesInfo& BezierSublinesInfo::operator=(const BezierSublinesInfo &that)
+{
+	ClearSet();
+
+	if (that.nPoints)
+	{
+		ResetPoints(that.ptPoints[0], that.ptBeginHandle, that.ptEndHandle, that.ptPoints[that.nPoints-1], that.fSavedPrecision);
+	}
+
+	return *this;
 }
 
 void BezierSublinesInfo::ClearSet()

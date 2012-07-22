@@ -37,6 +37,11 @@ public:
 	BezierSublinesInfo();
 	~BezierSublinesInfo();
 
+private:
+	BezierSublinesInfo(const BezierSublinesInfo& that);
+public:
+	BezierSublinesInfo& operator=(const BezierSublinesInfo& that);
+
 	void ClearSet();
 	int ResetPoints(PointF2D pb, PointF2D pbh, PointF2D peh, PointF2D pe, float fPrecision);
 
@@ -51,6 +56,7 @@ public:
 	float GetLength(int ibegin, int iend);
 
 	bool GetBoundingBox(float * lx, float * ty, float * rx, float * by);
+
 
 private:
 	int nPoints;
@@ -70,6 +76,12 @@ private:
 class GLine;
 class GBezierLine;
 
+enum{
+	MHLINEINTERSECT_NOINTERSECT,
+	MHLINEINTERSECT_INTERSECT,
+	MHLINEINTERSECT_COINCIDENT,
+};
+
 class MathHelper
 {
 public:
@@ -88,7 +100,7 @@ public:
 	float LineSegmentLength(const PointF2D &p1, const PointF2D &p2);
 	float LineSegmentLengthPow2(const PointF2D &p1, const PointF2D &p2);
 
-	bool LineSegmentIntersect( float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float * intx=0, float * inty=0);
+	int LineSegmentIntersect( float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float * intx=0, float * inty=0);
 	bool LinePartialInRect( float x1, float y1, float x2, float y2, float xl, float yt, float xr, float yb, bool nocalc=false);
 	bool LineInRect( float x1, float y1, float x2, float y2, float xl, float yt, float xr, float yb);
 	bool RectIntersectRect( float xl1, float yt1, float xr1, float yb1, float xl2, float yt2, float xr2, float yb2);

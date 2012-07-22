@@ -198,8 +198,8 @@ void ReparentCommand::OnDoneCommand()
 
 		GBaseNode tempHoldingPlace;
 		pObj->Reparent(&tempHoldingPlace);
-
 		pObj->ReparentAfterObject(pNewParent, pNewPlaceAfter);
+		tempHoldingPlace.RemoveAllChildren(true);
 
 		int oparentindex = pOriParent->getID();
 		int oafterindex = -1;

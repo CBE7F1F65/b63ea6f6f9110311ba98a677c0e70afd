@@ -4,6 +4,8 @@ class GPiece :
 	public GShape
 {
 public:
+	typedef GShape super;
+public:
 	GPiece(void);
 	virtual ~GPiece(void);
 
@@ -11,6 +13,6 @@ public:
 
 	virtual const char * getDisplayName();
 
-	virtual bool Clone( GObject * pNewParent );
+	virtual GObject * CreateNewClone(GObject * pNewParent=NULL, GObject * pBeforeObj=NULL);
 	virtual void MovePiece( float movedx_c, float movedy_c, bool trymode );
 };

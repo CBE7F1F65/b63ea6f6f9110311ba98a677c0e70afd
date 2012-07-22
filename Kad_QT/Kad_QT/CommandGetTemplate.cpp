@@ -19,6 +19,7 @@
 #include "TestCommand.h"
 #include "BindHandleCommand.h"
 #include "LineTransformCommand.h"
+#include "ClipCommand.h"
 
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
@@ -53,6 +54,8 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 	case COMM_TOBEZIER:
 	case COMM_TOSTRAIGHTLINE:
 		return &LineTransformCommand::getInstance();
+	case COMM_CLIP:
+		return &ClipCommand::getInstance();
 
 	case COMM_NEWLAYER:
 	case COMM_NEWSUBLAYER:
