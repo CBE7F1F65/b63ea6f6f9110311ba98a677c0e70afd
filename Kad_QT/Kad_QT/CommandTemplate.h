@@ -28,6 +28,8 @@ public:
 	virtual void OnDoneCommand()=0;
 	void CallDoneCommand();
 	virtual void OnInitCommand();
+	void CallClearCommand();
+	virtual void OnClearCommand();
 	void CallInitCommand();
 	virtual void OnTerminalCommand();
 	void CallTerminalCommand();

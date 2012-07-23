@@ -31,7 +31,7 @@ void GLine::SetBeginEnd( float xb, float yb, float xe, float ye, float fAllowanc
 		}
 		else
 		{
-			plbegin->CallMoveTo(xb, yb, false);
+			plbegin->CallMoveTo(this, xb, yb, false);
 		}
 	}
 	if (plend)
@@ -41,7 +41,7 @@ void GLine::SetBeginEnd( float xb, float yb, float xe, float ye, float fAllowanc
 		}
 		else
 		{
-			plend->CallMoveTo(xe, ye, false);
+			plend->CallMoveTo(this, xe, ye, false);
 		}
 	}
 //	UpdateMidPoint();
@@ -56,7 +56,7 @@ const char * GLine::getDisplayName()
 	return StringManager::getInstance().GetNNLineName();
 }
 
-bool GLine::MoveTo( float newx, float newy, bool bTry, int moveActionID/*=-1*/ )
+bool GLine::MoveTo( GObject * pCaller, float newx, float newy, bool bTry, int moveActionID/*=-1*/ )
 {
 	if (!canMove())
 	{
@@ -82,14 +82,14 @@ bool GLine::MoveTo( float newx, float newy, bool bTry, int moveActionID/*=-1*/ )
 	*/
 //	ToggleTryMoveState(bTry);
 
-	plbegin->CallMoveByOffset(xoffset, yoffset, bTry, moveActionID);
-	plend->CallMoveByOffset(xoffset, yoffset, bTry, moveActionID);
+	plbegin->CallMoveByOffset(this, xoffset, yoffset, bTry, moveActionID);
+	plend->CallMoveByOffset(this, xoffset, yoffset, bTry, moveActionID);
 
 //	UpdateMidPoint();
 	return true;
 }
 
-bool GLine::CallMoveTo( float newx, float newy, bool bTry, int moveActionID/*=-1*/ )
+bool GLine::CallMoveTo( GObject * pCaller, float newx, float newy, bool bTry, int moveActionID/*=-1*/ )
 {
 	if (!clingByList.empty())
 	{
@@ -97,10 +97,10 @@ bool GLine::CallMoveTo( float newx, float newy, bool bTry, int moveActionID/*=-1
 		float yoffset = newy - getY();
 		for (list<GPoint *>::iterator it=clingByList.begin(); it!=clingByList.end(); ++it)
 		{
-			(*it)->CallMoveByOffset(xoffset, yoffset, bTry, moveActionID);
+			(*it)->CallMoveByOffset(pCaller, xoffset, yoffset, bTry, moveActionID);
 		}
 	}
-	return MoveTo(newx, newy, bTry, moveActionID);
+	return MoveTo(pCaller, newx, newy, bTry, moveActionID);
 }
 
 void GLine::OnModify()
@@ -221,7 +221,7 @@ bool GLine::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelations
 	if (super::CloneData(pClone, pNewParent, bNoRelationship))
 	{
 		GLine * pLine = (GLine *)pClone;
-		list<GObject *>::iterator it=pLine->lstChildren.begin();
+		list<GObject *>::reverse_iterator it=pLine->lstChildren.rbegin();
 		pLine->plbegin = (GAnchorPoint *)*it;
 		++it;
 		pLine->plend = (GAnchorPoint *)*it;
@@ -756,10 +756,13 @@ bool GBezierLine::GetPositionAtProportion( float fClingToProportion, float* tox,
 	{
 		return GStraightLine::GetPositionAtProportion(fClingToProportion, tox, toy, isec);
 	}
-	if (fClingToProportion < 0 || fClingToProportion > 1)
+	if (fClingToProportion < M_FLOATEPS)
 	{
-		ASSERT(false);
-		return false;
+		fClingToProportion = M_FLOATEPS;
+	}
+	if (fClingToProportion > 1-M_FLOATEPS)
+	{
+		fClingToProportion = 1-M_FLOATEPS;
 	}
 
 	float fTotalLength = bsinfo.GetLength();
@@ -871,4 +874,320 @@ bool GBezierLine::CloneData(GObject * pClone, GObject * pNewParent, bool bNoRela
 		return true;
 	}
 	return false;
+}
+
+GLine * GBezierLine::Clip( float fClipProportion )
+{
+	if (fClipProportion <= 0 || fClipProportion >= 1)
+	{
+		return NULL;
+	}
+
+	GLine * pClonedLine = (GLine *)CreateNewClone(NULL, this);
+
+	bool bBezier = !isStraightLine();
+	
+	GHandlePoint * pOEndHandleBind = plend->GetHandle()->getBindWith();
+
+	PointF2D ptBegin = plbegin->GetPointF2D();
+	PointF2D ptEnd = plend->GetPointF2D();
+
+	GLine * pOEndClingTo = plend->getClingTo();
+	float fOEndClingProp = plend->getClingProportion();
+
+	list<GPoint *>  * plstEndMergeWith = plend->getMergeWith();
+	GPoint * pEndMergeWith = NULL;
+	if (!plstEndMergeWith->empty())
+	{
+		pEndMergeWith = plstEndMergeWith->front();
+	}
+
+	list<GPoint *> lstClingBy = clingByList;
+	list<float> lstFCP;
+	if (!lstClingBy.empty())
+	{
+		for (list<GPoint *>::iterator it=lstClingBy.begin(); it!=lstClingBy.end(); ++it)
+		{
+			lstFCP.push_back((*it)->getClingProportion());
+		}
+	}
+
+	PointF2D pSubBh1;
+	PointF2D pSubEh1;
+	PointF2D pSubBh2;
+	PointF2D pSubEh2;
+	if (bBezier)
+	{
+		MathHelper::getInstance().CalculateBezierSubDivision(
+			ptBegin, plbegin->GetHandle()->GetPointF2D(), plend->GetHandle()->GetPointF2D(), ptEnd,
+			fClipProportion,
+			&pSubBh1, &pSubEh1, &pSubBh2, &pSubEh2);
+	}
+
+	plend->ClingTo(NULL, 0);
+	plend->SeperateFrom();
+	DeclingByOther();
+
+	float tx, ty;
+	int isec;
+	GetPositionAtProportion(fClipProportion, &tx, &ty, &isec);
+
+	SetBeginEnd(ptBegin.x, ptBegin.y, tx, ty);
+	if (bBezier)
+	{
+		plbegin->SetHandlePosition(pSubBh1.x, pSubBh1.y);
+		plend->SetHandlePosition(pSubEh1.x, pSubEh1.y);
+	}
+
+	pClonedLine->SetBeginEnd(tx, ty, ptEnd.x, ptEnd.y);
+	GAnchorPoint * pNewBeginPoint = pClonedLine->GetBeginPoint();
+	GAnchorPoint * pNewEndPoint = pClonedLine->GetEndPoint();
+	if (bBezier)
+	{
+		pNewBeginPoint->SetHandlePosition(pSubBh2.x, pSubBh2.y);
+		pNewEndPoint->SetHandlePosition(pSubEh2.x, pSubEh2.y);
+	}
+	if (pOEndHandleBind)
+	{
+		pOEndHandleBind->BindWith(pNewEndPoint->GetHandle());
+	}
+	if (bBezier)
+	{
+		pNewBeginPoint->GetHandle()->BindWith(plend->GetHandle());
+	}
+
+	pNewEndPoint->ClingTo(pOEndClingTo, fOEndClingProp);
+	if (pEndMergeWith)
+	{
+		pNewEndPoint->MergeWith(pEndMergeWith);
+	}
+
+	plend->MergeWith(pNewBeginPoint);
+
+	if (!lstClingBy.empty())
+	{
+		list<float>::iterator jt=lstFCP.begin();
+		for (list<GPoint *>::iterator it=lstClingBy.begin(); it!=lstClingBy.end(); ++it, ++jt)
+		{
+			GPoint * pClingByPoint = *it;
+			float fCP = *jt;
+			if (fCP < fClipProportion)
+			{
+				float fNewProp = fCP/fClipProportion;
+				ASSERT(fNewProp > 0 && fNewProp <= 1);
+				pClingByPoint->ClingTo(this, fNewProp);
+			}
+			else if (fCP > fClipProportion)
+			{
+				float fNewProp = (fCP-fClipProportion)/(1-fClipProportion);
+				ASSERT(fNewProp > 0 && fNewProp <= 1);
+				pClingByPoint->ClingTo(pClonedLine, fNewProp);
+			}
+			else
+			{
+				pClingByPoint->MergeWith(plend);
+			}
+		}
+	}
+	return pClonedLine;
+}
+
+bool GBezierLine::Combine( GLine * pLine )
+{
+	ASSERT(pLine);
+	GAnchorPoint * pThisBegin = GetBeginPoint();
+	GAnchorPoint * pThisEnd = GetEndPoint();
+	GAnchorPoint * pThatBegin = pLine->GetBeginPoint();
+	GAnchorPoint * pThatEnd = pLine->GetEndPoint();
+
+	if (pThisBegin->isMergeWith(pThatBegin))
+	{
+		SwapBeginEnd();
+	}
+	else if (pThisBegin->isMergeWith(pThatEnd))
+	{
+		SwapBeginEnd();
+		pLine->SwapBeginEnd();
+	}
+	else if (pThisEnd->isMergeWith(pThatEnd))
+	{
+		pLine->SwapBeginEnd();
+	}
+	else if (!pThisEnd->isMergeWith(pThatBegin))
+	{
+		return false;
+	}
+
+	list<GPoint *> lstCombinPointMergeWith = *(pThisEnd->getMergeWith());
+	lstCombinPointMergeWith.remove(pThatBegin);
+
+	list<GPoint *> lstThisClingBy = clingByList;
+	list<GPoint *> lstThatClingBy = *(pLine->getClingBy());
+	list<float> lstThisFCP;
+	list<float> lstThatFCP;
+	if (!lstThisClingBy.empty())
+	{
+		for (list<GPoint *>::iterator it=lstThisClingBy.begin(); it!=lstThisClingBy.end(); ++it)
+		{
+			lstThisFCP.push_back((*it)->getClingProportion());
+		}
+	}
+	if (!lstThatClingBy.empty())
+	{
+		for (list<GPoint *>::iterator it=lstThatClingBy.begin(); it!=lstThatClingBy.end(); ++it)
+		{
+			lstThatFCP.push_back((*it)->getClingProportion());
+		}
+	}
+
+	list<GPoint *> * plstThatEndMergeWith = pThatEnd->getMergeWith();
+	GPoint * pThatEndMergeWith = NULL;
+	if (!plstThatEndMergeWith->empty())
+	{
+		pThatEndMergeWith = plstThatEndMergeWith->front();
+	}
+
+	float fThisLength = getLength();
+	float fThatLength = pLine->getLength();
+
+	PointF2D ptThatEnd = pThatEnd->GetPointF2D();
+	GHandlePoint * pThatEndHandle = pThatEnd->GetHandle();
+	PointF2D ptThatEndHandle = pThatEndHandle->GetPointF2D();
+
+	GHandlePoint * pThatEndHandleBindWith = pThatEndHandle->getBindWith();
+
+	//////////////////////////////////////////////////////////////////////////
+	pLine->RemoveFromParent(true);
+	//////////////////////////////////////////////////////////////////////////
+
+	pThisEnd->SeperateFrom();
+	pThisEnd->GetHandle()->BindWith();
+	DeclingByOther();
+
+	pThisEnd->CallMoveTo(pThisEnd, ptThatEnd.x, ptThatEnd.y, false);
+	pThisEnd->GetHandle()->CallMoveTo(pThisEnd, ptThatEndHandle.x, ptThatEndHandle.y, false);
+	if (pThatEndMergeWith)
+	{
+		pThisEnd->MergeWith(pThatEndMergeWith);
+	}
+	if (pThatEndHandleBindWith)
+	{
+		pThatEndHandleBindWith->BindWith(pThisEnd->GetHandle());
+	}
+
+	float fTotalLength = fThisLength+fThatLength;
+	float fCombinePointCP = fThisLength/fTotalLength;
+
+	if (!lstThisClingBy.empty())
+	{
+		list<float>::iterator jt=lstThisFCP.begin();
+		for (list<GPoint *>::iterator it=lstThisClingBy.begin(); it!=lstThisClingBy.end(); ++it, ++jt)
+		{
+			GPoint * pClingByPoint = *it;
+			float fCP = *jt;
+			fCP *= fCombinePointCP;
+			pClingByPoint->ClingTo(this, fCP);
+		}
+	}
+	if (!lstThatClingBy.empty())
+	{
+		list<float>::iterator jt=lstThatFCP.begin();
+		for (list<GPoint *>::iterator it=lstThatClingBy.begin(); it!=lstThatClingBy.end(); ++it, ++jt)
+		{
+			GPoint * pClingByPoint = *it;
+			float fCP = *jt;
+			fCP = fCP*(1-fCombinePointCP)+fCombinePointCP;
+			pClingByPoint->ClingTo(this, fCP);
+		}
+	}
+	if (!lstCombinPointMergeWith.empty())
+	{
+		for (list<GPoint *>::iterator it=lstCombinPointMergeWith.begin(); it!=lstCombinPointMergeWith.end(); ++it)
+		{
+			(*it)->ClingTo(this, fCombinePointCP);
+		}
+	}
+	return true;
+}
+
+bool GBezierLine::SwapBeginEnd()
+{
+	GPoint * pOBeginMergeWith = NULL;
+	GPoint * pOEndMergeWith = NULL;
+
+	list<GPoint *> * plstMergeWith;
+	plstMergeWith = plbegin->getMergeWith();
+	if (!plstMergeWith->empty())
+	{
+		pOBeginMergeWith = plstMergeWith->front();
+	}
+	plstMergeWith = plend->getMergeWith();
+	if (!plstMergeWith->empty())
+	{
+		pOEndMergeWith = plstMergeWith->front();
+	}
+
+	list<GPoint *> lstClingBy = clingByList;
+	list<float> lstFCP;
+	if (!lstClingBy.empty())
+	{
+		for (list<GPoint *>::iterator it=lstClingBy.begin(); it!=lstClingBy.end(); ++it)
+		{
+			lstFCP.push_back((*it)->getClingProportion());
+		}
+	}
+
+	bool bBezier = !isStraightLine();
+
+	PointF2D ptOBegin = plbegin->GetPointF2D();
+	PointF2D ptOEnd = plend->GetPointF2D();
+	PointF2D ptOBeginHandle;
+	PointF2D ptOEndHandle;
+	GHandlePoint * pOBeginHandleBindWith;
+	GHandlePoint * pOEndHandleBindWith;
+	if (bBezier)
+	{
+		GHandlePoint * pBeginHandle = plbegin->GetHandle();
+		GHandlePoint * pEndHandle = plend->GetHandle();
+		ptOBeginHandle = pBeginHandle->GetPointF2D();
+		ptOEndHandle = pEndHandle->GetPointF2D();
+		pOBeginHandleBindWith = pBeginHandle->getBindWith();
+		pOEndHandleBindWith = pEndHandle->getBindWith();
+
+		pBeginHandle->BindWith();
+		pEndHandle->BindWith();
+	}
+
+	plbegin->SeperateFrom();
+	plend->SeperateFrom();
+	DeclingByOther();
+
+	SetBeginEnd(ptOEnd.x, ptOEnd.y, ptOBegin.x, ptOBegin.y);
+	if (bBezier)
+	{
+		plbegin->SetHandlePosition(ptOEndHandle.x, ptOEndHandle.y);
+		plend->SetHandlePosition(ptOBeginHandle.x, ptOBeginHandle.y);
+		plbegin->GetHandle()->BindWith(pOEndHandleBindWith);
+		plend->GetHandle()->BindWith(pOBeginHandleBindWith);
+	}
+	if (pOEndMergeWith)
+	{
+		plbegin->MergeWith(pOEndMergeWith);
+	}
+	if (pOBeginMergeWith)
+	{
+		plend->MergeWith(pOBeginMergeWith);
+	}
+
+	if (!lstClingBy.empty())
+	{
+		list<float>::iterator jt=lstFCP.begin();
+		for (list<GPoint *>::iterator it=lstClingBy.begin(); it!=lstClingBy.end(); ++it, ++jt)
+		{
+			GPoint * pClingByPoint = *it;
+			float fCP = *jt;
+			pClingByPoint->ClingTo(this, 1-fCP);
+		}
+	}
+	return true;
 }

@@ -655,7 +655,7 @@ void MarqueeSelect::DoMovePoint( GPoint * pPoint, float movedx_c, float movedy_c
 	{
 		if (nomoveflag < MARQNOMOVE_POINT)
 		{
-			pPoint->CallMoveByOffset(movedx_c, movedy_c, true, nMoveActionID);
+			pPoint->CallMoveByOffset(pPoint, movedx_c, movedy_c, true, nMoveActionID);
 		}
 	}
 }
@@ -670,7 +670,7 @@ void MarqueeSelect::DoMoveLine( GLine * pLine, float movedx_c, float movedy_c, i
 	{
 		if (nomoveflag < MARQNOMOVE_LINE)
 		{
-			pLine->CallMoveByOffset(movedx_c, movedy_c, true, nMoveActionID);
+			pLine->CallMoveByOffset(pLine, movedx_c, movedy_c, true, nMoveActionID);
 		}
 	}
 }
@@ -680,7 +680,7 @@ void MarqueeSelect::DoMovePiece( GPiece * pPiece, float movedx_c, float movedy_c
 	//ToDo!!
 	if (nomoveflag < MARQNOMOVE_PIECE)
 	{
-		pPiece->CallMoveByOffset(movedx_c, movedy_c, true, nMoveActionID);
+		pPiece->CallMoveByOffset(pPiece, movedx_c, movedy_c, true, nMoveActionID);
 	}
 }
 

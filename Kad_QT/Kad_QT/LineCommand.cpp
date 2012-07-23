@@ -357,3 +357,8 @@ void LineCommand::ClearTemp()
 		pTempLine = NULL;
 	}
 }
+
+void LineCommand::OnClearCommand()
+{
+	ClearTemp();
+}

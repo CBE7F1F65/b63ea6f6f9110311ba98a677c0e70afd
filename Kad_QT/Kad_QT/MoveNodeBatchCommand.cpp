@@ -117,14 +117,14 @@ void MoveNodeBatchCommand::OnDoneCommand()
 	int nMoveActionID = pgm->GetNextMoveActionID();
 	for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end();)
 	{
-		if (!(*it)->CallMoveByOffset(xoffset, yoffset, false, nMoveActionID))
+		GObject * pMoveObj = *it;
+		if (!(*it)->CallMoveByOffset(pMoveObj, xoffset, yoffset, false, nMoveActionID))
 		{
 			it = lobjs.erase(it);
 		}
 		else
 		{
-			GObject * pMovedObj = *it;
-			pgm->OnTreeChanged(pMovedObj->getParent(), pMovedObj);
+			pgm->OnTreeChanged(pMoveObj->getParent(), pMoveObj);
 //			MainInterface::getInstance().CallChangeNode(*it);
 			++it;
 		}
@@ -184,7 +184,7 @@ void MoveNodeBatchCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 		int index = it->ival;
 		GObject * pObj = pgm->FindObjectByID(index);
 		ASSERT(pObj);
-		pObj->CallMoveByOffset(-xoffset, -yoffset, false, nMoveActionID);
+		pObj->CallMoveByOffset(pObj, -xoffset, -yoffset, false, nMoveActionID);
 		pgm->OnTreeChanged(pObj->getParent(), pObj);
 //		MainInterface::getInstance().CallChangeNode(pObj);
 	}

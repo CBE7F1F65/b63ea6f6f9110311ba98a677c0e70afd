@@ -551,3 +551,8 @@ bool BezierCommand::MIDCBLength( MarkingUI * pmui, bool bAccept )
 	}
 	return true;
 }
+
+void BezierCommand::OnClearCommand()
+{
+	ClearTemp();
+}

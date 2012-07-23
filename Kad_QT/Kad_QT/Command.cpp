@@ -274,6 +274,7 @@ int Command::FinishCommand()
 
 int Command::TerminalCommand()
 {
+	CommandTemplate::GetTemplateByCommand(GetCurrentCommand())->CallTerminalCommand();
 	LogTerminal();
 
 	for (list<CommandStepInfo>::iterator it = histcomm.begin(); it!=histcomm.end();)

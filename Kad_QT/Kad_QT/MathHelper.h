@@ -110,6 +110,7 @@ public:
 
 	bool CalculateCatmullRom(const PointF2D &p1, const PointF2D &p2, const PointF2D &p3, const PointF2D &p4, float s, PointF2D * pq);
 	bool CalculateBezier(const PointF2D &pb, const PointF2D &pbh, const PointF2D &peh, const PointF2D &pe, float s, PointF2D * pq);
+	bool CalculateBezierSubDivision(const PointF2D &pb, const PointF2D &pbh, const PointF2D &peh, const PointF2D &pe, float s, PointF2D * p1bh, PointF2D * p1eh, PointF2D * p2eh, PointF2D * p2bh);
 
 	bool PointInRect(float px, float py, float xl, float yt, float w, float h);
 	bool PointInRectTwoPoint(float px, float py, float x1, float y1, float x2, float y2, float r=0);

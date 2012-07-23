@@ -23,8 +23,8 @@ public:
 
 	virtual GPiece * getPiece();
 
-	virtual bool MoveTo(float newx, float newy, bool bTry, int moveActionID=-1);
-	virtual bool CallMoveTo(float newx, float newy, bool bTry, int moveActionID=-1);
+	virtual bool MoveTo(GObject * pCaller, float newx, float newy, bool bTry, int moveActionID=-1);
+	virtual bool CallMoveTo(GObject * pCaller, float newx, float newy, bool bTry, int moveActionID=-1);
 
 	virtual bool isStraightLine() = 0;
 	virtual bool toStraightLine();
@@ -38,6 +38,9 @@ public:
 	virtual float CalculateProportion( float x, float y, int iSec ) = 0;
 	virtual float CalculateMidPointProportion() = 0;
 	virtual bool GetPositionAtProportion( float fClingToProportion, float* tox, float* toy, int*isec=NULL ) = 0;
+	virtual GLine * Clip(float fClipProportion) = 0;
+	virtual bool Combine(GLine * pLine) = 0;
+	virtual bool SwapBeginEnd() = 0;
 
 	virtual bool isLengthCalculated(){return true;};
 	virtual float getLength() = 0;
@@ -175,6 +178,9 @@ public:
 	virtual float CalculateProportion( float x, float y, int iSec );
 	virtual float CalculateMidPointProportion();
 	virtual bool GetPositionAtProportion( float fClingToProportion, float* tox, float* toy, int*isec=NULL );
+	virtual GLine * Clip(float fClipProportion);
+	virtual bool Combine(GLine * pLine);
+	virtual bool SwapBeginEnd();
 
 	virtual bool isLengthCalculated();
 	virtual float getLength();

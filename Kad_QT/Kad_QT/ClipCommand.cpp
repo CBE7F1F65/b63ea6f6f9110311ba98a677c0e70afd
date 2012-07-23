@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "ClipCommand.h"
+#include "RenderTargetManager.h"
 
 
 ClipCommand::ClipCommand(void)
@@ -38,7 +39,7 @@ void ClipCommand::OnProcessCommand()
 	else if (step == CSI_CLIP_WANTINDEX)
 	{
 		ret = pcommand->ProcessPending(
-			CSP_CLING_I_F_TOINDEX_PROPORTION, COMMPARAMFLAG_I, CWP_INDEX,
+			CSP_CLIP_I_F_INDEX_PROPORTION, COMMPARAMFLAG_I, CWP_INDEX,
 			CSI_CLIP_WANTPROPORTION
 			);
 	}
@@ -66,21 +67,23 @@ void ClipCommand::OnProcessCommand()
 				if (!pcommand->IsInternalProcessing())
 				{
 					GObject * pObj = pgp->GetPickedObj();
-					float fProportion = pgp->CalculateProportion();
-					if (pObj->isMidPoint())
+					if (pObj)
 					{
-						pObj = pObj->getLine();
-					}
-					int index = pObj->getID();
+						float fProportion = pgp->CalculateProportion();
+						if (pObj->isMidPoint())
+						{
+							pObj = pObj->getLine();
+						}
+						int index = pObj->getID();
 
-					pcommand->SetParamI(CSP_CLIP_I_F_INDEX_PROPORTION, index, CWP_INDEX);
-					pcommand->SetParamF(CSP_CLIP_I_F_INDEX_PROPORTION, fProportion, CWP_PROPORTION);
-					pcommand->StepTo(CSI_FINISH);
+						pcommand->SetParamI(CSP_CLIP_I_F_INDEX_PROPORTION, index, CWP_INDEX);
+						pcommand->SetParamF(CSP_CLIP_I_F_INDEX_PROPORTION, fProportion, CWP_PROPORTION);
+						pcommand->StepTo(CSI_FINISH);
+					}
 				}
 			}
 		}
 	}
-
 }
 
 void ClipCommand::OnDoneCommand()
@@ -100,81 +103,50 @@ void ClipCommand::OnDoneCommand()
 	}
 
 	GLine * pLine = (GLine *)pObj;
-	GLine * pClonedLine = (GLine *)pLine->CreateNewClone(NULL, pLine);
-
-	GAnchorPoint * pBeginPoint = pLine->GetBeginPoint();
-	GAnchorPoint * pEndPoint = pLine->GetEndPoint();
-
-	GHandlePoint * pOEndHandleBind = pEndPoint->GetHandle()->getBindWith();
-
-	PointF2D ptBegin = pBeginPoint->GetPointF2D();
-	PointF2D ptEnd = pEndPoint->GetPointF2D();
-
-	GLine * pOEndClingTo = pEndPoint->getClingTo();
-	float fOEndClingProp = pEndPoint->getClingProportion();
-
-	list<GPoint *> lstEndMergeWith = *(pEndPoint->getMergeWith());
-	list<GPoint *> lstClingBy = *(pLine->getClingBy());
-	list<float> lstFCP;
-	for (list<GPoint *>::iterator it=lstClingBy.begin(); it!=lstClingBy.end(); ++it)
+	PointF2D ptOBH = pLine->GetBeginPoint()->GetHandle()->GetPointF2D();
+	PointF2D ptOEH = pLine->GetEndPoint()->GetHandle()->GetPointF2D();
+	GLine * pClonedLine = pLine->Clip(fProporation);
+	if (pClonedLine)
 	{
-		lstFCP.push_back((*it)->getClingProportion());
-	}
-
-	pEndPoint->ClingTo(NULL, 0);
-	pEndPoint->SeperateFrom();
-	pLine->DeclingByOther();
-
-	float tx, ty;
-	int isec;
-	pLine->GetPositionAtProportion(fProporation, &tx, &ty, &isec);
-
-	pLine->SetBeginEnd(ptBegin.x, ptBegin.y, tx, ty);
-	pClonedLine->SetBeginEnd(tx, ty, ptEnd.x, ptEnd.y);
-
-	GAnchorPoint * pNewBeginPoint = pClonedLine->GetBeginPoint();
-	GAnchorPoint * pNewEndPoint = pClonedLine->GetEndPoint();
-
-	pNewEndPoint->GetHandle()->BindWith(pOEndHandleBind);
-
-	pNewEndPoint->ClingTo(pOEndClingTo, fOEndClingProp);
-	if (!lstEndMergeWith.empty())
-	{
-		pNewEndPoint->MergeWith(lstEndMergeWith.front());
-	}
-	
-	pEndPoint->MergeWith(pNewBeginPoint);
-	if (!pLine->isStraightLine())
-	{
-		pEndPoint->GetHandle()->BindWith(pNewBeginPoint->GetHandle());
-	}
-
-	list<float>::iterator jt=lstFCP.begin();
-	for (list<GPoint *>::iterator it=lstClingBy.begin(); it!=lstClingBy.end(); ++it, ++jt)
-	{
-		GPoint * pClingByPoint = *it;
-		float fCP = *jt;
-		if (fCP < fProporation)
-		{
-			float fNewProp = fCP/fProporation;
-			ASSERT(fNewProp > 0 && fNewProp <= 1);
-			pClingByPoint->ClingTo(pLine, fNewProp);
-		}
-		else if (fCP > fProporation)
-		{
-			float fNewProp = (fCP-fProporation)/fProporation;
-			ASSERT(fNewProp > 0 && fNewProp <= 1);
-			pClingByPoint->ClingTo(pClonedLine, fNewProp);
-		}
-		else
-		{
-			pClingByPoint->MergeWith(pEndPoint);
-		}
+		PushRevertable(
+			CCMake_C(COMM_I_COMMAND, 3, 1),
+			CCMake_CI(COMM_I_COMM_WORKINGLAYER, workinglayerID),
+			CCMake_C(COMM_CLIP),
+			CCMake_I(index),
+			CCMake_F(fProporation),
+			CCMake_C(COMM_I_UNDO_PARAM, 6),
+			CCMake_I(pLine->getID()),
+			CCMake_I(pClonedLine->getID()),
+			CCMake_F(ptOBH.x),
+			CCMake_F(ptOBH.y),
+			CCMake_F(ptOEH.x),
+			CCMake_F(ptOEH.y),
+			NULL
+			);		
 	}
 }
 
 void ClipCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 {
+	ASSERT(rc);
+	list<CommittedCommand>::iterator it=rc->commandlist.begin();
+	int lineindex = it->ival;
+	++it;
+	int clonedlineindex = it->ival;
+	++it;
+	float fobhx = it->fval;
+	++it;
+	float fobhy = it->fval;
+	++it;
+	float foehx = it->fval;
+	++it;
+	float foehy = it->fval;
+
+	GLine * pLine = (GLine *)pgm->FindObjectByID(lineindex);
+	GLine * pClonedLine = (GLine *)pgm->FindObjectByID(clonedlineindex);
+	pLine->Combine(pClonedLine);
+	pLine->GetBeginPoint()->SetHandlePosition(fobhx, fobhy);
+	pLine->GetEndPoint()->SetHandlePosition(foehx, foehy);
 }
 
 bool ClipCommand::staticPickFilterFunc( GObject * pObj )

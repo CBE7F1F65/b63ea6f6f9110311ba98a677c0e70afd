@@ -195,6 +195,34 @@ bool MathHelper::CalculateBezier( const PointF2D &pb, const PointF2D &pbh, const
 	return false;
 }
 
+bool MathHelper::CalculateBezierSubDivision( const PointF2D &pb, const PointF2D &pbh, const PointF2D &peh, const PointF2D &pe, float s, PointF2D * p1bh, PointF2D * p1eh, PointF2D * p2eh, PointF2D * p2bh )
+{
+	PointF2D p12 = (pbh-pb)*s+pb;
+	PointF2D p23 = (peh-pbh)*s+pbh;
+	PointF2D p34 = (pe-peh)*s+peh;
+
+	PointF2D p123 = (p23-p12)*s+p12;
+	PointF2D p234 = (p34-p23)*s+p23;
+
+	if (p1bh)
+	{
+		*p1bh = p12;
+	}
+	if (p2bh)
+	{
+		*p2bh = p34;
+	}
+	if (p1eh)
+	{
+		*p1eh = p123;
+	}
+	if (p2eh)
+	{
+		*p2eh = p234;
+	}
+	return true;
+}
+
 float MathHelper::LineSegmentLength( const PointF2D &p1, const PointF2D &p2 )
 {
 	float l = LineSegmentLengthPow2(p1, p2);

@@ -45,7 +45,7 @@ GObject * GPoint::CreateNewClone( GObject * pNewParent/*=NULL*/, GObject * pBefo
 	_GOBJ_CLONE_POST();
 }
 
-bool GPoint::MoveTo( float newx, float newy, bool bTry, int moveActionID/*=-1 */ )
+bool GPoint::MoveTo( GObject * pCaller, float newx, float newy, bool bTry, int moveActionID/*=-1 */ )
 {
 	if (!canMove())
 	{
@@ -97,16 +97,21 @@ bool GPoint::MoveTo( float newx, float newy, bool bTry, int moveActionID/*=-1 */
 	return true;
 }
 
-bool GPoint::CallMoveTo( float newx, float newy, bool bTry, int moveActionID/*=-1*/ )
+bool GPoint::CallMoveTo( GObject * pCaller, float newx, float newy, bool bTry, int moveActionID/*=-1*/ )
 {
+	if (moveActionID < 0)
+	{
+		moveActionID = GObjectManager::getInstance().GetNextMoveActionID();
+	}
+
 	if (!mergeWithList.empty())
 	{
 		for (list<GPoint *>::iterator it=mergeWithList.begin(); it!=mergeWithList.end(); ++it)
 		{
-			(*it)->MoveTo(newx, newy, bTry, moveActionID);
+			(*it)->MoveTo(pCaller, newx, newy, bTry, moveActionID);
 		}
 	}
-	return MoveTo(newx, newy, bTry, moveActionID);
+	return MoveTo(pCaller, newx, newy, bTry, moveActionID);
 }
 
 void GPoint::OnRemove()
@@ -194,6 +199,10 @@ bool GPoint::isClingTo( GObject * pObj )
 
 bool GPoint::MergeWith( GPoint * pPoint, bool bNoBackward/*=false*/ )
 {
+	if (!pPoint)
+	{
+		return SeperateFrom();
+	}
 	DASSERT(pPoint != this);
 	if (pPoint == this)
 	{
@@ -273,7 +282,7 @@ bool GPoint::MergeWith( GPoint * pPoint, bool bNoBackward/*=false*/ )
 		}
 		else
 		{
-			ASSERT(false);
+//			ASSERT(false);
 		}
 	}
 	if (!isMergeWith(pPoint))
@@ -400,7 +409,7 @@ void GPoint::CallClingToMoved( bool bTry, int moveActionID )
 	ASSERT(pClingTo);
 	float tox, toy;
 	((GLine *)pClingTo)->GetPositionAtProportion(fClingToProportion, &tox, &toy);
-	CallMoveTo(tox, toy, bTry, moveActionID);
+	CallMoveTo(pClingTo, tox, toy, bTry, moveActionID);
 }
 
 bool GPoint::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelationship/*=true*/ )
@@ -472,7 +481,7 @@ void GAnchorPoint::SetHandlePosition( float hx, float hy, float fAllowance/*=-1 
 			return;
 		}
 	}
-	phandle->CallMoveTo(hx, hy, false);
+	phandle->CallMoveTo(phandle, hx, hy, false);
 }
 
 bool GAnchorPoint::isHandleIdentical()
@@ -484,18 +493,18 @@ bool GAnchorPoint::isHandleIdentical()
 	return false;
 }
 
-bool GAnchorPoint::MoveTo( float newx, float newy, bool bTry, int moveActionID/*=-1 */ )
+bool GAnchorPoint::MoveTo( GObject * pCaller, float newx, float newy, bool bTry, int moveActionID/*=-1 */ )
 {
 	float xoffset = newx-x;
 	float yoffset = newy-y;
 
-	bool bret = GAttributePoint::MoveTo(newx, newy, bTry, moveActionID);
+	bool bret = GAttributePoint::MoveTo(pCaller, newx, newy, bTry, moveActionID);
 
 	if (bret)
 	{
 		if (phandle)
 		{
-			bret = phandle->CallMoveByOffset(xoffset, yoffset, bTry, moveActionID);
+			bret = phandle->CallMoveByOffset(pCaller, xoffset, yoffset, bTry, moveActionID);
 
 			if (bret)
 			{
@@ -650,13 +659,33 @@ bool GHandlePoint::BindWith( GHandlePoint * pHandle/*=NULL*/ )
 	{
 		return false;
 	}
+
+	if (getLine()->isStraightLine() || pHandle->getLine()->isStraightLine())
+	{
+		return false;
+	}
+
     if (pBindWith)
 	{
         BindWith();
 	}
 
 	pHandle->BindWith();
-    pHandle->CallMoveTo(2*GetAnchor()->getX()-x, 2*GetAnchor()->getY()-y, false);
+
+//    pHandle->CallMoveTo(2*GetAnchor()->getX()-x, 2*GetAnchor()->getY()-y, false);
+	MathHelper * pmh = &MathHelper::getInstance();
+	PointF2D ptAnchor = this->GetAnchor()->GetPointF2D();
+	int angle = pmh->GetLineAngle(this->GetPointF2D(), ptAnchor);
+	if (ptAnchor.Equals(pHandle->GetPointF2D()))
+	{
+		pHandle->CallMoveTo(pHandle, 2*ptAnchor.x-x, 2*ptAnchor.y-y, false);
+	}
+	else
+	{
+		float l = pmh->LineSegmentLength(pHandle->GetPointF2D(), ptAnchor);
+		pHandle->CallMoveTo(pHandle, l*cost(angle)+ptAnchor.x, l*sint(angle)+ptAnchor.y, false);
+	}
+
     pBindWith = pHandle;
     pHandle->pBindWith = this;
 
@@ -664,21 +693,25 @@ bool GHandlePoint::BindWith( GHandlePoint * pHandle/*=NULL*/ )
 	return true;
 }
 
-bool GHandlePoint::MoveTo( float newx, float newy, bool bTry, int moveActionID/*=-1 */ )
+bool GHandlePoint::MoveTo( GObject * pCaller, float newx, float newy, bool bTry, int moveActionID/*=-1 */ )
 {
-	float xoffset = newx - x;
-	float yoffset = newy - y;
-
-	bool bret = GAttributePoint::MoveTo(newx, newy, bTry, moveActionID);
+	bool bret = GAttributePoint::MoveTo(pCaller, newx, newy, bTry, moveActionID);
 	if (bret)
 	{
-        if (pBindWith)
+		if (pCaller && pCaller->isHandlePoint())
 		{
-            if (GetAnchor()->getMoveActionID() != moveActionID && pBindWith->GetAnchor()->getMoveActionID() != moveActionID)
+			if (pBindWith)
 			{
-                pBindWith->CallMoveByOffset(-xoffset, -yoffset, false, moveActionID);
+				if (GetAnchor()->getMoveActionID() != moveActionID && pBindWith->GetAnchor()->getMoveActionID() != moveActionID)
+				{
+					MathHelper * pmh = &MathHelper::getInstance();
+					PointF2D ptAnchor = this->GetAnchor()->GetPointF2D();
+					int angle = pmh->GetLineAngle(this->GetPointF2D(), ptAnchor);
+					float l = pmh->LineSegmentLength(pBindWith->GetPointF2D(), ptAnchor);
+					pBindWith->CallMoveTo(pBindWith, l*cost(angle)+ptAnchor.x, l*sint(angle)+ptAnchor.y, false, moveActionID);
+				}
+				return true;
 			}
-			return true;
 		}
 	}
 	return bret;
@@ -704,7 +737,6 @@ bool GHandlePoint::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRe
 {
 	if (super::CloneData(pClone, pNewParent))
 	{
-		pBindWith = NULL;
 		return true;
 	}
 	return false;

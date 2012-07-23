@@ -333,7 +333,7 @@ void GObject::OnUpdate()
 			float tx = getX();
 			float ty = getY();
 			// Directly Move!!
-			MoveTo(fTryMove_bx, fTryMove_by, false, nUpdateMoveActionID);
+			MoveTo(NULL, fTryMove_bx, fTryMove_by, false, nUpdateMoveActionID);
 			GObjectManager::getInstance().PushMoveNodeByOffsetForBatchCommand(this, tx-fTryMove_bx, ty-fTryMove_by);
 			/*
 			MainInterface::getInstance().OnCommandWithParam(
@@ -933,7 +933,7 @@ bool GObject::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelatio
 
 	//////////////////////////////////////////////////////////////////////////
 	
-	for (list<GObject *>::reverse_iterator it=lstChildren.rbegin(); it!=lstChildren.rend(); ++it)
+	for (list<GObject *>::iterator it=lstChildren.begin(); it!=lstChildren.end(); ++it)
 	{
 		(*it)->CreateNewClone(pClone);
 	}

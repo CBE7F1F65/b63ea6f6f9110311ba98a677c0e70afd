@@ -77,7 +77,6 @@ int CommandTemplate::OnNormalProcessCommand( int cursorindex/*=-1*/ )
 	case CSI_TERMINAL:
 		GUICursor::getInstance().ChangeCursor(GUIC_NORMAL);
 		ReleaseTarget();
-		CallTerminalCommand();
 		pcommand->TerminalCommand();
 		return CSI_TERMINAL;
 		break;
@@ -110,7 +109,6 @@ void CommandTemplate::DispatchNormalSubCommand( int subcommand )
 	case SSC_TERMINAL:
 		GUICursor::getInstance().ChangeCursor(GUIC_NORMAL);
 		ReleaseTarget();
-		CallTerminalCommand();
 		pcommand->TerminalCommand();
 		break;
 	}
@@ -305,6 +303,7 @@ bool CommandTemplate::DoReDo( int redostep/*=1*/ )
 void CommandTemplate::ProtectPendingFinishCommand()
 {
 	CommittedCommand ccp = pcommand->pendingparam;
+	CallClearCommand();
 	pcommand->FinishCommand();
 
 	if (ccp.type)
@@ -339,6 +338,16 @@ void CommandTemplate::CallDoneCommand()
 	}
 	workinglayerID = pgm->GetActiveLayer()->getID();
 	OnDoneCommand();
+}
+
+void CommandTemplate::CallClearCommand()
+{
+	OnClearCommand();
+}
+
+void CommandTemplate::OnClearCommand()
+{
+
 }
 
 void CommandTemplate::InstantProcessCommand()

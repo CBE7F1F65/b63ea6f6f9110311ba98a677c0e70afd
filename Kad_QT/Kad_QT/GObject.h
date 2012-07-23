@@ -107,10 +107,10 @@ public:
 	// Should be derived:
 	virtual bool canMove(){return false;};
 protected:
-	virtual bool MoveTo(float newx, float newy, bool bTry, int moveActionID=-1){DASSERT(false); return false;};
+	virtual bool MoveTo(GObject * pCaller, float newx, float newy, bool bTry, int moveActionID=-1){DASSERT(false); return false;};
 public:
-	virtual bool CallMoveTo(float newx, float newy, bool bTry, int moveActionID=-1){return MoveTo(newx, newy, bTry, moveActionID);};
-	virtual bool CallMoveByOffset(float xoffset, float yoffset, bool bTry, int moveActionID=-1){return CallMoveTo(getX()+xoffset, getY()+yoffset, bTry, moveActionID);};
+	virtual bool CallMoveTo(GObject * pCaller, float newx, float newy, bool bTry, int moveActionID=-1){return MoveTo(pCaller, newx, newy, bTry, moveActionID);};
+	virtual bool CallMoveByOffset(GObject * pCaller, float xoffset, float yoffset, bool bTry, int moveActionID=-1){return CallMoveTo(pCaller, getX()+xoffset, getY()+yoffset, bTry, moveActionID);};
 
 	virtual bool isLayer(){return false;};
 	virtual bool isLine(){return false;};

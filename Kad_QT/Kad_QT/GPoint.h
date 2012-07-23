@@ -29,8 +29,8 @@ public:
 	void SetPosition(float x, float y);
 
 	virtual bool canMove(){return true;};
-	virtual bool MoveTo( float newx, float newy, bool bTry, int moveActionID=-1 );
-	virtual bool CallMoveTo( float newx, float newy, bool bTry, int moveActionID=-1 );
+	virtual bool MoveTo( GObject * pCaller, float newx, float newy, bool bTry, int moveActionID=-1 );
+	virtual bool CallMoveTo( GObject * pCaller, float newx, float newy, bool bTry, int moveActionID=-1 );
 
 	PointF2D GetPointF2D(){return PointF2D(x, y);};
 
@@ -181,7 +181,7 @@ public:
 	GAnchorPoint * GetAnchor(){return (GAnchorPoint *)getParent();};
 	virtual bool isHandlePoint(){return true;};
 
-	virtual bool MoveTo( float newx, float newy, bool bTry, int moveActionID=-1 );
+	virtual bool MoveTo( GObject * pCaller, float newx, float newy, bool bTry, int moveActionID=-1 );
 
 	virtual const char * getDisplayName();
 
@@ -217,7 +217,7 @@ public:
 	virtual bool canBeMergedWith(){return true;};
 	virtual GObject * getEntity(){return (GObject *)getLine();};
 
-	virtual bool MoveTo( float newx, float newy, bool bTry, int moveActionID=-1 );
+	virtual bool MoveTo( GObject * pCaller, float newx, float newy, bool bTry, int moveActionID=-1 );
 	virtual const char * getDisplayName();
 	virtual bool isAnchorPoint(){return true;};
 
