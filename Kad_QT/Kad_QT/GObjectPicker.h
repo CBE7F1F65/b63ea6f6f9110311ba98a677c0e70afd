@@ -243,7 +243,12 @@ public:
 
 	void SetLockSplitLine(int splitlocktype, float fval);
 	void ClearSplitMarking();
-	void UnLockSplitLine();
+	void UnlockSplitLine();
+
+private:
+	void SetLockLockLine(GObject * pObj);
+public:
+	void UnlockLockLine();
 
 	void AdjustPositionToLocks();
 	bool IsAngleInBetween( int angle, int nBeginAngle, int nMidAngle, int nNextAngle );
@@ -280,6 +285,8 @@ private:
 	bool bLockXAxis;
 	float fLockYAxis_x;
 	bool bLockYAxis;
+
+	GLine * pLockedLine;
 
 	int nSplitLockType;
 	float fSplitValue;

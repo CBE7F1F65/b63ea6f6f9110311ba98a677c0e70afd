@@ -367,7 +367,15 @@ void BezierCommand::OnProcessCommand()
 			nhx = 2*xn-tx;
 			nhy = 2*yn-ty;
 		}
+		if (!pTempLine)
+		{
+			pTempLine = new GBezierLine(&tBaseNode, PointF2D(), PointF2D());
 
+			pMarking = new MarkingLine(pTempLine, MARKFLAG_LENGTH);
+			pMarking->getMarkingUI(MARKFLAG_LENGTH)->SetEditable(false);
+			pMarking->getMarkingUI(MARKFLAG_LENGTH)->SetCallback(staticMIDCBLength);
+			MarkingManager::getInstance().EnableMarking(pMarking);
+		}
 		pTempLine->SetBeginEnd(xb, yb, xn, yn, 0);
 		pTempLine->SetBeginHandlePos(bhx, bhy, 0);
 		pTempLine->SetEndHandlePos(nhx, nhy, 0);
@@ -427,13 +435,14 @@ void BezierCommand::OnDoneCommand()
 		CCMake_F(ybh),
 		NULL
 		);
+	ClearTemp();
 }
 
 void BezierCommand::RenderToTarget()
 {
 	int nstep = pcommand->GetStep();
 
-	if (nstep >= CSI_BEZIER_WANTBHX && nstep <= CSI_BEZIER_WANTNHY)
+	if (nstep >= CSI_BEZIER_WANTBHX && nstep <= CSI_BEZIER_WANTNHY && pTempLine)
 	{
 		HTARGET tar = RenderTargetManager::getInstance().UpdateTarget(RTID_COMMAND);
 		prh->BeginRenderTar(tar);
@@ -484,12 +493,6 @@ void BezierCommand::OnInitCommand()
 	pBindAnchorEnd = NULL;
 
 	ClearTemp();
-	pTempLine = new GBezierLine(&tBaseNode, PointF2D(), PointF2D());
-
-	pMarking = new MarkingLine(pTempLine, MARKFLAG_LENGTH);
-	pMarking->getMarkingUI(MARKFLAG_LENGTH)->SetEditable(false);
-	pMarking->getMarkingUI(MARKFLAG_LENGTH)->SetCallback(staticMIDCBLength);
-	MarkingManager::getInstance().EnableMarking(pMarking);
 }
 
 void BezierCommand::OnTerminalCommand()
@@ -502,11 +505,11 @@ void BezierCommand::ClearTemp()
 {
 	if (pTempLine)
 	{
-		pgp->UnlockLength();
 		pTempLine->RemoveFromParent(true);
 		pTempLine = NULL;
 		pMarking = NULL;
 	}
+	pgp->UnlockLength();
 	bDrawTempBezierLine = false;
 	bDrawTempLineHandle = false;
 }

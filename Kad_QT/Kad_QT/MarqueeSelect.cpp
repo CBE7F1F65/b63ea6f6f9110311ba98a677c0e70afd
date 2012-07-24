@@ -22,10 +22,6 @@
 #define MARQNOMOVE_LINE		0x02
 #define MARQNOMOVE_PIECE	0x03
 
-bool staticPickFilterCallback(GObject * pObj)
-{
-	return MarqueeSelect::getInstance().PickFilterCallback(pObj); 
-}
 
 MarqueeSelect::MarqueeSelect(void)
 {
@@ -197,7 +193,7 @@ void MarqueeSelect::Update()
 	
 	if (marqueestate != MARQSTATE_BEGAN)
 	{
-		int iret = pgp->PickPoint(staticPickFilterCallback);
+		int iret = pgp->PickPoint(staticMarqPickFilterCallback);
 
         if (itemmovestate==MARQMOVESTATE_NONE && (baltdown || pmain->hge->Input_GetDIMouseKey(pmain->cursorrightkeyindex, DIKEY_DOWN)))
         {
@@ -369,6 +365,25 @@ void MarqueeSelect::Update()
 		endy_c = pguic->GetCursorY_C();
 
 	}
+
+	if (pmain->hge->Input_GetDIKey(DIK_DELETE, DIKEY_UP))
+	{
+		if (!pcommand->GetCurrentCommand())
+		{
+			if (!selectednodes.empty())
+			{
+				pmain->OnCommandWithParam(
+					COMM_DELETEITEM,
+					NULL);
+				for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end(); ++it)
+				{
+					pmain->OnCommandSingleParamI((*it)->getID());
+				}
+				pmain->OnCommandSingleParamI(-1);
+			}
+		}
+	}
+
 	lastmx_c = mousex_c;
 	lastmy_c = mousey_c;
 }
@@ -494,7 +509,7 @@ void MarqueeSelect::MoveSelected( float movedx_c, float movedy_c )
 	}
 }
 
-bool MarqueeSelect::CheckObjInSelection( GObject * pTestObj, bool bFindAncestor/*=false*/, bool bFindUpperClass/*=false*/, bool bFindMerge/*=false*/, bool bFindCling/*=false*/ )
+bool MarqueeSelect::CheckObjInSelection( GObject * pTestObj, bool bFindAncestor/*=false*/, bool bFindUpperClass/*=false*/, bool bFindMerge/*=false*/, bool bFindCling/*=false*/, list<GObject *> * plstObj/*=NULL*/ )
 {
 	if (!pTestObj)
 	{
@@ -508,13 +523,18 @@ bool MarqueeSelect::CheckObjInSelection( GObject * pTestObj, bool bFindAncestor/
 	{
 		pTestObj = pTestObj->getPiece();
 	}
+
+	if (!plstObj)
+	{
+		plstObj = &selectednodes;
+	}
 	
 	GPoint * pItPoint = NULL;
 	GLine * pItLine = NULL;
 	GPiece * pItPiece = NULL;
 	GObject * pItObj = NULL;
 
-	for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end(); ++it)
+	for (list<GObject *>::iterator it=plstObj->begin(); it!=plstObj->end(); ++it)
 	{
 		pItObj = *it;
 		if (pItObj == pTestObj)
@@ -700,7 +720,12 @@ void MarqueeSelect::CheckValid()
 	}
 }
 
-bool MarqueeSelect::PickFilterCallback( GObject * pObj )
+bool MarqueeSelect::staticMarqPickFilterCallback(GObject * pObj)
+{
+	return getInstance().MarqPickFilterCallback(pObj); 
+}
+
+bool MarqueeSelect::MarqPickFilterCallback( GObject * pObj )
 {
 	if (itemmovestate == MARQMOVESTATE_BEGAN)
 	{
@@ -743,6 +768,7 @@ bool MarqueeSelect::staticMIDCBOffset(MarkingUI * pmui, bool bAccept)
 
 void MarqueeSelect::BeginMove( float nowx, float nowy )
 {
+	GObjectPicker::getInstance().UnlockLockLine();
 	GObjectManager::getInstance().BeginTryMove();
 	if (!pMarkingOffset)
 	{
@@ -955,4 +981,9 @@ bool MarqueeSelect::MIDCBOffset( MarkingUI * pmui, bool bAccept )
 		}
 	}
 	return true;
+}
+
+list<GObject*> * MarqueeSelect::OnGetSelectedNodes()
+{
+	return &selectednodes;
 }

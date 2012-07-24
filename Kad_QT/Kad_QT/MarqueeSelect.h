@@ -14,7 +14,7 @@ private:
 	MarqueeSelect(MarqueeSelect const&);
 	void operator=(MarqueeSelect const&);
 
-public:
+private:
 
 	list<GObject *>selectednodes;
 
@@ -30,18 +30,23 @@ public:
 
 	float lastmx_c;
 	float lastmy_c;
+	int nomoveflag;
+
+	MarkingOffset * pMarkingOffset;
+	MarkingLine * pMarkingLine;
+
+public:
 
 	void DeSelect(GObject * pObj);
 	void DeSelectAll();
 	void AddSelect(GObject * pObj, int level=-1);
 
-	int nomoveflag;
 
 	void DoMovePoint(GPoint * pPoint, float movedx_c, float movedy_c, int nMoveActionID);
 	void DoMoveLine(GLine * pLine, float movedx_c, float movedy_c, int nMoveActionID);
 	void DoMovePiece(GPiece * pPiece, float movedx_c, float movedy_c, int nMoveActionID);
 
-	bool CheckObjInSelection(GObject * pObj, bool bFindAncestor=false, bool bFindUpperClass=false, bool bFindMerge=false, bool bFindCling=false);
+	bool CheckObjInSelection(GObject * pTestObj, bool bFindAncestor=false, bool bFindUpperClass=false, bool bFindMerge=false, bool bFindCling=false, list<GObject *> * plstObj=NULL);
 
 	void Update();
 	void Render();
@@ -53,7 +58,11 @@ public:
 	void BeginMove(float nowx, float nowy);
 	void EndMove();
 
-	bool PickFilterCallback(GObject * pObj);
+	int GetMarqueeState(){return marqueestate;};
+	int GetMoveState(){return itemmovestate;};
+
+	bool MarqPickFilterCallback(GObject * pObj);
+	static bool staticMarqPickFilterCallback(GObject * pObj);
 
 	void OnDeleteNode(GObject * pDeletedObj);
 	bool MIDCBLength( MarkingUI * pmui, bool bAccept );
@@ -62,8 +71,6 @@ public:
 	static bool staticMIDCBLength( MarkingUI * pmui, bool bAccept );
 	static bool staticMIDCBAngle( MarkingUI * pmui, bool bAccept );
 	static bool staticMIDCBOffset( MarkingUI * pmui, bool bAccept );
-
-	MarkingOffset * pMarkingOffset;
-	MarkingLine * pMarkingLine;
+	list<GObject*> * OnGetSelectedNodes();
 };
 

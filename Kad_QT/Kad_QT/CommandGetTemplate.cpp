@@ -20,6 +20,7 @@
 #include "BindHandleCommand.h"
 #include "LineTransformCommand.h"
 #include "ClipCommand.h"
+#include "RotateNodeBatchCommand.h"
 
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
@@ -50,6 +51,8 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 		return &MoveNodeCommand::getInstance();
 	case COMM_MOVENODEBYOFFSET_BATCH:
 		return &MoveNodeBatchCommand::getInstance();
+	case COMM_ROTATE_BATCH:
+		return &RotateNodeBatchCommand::getInstance();
 
 	case COMM_TOBEZIER:
 	case COMM_TOSTRAIGHTLINE:

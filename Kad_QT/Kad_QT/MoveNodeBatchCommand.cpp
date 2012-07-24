@@ -59,7 +59,7 @@ void MoveNodeBatchCommand::OnProcessCommand()
 			CSP_MOVENODE_BATCH_I_XY_INDEXES_NEWPOS+nowindex, COMMPARAMFLAG_I, CWP_INDEX,
 			CSI_MOVENODE_BATCH_WANTINDEXES+nowindex+1, CWP_INDEX
 			);
-		if (pcommand->GetParamI(CSP_MOVENODE_BATCH_I_XY_INDEXES_NEWPOS+nowindex) == -1)
+		if (pcommand->GetParamI(CSP_MOVENODE_BATCH_I_XY_INDEXES_NEWPOS+nowindex) < 0)
 		{
 			pcommand->StepTo(CSI_FINISH);
 		}

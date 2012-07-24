@@ -200,7 +200,7 @@ bool GObjectPicker::CheckSnapGeometryLine( GObject * pObj )
 {
 	if (nOnLine < GOPONLINE_MAX)
 	{
-		if (pObj->isRepresentableLine())
+		if (pObj->isRepresentableLine() && pObj != pLockedLine)
 		{
 			float neartox;
 			float neartoy;

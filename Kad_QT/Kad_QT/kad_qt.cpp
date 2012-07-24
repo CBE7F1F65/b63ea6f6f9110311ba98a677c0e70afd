@@ -64,9 +64,11 @@ void Kad_QT::on_action_Command_Line_triggered()
 void Kad_QT::SLT_UndoShortcutActivated()
 {
 	Command::getInstance().CreateUnDoCommandCommit();
+	QMainInterface::getInstance().GetPNodeInfoFloatingTree()->ShowNodeInfo();
 }
 
 void Kad_QT::SLT_RedoShortcutActivated()
 {
 	Command::getInstance().CreateReDoCommandCommit();
+	QMainInterface::getInstance().GetPNodeInfoFloatingTree()->ShowNodeInfo();
 }

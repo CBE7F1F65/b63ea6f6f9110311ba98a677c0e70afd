@@ -40,14 +40,14 @@ void ClipCommand::OnProcessCommand()
 	{
 		ret = pcommand->ProcessPending(
 			CSP_CLIP_I_F_INDEX_PROPORTION, COMMPARAMFLAG_I, CWP_INDEX,
-			CSI_CLIP_WANTPROPORTION
+			CSI_CLIP_WANTPROPORTION, CWP_PROPORTION
 			);
 	}
 	else if (step == CSI_CLIP_WANTPROPORTION)
 	{
 		ret = pcommand->ProcessPending(
 			CSP_CLIP_I_F_INDEX_PROPORTION, COMMPARAMFLAG_F, CWP_PROPORTION,
-			CSI_FINISH
+			CSI_FINISHCONTINUE
 			);
 	}
 
@@ -78,10 +78,19 @@ void ClipCommand::OnProcessCommand()
 
 						pcommand->SetParamI(CSP_CLIP_I_F_INDEX_PROPORTION, index, CWP_INDEX);
 						pcommand->SetParamF(CSP_CLIP_I_F_INDEX_PROPORTION, fProportion, CWP_PROPORTION);
-						pcommand->StepTo(CSI_FINISH);
+						pcommand->StepTo(CSI_FINISHCONTINUE);
 					}
 				}
 			}
+		}
+		else if (step == CSI_FINISHCONTINUE)
+		{
+			ProtectPendingFinishCommand();
+
+			CommitFrontCommand(
+				CCMake_C(COMM_CLIP),
+				NULL
+				);
 		}
 	}
 }

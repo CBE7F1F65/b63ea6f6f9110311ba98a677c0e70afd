@@ -117,6 +117,15 @@
     <Filter Include="Main\Helper\GObjectPicker\Template">
       <UniqueIdentifier>{976dec8d-1ec3-4be0-815b-8b18f1d8fb82}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\Command\Node\Move">
+      <UniqueIdentifier>{859c4ed0-9a00-4dae-be54-03759cc98e7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Node\Rotate">
+      <UniqueIdentifier>{8775ca4b-676b-473e-87e0-51f56b52dc93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Node\Scale">
+      <UniqueIdentifier>{2ca1e7ff-6dfb-43f5-a9e4-aee1979a46f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_kad_qt.cpp">
@@ -165,12 +174,6 @@
       <Filter>Main\Command\Node</Filter>
     </ClCompile>
     <ClCompile Include="DuplicateCommand.cpp">
-      <Filter>Main\Command\Node</Filter>
-    </ClCompile>
-    <ClCompile Include="MoveNodeBatchCommand.cpp">
-      <Filter>Main\Command\Node</Filter>
-    </ClCompile>
-    <ClCompile Include="MoveNodeCommand.cpp">
       <Filter>Main\Command\Node</Filter>
     </ClCompile>
     <ClCompile Include="ReparentCommand.cpp">
@@ -461,6 +464,15 @@
     <ClCompile Include="ClipCommand.cpp">
       <Filter>Main\Command\Transform</Filter>
     </ClCompile>
+    <ClCompile Include="MoveNodeBatchCommand.cpp">
+      <Filter>Main\Command\Node\Move</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveNodeCommand.cpp">
+      <Filter>Main\Command\Node\Move</Filter>
+    </ClCompile>
+    <ClCompile Include="RotateNodeBatchCommand.cpp">
+      <Filter>Main\Command\Node\Rotate</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -486,12 +498,6 @@
     </ClInclude>
     <ClInclude Include="SetWorkingLayerCommand.h">
       <Filter>Main\Command\Layer</Filter>
-    </ClInclude>
-    <ClInclude Include="MoveNodeCommand.h">
-      <Filter>Main\Command\Node</Filter>
-    </ClInclude>
-    <ClInclude Include="MoveNodeBatchCommand.h">
-      <Filter>Main\Command\Node</Filter>
     </ClInclude>
     <ClInclude Include="DeleteItemCommand.h">
       <Filter>Main\Command\Node</Filter>
@@ -660,6 +666,15 @@
     </ClInclude>
     <ClInclude Include="ClipCommand.h">
       <Filter>Main\Command\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveNodeCommand.h">
+      <Filter>Main\Command\Node\Move</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveNodeBatchCommand.h">
+      <Filter>Main\Command\Node\Move</Filter>
+    </ClInclude>
+    <ClInclude Include="RotateNodeBatchCommand.h">
+      <Filter>Main\Command\Node\Rotate</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

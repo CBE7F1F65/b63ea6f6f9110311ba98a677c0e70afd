@@ -40,7 +40,7 @@ int GObjectPicker::UpdatePickPoint()
 		if (bSplitMarkingInUse || pSplitMarking)
 		{
 			ClearSplitMarking();
-			UnLockSplitLine();
+			UnlockSplitLine();
 		}
 		return mousestate|state;
 	}
@@ -85,7 +85,7 @@ int GObjectPicker::UpdatePickPoint()
 
 	if (!bTestMode)
 	{
-		if (!Command::getInstance().GetCurrentCommand() && !MarqueeSelect::getInstance().marqueestate && !MarqueeSelect::getInstance().itemmovestate)
+		if (!Command::getInstance().GetCurrentCommand() && !MarqueeSelect::getInstance().GetMarqueeState() && !MarqueeSelect::getInstance().GetMoveState())
 		{
 			restoreSnapto = snaptoflag;
 			SetSnapTo(snaptoflag, false);
@@ -184,7 +184,19 @@ int GObjectPicker::UpdatePickPoint()
 	if (pmain->hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_UP) || pmain->hge->Input_GetDIKey(DIK_ESCAPE))
 	{
 		ClearSplitMarking();
-		UnLockSplitLine();
+		UnlockSplitLine();
+		UnlockLockLine();
+	}
+	if (pmain->hge->Input_GetDIKey(DIK_HOME, DIKEY_UP))
+	{
+		if (pLockedLine)
+		{
+			UnlockLockLine();
+		}
+		else
+		{
+			SetLockLockLine(pickObj[0]);
+		}
 	}
 
 	if (!bSplitMarkingInUse)
@@ -192,7 +204,7 @@ int GObjectPicker::UpdatePickPoint()
 		if (pSplitMarking)
 		{
 			ClearSplitMarking();
-			UnLockSplitLine();
+			UnlockSplitLine();
 		}
 	}
 

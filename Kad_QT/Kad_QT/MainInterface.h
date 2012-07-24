@@ -137,5 +137,7 @@ public:
 	int toactivedelay;
 	int inactivereason;
 
+	bool bLockLeftMouseDown;
+
 	QTUI_GLView * parentview;
 };

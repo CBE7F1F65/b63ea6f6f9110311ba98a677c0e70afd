@@ -33,6 +33,8 @@ GObjectPicker::GObjectPicker(void)
 
 	pSplitMarking = NULL;
 	bSplitMarkingInUse = false;
+
+	pLockedLine = NULL;
 }
 
 GObjectPicker::~GObjectPicker(void)
@@ -134,6 +136,30 @@ void GObjectPicker::AdjustPositionToLocks()
 		bSplitMarkingInUse = true;
 		nOnLine = GOPONLINE_MAX;
 
+	}
+	if (pLockedLine)
+	{
+		if (nOnLine < GOPONLINE_MAX)
+		{
+			float neartox, neartoy;
+			if (pLockedLine->CheckNearTo(pickx_c, picky_c, snaprange_c, &neartox, &neartoy, &pickSection[nOnLine]))
+			{
+				pickx_c = neartox;
+				picky_c = neartoy;
+				if (!nOnLine)
+				{
+					AddSplitUI(pLockedLine);
+				}
+			}
+			else
+			{
+//				pickx_c = pLockedLine->GetMidPoint()->getX();
+//				picky_c = pLockedLine->GetMidPoint()->getY();
+			}
+			snappedstate |= GOPSNAPPED_LINE|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
+			SetPickObj(pLockedLine);
+			nOnLine++;
+		}
 	}
 	if (bLockXAxis)
 	{
@@ -394,6 +420,21 @@ void GObjectPicker::OnDeleteNode( GObject * pDeletedObj )
 		_NULLIFYNODE_IF_DELETED(pickEntityObj[i], pDeletedObj);
 		_NULLIFYNODE_IF_DELETED(pickCoordEntityObj[i], pDeletedObj);
 	}
+	if (pSplitMarking)
+	{
+		if (pDeletedObj == pSplitMarking->getTargetObj())
+		{
+			ClearSplitMarking();
+		}
+	}
+	/*
+	UnlockAngles();
+	UnlockLength();
+	UnlockLockLine();
+	UnlockSplitLine();
+	UnlockXAxis();
+	UnlockYAxis();
+	*/
 //	_NULLIFYNODE_IF_DELETED(mousedownPickObj, node);
 //	_NULLIFYNODE_IF_DELETED(mousedownPickEntityObj, node);
 }
@@ -599,7 +640,7 @@ void GObjectPicker::SetLockSplitLine( int splitlocktype, float fval )
 	fSplitValue = fval;
 }
 
-void GObjectPicker::UnLockSplitLine()
+void GObjectPicker::UnlockSplitLine()
 {
 	if (pSplitMarking)
 	{
@@ -607,6 +648,27 @@ void GObjectPicker::UnLockSplitLine()
 		pSplitMarking->getMarkingUI(MARKFLAG_SPLITLENGTH_E)->SetLock(false);
 	}
 	nSplitLockType = -1;
+}
+
+void GObjectPicker::SetLockLockLine( GObject * pObj )
+{
+	if (!pObj)
+	{
+		return;
+	}
+	if (pObj->isMidPoint())
+	{
+		pObj = pObj->getLine();
+	}
+	if (pObj->isRepresentableLine())
+	{
+		pLockedLine = (GLine *)pObj;
+	}
+}
+
+void GObjectPicker::UnlockLockLine()
+{
+	pLockedLine = NULL;
 }
 
 bool GObjectPicker::IsAngleInBetween( int angle, int nBeginAngle, int nMidAngle, int nNextAngle )
@@ -651,13 +713,13 @@ bool GObjectPicker::MIDCBSplit( MarkingUI * pmui, bool bAccept )
 		}
 		if (!bOk)
 		{
-			UnLockSplitLine();
+			UnlockSplitLine();
 			return false;
 		}
 	}
 	else
 	{
-		UnLockSplitLine();
+		UnlockSplitLine();
 	}
 	return true;
 }
@@ -702,6 +764,7 @@ void GObjectPicker::ClearSplitMarking()
 	}
 	bSplitMarkingInUse = false;
 }
+
 bool PickerInterestPointInfo::Equals( PickerInterestPointInfo & r )
 {
 	PointF2D p1(x, y);

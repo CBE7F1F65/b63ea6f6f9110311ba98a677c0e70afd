@@ -94,7 +94,11 @@ public:
 
 	void BeginTryMove();
 	void EndTryMove();
+	void BlockTryMove();
+	void UnblockTryMove();
+
 	bool IsTryMoving(){return bTryMove;};
+	bool IsTryMoveBlocking(){return bTryMoveBlock;};
 
 public:
 	GMainBaseNode * GetMainBaseNode(){return pBaseNode;};
@@ -124,7 +128,7 @@ public:
 	GLayer * GetLastActiveLayer(){return pLastActiveLayer;};
 	void SetActiveLayer_Internal(GObject * pObj=NULL, bool bCallUI=true);
 	const char * GetDefaultLayerName( int layerIndex=-1 );
-    list<GObject*> * GetSelectedNodes();
+	list<GObject*> * GetSelectedNodes(bool bFromUI);
 	GLayer * GetDragDroppedLayerNode();
 	GObject * GetDragDroppedAfterNode();
 //	list<GObject*> selectednodes;
@@ -148,6 +152,7 @@ private:
     bool bRedraw;
 
 	bool bTryMove;
+	bool bTryMoveBlock;
 
 	int nMoveActionID;
 };

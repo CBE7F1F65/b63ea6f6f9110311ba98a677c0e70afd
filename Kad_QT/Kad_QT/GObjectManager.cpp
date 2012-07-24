@@ -56,6 +56,7 @@ void GObjectManager::Release()
 	bHandleVisible = true;
 	nMoveActionID = 0;
 	bTryMove = false;
+	bTryMoveBlock = false;
 //	bLockTreeChange = false;
 }
 
@@ -101,9 +102,9 @@ void GObjectManager::Render()
 
 void GObjectManager::RenderIndication()
 {
-	if (bRenderUILayerIndicators)
+	if (bRenderUILayerIndicators && !nLockTreeChangeState)
 	{
-		list<GObject *> * lstSelectedNodes = GetSelectedNodes();
+		list<GObject *> * lstSelectedNodes = GetSelectedNodes(true);
 		if (lstSelectedNodes)
 		{
 			GObject * pHover = MainInterface::getInstance().OnGetHoveringNode();
@@ -328,9 +329,13 @@ void GObjectManager::SetActiveLayer_Internal( GObject * pObj/*=NULL*/, bool bCal
 
 }
 
-list<GObject*> * GObjectManager::GetSelectedNodes()
+list<GObject*> * GObjectManager::GetSelectedNodes( bool bFromUI )
 {
-    return MainInterface::getInstance().OnGetSelectedNodes();
+	if (bFromUI)
+	{
+		return MainInterface::getInstance().OnGetSelectedNodes();
+	}
+	return MarqueeSelect::getInstance().OnGetSelectedNodes();
     /*
 	selectednodes.clear();
 	GObject * _pobj = NULL;
@@ -412,7 +417,7 @@ bool GObjectManager::CanDuplicateItem( GObject * pObj )
 
 GLayer * GObjectManager::GetActiveLayerFromUI()
 {
-    list<GObject *> * selectednodes = GetSelectedNodes();
+    list<GObject *> * selectednodes = GetSelectedNodes(true);
 	GLayer * pLayer = NULL;
     for (list<GObject *>::iterator it=selectednodes->begin(); it!=selectednodes->end(); ++it)
 	{
@@ -480,7 +485,10 @@ void GObjectManager::SetLockTreeChange()
 
 int GObjectManager::PushMoveNodeByOffsetForBatchCommand( GObject* pObj, float xoffset, float yoffset )
 {
-
+	if (IsTryMoveBlocking())
+	{
+		return 0;
+	}
 	if (fabsf(xoffset) < M_FLOATEPS && fabsf(yoffset) < M_FLOATEPS)
 	{
 		return pushedmovenodebyoffset.size();
@@ -610,4 +618,14 @@ void GObjectManager::BeginTryMove()
 void GObjectManager::EndTryMove()
 {
 	bTryMove = false;
+}
+
+void GObjectManager::BlockTryMove()
+{
+	bTryMoveBlock = true;
+}
+
+void GObjectManager::UnblockTryMove()
+{
+	bTryMoveBlock = false;
 }

@@ -19,7 +19,7 @@ void QTUI_CommandPanel_CommandEdit::keyPressEvent(QKeyEvent *e)
 	{
 		QPlainTextEdit::keyPressEvent(e);
 	}
-    if (e->key() == Qt::Key_Return)
+    if (e->key() == Qt::Key_Return || e->key() == Qt::Key_Enter)
     {
         MainInterface::getInstance().OnCommitCommand(this->toPlainText().toStdString().c_str());
         this->clear();

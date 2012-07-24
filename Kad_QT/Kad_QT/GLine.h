@@ -25,6 +25,8 @@ public:
 
 	virtual bool MoveTo(GObject * pCaller, float newx, float newy, bool bTry, int moveActionID=-1);
 	virtual bool CallMoveTo(GObject * pCaller, float newx, float newy, bool bTry, int moveActionID=-1);
+	virtual bool CallRotate(GObject * pCaller, float orix, float oriy, int angle, bool bTry, int moveActionID=-1);
+	virtual bool CallScale(GObject * pCaller, float orix, float oriy, float fScale, bool bTry, int moveActionID=-1);
 
 	virtual bool isStraightLine() = 0;
 	virtual bool toStraightLine();

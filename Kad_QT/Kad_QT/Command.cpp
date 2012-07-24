@@ -1162,7 +1162,7 @@ void Command::OnInit()
 
 bool Command::canCommandDone()
 {
-	if (ccomm.step == CSI_FINISH || ccomm.step == CSI_FINISHCONTINUE || ccomm.step == CSI_TERMINAL)
+	if (!GetCurrentCommand() || ccomm.step == CSI_FINISH || ccomm.step == CSI_FINISHCONTINUE || ccomm.step == CSI_TERMINAL)
 	{
 		return true;
 	}

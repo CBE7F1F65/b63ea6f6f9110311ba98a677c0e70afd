@@ -32,7 +32,7 @@ void DuplicateCommand::OnProcessCommand()
 			);
 		if (ret<0)
 		{
-            list<GObject*> * activenodelist = pgm->GetSelectedNodes();
+            list<GObject*> * activenodelist = pgm->GetSelectedNodes(true);
 			
 			list <int> lids;
             for (list<GObject*>::reverse_iterator it=activenodelist->rbegin(); it!= activenodelist->rend(); ++it)

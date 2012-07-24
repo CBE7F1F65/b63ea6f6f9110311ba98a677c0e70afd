@@ -161,7 +161,7 @@ void QKeyStateManager::FillMapKey()
     mapKey[	DIK_AX	]=Qt::Key_unknown	;
     mapKey[	DIK_UNLABELED	]=Qt::Key_unknown	;
     mapKey[	DIK_NEXTTRACK	]=Qt::Key_MediaNext	;
-    mapKey[	DIK_NUMPADENTER	]=Qt::Key_Return	;
+    mapKey[	DIK_NUMPADENTER	]=Qt::Key_Enter	;
     mapKey[	DIK_RCONTROL	]=Qt::CTRL	;
     mapKey[	DIK_MUTE	]=Qt::Key_VolumeMute	;
     mapKey[	DIK_CALCULATOR	]=Qt::Key_Calculator	;

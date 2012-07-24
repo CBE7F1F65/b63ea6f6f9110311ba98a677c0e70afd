@@ -55,6 +55,7 @@ enum{
 	COMM_MOVENODE,
 	COMM_MOVENODEBYOFFSET,
 	COMM_MOVENODEBYOFFSET_BATCH,
+	COMM_ROTATE_BATCH,
 
 	// Transform
 	COMM_TOBEZIER,
@@ -114,7 +115,7 @@ enum{
 /* UnDo                                                                 */
 /************************************************************************/
 enum{
-	CSP_UNDO_I_STEP=0,
+	CSP_UNDO_I_STEP,
 };
 
 enum{
@@ -127,7 +128,7 @@ enum{
 /************************************************************************/
 
 enum{
-	CSP_PAN_XY_OFFSET = 0,
+	CSP_PAN_XY_OFFSET,
 };
 //////////////////////////////////////////////////////////////////////////
 enum{
@@ -140,12 +141,12 @@ enum{
 /************************************************************************/
 
 enum{
-	CSP_ZOOMIN_XY_B = 0,
+	CSP_ZOOMIN_XY_B,
 	CSP_ZOOMIN_XY_E,
 };
 //////////////////////////////////////////////////////////////////////////
 enum{
-	CSP_DOZOOM_XY_F_C_SCALE = 0,
+	CSP_DOZOOM_XY_F_C_SCALE,
 };
 
 /************************************************************************/
@@ -153,7 +154,7 @@ enum{
 /************************************************************************/
 
 enum{
-	CSP_REPARENT_I_NEWPARENTINDEX=0,
+	CSP_REPARENT_I_NEWPARENTINDEX,
 	CSP_REPARENT_I_AFTERINDEX,
 	CSP_REPARENT_I_OLDINDEXES,
 };
@@ -170,7 +171,7 @@ enum{
 /************************************************************************/
 
 enum{
-	CSP_CLING_I_FROMINDEX=0,
+	CSP_CLING_I_FROMINDEX,
 	CSP_CLING_I_F_TOINDEX_PROPORTION,
 };
 //////////////////////////////////////////////////////////////////////////
@@ -186,7 +187,7 @@ enum{
 /************************************************************************/
 
 enum{
-	CSP_BINDHANDLE_I_FROMINDEX=0,
+	CSP_BINDHANDLE_I_FROMINDEX,
 	CSP_BINDHANDLE_I_TOINDEX,
 };
 //////////////////////////////////////////////////////////////////////////
@@ -201,7 +202,7 @@ enum{
 /************************************************************************/
 
 enum{
-	CSP_MERGE_I_FROMINDEX=0,
+	CSP_MERGE_I_FROMINDEX,
 	CSP_MERGE_I_TOINDEX,
 };
 //////////////////////////////////////////////////////////////////////////
@@ -216,7 +217,7 @@ enum{
 /************************************************************************/
 
 enum{
-	CSP_SEPARATE_I_FROMINDEX=0,
+	CSP_SEPARATE_I_FROMINDEX,
 	CSP_SEPARATE_I_TOINDEX,
 };
 //////////////////////////////////////////////////////////////////////////
@@ -230,7 +231,7 @@ enum{
 /************************************************************************/
 
 enum{
-	CSP_DELETEITEM_I_INDEXES=0,
+	CSP_DELETEITEM_I_INDEXES,
 };
 //////////////////////////////////////////////////////////////////////////
 enum{
@@ -243,7 +244,7 @@ enum{
 /************************************************************************/
 
 enum{
-	CSP_DUPLICATE_I_INDEXES=0,
+	CSP_DUPLICATE_I_INDEXES,
 };
 //////////////////////////////////////////////////////////////////////////
 enum{
@@ -256,7 +257,7 @@ enum{
 /************************************************************************/
 
 enum{
-	CSP_NEWLAYER_S_I_NAME_INDEX=0,
+	CSP_NEWLAYER_S_I_NAME_INDEX,
 };
 //////////////////////////////////////////////////////////////////////////
 enum{
@@ -310,16 +311,33 @@ enum{
 };
 
 /************************************************************************/
+/* ROTATENODE_BATCH                                                     */
+/************************************************************************/
+
+enum{
+	CSP_ROTATENODE_BATCH_F_XY_ANGLE_ORIGIN,
+	CSP_ROTATENODE_BATCH_I_INDEXES,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_ROTATENODE_BATCH_DUMMY=0,
+	CSI_ROTATENODE_BATCH_WANTX,
+	CSI_ROTATENODE_BATCH_WANTY,
+	CSI_ROTATENODE_BATCH_WANTANGLE,
+	CSI_ROTATENODE_BATCH_WANTINDEXES,
+};
+
+/************************************************************************/
 /* SETWORKINGLAYER                                                      */
 /************************************************************************/
 
 enum{
-	CSP_SETWORKINGLAYER_I_NEWINDEX=0,
+	CSP_SETWORKINGLAYER_I_NEWINDEX,
 	CSP_SETWORKINGLAYER_I_LASTINDEX,
 };
 //////////////////////////////////////////////////////////////////////////
 enum{
-	CSPUNDO_SETWORKINGLAYER_I_LASTINDEX=0,
+	CSPUNDO_SETWORKINGLAYER_I_LASTINDEX,
 };
 //////////////////////////////////////////////////////////////////////////
 enum{
@@ -333,7 +351,7 @@ enum{
 /************************************************************************/
 
 enum{
-	CSP_LINETRANSFORM_I_INDEX=0,
+	CSP_LINETRANSFORM_I_INDEX,
 };
 //////////////////////////////////////////////////////////////////////////
 enum{
@@ -346,7 +364,7 @@ enum{
 /************************************************************************/
 
 enum{
-	CSP_CLIP_I_F_INDEX_PROPORTION=0,
+	CSP_CLIP_I_F_INDEX_PROPORTION,
 };
 //////////////////////////////////////////////////////////////////////////
 enum{
@@ -355,13 +373,12 @@ enum{
 	CSI_CLIP_WANTPROPORTION,
 };
 
-
 /************************************************************************/
 /* LINE                                                                 */
 /************************************************************************/
 
 enum{
-	CSP_LINE_XY_B = 0,
+	CSP_LINE_XY_B,
 	CSP_LINE_XY_N,
 };
 //////////////////////////////////////////////////////////////////////////
@@ -378,7 +395,7 @@ enum{
 /************************************************************************/
 
 enum{
-	CSP_BEZIER_XY_BA=0,
+	CSP_BEZIER_XY_BA,
 	CSP_BEZIER_XY_BH,
 	CSP_BEZIER_XY_NA,
 	CSP_BEZIER_XY_NH,
@@ -429,6 +446,7 @@ enum{
 	CWP_INDEX,
 	CWP_NAME,
 	CWP_PROPORTION,
+	CWP_ANGLE,
 
 	_CWP_ENDINDEX,
 };

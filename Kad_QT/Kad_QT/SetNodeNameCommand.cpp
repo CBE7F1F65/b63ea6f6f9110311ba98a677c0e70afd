@@ -44,7 +44,7 @@ void SetNodeNameCommand::OnProcessCommand()
 			);
 		if (ret < 0)
 		{
-            list <GObject *> * activenodelist = pgm->GetSelectedNodes();
+            list <GObject *> * activenodelist = pgm->GetSelectedNodes(true);
             if (activenodelist->empty())
 			{
 				pcommand->StepTo(CSI_TERMINAL);

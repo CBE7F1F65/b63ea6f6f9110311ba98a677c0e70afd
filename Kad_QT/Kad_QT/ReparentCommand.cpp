@@ -71,7 +71,7 @@ void ReparentCommand::OnProcessCommand()
 		{
 			int newindex = pcommand->GetParamI(CSI_REPARENT_WANTNEWPARENTINDEX);
 
-            list<GObject*> * activenodelist = pgm->GetSelectedNodes();
+            list<GObject*> * activenodelist = pgm->GetSelectedNodes(true);
 			GObject * pTemp;
             for (list<GObject*>::iterator it=activenodelist->begin(); it!= activenodelist->end();)
 			{

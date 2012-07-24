@@ -44,6 +44,7 @@ QTUI_Layer_Tree::QTUI_Layer_Tree(QWidget *parent) :
 void QTUI_Layer_Tree::RebuildTree(GObject *changebase, GObject *activeitem)
 {
     selectednodes.clear();
+	pHoveringNode = NULL;
     QTreeWidgetItem * pBaseItem = FindItemByObj(changebase);
     if (!pBaseItem)
     {

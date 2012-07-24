@@ -107,8 +107,8 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_OUTPUT,	"OUTPUT",	"O",	"Output",	""	);
 
 	_BSET(	COMM_INITIAL,	"INITIAL",	"",	"Initialization",	""	);
-	_BSET(	COMM_UNDO,	"UNDO", "U",	"UnDo",	""	);
-	_BSET(	COMM_REDO,	"REDO", "R",	"UnDo",	""	);
+	_BSET(	COMM_UNDO,	"UNDO", "UN",	"UnDo",	""	);
+	_BSET(	COMM_REDO,	"REDO", "RE",	"UnDo",	""	);
 
 	_BSET(	COMM_REPARENT,	"REPARENT",	"",	"Reparent Item",	""	);
 	_BSET(	COMM_CLING,	"CLING",	"CLIN",	"Cling To",	""	);
@@ -121,11 +121,14 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_MOVENODE,	"MOVE",	"M",	"Move Node",	""	);
 	_BSET(	COMM_MOVENODEBYOFFSET,	"MOVEBYOFFSET",	"MOFF",	"Move Node Offset",	""	);
 	_BSET(	COMM_MOVENODEBYOFFSET_BATCH,	"MOVEBYOFFSET_BATCH",	"MOFF_BATCH",	"Move Node Offset Batch",	""	);
+	_BSET(	COMM_ROTATE_BATCH,	"ROTATE_BATCH",	"R",	"Rotate Node Batch",	""	);
 
 	_BSET(	COMM_TOBEZIER,	"TOBEZIER", "TOB",	"Straight Line To Bezier",	""	);
 	_BSET(	COMM_TOSTRAIGHTLINE,	"TOSTRAIGHTLINE", "TOS",	"Bezier To Straight Line",	""	);
 
 	_BSET(	COMM_CLIP,	"CLIP",	"C",	"Clip",	""	);
+//	_BSET(	COMM_COMBINE,	"COMBINE",	"COM",	"Combine Two Lines",	""	);
+//	No combine command
 
 	_BSET(	COMM_SETWORKINGLAYER,	"SETWORKINGLAYER",	"",	"Set Working Layer",	""	);
 	_BSET(	COMM_NEWLAYER,	"NEWLAYER", "NL",	"New Layer",	""	);
@@ -166,6 +169,7 @@ void StringManager::FillWPInfo()
 	_PSET(	CWP_INDEX,	"INDEX"	);
 	_PSET(	CWP_NAME,	"NAME"	);
 	_PSET(	CWP_PROPORTION,	"PROPORTION"	);
+	_PSET(	CWP_ANGLE,	"ANGLE"	);
 
 #undef _PSET
 }

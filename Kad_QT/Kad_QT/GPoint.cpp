@@ -99,6 +99,10 @@ bool GPoint::MoveTo( GObject * pCaller, float newx, float newy, bool bTry, int m
 
 bool GPoint::CallMoveTo( GObject * pCaller, float newx, float newy, bool bTry, int moveActionID/*=-1*/ )
 {
+	if (!canMove())
+	{
+		return false;
+	}
 	if (moveActionID < 0)
 	{
 		moveActionID = GObjectManager::getInstance().GetNextMoveActionID();
@@ -112,6 +116,61 @@ bool GPoint::CallMoveTo( GObject * pCaller, float newx, float newy, bool bTry, i
 		}
 	}
 	return MoveTo(pCaller, newx, newy, bTry, moveActionID);
+}
+
+bool GPoint::CallRotate( GObject * pCaller, float orix, float oriy, int angle, bool bTry, int moveActionID/*=-1*/ )
+{
+	if (!canMove())
+	{
+		return false;
+	}
+	if (moveActionID < 0)
+	{
+		moveActionID = GObjectManager::getInstance().GetNextMoveActionID();
+	}
+	MathHelper * pmh = &MathHelper::getInstance();
+	PointF2D ptOri = PointF2D(orix, oriy);
+	PointF2D ptThis = GetPointF2D();
+	angle += pmh->GetLineAngle(ptOri, ptThis);
+	float fLength = pmh->LineSegmentLength(ptOri, ptThis);
+
+	if (!fLength)
+	{
+		return true;
+	}
+	float newx = fLength*cost(angle)+orix;
+	float newy = fLength*sint(angle)+oriy;
+
+	return CallMoveTo(pCaller, newx, newy, bTry, moveActionID);
+}
+
+bool GPoint::CallScale( GObject * pCaller, float orix, float oriy, float fScale, bool bTry, int moveActionID/*=-1*/ )
+{
+	if (!canMove())
+	{
+		return false;
+	}
+	if (moveActionID < 0)
+	{
+		moveActionID = GObjectManager::getInstance().GetNextMoveActionID();
+	}
+	MathHelper * pmh = &MathHelper::getInstance();
+	PointF2D ptOri = PointF2D(orix, oriy);
+	PointF2D ptThis = GetPointF2D();
+	int angle = pmh->GetLineAngle(ptOri, ptThis);
+	float fLength = pmh->LineSegmentLength(ptOri, ptThis);
+
+	if (!fLength)
+	{
+		return true;
+	}
+
+	fLength *= fScale;
+	float newx = fLength*cost(angle)+orix;
+	float newy = fLength*sint(angle)+oriy;
+
+	return CallMoveTo(pCaller, newx, newy, bTry, moveActionID);
+
 }
 
 void GPoint::OnRemove()

@@ -45,6 +45,8 @@ MainInterface::MainInterface()
 	manageloop = false;
 	bActive = false;
 
+	bLockLeftMouseDown = false;
+
     nPrecision = 25;
 }
 
@@ -183,6 +185,15 @@ bool MainInterface::Frame()
 
 	lastmousevwheel = mousevwheel;
 	mousevwheel = hge->Input_GetMouseWheel();
+
+	if (hge->Input_GetDIKey(DIK_END, DIKEY_UP))
+	{
+		bLockLeftMouseDown = !bLockLeftMouseDown;
+	}
+	if (bLockLeftMouseDown)
+	{
+		hge->Input_SetDIMouseKey(cursorleftkeyindex);
+	}
 	
 	Command * pcommand = &Command::getInstance();
 

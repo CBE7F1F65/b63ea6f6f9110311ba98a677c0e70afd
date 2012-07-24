@@ -109,8 +109,10 @@ public:
 protected:
 	virtual bool MoveTo(GObject * pCaller, float newx, float newy, bool bTry, int moveActionID=-1){DASSERT(false); return false;};
 public:
-	virtual bool CallMoveTo(GObject * pCaller, float newx, float newy, bool bTry, int moveActionID=-1){return MoveTo(pCaller, newx, newy, bTry, moveActionID);};
+	virtual bool CallMoveTo(GObject * pCaller, float newx, float newy, bool bTry, int moveActionID=-1){DASSERT(false); return false;};//{return MoveTo(pCaller, newx, newy, bTry, moveActionID);};
 	virtual bool CallMoveByOffset(GObject * pCaller, float xoffset, float yoffset, bool bTry, int moveActionID=-1){return CallMoveTo(pCaller, getX()+xoffset, getY()+yoffset, bTry, moveActionID);};
+	virtual bool CallRotate(GObject * pCaller, float orix, float oriy, int angle, bool bTry, int moveActionID=-1){DASSERT(false); return false;};
+	virtual bool CallScale(GObject * pCaller, float orix, float oriy, float fScale, bool bTry, int moveActionID=-1){DASSERT(false); return false;};
 
 	virtual bool isLayer(){return false;};
 	virtual bool isLine(){return false;};

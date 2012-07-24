@@ -7,6 +7,7 @@
 #include "MainInterface.h"
 #include "Command.h"
 #include "GBaseNode.h"
+#include "GObjectManager.h"
 
 /************************************************************************/
 /* GLINE                                                                */
@@ -91,6 +92,14 @@ bool GLine::MoveTo( GObject * pCaller, float newx, float newy, bool bTry, int mo
 
 bool GLine::CallMoveTo( GObject * pCaller, float newx, float newy, bool bTry, int moveActionID/*=-1*/ )
 {
+	if (!canMove())
+	{
+		return false;
+	}
+	if (moveActionID < 0)
+	{
+		moveActionID = GObjectManager::getInstance().GetNextMoveActionID();
+	}
 	if (!clingByList.empty())
 	{
 		float xoffset = newx - getX();
@@ -103,6 +112,36 @@ bool GLine::CallMoveTo( GObject * pCaller, float newx, float newy, bool bTry, in
 	return MoveTo(pCaller, newx, newy, bTry, moveActionID);
 }
 
+bool GLine::CallRotate( GObject * pCaller, float orix, float oriy, int angle, bool bTry, int moveActionID/*=-1*/ )
+{
+	if (!canMove())
+	{
+		return false;
+	}
+	if (moveActionID < 0)
+	{
+		moveActionID = GObjectManager::getInstance().GetNextMoveActionID();
+	}
+	plbegin->CallRotate(pCaller, orix, oriy, angle, bTry, moveActionID);
+	plend->CallRotate(pCaller, orix, oriy, angle, bTry, moveActionID);
+	return true;
+}
+
+bool GLine::CallScale( GObject * pCaller, float orix, float oriy, float fScale, bool bTry, int moveActionID/*=-1*/ )
+{
+	if (!canMove())
+	{
+		return false;
+	}
+	if (moveActionID < 0)
+	{
+		moveActionID = GObjectManager::getInstance().GetNextMoveActionID();
+	}
+	plbegin->CallScale(pCaller, orix, oriy, fScale, bTry, moveActionID);
+	plend->CallScale(pCaller, orix, oriy, fScale, bTry, moveActionID);
+	return true;
+
+}
 void GLine::OnModify()
 {
     if (!lstChildren.empty())
@@ -239,6 +278,7 @@ bool GLine::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelations
 	}
 	return false;
 }
+
 /************************************************************************/
 /* GSTRAIGHTLINE                                                        */
 /************************************************************************/
@@ -421,6 +461,7 @@ void GBezierLine::OnPrecisionChanged(float fPrecision)
         if (!isStraightLine())
         {
             bsinfo.ResetPoints(plbegin->GetPointF2D(), plbegin->GetHandle()->GetPointF2D(), plend->GetHandle()->GetPointF2D(), plend->GetPointF2D(), fPrecision);
+			CallModify();
         }
     }
 }
@@ -985,7 +1026,8 @@ GLine * GBezierLine::Clip( float fClipProportion )
 			}
 			else
 			{
-				pClingByPoint->MergeWith(plend);
+//				pClingByPoint->MergeWith(plend);
+				// Cannot Undo
 			}
 		}
 	}

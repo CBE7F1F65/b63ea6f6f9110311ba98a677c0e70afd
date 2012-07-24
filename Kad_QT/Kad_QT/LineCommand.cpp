@@ -198,6 +198,20 @@ void LineCommand::OnProcessCommand()
 
 		float x2 = pgp->GetPickX_C();
 		float y2 = pgp->GetPickY_C();
+
+		if (!pTempLine)
+		{
+			pTempLine = new GBezierLine(&tBaseNode, PointF2D(), PointF2D());
+			MarkingLine * pMarking = new MarkingLine(pTempLine, MARKFLAG_LENGTH|MARKFLAG_ANGLE);
+			MarkingUI * pmuiLength = pMarking->getMarkingUI(MARKFLAG_LENGTH);
+			MarkingUI * pmuiAngle = pMarking->getMarkingUI(MARKFLAG_ANGLE);
+			pmuiLength->SetEditable(true);
+			pmuiAngle->SetEditable(true);
+			pmuiLength->SetCallback(staticMIDCBLength);
+			pmuiAngle->SetCallback(staticMIDCBAngle);
+			MarkingManager::getInstance().EnableMarking(pMarking);
+		}
+
 		pTempLine->SetBeginEnd(x1, y1, x2, y2, 0);
 	}
 
@@ -255,7 +269,7 @@ void LineCommand::OnDoneCommand()
 		CCMake_F(yb),
 		NULL
 		);
-
+	ClearTemp();
 }
 
 bool LineCommand::staticMIDCBLength(MarkingUI * pmui, bool bAccept)
@@ -327,26 +341,12 @@ void LineCommand::OnInitCommand()
 	pNCLine = NULL;
 
 	ClearTemp();
-	pTempLine = new GBezierLine(&tBaseNode, PointF2D(), PointF2D());
-	MarkingLine * pMarking = new MarkingLine(pTempLine, MARKFLAG_LENGTH|MARKFLAG_ANGLE);
-	MarkingUI * pmuiLength = pMarking->getMarkingUI(MARKFLAG_LENGTH);
-	MarkingUI * pmuiAngle = pMarking->getMarkingUI(MARKFLAG_ANGLE);
-	pmuiLength->SetEditable(true);
-	pmuiAngle->SetEditable(true);
-	pmuiLength->SetCallback(staticMIDCBLength);
-	pmuiAngle->SetCallback(staticMIDCBAngle);
-	MarkingManager::getInstance().EnableMarking(pMarking);
-
-	GObjectPicker::getInstance().UnlockLength();
-	GObjectPicker::getInstance().UnlockAngles();
 }
 
 void LineCommand::OnTerminalCommand()
 {
 	pNextMergeToBegin = NULL;
 	ClearTemp();
-	GObjectPicker::getInstance().UnlockLength();
-	GObjectPicker::getInstance().UnlockAngles();
 }
 
 void LineCommand::ClearTemp()
@@ -356,6 +356,8 @@ void LineCommand::ClearTemp()
 		pTempLine->RemoveFromParent(true);
 		pTempLine = NULL;
 	}
+	pgp->UnlockLength();
+	pgp->UnlockAngles();
 }
 
 void LineCommand::OnClearCommand()
