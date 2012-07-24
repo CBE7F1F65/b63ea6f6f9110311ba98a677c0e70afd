@@ -121,8 +121,8 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_MOVENODE,	"MOVE",	"M",	"Move Node",	""	);
 	_BSET(	COMM_MOVENODEBYOFFSET,	"MOVEBYOFFSET",	"MOFF",	"Move Node Offset",	""	);
 	_BSET(	COMM_MOVENODEBYOFFSET_BATCH,	"MOVEBYOFFSET_BATCH",	"MOFF_BATCH",	"Move Node Offset Batch",	""	);
-	_BSET(	COMM_ROTATE_BATCH,	"ROTATE_BATCH",	"ROT",	"Rotate Node Batch",	""	);
-	_BSET(	COMM_SCALE_BATCH,	"SCALE_BATCH",	"SCA",	"Scale Node Batch",	""	);
+	_BSET(	COMM_ROTATENODE_BATCH,	"ROTATE_BATCH",	"ROT",	"Rotate Node Batch",	""	);
+	_BSET(	COMM_SCALENODE_BATCH,	"SCALE_BATCH",	"SCA",	"Scale Node Batch",	""	);
 
 	_BSET(	COMM_TOBEZIER,	"TOBEZIER", "TOB",	"Straight Line To Bezier",	""	);
 	_BSET(	COMM_TOSTRAIGHTLINE,	"TOSTRAIGHTLINE", "TOS",	"Bezier To Straight Line",	""	);
@@ -163,6 +163,8 @@ void StringManager::FillWPInfo()
 	_PSET(	CWP_XY_E,	"END X, Y"	);
 	_PSET(	CWP_XOFFSET,	"X OFFSET"	);
 	_PSET(	CWP_YOFFSET,	"Y OFFSET"	);
+	_PSET(	CWP_XSCALE,	"X SCALE"	);
+	_PSET(	CWP_YSCALE,	"Y SCALE"	);
 	_PSET(	CWP_HANDLEX,	"HANDLE X"	);
 	_PSET(	CWP_HANDLEY,	"HANDLE Y"	);
 	_PSET(	CWP_SCALE,	"SCALE"	);

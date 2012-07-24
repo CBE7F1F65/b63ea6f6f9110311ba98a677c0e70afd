@@ -123,6 +123,9 @@
     <Filter Include="Main\Command\Node\Rotate">
       <UniqueIdentifier>{8775ca4b-676b-473e-87e0-51f56b52dc93}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\Command\Node\Scale">
+      <UniqueIdentifier>{b4b55f34-ff80-4825-83b7-bb4e5335c258}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_kad_qt.cpp">
@@ -470,6 +473,9 @@
     <ClCompile Include="RotateNodeBatchCommand.cpp">
       <Filter>Main\Command\Node\Rotate</Filter>
     </ClCompile>
+    <ClCompile Include="ScaleNodeBatchCommand.cpp">
+      <Filter>Main\Command\Node\Scale</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -672,6 +678,9 @@
     </ClInclude>
     <ClInclude Include="RotateNodeBatchCommand.h">
       <Filter>Main\Command\Node\Rotate</Filter>
+    </ClInclude>
+    <ClInclude Include="ScaleNodeBatchCommand.h">
+      <Filter>Main\Command\Node\Scale</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -55,8 +55,8 @@ enum{
 	COMM_MOVENODE,
 	COMM_MOVENODEBYOFFSET,
 	COMM_MOVENODEBYOFFSET_BATCH,
-	COMM_ROTATE_BATCH,
-	COMM_SCALE_BATCH,
+	COMM_ROTATENODE_BATCH,
+	COMM_SCALENODE_BATCH,
 
 	// Transform
 	COMM_TOBEZIER,
@@ -329,6 +329,25 @@ enum{
 };
 
 /************************************************************************/
+/* SCALENODE_BATCH                                                      */
+/************************************************************************/
+
+enum{
+	CSP_SCALENODE_BATCH_XY_ORIGIN,
+	CSP_SCALENODE_BATCH_XY_SCALE,
+	CSP_SCALENODE_BATCH_I_INDEXES,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_SCALENODE_BATCH_DUMMY=0,
+	CSI_SCALENODE_BATCH_WANTX,
+	CSI_SCALENODE_BATCH_WANTY,
+	CSI_SCALENODE_BATCH_WANTXSCALE,
+	CSI_SCALENODE_BATCH_WANTYSCALE,
+	CSI_SCALENODE_BATCH_WANTINDEXES,
+};
+
+/************************************************************************/
 /* SETWORKINGLAYER                                                      */
 /************************************************************************/
 
@@ -440,6 +459,8 @@ enum{
 	CWP_XY_N,
 	CWP_XOFFSET,
 	CWP_YOFFSET,
+	CWP_XSCALE,
+	CWP_YSCALE,
 	CWP_HANDLEX,
 	CWP_HANDLEY,
 	CWP_SCALE,
