@@ -138,13 +138,32 @@ void RotateNodeBatchCommand::OnProcessCommand()
 				if (!pTempLine)
 				{
 					pTempLine = new GBezierLine(&tBaseNode, PointF2D(), PointF2D());
-					MarkingLine * pMarking = new MarkingLine(pTempLine, MARKFLAG_ANGLE);
-					MarkingUI * pmuiAngle = pMarking->getMarkingUI(MARKFLAG_ANGLE);
-					pmuiAngle->SetEditable(true);
-					pmuiAngle->SetCallback(staticMIDCBAngle);
+					int nMarkFlag;
+					if (comm == COMM_ROTATE_BATCH)
+					{
+						nMarkFlag = MARKFLAG_ANGLE;
+					}
+					else
+					{
+						nMarkFlag = MARKFLAG_LENGTH;
+					}
+					MarkingLine * pMarking = new MarkingLine(pTempLine, nMarkFlag);
+					if (comm == COMM_ROTATE_BATCH)
+					{
+						MarkingUI * pmuiAngle = pMarking->getMarkingUI(MARKFLAG_ANGLE);
+						pmuiAngle->SetEditable(true);
+						pmuiAngle->SetCallback(staticMIDCBAngle);
+					}
+					else
+					{
+						MarkingUI * pmuiLength = pMarking->getMarkingUI(MARKFLAG_LENGTH);
+						pmuiLength->SetEditable(true);
+						pmuiLength->SetCallback(staticMIDCBLength);
+					}
 					MarkingManager::getInstance().EnableMarking(pMarking);
 
 					pgp->UnlockAngles();
+					pgp->UnlockLength();
 				}
 
 				float orix, oriy;
@@ -155,29 +174,69 @@ void RotateNodeBatchCommand::OnProcessCommand()
 				pTempLine->SetBeginEnd(orix, oriy, pickx, picky);
 
 				int angle = MathHelper::getInstance().GetLineAngle(pTempLine->GetBeginPoint()->GetPointF2D(), pTempLine->GetEndPoint()->GetPointF2D());
-
+				float fNowLength = pTempLine->getLength();
+				float fVal;
+				if (comm != COMM_ROTATE_BATCH)
+				{
+					if (pgp->IsMouseDownReady())
+					{
+						if (fBeginLength <= 0)
+						{
+							fBeginLength = fNowLength;
+						}
+					}
+				}
 				if (pgp->IsPickReady(iret))
 				{
 					if (!pcommand->IsInternalProcessing())
 					{
 						pgm->EndTryMove();
-						float fAngle = angle*90.0f/ANGLEBASE_90;
-						pcommand->SetParamF(CSP_ROTATENODE_BATCH_F_XY_ANGLE_ORIGIN, fAngle, CWP_ANGLE);
+						if (comm == COMM_ROTATE_BATCH)
+						{
+							fVal = angle*90.0f/ANGLEBASE_90;
+						}
+						else
+						{
+							fVal = fNowLength/fBeginLength;
+						}
+						pcommand->SetParamF(CSP_ROTATENODE_BATCH_F_XY_ANGLE_ORIGIN, fVal, CWP_ANGLE);
 						pcommand->StepTo(CSI_ROTATENODE_BATCH_WANTINDEXES, CWP_INDEX);
 					}
 				}
 				else
 				{
 					pgm->BeginTryMove();
-					int moveActionID = pgm->GetNextMoveActionID();
+					int nMoveType;
+					float fScaleX=1.0f;
+					float fScaleY=1.0f;
+					int nMoveAngle=0;
+					if (comm == COMM_ROTATE_BATCH)
+					{
+						nMoveType = GMMATYPE_ROTATE;
+						nMoveAngle = angle-lastAngle;
+					}
+					else
+					{
+						nMoveType = GMMATYPE_SCALE;
+						fScaleX = fScaleY = fNowLength/fLastLength;
+					}
+					int moveActionID = pgm->GetNextMoveActionID(nMoveType, nMoveAngle, fScaleX, fScaleY);
 					for (list<GObject *>::reverse_iterator it=lstObj.rbegin(); it!=lstObj.rend(); ++it)
 					{
 						GObject * pObj = *it;
-						pObj->CallRotate(pObj, orix, oriy, angle-lastAngle, true, moveActionID);
+						if (comm == COMM_ROTATE_BATCH)
+						{
+							pObj->CallRotate(pObj, orix, oriy, nMoveAngle, true, moveActionID);
+						}
+						else if (fBeginLength > 0)
+						{
+							pObj->CallScale(pObj, orix, oriy, fScaleX, fScaleY, true, moveActionID);
+						}
 					}
 				}
 
 				lastAngle = angle;
+				fLastLength = fNowLength;
 			}
 		}
 	}
@@ -185,19 +244,29 @@ void RotateNodeBatchCommand::OnProcessCommand()
 
 void RotateNodeBatchCommand::OnDoneCommand()
 {
-
-	float fAngle;
+	float fVal;
 	float orix, oriy;
 	pcommand->GetParamXY(CSP_ROTATENODE_BATCH_F_XY_ANGLE_ORIGIN, &orix, &oriy);
-	fAngle = pcommand->GetParamF(CSP_ROTATENODE_BATCH_F_XY_ANGLE_ORIGIN);
-	int angle = fAngle*ANGLEBASE_90/90;
+	fVal = pcommand->GetParamF(CSP_ROTATENODE_BATCH_F_XY_ANGLE_ORIGIN);
+	int angle = fVal*ANGLEBASE_90/90;
 
 	MathHelper::getInstance().RestrictAngle(&angle);
 
-	if (!angle)
+	if (comm == COMM_ROTATE_BATCH)
 	{
-		pcommand->StepTo(CSI_TERMINAL);
-		return;
+		if (!angle)
+		{
+			pcommand->TerminalCommand();
+			return;
+		}
+	}
+	else
+	{
+		if (fabsf(fVal-1) < M_FLOATEPS)
+		{
+			pcommand->TerminalCommand();
+			return;
+		}
 	}
 
 	int index = pcommand->GetParamI(CSP_ROTATENODE_BATCH_I_INDEXES);
@@ -213,11 +282,35 @@ void RotateNodeBatchCommand::OnDoneCommand()
 	}
 
 	pgm->SetLockTreeChange();
-	int nMoveActionID = pgm->GetNextMoveActionID();
+	int nMoveType;
+	float fScaleX=1.0f;
+	float fScaleY=1.0f;
+	int nMoveAngle=0;
+	if (comm == COMM_ROTATE_BATCH)
+	{
+		nMoveType = GMMATYPE_ROTATE;
+		nMoveAngle = angle;
+	}
+	else
+	{
+		nMoveType = GMMATYPE_SCALE;
+		fScaleX = fScaleY = fVal;
+	}
+	int moveActionID = pgm->GetNextMoveActionID(nMoveType, nMoveAngle, fScaleX, fScaleY);
 	for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end();)
 	{
 		GObject * pMoveObj = *it;
-		if (!(*it)->CallRotate(pMoveObj, orix, oriy, angle, false, nMoveActionID))
+
+		bool bRet = false;
+		if (comm == COMM_ROTATE_BATCH)
+		{
+			bRet = (*it)->CallRotate(pMoveObj, orix, oriy, nMoveAngle, false, moveActionID);
+		}
+		else
+		{
+			bRet = (*it)->CallScale(pMoveObj, orix, oriy, fScaleX, fScaleY, false, moveActionID);
+		}
+		if (!bRet)
 		{
 			it = lobjs.erase(it);
 		}
@@ -247,7 +340,7 @@ void RotateNodeBatchCommand::OnDoneCommand()
 			CCMake_C(comm),
 			CCMake_F(orix),
 			CCMake_F(oriy),
-			CCMake_F(fAngle),
+			CCMake_F(fVal),
 			NULL
 			);
 		for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end(); ++it)
@@ -277,18 +370,40 @@ void RotateNodeBatchCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 	++it;
 	float oriy = it->fval;
 	++it;
-	float fAngle = it->fval;
-	int angle = fAngle*ANGLEBASE_90/90;
+	float fVal = it->fval;
+	int angle = fVal*ANGLEBASE_90/90;
 	MathHelper::getInstance().RestrictAngle(&angle);
 	++it;
 	pgm->SetLockTreeChange();
-	int nMoveActionID = pgm->GetNextMoveActionID();
+	int nMoveType;
+	float fScaleX=1.0f;
+	float fScaleY=1.0f;
+	int nMoveAngle=0;
+	if (comm == COMM_ROTATE_BATCH)
+	{
+		nMoveType = GMMATYPE_ROTATE;
+		nMoveAngle = -angle;
+	}
+	else
+	{
+		nMoveType = GMMATYPE_SCALE;
+		fScaleX = fScaleY = 1/fVal;
+	}
+	int moveActionID = pgm->GetNextMoveActionID(nMoveType, nMoveAngle, fScaleX, fScaleY);
 	for (; it!=--(rc->commandlist.end()); ++it)
 	{
 		int index = it->ival;
 		GObject * pObj = pgm->FindObjectByID(index);
 		ASSERT(pObj);
-		pObj->CallRotate(pObj, orix, oriy, -angle, false, nMoveActionID);
+		if (comm == COMM_ROTATE_BATCH)
+		{
+			pObj->CallRotate(pObj, orix, oriy, nMoveAngle, false, moveActionID);
+		}
+		else
+		{
+			ASSERT(fVal!=0);
+			pObj->CallScale(pObj, orix, oriy, fScaleX, fScaleY, false, moveActionID);
+		}
 		pgm->OnTreeChanged(pObj->getParent(), pObj);
 	}
 }
@@ -309,7 +424,10 @@ void RotateNodeBatchCommand::ClearTemp()
 		pTempLine->RemoveFromParent(true);
 		pTempLine = NULL;
 	}
+	fBeginLength = 0;
+	fLastLength = 0;
 	pgp->UnlockAngles();
+	pgp->UnlockLength();
 	pgm->UnblockTryMove();
 }
 
@@ -354,6 +472,37 @@ bool RotateNodeBatchCommand::MIDCBAngle( MarkingUI * pmui, bool bAccept )
 	}
 	return true;
 
+}
+
+bool RotateNodeBatchCommand::MIDCBLength( MarkingUI * pmui, bool bAccept )
+{
+	GObjectPicker * pgp = &GObjectPicker::getInstance();
+	if (pmui->IsValueLocked())
+	{
+		bool bOk;
+		float fLockedLength = pmui->getFloat(&bOk);
+		if (bOk)
+		{
+			float x, y;
+			pcommand->GetParamXY(CSP_LINE_XY_B, &x, &y);
+			pgp->SetLockOrigin(x, y);
+			pgp->SetLockLength(fLockedLength);
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		pgp->UnlockLength();
+	}
+	return true;
+}
+
+bool RotateNodeBatchCommand::staticMIDCBLength( MarkingUI * pmui, bool bAccept )
+{
+	return getInstance().MIDCBLength(pmui, bAccept);
 }
 
 bool RotateNodeBatchCommand::FilterCallback( GObject * pObj )

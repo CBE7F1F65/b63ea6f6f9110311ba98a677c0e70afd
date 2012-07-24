@@ -98,7 +98,7 @@ bool GLine::CallMoveTo( GObject * pCaller, float newx, float newy, bool bTry, in
 	}
 	if (moveActionID < 0)
 	{
-		moveActionID = GObjectManager::getInstance().GetNextMoveActionID();
+		moveActionID = GObjectManager::getInstance().GetNextMoveActionID(GMMATYPE_MOVE);
 	}
 	if (!clingByList.empty())
 	{
@@ -120,14 +120,14 @@ bool GLine::CallRotate( GObject * pCaller, float orix, float oriy, int angle, bo
 	}
 	if (moveActionID < 0)
 	{
-		moveActionID = GObjectManager::getInstance().GetNextMoveActionID();
+		moveActionID = GObjectManager::getInstance().GetNextMoveActionID(GMMATYPE_ROTATE, angle);
 	}
 	plbegin->CallRotate(pCaller, orix, oriy, angle, bTry, moveActionID);
 	plend->CallRotate(pCaller, orix, oriy, angle, bTry, moveActionID);
 	return true;
 }
 
-bool GLine::CallScale( GObject * pCaller, float orix, float oriy, float fScale, bool bTry, int moveActionID/*=-1*/ )
+bool GLine::CallScale( GObject * pCaller, float orix, float oriy, float fScaleX, float fScaleY, bool bTry, int moveActionID/*=-1*/ )
 {
 	if (!canMove())
 	{
@@ -135,10 +135,10 @@ bool GLine::CallScale( GObject * pCaller, float orix, float oriy, float fScale, 
 	}
 	if (moveActionID < 0)
 	{
-		moveActionID = GObjectManager::getInstance().GetNextMoveActionID();
+		moveActionID = GObjectManager::getInstance().GetNextMoveActionID(GMMATYPE_SCALE, 0, fScaleX, fScaleY);
 	}
-	plbegin->CallScale(pCaller, orix, oriy, fScale, bTry, moveActionID);
-	plend->CallScale(pCaller, orix, oriy, fScale, bTry, moveActionID);
+	plbegin->CallScale(pCaller, orix, oriy, fScaleX, fScaleY, bTry, moveActionID);
+	plend->CallScale(pCaller, orix, oriy, fScaleX, fScaleY, bTry, moveActionID);
 	return true;
 
 }

@@ -491,7 +491,7 @@ void MarqueeSelect::MoveSelected( float movedx_c, float movedy_c )
 		}
 	}
 
-	int nMoveActionID = GObjectManager::getInstance().GetNextMoveActionID();
+	int nMoveActionID = GObjectManager::getInstance().GetNextMoveActionID(GMMATYPE_MOVE);
 	for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end(); ++it)
 	{
 		if ((*it)->isRepresentablePoint())

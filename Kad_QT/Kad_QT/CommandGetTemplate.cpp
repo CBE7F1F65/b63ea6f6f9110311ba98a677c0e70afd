@@ -52,6 +52,7 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 	case COMM_MOVENODEBYOFFSET_BATCH:
 		return &MoveNodeBatchCommand::getInstance();
 	case COMM_ROTATE_BATCH:
+	case COMM_SCALE_BATCH:
 		return &RotateNodeBatchCommand::getInstance();
 
 	case COMM_TOBEZIER:

@@ -286,7 +286,7 @@ void BezierCommand::OnProcessCommand()
 					MergeClingNewPoint(pNCLine->GetBeginPoint(), pMergeToBegin, fProportionBegin);
 				}
 				pNextMergeToBegin = pNCLine->GetEndPoint();
-
+				/*
 				if (!pBindAnchorEnd)
 				{
 					if (pMergeToEnd)
@@ -307,6 +307,7 @@ void BezierCommand::OnProcessCommand()
 						}
 					}
 				}
+				*/
 				if (pBindAnchorEnd)
 				{
 					BindNewAnchorPoint(pNCLine->GetEndPoint(), pBindAnchorEnd);

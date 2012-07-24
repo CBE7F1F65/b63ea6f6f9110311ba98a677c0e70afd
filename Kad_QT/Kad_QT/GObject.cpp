@@ -624,7 +624,7 @@ void GObject::CallUpdate()
 {
 	if (canUpdate())
 	{
-		nUpdateMoveActionID = GObjectManager::getInstance().GetNextMoveActionID();
+		nUpdateMoveActionID = GObjectManager::getInstance().GetNextMoveActionID(GMMATYPE_MOVE);
 		OnUpdate();
 		if (!lstChildren.empty())
 		{

@@ -105,7 +105,7 @@ bool GPoint::CallMoveTo( GObject * pCaller, float newx, float newy, bool bTry, i
 	}
 	if (moveActionID < 0)
 	{
-		moveActionID = GObjectManager::getInstance().GetNextMoveActionID();
+		moveActionID = GObjectManager::getInstance().GetNextMoveActionID(GMMATYPE_MOVE);
 	}
 
 	if (!mergeWithList.empty())
@@ -126,7 +126,7 @@ bool GPoint::CallRotate( GObject * pCaller, float orix, float oriy, int angle, b
 	}
 	if (moveActionID < 0)
 	{
-		moveActionID = GObjectManager::getInstance().GetNextMoveActionID();
+		moveActionID = GObjectManager::getInstance().GetNextMoveActionID(GMMATYPE_ROTATE, angle);
 	}
 	MathHelper * pmh = &MathHelper::getInstance();
 	PointF2D ptOri = PointF2D(orix, oriy);
@@ -144,7 +144,7 @@ bool GPoint::CallRotate( GObject * pCaller, float orix, float oriy, int angle, b
 	return CallMoveTo(pCaller, newx, newy, bTry, moveActionID);
 }
 
-bool GPoint::CallScale( GObject * pCaller, float orix, float oriy, float fScale, bool bTry, int moveActionID/*=-1*/ )
+bool GPoint::CallScale( GObject * pCaller, float orix, float oriy, float fScaleX, float fScaleY, bool bTry, int moveActionID/*=-1*/ )
 {
 	if (!canMove())
 	{
@@ -152,25 +152,14 @@ bool GPoint::CallScale( GObject * pCaller, float orix, float oriy, float fScale,
 	}
 	if (moveActionID < 0)
 	{
-		moveActionID = GObjectManager::getInstance().GetNextMoveActionID();
+		moveActionID = GObjectManager::getInstance().GetNextMoveActionID(GMMATYPE_SCALE, 0, fScaleX, fScaleY);
 	}
 	MathHelper * pmh = &MathHelper::getInstance();
-	PointF2D ptOri = PointF2D(orix, oriy);
-	PointF2D ptThis = GetPointF2D();
-	int angle = pmh->GetLineAngle(ptOri, ptThis);
-	float fLength = pmh->LineSegmentLength(ptOri, ptThis);
 
-	if (!fLength)
-	{
-		return true;
-	}
-
-	fLength *= fScale;
-	float newx = fLength*cost(angle)+orix;
-	float newy = fLength*sint(angle)+oriy;
+	float newx = (x-orix)*fScaleX+orix;
+	float newy = (y-oriy)*fScaleY+oriy;
 
 	return CallMoveTo(pCaller, newx, newy, bTry, moveActionID);
-
 }
 
 void GPoint::OnRemove()
@@ -535,7 +524,7 @@ void GAnchorPoint::SetHandlePosition( float hx, float hy, float fAllowance/*=-1 
 {
 	if (fAllowance >= 0)
 	{
-		if (fabsf(hx-x) <= fAllowance && fabsf(hy-y) <= fAllowance)
+		if (fabsf(hx-phandle->getX()) <= fAllowance && fabsf(hy-phandle->getY()) <= fAllowance)
 		{
 			return;
 		}
@@ -557,13 +546,38 @@ bool GAnchorPoint::MoveTo( GObject * pCaller, float newx, float newy, bool bTry,
 	float xoffset = newx-x;
 	float yoffset = newy-y;
 
-	bool bret = GAttributePoint::MoveTo(pCaller, newx, newy, bTry, moveActionID);
+	bool bret = super::MoveTo(pCaller, newx, newy, bTry, moveActionID);
 
 	if (bret)
 	{
 		if (phandle)
 		{
-			bret = phandle->CallMoveByOffset(pCaller, xoffset, yoffset, bTry, moveActionID);
+			int nMoveAngle;
+			float fScaleX;
+			float fScaleY;
+			int nMoveType = GObjectManager::getInstance().GetMoveTypeInfo(&nMoveAngle, &fScaleX, &fScaleY);
+			if (nMoveType == GMMATYPE_ROTATE)
+			{
+				if (phandle->getMoveActionID() != moveActionID)
+				{
+					phandle->CallMoveByOffset(pCaller, xoffset, yoffset, bTry, moveActionID);
+					bret = phandle->CallRotate(pCaller, x, y, nMoveAngle, bTry, 0);
+					phandle->CallMoveByOffset(pCaller, 0, 0, bTry, moveActionID);
+				}
+			}
+			else if (nMoveType == GMMATYPE_SCALE)
+			{
+				if (phandle->getMoveActionID() != moveActionID)
+				{
+					phandle->CallMoveByOffset(pCaller, xoffset, yoffset, bTry, moveActionID);
+					bret = phandle->CallScale(pCaller, x, y, fScaleX, fScaleY, bTry, 0);
+					phandle->CallMoveByOffset(pCaller, 0, 0, bTry, moveActionID);
+				}
+			}
+			else
+			{
+				bret = phandle->CallMoveByOffset(pCaller, xoffset, yoffset, bTry, moveActionID);
+			}
 
 			if (bret)
 			{
@@ -754,7 +768,52 @@ bool GHandlePoint::BindWith( GHandlePoint * pHandle/*=NULL*/ )
 
 bool GHandlePoint::MoveTo( GObject * pCaller, float newx, float newy, bool bTry, int moveActionID/*=-1 */ )
 {
-	bool bret = GAttributePoint::MoveTo(pCaller, newx, newy, bTry, moveActionID);
+	/*
+	int nMoveAngle;
+	float fScaleX;
+	float fScaleY;
+	int nMoveType = GObjectManager::getInstance().GetMoveTypeInfo(&nMoveAngle, &fScaleX, &fScaleY);
+	if (nMoveType == GMMATYPE_ROTATE)
+	{
+		if (nMoveAngle)
+		{
+			MathHelper * pmh = &MathHelper::getInstance();
+			PointF2D ptOri = GetAnchor()->GetPointF2D();
+			PointF2D ptThis = GetPointF2D();
+			nMoveAngle += pmh->GetLineAngle(ptOri, ptThis);
+			float fLength = pmh->LineSegmentLength(ptOri, ptThis);
+
+			if (!fLength)
+			{
+				return true;
+			}
+			newx = fLength*cost(nMoveAngle)+ptOri.x;
+			newy = fLength*sint(nMoveAngle)+ptOri.y;
+		}
+	}
+	else if (nMoveType == GMMATYPE_SCALE)
+	{
+		if (fScaleX!=1.0f || fScaleY!=1.0f)
+		{
+			MathHelper * pmh = &MathHelper::getInstance();
+			PointF2D ptOri = GetAnchor()->GetPointF2D();
+			PointF2D ptThis = GetPointF2D();
+			int angle = pmh->GetLineAngle(ptOri, ptThis);
+			float fLength = pmh->LineSegmentLength(ptOri, ptThis);
+
+			if (!fLength)
+			{
+				return true;
+			}
+
+			fLength *= fScaleX;
+			newx = fLength*cost(angle)+ptOri.x;
+			newy = fLength*sint(angle)+ptOri.y;
+		}
+	}
+	*/
+
+	bool bret = super::MoveTo(pCaller, newx, newy, bTry, moveActionID);
 	if (bret)
 	{
 		if (pCaller && pCaller->isHandlePoint())

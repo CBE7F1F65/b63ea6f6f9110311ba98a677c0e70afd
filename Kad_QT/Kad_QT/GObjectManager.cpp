@@ -55,9 +55,9 @@ void GObjectManager::Release()
     bRenderUILayerIndicators = false;
 	bHandleVisible = true;
 	nMoveActionID = 0;
+	nMoveActionType = GMMATYPE_MOVE;
 	bTryMove = false;
 	bTryMoveBlock = false;
-//	bLockTreeChange = false;
 }
 
 void GObjectManager::Update()
@@ -605,8 +605,12 @@ void GObjectManager::SetHandleVisible( bool bSet )
 	}
 }
 
-int GObjectManager::GetNextMoveActionID()
+int GObjectManager::GetNextMoveActionID( int nMoveType, int nAngle/*=0*/, float fScaleX/*=1.0f*/, float fScaleY/*=1.0f*/ )
 {
+	nMoveActionType = nMoveType;
+	nMoveActionAngle = nAngle;
+	fMoveActionScaleX = fScaleX;
+	fMoveActionScaleY = fScaleY;
 	return nMoveActionID++;
 }
 
@@ -628,4 +632,21 @@ void GObjectManager::BlockTryMove()
 void GObjectManager::UnblockTryMove()
 {
 	bTryMoveBlock = false;
+}
+
+int GObjectManager::GetMoveTypeInfo( int * pAngle/*=NULL*/, float * pScaleX/*=NULL*/, float * pScaleY/*=NULL*/ )
+{
+	if (pAngle)
+	{
+		*pAngle = nMoveActionAngle;
+	}
+	if (pScaleX)
+	{
+		*pScaleX = fMoveActionScaleX;
+	}
+	if (pScaleY)
+	{
+		*pScaleY = fMoveActionScaleY;
+	}
+	return nMoveActionType;
 }

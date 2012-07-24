@@ -114,7 +114,7 @@ void MoveNodeBatchCommand::OnDoneCommand()
 	}
 
 	pgm->SetLockTreeChange();
-	int nMoveActionID = pgm->GetNextMoveActionID();
+	int nMoveActionID = pgm->GetNextMoveActionID(GMMATYPE_MOVE);
 	for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end();)
 	{
 		GObject * pMoveObj = *it;
@@ -178,7 +178,7 @@ void MoveNodeBatchCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 	float yoffset = it->fval;
 	++it;
 	pgm->SetLockTreeChange();
-	int nMoveActionID = pgm->GetNextMoveActionID();
+	int nMoveActionID = pgm->GetNextMoveActionID(GMMATYPE_MOVE);
 	for (; it!=--(rc->commandlist.end()); ++it)
 	{
 		int index = it->ival;
