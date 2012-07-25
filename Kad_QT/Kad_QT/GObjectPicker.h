@@ -186,6 +186,7 @@ private:
 
 public:
 	void ClearSet();
+	void OnMouseUp();
 
 private:
 	PickFilterCallback pfilterfunc;
@@ -201,7 +202,7 @@ public:
 
 public:
 	void PushInterestPoint(float x, float y, bool bHasAngle=false, int angle=0);
-	void SetCheckMouseDown( bool bSet ){bCheckMouseDown=bSet;};
+	void SetCheckMouseDown(){bCheckMouseDown=true;};
 	bool FindLineIntersectX( float y );
 	bool FindLineIntersectY( float x );
 	bool FindLineIntersectLine( GLine * pLine );

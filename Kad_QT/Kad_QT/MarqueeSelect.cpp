@@ -183,6 +183,10 @@ void MarqueeSelect::Update()
 		{
 			marqueestate = MARQSTATE_NONE;
 		}
+		if (marqueestate == MARQSTATE_BEGAN)
+		{
+			pgp->OnMouseUp();
+		}
 		if (itemmovestate == MARQMOVESTATE_BEGAN)
 		{
 			EndMove();
@@ -249,7 +253,7 @@ void MarqueeSelect::Update()
 				}
 				if (itemmovestate == MARQMOVESTATE_BEGAN)
 				{
-					pgp->SetCheckMouseDown(true);
+					pgp->SetCheckMouseDown();
 					if (pgp->GetSnappedState())
 					{
 						mousex_c = pgp->GetPickX_C();
@@ -266,7 +270,7 @@ void MarqueeSelect::Update()
 						if (CheckObjInSelection(pPicked))
 						{
 							itemmovestate = MARQMOVESTATE_BEGAN;
-							pgp->SetCheckMouseDown(true);
+							pgp->SetCheckMouseDown();
 						}
 					}
 				}
@@ -820,18 +824,19 @@ void MarqueeSelect::BeginMove( float nowx, float nowy )
 			{
 				pMarkingLine = new MarkingLine(pLine, nFlag);
 
-				if (bAnchor)
+				if (bAnchor && bStraightLine)
 				{
-					if (bStraightLine)
-					{
-						pMarkingLine->getMarkingUI(MARKFLAG_ANGLE)->SetEditable(true);
-						pMarkingLine->getMarkingUI(MARKFLAG_ANGLE)->SetCallback(staticMIDCBAngle);
-					}
+					pMarkingLine->getMarkingUI(MARKFLAG_ANGLE)->SetEditable(true);
+					pMarkingLine->getMarkingUI(MARKFLAG_ANGLE)->SetCallback(staticMIDCBAngle);
 				}
-				if (bAnchor || bHandle)
+				if (bAnchor && bStraightLine || bHandle)
 				{
 					pMarkingLine->getMarkingUI(MARKFLAG_LENGTH)->SetEditable(true);
 					pMarkingLine->getMarkingUI(MARKFLAG_LENGTH)->SetCallback(staticMIDCBLength);
+				}
+				else
+				{
+					pMarkingLine->getMarkingUI(MARKFLAG_LENGTH)->SetEditable(false);
 				}
 
 				MarkingManager::getInstance().EnableMarking(pMarkingLine);
@@ -873,8 +878,19 @@ bool MarqueeSelect::MIDCBLength( MarkingUI * pmui, bool bAccept )
 		if (bOk)
 		{
 			GLine * pLine = pBeginObj->getLine();
-			PointF2D ptLineBegin = pLine->GetBeginPoint()->GetPointF2D();
-			pgp->SetLockOrigin(ptLineBegin.x, ptLineBegin.y);
+			PointF2D ptLockOrigin;
+			if (pBeginObj->isAnchorPoint())
+			{
+				if (pBeginObj == pLine->GetBeginPoint())
+				{
+					ptLockOrigin = pLine->GetEndPoint()->GetPointF2D();
+				}
+				else if (pBeginObj == pLine->GetEndPoint())
+				{
+					ptLockOrigin = pLine->GetBeginPoint()->GetPointF2D();
+				}
+			}
+			pgp->SetLockOrigin(ptLockOrigin.x, ptLockOrigin.y);
 			if (pBeginObj->isHandlePoint())
 			{
 				GHandlePoint * pBeginHandle = pLine->GetBeginPoint()->GetHandle();
@@ -924,8 +940,20 @@ bool MarqueeSelect::MIDCBAngle( MarkingUI * pmui, bool bAccept )
 		if (bOk)
 		{
 			int nLockedAngle = fAngle * ANGLEBASE_90/90;
-			PointF2D ptLineBegin = pBeginObj->getLine()->GetBeginPoint()->GetPointF2D();
-			pgp->SetLockOrigin(ptLineBegin.x, ptLineBegin.y);
+			GLine * pLine = pBeginObj->getLine();
+			PointF2D ptLockOrigin;
+			if (pBeginObj->isAnchorPoint())
+			{
+				if (pBeginObj == pLine->GetBeginPoint())
+				{
+					ptLockOrigin = pLine->GetEndPoint()->GetPointF2D();
+				}
+				else if (pBeginObj == pLine->GetEndPoint())
+				{
+					ptLockOrigin = pLine->GetBeginPoint()->GetPointF2D();
+				}
+			}
+			pgp->SetLockOrigin(ptLockOrigin.x, ptLockOrigin.y);
 			pgp->SetLockAngle(nLockedAngle);
 		}
 		else

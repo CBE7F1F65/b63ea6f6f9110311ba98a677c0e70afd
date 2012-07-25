@@ -143,41 +143,51 @@ void ScaleNodeBatchCommand::OnProcessCommand()
 			}
 			else
 			{
-				if (!pTempLine)
-				{
-					pTempLine = new GBezierLine(&tBaseNode, PointF2D(), PointF2D());
-					MarkingLine * pMarking = new MarkingLine(pTempLine, MARKFLAG_LENGTH);
-					MarkingUI * pmuiLength = pMarking->getMarkingUI(MARKFLAG_LENGTH);
-					pmuiLength->SetEditable(true);
-					pmuiLength->SetCallback(staticMIDCBLength);
-					MarkingManager::getInstance().EnableMarking(pMarking);
-
-					pgp->UnlockAngles();
-					pgp->UnlockLength();
-				}
-
-				float orix, oriy;
-				pcommand->GetParamXY(CSP_SCALENODE_BATCH_XY_ORIGIN, &orix, &oriy);
-
 				float pickx = pgp->GetPickX_C();
 				float picky = pgp->GetPickY_C();
+				float orix, oriy;
+				pcommand->GetParamXY(CSP_SCALENODE_BATCH_XY_ORIGIN, &orix, &oriy);
+				if (!pTempLine)
+				{
+					pTempLine = new GBezierLine(&tBaseNode, PointF2D(orix, oriy), PointF2D(orix, oriy));
+					pMarking = new MarkingOffset(pTempLine->GetEndPoint(), MARKFLAG_OFFSET);
+					MarkingUI * pmuiXOffset = pMarking->getMarkingUI(MARKFLAG_XOFFSET);
+					MarkingUI * pmuiYOffset = pMarking->getMarkingUI(MARKFLAG_YOFFSET);
+					pmuiXOffset->SetEditable(true);
+					pmuiYOffset->SetEditable(true);
+					pmuiXOffset->SetCallback(staticMIDCOffset);
+					pmuiYOffset->SetCallback(staticMIDCOffset);
+					pMarking->SetMoveOrigin(orix, oriy);
+					MarkingManager::getInstance().EnableMarking(pMarking);
+				}
 				pTempLine->SetBeginEnd(orix, oriy, pickx, picky);
 
 				int angle = MathHelper::getInstance().GetLineAngle(pTempLine->GetBeginPoint()->GetPointF2D(), pTempLine->GetEndPoint()->GetPointF2D());
 
+				float fNowXDiff = pickx-orix;
+				float fNowYDiff = picky-oriy;
 				if (pgp->IsMouseDownReady())
 				{
 					if (!bBeginSet)
 					{
 						fScaleBaseXDiff = pickx-orix;
 						fScaleBaseYDiff = picky-oriy;
+#define SCALECOMMAND_MINIMALSCALE		0.1f
+#define SCALECOMMAND_MINIMALSCALEINV	(1.0f/SCALECOMMAND_MINIMALSCALE)
+						if (fabsf(fScaleBaseXDiff) < SCALECOMMAND_MINIMALSCALEINV)
+						{
+							fScaleBaseXDiff = SCALECOMMAND_MINIMALSCALEINV;
+						}
+						if (fabsf(fScaleBaseYDiff) < SCALECOMMAND_MINIMALSCALEINV)
+						{
+							fScaleBaseYDiff = SCALECOMMAND_MINIMALSCALEINV;
+						}
 						fLastXDiff = fScaleBaseXDiff;
 						fLastYDiff = fScaleBaseYDiff;
 						bBeginSet = true;
+
 					}
-					float fNowXDiff = pickx-orix;
-					float fNowYDiff = picky-oriy;
-#define SCALECOMMAND_MINIMALSCALE	0.1f
+					pgp->SetCheckMouseDown();
 					if (fabsf(fNowXDiff) < fabsf(fScaleBaseXDiff*SCALECOMMAND_MINIMALSCALE))
 					{
 						float fSign = 1.0f;
@@ -256,6 +266,7 @@ void ScaleNodeBatchCommand::OnProcessCommand()
 					fLastYDiff = fNowYDiff;
 				}
 
+				pMarking->SetNowPos(orix+fNowXDiff, oriy+fNowYDiff);
 			}
 		}
 	}
@@ -388,10 +399,11 @@ void ScaleNodeBatchCommand::ClearTemp()
 	{
 		pTempLine->RemoveFromParent(true);
 		pTempLine = NULL;
+		pMarking = NULL;
 	}
 	bBeginSet = false;
-	pgp->UnlockAngles();
-	pgp->UnlockLength();
+	pgp->UnlockXAxis();
+	pgp->UnlockYAxis();
 	pgm->UnblockTryMove();
 }
 
@@ -403,37 +415,6 @@ void ScaleNodeBatchCommand::OnClearCommand()
 void ScaleNodeBatchCommand::OnTerminalCommand()
 {
 	ClearTemp();
-}
-
-bool ScaleNodeBatchCommand::MIDCBLength( MarkingUI * pmui, bool bAccept )
-{
-	GObjectPicker * pgp = &GObjectPicker::getInstance();
-	if (pmui->IsValueLocked())
-	{
-		bool bOk;
-		float fLockedLength = pmui->getFloat(&bOk);
-		if (bOk)
-		{
-			float x, y;
-			pcommand->GetParamXY(CSP_LINE_XY_B, &x, &y);
-			pgp->SetLockOrigin(x, y);
-			pgp->SetLockLength(fLockedLength);
-		}
-		else
-		{
-			return false;
-		}
-	}
-	else
-	{
-		pgp->UnlockLength();
-	}
-	return true;
-}
-
-bool ScaleNodeBatchCommand::staticMIDCBLength( MarkingUI * pmui, bool bAccept )
-{
-	return getInstance().MIDCBLength(pmui, bAccept);
 }
 
 bool ScaleNodeBatchCommand::FilterCallback( GObject * pObj )
@@ -449,4 +430,78 @@ bool ScaleNodeBatchCommand::FilterCallback( GObject * pObj )
 bool ScaleNodeBatchCommand::staticFilterCallback( GObject * pObj )
 {
 	return getInstance().FilterCallback(pObj);
+}
+
+bool ScaleNodeBatchCommand::staticMIDCOffset( MarkingUI * pmui, bool bAccept )
+{
+	return getInstance().MIDCBOffset(pmui, bAccept);
+}
+
+bool ScaleNodeBatchCommand::MIDCBOffset( MarkingUI * pmui, bool bAccept )
+{
+	bool bxoffset = true;
+	float orix, oriy;
+	pcommand->GetParamXY(CSP_SCALENODE_BATCH_XY_ORIGIN, &orix, &oriy);
+
+	if (pmui->getTypeFlag() == MARKFLAG_YOFFSET)
+	{
+		bxoffset = false;
+	}
+
+	if (pmui->IsValueLocked())
+	{
+		bool bOk;
+
+		QString str = pmui->getStr();
+		float fLockedVal;
+		if (str.endsWith("%"))
+		{
+			string s = str.toStdString();
+			float fPercentage;
+			sscanf_s(s.c_str(), "%f%%", &fPercentage);
+			fPercentage/=100.0f;
+			bOk = true;
+			if (bxoffset)
+			{
+				fLockedVal = fPercentage*fScaleBaseXDiff;
+			}
+			else
+			{
+				fLockedVal = fPercentage*fScaleBaseYDiff;
+			}
+
+		}
+		else
+		{
+			fLockedVal = str.toFloat(&bOk);
+		}
+
+		if (bOk)
+		{
+			if (bxoffset)
+			{
+				pgp->SetLockYAxis(fLockedVal+orix);
+			}
+			else
+			{
+				pgp->SetLockXAxis(fLockedVal+oriy);
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		if (bxoffset)
+		{
+			pgp->UnlockYAxis();
+		}
+		else
+		{
+			pgp->UnlockXAxis();
+		}
+	}
+	return true;
 }

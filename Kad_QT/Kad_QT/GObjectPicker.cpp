@@ -764,7 +764,6 @@ void GObjectPicker::ClearSplitMarking()
 	}
 	bSplitMarkingInUse = false;
 }
-
 bool PickerInterestPointInfo::Equals( PickerInterestPointInfo & r )
 {
 	PointF2D p1(x, y);

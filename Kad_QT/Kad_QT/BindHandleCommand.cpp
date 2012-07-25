@@ -79,6 +79,30 @@ void BindHandleCommand::OnDoneCommand()
 	{
 		return;
 	}
+
+	GHandlePoint * pOldFromToHandlePoint = pFromHandlePoint->getBindWith();
+	GHandlePoint * pOldToToHandlePoint = NULL;
+
+	float oldtox = 0;
+	float oldtoy = 0;
+	if (pToHandlePoint)
+	{
+		pOldToToHandlePoint = pToHandlePoint->getBindWith();
+		oldtox = pToHandlePoint->getX();
+		oldtoy = pToHandlePoint->getY();
+	}	
+
+	int oldfromtoindex = -1;
+	int oldtotoindex = -1;
+	if (pOldFromToHandlePoint)
+	{
+		oldfromtoindex = pOldFromToHandlePoint->getID();
+	}
+	if (pOldToToHandlePoint)
+	{
+		oldtotoindex = pOldToToHandlePoint->getID();
+	}
+
     pFromHandlePoint->BindWith(pToHandlePoint);
 
 	PushRevertable(
@@ -87,9 +111,13 @@ void BindHandleCommand::OnDoneCommand()
 		CCMake_C(COMM_BINDHANDLE),
 		CCMake_I(fromindex),
 		CCMake_I(toindex),
-		CCMake_C(COMM_I_UNDO_PARAM, 2),
+		CCMake_C(COMM_I_UNDO_PARAM, 6),
 		CCMake_I(fromindex),
+		CCMake_I(oldfromtoindex),
 		CCMake_I(toindex),
+		CCMake_I(oldtotoindex),
+		CCMake_F(oldtox),
+		CCMake_F(oldtoy),
 		NULL
 		);
 }
@@ -100,19 +128,29 @@ void BindHandleCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 	list<CommittedCommand>::iterator it=rc->commandlist.begin();
 	int fromindex = it->ival;
 	++it;
+	int oldfromtoindex = it->ival;
+	++it;
 	int toindex = it->ival;
+	++it;
+	int oldtotoindex = it->ival;
+	++it;
+	float oldtox = it->fval;
+	++it;
+	float oldtoy = it->fval;
 
+	GHandlePoint * pFromHandlePoint = (GHandlePoint *)pgm->FindObjectByID(fromindex);
+	GHandlePoint * pToHandlePoint = (GHandlePoint *)pgm->FindObjectByID(toindex);
+	GHandlePoint * pOldFromHandlePoint = (GHandlePoint *)pgm->FindObjectByID(oldfromtoindex);
+	GHandlePoint * pOldToToHandlePoint = (GHandlePoint *)pgm->FindObjectByID(oldtotoindex);
 
-	GObject * pFromObj = pgm->FindObjectByID(fromindex);
-	GObject * pToObj = pgm->FindObjectByID(toindex);
-	ASSERT(pFromObj);
-	ASSERT(pFromObj->isHandlePoint());
-	ASSERT(pToObj);
-	ASSERT(pToObj->isHandlePoint());
-
-	GHandlePoint * pFromHandlePoint = (GHandlePoint *)pFromObj;
-	GHandlePoint * pToHandlePoint = (GHandlePoint *)pToObj;
-
-    pFromHandlePoint->BindWith();
-    pToHandlePoint->BindWith();
+	if (pToHandlePoint)
+	{
+		pToHandlePoint->BindWith();
+		pToHandlePoint->SetPosition(oldtox, oldtoy);
+		if (pOldToToHandlePoint)
+		{
+			pToHandlePoint->BindWith(pOldToToHandlePoint);
+		}
+	}
+	pFromHandlePoint->BindWith(pOldFromHandlePoint);
 }

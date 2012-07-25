@@ -147,7 +147,7 @@ void RotateNodeBatchCommand::OnProcessCommand()
 					pgp->UnlockAngles();
 					pgp->UnlockLength();
 				}
-
+				pgp->SetCheckMouseDown();
 				float orix, oriy;
 				pcommand->GetParamXY(CSP_ROTATENODE_BATCH_F_XY_ANGLE_ORIGIN, &orix, &oriy);
 

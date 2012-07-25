@@ -51,9 +51,10 @@ void QTUI_NodeInfoFloating_Tree::ShowNodeInfo(GObject *pObj, bool bContext)
         pDisplyObj = pObj;
         bContextMode = bContext;
 
-        pWidget->ShowWidgetWindow(bContext);
+		Clear();
+		pWidget->ShowWidgetWindow(bContext);
+		pHoveringNode = pObj;
 
-        Clear();
         UpdateNodeInfo(pObj);
     }
     else if (!pObj/* && !bContextMode*/)
@@ -353,6 +354,7 @@ void QTUI_NodeInfoFloating_Tree::SLT_TransformButtonClicked( bool bChecked )
 }
 void QTUI_NodeInfoFloating_Tree::Clear()
 {
+	pHoveringNode = NULL;
 	nRelIndex = 0;
     this->clear();
 }

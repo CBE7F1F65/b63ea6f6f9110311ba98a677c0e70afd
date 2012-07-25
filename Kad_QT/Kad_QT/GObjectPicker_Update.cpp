@@ -214,6 +214,19 @@ int GObjectPicker::UpdatePickPoint()
 	return mousestate|state;
 }
 
+void GObjectPicker::OnMouseUp()
+{
+	if (mousestate == GOPMOUSE_DOWN && state != PICKSTATE_READY)
+	{
+		mousestate = GOPMOUSE_UP;
+		state = PICKSTATE_READY;
+
+		ClearSplitMarking();
+		UnlockSplitLine();
+		UnlockLockLine();
+	}
+}
+
 #define _GOPRENDER_POINT_A		5
 #define _GOPRENDER_POINT_CROSS	10
 

@@ -104,13 +104,13 @@ void QTUI_GLView::mouseMoveEvent( QMouseEvent *e )
 	}
     QGLWidget::mouseMoveEvent(e);
 }
-
+/*
 void QTUI_GLView::mousePressEvent( QMouseEvent *e )
 {
 	setFocus();
 	if (hge)
 	{
-        hge->Input_SetDIMouseKey(e->button());
+//        hge->Input_SetDIMouseKey(e->button());
 	}
     QGLWidget::mousePressEvent(e);
 }
@@ -119,12 +119,12 @@ void QTUI_GLView::mouseReleaseEvent( QMouseEvent *e )
 {
 	if (hge)
 	{
-        hge->Input_SetDIMouseKey(e->button(), false);
+//        hge->Input_SetDIMouseKey(e->button(), false);
 	}
     QGLWidget::mouseReleaseEvent(e);
 
 }
-
+*/
 void QTUI_GLView::wheelEvent( QWheelEvent *e )
 {
 	int numDegrees = e->delta() / 8;
@@ -194,23 +194,25 @@ bool QTUI_GLView::eventFilter(QObject *target, QEvent *e)
         Qt::KeyboardModifiers km = pke->modifiers();
         if (km)
         {
-
-            if (km & Qt::ALT)
-            {
-                qksm->SetKey(Qt::ALT);
-            }
-            if (km & Qt::CTRL)
-            {
-                qksm->SetKey(Qt::CTRL);
-            }
-            if (km & Qt::META)
-            {
-                qksm->SetKey(Qt::META);
-            }
-            if (km & Qt::SHIFT)
-            {
-                qksm->SetKey(Qt::SHIFT);
-            }
+			if (focusWidget() == this)
+			{
+				if (km & Qt::ALT)
+				{
+					qksm->SetKey(Qt::ALT);
+				}
+				if (km & Qt::CTRL)
+				{
+					qksm->SetKey(Qt::CTRL);
+				}
+				if (km & Qt::META)
+				{
+					qksm->SetKey(Qt::META);
+				}
+				if (km & Qt::SHIFT)
+				{
+					qksm->SetKey(Qt::SHIFT);
+				}
+			}
 
             return true;
 		}
@@ -232,22 +234,24 @@ bool QTUI_GLView::eventFilter(QObject *target, QEvent *e)
 		Qt::KeyboardModifiers km = pke->modifiers();
 		if (km)
 		{
-
-			if (km & Qt::ALT)
+			if (focusWidget() == this)
 			{
-				qksm->SetKey(Qt::ALT, false);
-			}
-			if (km & Qt::CTRL)
-			{
-				qksm->SetKey(Qt::CTRL, false);
-			}
-			if (km & Qt::META)
-			{
-				qksm->SetKey(Qt::META, false);
-			}
-			if (km & Qt::SHIFT)
-			{
-				qksm->SetKey(Qt::SHIFT, false);
+				if (km & Qt::ALT)
+				{
+					qksm->SetKey(Qt::ALT, false);
+				}
+				if (km & Qt::CTRL)
+				{
+					qksm->SetKey(Qt::CTRL, false);
+				}
+				if (km & Qt::META)
+				{
+					qksm->SetKey(Qt::META, false);
+				}
+				if (km & Qt::SHIFT)
+				{
+					qksm->SetKey(Qt::SHIFT, false);
+				}
 			}
 
 			return true;
@@ -282,38 +286,41 @@ void QTUI_GLView::OnFrame()
 
     QKeyStateManager * qksm = &QKeyStateManager::getInstance();
 
-    if (QApplication::keyboardModifiers() & Qt::ALT)
-    {
-        qksm->SetKey(Qt::ALT);
-    }
-    else
-    {
-        qksm->SetKey(Qt::ALT, false);
-    }
-    if (QApplication::keyboardModifiers() & Qt::CTRL)
-    {
-        qksm->SetKey(Qt::CTRL);
-    }
-    else
-    {
-        qksm->SetKey(Qt::CTRL, false);
-    }
-    if (QApplication::keyboardModifiers() & Qt::META)
-    {
-        qksm->SetKey(Qt::META);
-    }
-    else
-    {
-        qksm->SetKey(Qt::META, false);
-    }
-    if (QApplication::keyboardModifiers() & Qt::SHIFT)
-    {
-        qksm->SetKey(Qt::SHIFT);
-    }
-    else
-    {
-        qksm->SetKey(Qt::SHIFT, false);
-    }
+	if (focusWidget() == this)
+	{
+		if (QApplication::keyboardModifiers() & Qt::ALT)
+		{
+			qksm->SetKey(Qt::ALT);
+		}
+		else
+		{
+			qksm->SetKey(Qt::ALT, false);
+		}
+		if (QApplication::keyboardModifiers() & Qt::CTRL)
+		{
+			qksm->SetKey(Qt::CTRL);
+		}
+		else
+		{
+			qksm->SetKey(Qt::CTRL, false);
+		}
+		if (QApplication::keyboardModifiers() & Qt::META)
+		{
+			qksm->SetKey(Qt::META);
+		}
+		else
+		{
+			qksm->SetKey(Qt::META, false);
+		}
+		if (QApplication::keyboardModifiers() & Qt::SHIFT)
+		{
+			qksm->SetKey(Qt::SHIFT);
+		}
+		else
+		{
+			qksm->SetKey(Qt::SHIFT, false);
+		}
+	}
 
     qksm->Flush();
 }

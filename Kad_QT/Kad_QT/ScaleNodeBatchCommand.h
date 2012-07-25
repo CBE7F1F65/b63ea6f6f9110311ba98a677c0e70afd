@@ -21,8 +21,9 @@ public:
 	virtual void OnClearCommand();
 	virtual void OnTerminalCommand();
 
-	bool MIDCBLength(MarkingUI * pmui, bool bAccept);
-	static bool staticMIDCBLength(MarkingUI * pmui, bool bAccept);
+
+	bool MIDCBOffset(MarkingUI * pmui, bool bAccept);
+	static bool staticMIDCOffset(MarkingUI * pmui, bool bAccept);
 
 	bool FilterCallback(GObject * pObj);
 	static bool staticFilterCallback(GObject * pObj);
@@ -34,6 +35,8 @@ public:
 
 	GBezierLine * pTempLine;
 	GBezierLine * pTempLineScale;
+
+	MarkingOffset * pMarking;
 
 	float fScaleBaseXDiff;
 	float fScaleBaseYDiff;
