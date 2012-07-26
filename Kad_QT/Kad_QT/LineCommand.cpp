@@ -223,22 +223,13 @@ void LineCommand::RenderToTarget()
 	int nstep = pcommand->GetStep();
 	if (nstep >= CSI_LINE_WANTX2 && nstep <= CSI_LINE_WANTY2 && pTempLine)
 	{
-		/*
-		float x1, y1;
-		pcommand->GetParamXY(CSP_LINE_XY_B, &x1, &y1);
-
-		float x2 = pgp->GetPickX_C();//MainInterface::getInstance().mousex;
-		float y2 = pgp->GetPickY_C();//MainInterface::getInstance().mousey;
-		*/
 		HTARGET tar = RenderTargetManager::getInstance().UpdateTarget(RTID_COMMAND);
 
-		RenderHelper::getInstance().BeginRenderTar(tar);
-//		RenderHelper::getInstance().RenderLineMeasureMark(x1, y1, x2, y2, pgm->GetActiveLayer()->getLineColor());
-//		RenderHelper::getInstance().RenderLine(x1, y1, x2, y2, pgm->GetActiveLayer()->getLineColor());
+		prh->BeginRenderTar(tar);
 		pTempLine->CallRender();
-		RenderHelper::getInstance().EndRenderTar();
+		prh->EndRenderTar();
 
-		Command::getInstance().SetRenderTarget(tar);
+		pcommand->SetRenderTarget(tar);
 	}
 }
 

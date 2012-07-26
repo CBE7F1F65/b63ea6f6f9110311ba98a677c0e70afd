@@ -368,23 +368,16 @@ float GStraightLine::getLength()
 	return fLength;
 }
 
-bool GStraightLine::GetPositionAtProportion( float fClingToProportion, float* tox, float* toy, int *isec/*=NULL*/ )
+bool GStraightLine::GetPositionAtProportion( float fProp, PointF2D * pptPos, int*isec/*=NULL*/, PointF2D * pptLeftHandle/*=NULL*/, PointF2D * pptRightHandle/*=NULL */ )
 {
-	if (fClingToProportion < 0 || fClingToProportion > 1)
-	{
-//		DASSERT(false);
-	}
 	float fbx = plbegin->getX();
 	float fby = plbegin->getY();
 	float fex = plend->getX();
 	float fey = plend->getY();
-	if (tox)
+	if (pptPos)
 	{
-		*tox = (fex-fbx)*fClingToProportion+fbx;
-	}
-	if (toy)
-	{
-		*toy = (fey-fby)*fClingToProportion+fby;
+		pptPos->x = (fex-fbx)*fProp+fbx;
+		pptPos->y = (fey-fby)*fProp+fby;
 	}
 	if (isec)
 	{
@@ -402,7 +395,6 @@ PointF2D GStraightLine::GetTangentPointF2D( float t )
 {
 	return plend->GetPointF2D()-plbegin->GetPointF2D();
 }
-
 /************************************************************************/
 /* GBEZEIERLINE                                                         */
 /************************************************************************/
@@ -791,23 +783,24 @@ float GBezierLine::getLength()
 	return fLength;
 }
 
-bool GBezierLine::GetPositionAtProportion( float fClingToProportion, float* tox, float* toy, int *isec/*=NULL*/ )
+bool GBezierLine::GetPositionAtProportion( float fProp, PointF2D * pptPos, int*isec/*=NULL*/, PointF2D * pptLeftHandle/*=NULL*/, PointF2D * pptRightHandle/*=NULL */ )
 {
 	if (isStraightLine())
 	{
-		return GStraightLine::GetPositionAtProportion(fClingToProportion, tox, toy, isec);
+		return GStraightLine::GetPositionAtProportion(fProp, pptPos, isec, pptLeftHandle, pptRightHandle);
 	}
-	if (fClingToProportion < M_FLOATEPS)
+
+	if (fProp < M_FLOATEPS)
 	{
-		fClingToProportion = M_FLOATEPS;
+		fProp = M_FLOATEPS;
 	}
-	if (fClingToProportion > 1-M_FLOATEPS)
+	if (fProp > 1-M_FLOATEPS)
 	{
-		fClingToProportion = 1-M_FLOATEPS;
+		fProp = 1-M_FLOATEPS;
 	}
 
 	float fTotalLength = bsinfo.GetLength();
-	float fProportionLength = fTotalLength*fClingToProportion;
+	float fProportionLength = fTotalLength*fProp;
 
 	float fCLength=0;
 	int i = 0;
@@ -828,17 +821,22 @@ bool GBezierLine::GetPositionAtProportion( float fClingToProportion, float* tox,
 	float fby = bsinfo.GetY(i);
 	float fex = bsinfo.GetX(i+1);
 	float fey = bsinfo.GetY(i+1);
-	if (tox)
+	if (pptPos)
 	{
-		*tox = (fex-fbx)*fRestProportion+fbx;
-	}
-	if (toy)
-	{
-		*toy = (fey-fby)*fRestProportion+fby;
+		pptPos->x = (fex-fbx)*fRestProportion+fbx;
+		pptPos->y = (fey-fby)*fRestProportion+fby;
 	}
 	if (isec)
 	{
 		*isec = i;
+	}
+	if (pptLeftHandle || pptRightHandle)
+	{
+		float s = GetSFromProportion(fProp);
+		MathHelper::getInstance().CalculateBezierSubDivision(
+			plbegin->GetPointF2D(), plbegin->GetHandle()->GetPointF2D(), plend->GetHandle()->GetPointF2D(), plend->GetPointF2D(),
+			s,
+			NULL, pptLeftHandle, pptRightHandle, NULL);
 	}
 
 
@@ -890,19 +888,19 @@ bool GBezierLine::toBezierLine()
 	return true;
 }
 
-PointF2D GBezierLine::GetTangentPointF2D( float t )
+PointF2D GBezierLine::GetTangentPointF2D( float s )
 {
 	if (isStraightLine())
 	{
-		return GStraightLine::GetTangentPointF2D(t);
+		return GStraightLine::GetTangentPointF2D(s);
 	}
 	PointF2D p0 = plbegin->GetPointF2D();
 	PointF2D p1 = plbegin->GetHandle()->GetPointF2D();
 	PointF2D p2 = plend->GetHandle()->GetPointF2D();
 	PointF2D p3 = plend->GetPointF2D();
 	//dP(t) / dt =  -3(1-t)^2 * P0 + 3(1-t)^2 * P1 - 6t(1-t) * P1 - 3t^2 * P2 + 6t(1-t) * P2 + 3t^2 * P3
-	float t2 = t*t;
-	return p0*(-3*(t2-2*t+1))+p1*(3*(3*t2-4*t+1))+p2*(-3*(3*t2-2*t))+p3*(3*t2);
+	float t2 = s*s;
+	return p0*(-3*(t2-2*s+1))+p1*(3*(3*t2-4*s+1))+p2*(-3*(3*t2-2*s))+p3*(3*t2);
 }
 
 bool GBezierLine::CloneData(GObject * pClone, GObject * pNewParent, bool bNoRelationship/*=true*/)
@@ -959,9 +957,10 @@ GLine * GBezierLine::Clip( float fClipProportion )
 	PointF2D pSubEh2;
 	if (bBezier)
 	{
+		float s = GetSFromProportion(fClipProportion);
 		MathHelper::getInstance().CalculateBezierSubDivision(
 			ptBegin, plbegin->GetHandle()->GetPointF2D(), plend->GetHandle()->GetPointF2D(), ptEnd,
-			fClipProportion,
+			s,
 			&pSubBh1, &pSubEh1, &pSubBh2, &pSubEh2);
 	}
 
@@ -969,18 +968,18 @@ GLine * GBezierLine::Clip( float fClipProportion )
 	plend->SeperateFrom();
 	DeclingByOther();
 
-	float tx, ty;
+	PointF2D ptClip;
 	int isec;
-	GetPositionAtProportion(fClipProportion, &tx, &ty, &isec);
+	GetPositionAtProportion(fClipProportion, &ptClip, &isec);
 
-	SetBeginEnd(ptBegin.x, ptBegin.y, tx, ty);
+	SetBeginEnd(ptBegin.x, ptBegin.y, ptClip.x, ptClip.y);
 	if (bBezier)
 	{
 		plbegin->SetHandlePosition(pSubBh1.x, pSubBh1.y);
 		plend->SetHandlePosition(pSubEh1.x, pSubEh1.y);
 	}
 
-	pClonedLine->SetBeginEnd(tx, ty, ptEnd.x, ptEnd.y);
+	pClonedLine->SetBeginEnd(ptClip.x, ptClip.y, ptEnd.x, ptEnd.y);
 	GAnchorPoint * pNewBeginPoint = pClonedLine->GetBeginPoint();
 	GAnchorPoint * pNewEndPoint = pClonedLine->GetEndPoint();
 	if (bBezier)
@@ -1232,4 +1231,184 @@ bool GBezierLine::SwapBeginEnd()
 		}
 	}
 	return true;
+}
+
+bool GBezierLine::Extend( float tBegin, float tEnd )
+{
+// 	if (tBegin != 0.0f && tEnd != 1.0f)
+// 	{
+// 		if (Extend(0.0f, tEnd))
+// 		{
+// 			if (Extend(tBegin, 1.0f))
+// 			{
+// 				return true;
+// 			}
+// 		}
+// 		return false;
+// 	}
+	PointF2D ptNewBegin;
+	PointF2D ptNewEnd;
+	PointF2D ptNewBeginHandle[2];
+	PointF2D ptNewEndHandle[2];
+	
+	GHandlePoint * pBeginHandle = plbegin->GetHandle();
+	GHandlePoint * pEndHandle = plend->GetHandle();
+
+	if (tBegin != 0.0f)
+	{
+		if (GetPositionAtExtendedProportion(tBegin, &ptNewBegin, &ptNewBeginHandle[0], &ptNewEndHandle[0]))
+		{
+			plbegin->CallMoveTo(this, ptNewBegin.x, ptNewBegin.y, false);
+			if (!isStraightLine())
+			{
+				pBeginHandle->CallMoveTo(this, ptNewBeginHandle[0].x, ptNewBeginHandle[0].y, false);
+				pEndHandle->CallMoveTo(this, ptNewEndHandle[0].x, ptNewEndHandle[0].y, false);
+			}
+//			return true;
+		}
+		else
+		{
+			ASSERT(false);
+			return false;
+		}
+	}
+
+	if (tEnd != 1.0f)
+	{
+		tEnd = (tEnd-1)/(tEnd-tBegin)+1.0f;
+		if (GetPositionAtExtendedProportion(tEnd, &ptNewEnd, &ptNewBeginHandle[1], &ptNewEndHandle[1]))
+		{
+			plend->CallMoveTo(this, ptNewEnd.x, ptNewEnd.y, false);
+			if (!isStraightLine())
+			{
+				pBeginHandle->CallMoveTo(this, ptNewBeginHandle[1].x, ptNewBeginHandle[1].y, false);
+				pEndHandle->CallMoveTo(this, ptNewEndHandle[1].x, ptNewEndHandle[1].y, false);
+			}
+//			return true;
+		}
+		else
+		{
+			ASSERT(false);
+			return false;
+		}
+	}
+	return true;
+//	return false;
+}
+
+bool GBezierLine::GetPositionAtExtendedProportion( float fProp, PointF2D *pptPos, PointF2D * pptLeftHandle/*=NULL*/, PointF2D * pptRightHandle/*=NULL*/ )
+{
+	if (isStraightLine())
+	{
+		return GStraightLine::GetPositionAtExtendedProportion(fProp, pptPos, pptLeftHandle, pptRightHandle);
+	}
+	if (fProp >= 0.0f && fProp <= 1.0f)
+	{
+		return GetPositionAtProportion(fProp, pptPos, NULL, pptLeftHandle, pptRightHandle);
+	}
+
+	MathHelper * pmh = &MathHelper::getInstance();
+
+	PointF2D ptBegin = plbegin->GetPointF2D();
+	PointF2D ptEnd = plend->GetPointF2D();
+	PointF2D ptBeginHandle = plbegin->GetHandle()->GetPointF2D();
+	PointF2D ptEndHandle = plend->GetHandle()->GetPointF2D();
+
+	PointF2D * pptHandle;
+
+	float fLength = getLength();
+	float fAimPropDiff;
+
+	float fMinS;
+	float fMaxS;
+	float fLL = -1;
+	float fRL = -1;
+	if (fProp < 0.0f)
+	{
+		fAimPropDiff = -fProp;
+		fMinS = fAimPropDiff*-2;
+		fMaxS = 0.0f;
+		fRL = fLength;
+	}
+	else
+	{
+		fAimPropDiff = fProp-1.0f;
+		fMinS = 1.0f;
+		fMaxS = fAimPropDiff*2+1.0f;
+		fLL = fLength;
+	}
+	float fAimLength = fLength*(1+fAimPropDiff);
+
+	if (fProp < 0.0f)
+	{
+		if (pmh->CalculateExtendBezierToAimLength(
+			ptBegin, ptBeginHandle, ptEndHandle, ptEnd,
+			fAimLength, fMinS, fMaxS, fLL, fRL,
+			PointF2D(), PointF2D(), PointF2D(), PointF2D(),
+			ptBegin, ptBeginHandle, ptEndHandle, ptEnd,
+			pptPos, pptLeftHandle, pptRightHandle))
+		{
+			return true;
+		}
+	}
+	else
+	{
+		if (pmh->CalculateExtendBezierToAimLength(
+			ptBegin, ptBeginHandle, ptEndHandle, ptEnd,
+			fAimLength, fMinS, fMaxS, fLL, fRL,
+			ptBegin, ptBeginHandle, ptEndHandle, ptEnd,
+			PointF2D(), PointF2D(), PointF2D(), PointF2D(),
+			pptPos, pptLeftHandle, pptRightHandle))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+float GBezierLine::GetSFromProportion( float fProp )
+{
+	if (fProp >= 0 && fProp <= 1)
+	{
+		PointF2D ptPos;
+		GetPositionAtProportion(fProp, &ptPos);
+		MathHelper * pmh = &MathHelper::getInstance();
+
+		PointF2D ptBegin = plbegin->GetPointF2D();
+		PointF2D ptEnd = plend->GetPointF2D();
+		PointF2D ptBeginHandle = plbegin->GetHandle()->GetPointF2D();
+		PointF2D ptEndHandle = plend->GetHandle()->GetPointF2D();
+
+		PointF2D ptA = (ptBeginHandle - ptEndHandle)*3 + ptEnd - ptBegin;
+		PointF2D ptB = (ptBegin - ptBeginHandle*2 + ptEndHandle)*3;
+		PointF2D ptC = (ptBeginHandle-ptBegin)*3;
+		PointF2D ptD = ptBegin-ptPos;
+
+		float s[3];
+		int nroot = pmh->SolveCubicEquation(ptA.x, ptB.x, ptC.x, ptD.x, s);
+		if (!nroot)
+		{
+			ASSERT(false);
+		}
+		if (nroot > 1)
+		{
+			float fDiff = 1.0f;
+			int iclose = -1;
+			for (int i=0; i<3; i++)
+			{
+				float fNowDiff = fabsf(s[i]-fProp);
+				if (fNowDiff < fDiff)
+				{
+					fDiff = fNowDiff;
+					iclose = i;
+				}
+			}
+			return s[iclose];
+		}
+		return s[0];
+	}
+
+	ASSERT(false);
+	return 0;
 }

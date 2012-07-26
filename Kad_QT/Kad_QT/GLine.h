@@ -39,10 +39,12 @@ public:
 	virtual bool CheckIntersectWithLineObj( GLine * pLine, list<PointF2D> *pPoints );
 	virtual float CalculateProportion( float x, float y, int iSec ) = 0;
 	virtual float CalculateMidPointProportion() = 0;
-	virtual bool GetPositionAtProportion( float fClingToProportion, float* tox, float* toy, int*isec=NULL ) = 0;
+	virtual bool GetPositionAtProportion( float fProp, PointF2D * pptPos, int*isec=NULL, PointF2D * pptLeftHandle=NULL, PointF2D * pptRightHandle=NULL ) = 0;
+	virtual bool GetPositionAtExtendedProportion(float fProp, PointF2D *pptPos, PointF2D * pptLeftHandle=NULL, PointF2D * pptRightHandle=NULL) {return GetPositionAtProportion(fProp, pptPos, NULL, pptLeftHandle, pptRightHandle);};
 	virtual GLine * Clip(float fClipProportion) = 0;
 	virtual bool Combine(GLine * pLine) = 0;
 	virtual bool SwapBeginEnd() = 0;
+	virtual bool Extend(float tBegin, float tEnd) = 0;
 
 	virtual bool isLengthCalculated(){return true;};
 	virtual float getLength() = 0;
@@ -126,7 +128,7 @@ public:
 
 	virtual float CalculateProportion( float x, float y, int iSec );
 	virtual float CalculateMidPointProportion();
-	virtual bool GetPositionAtProportion( float fClingToProportion, float* tox, float* toy, int*isec=NULL );
+	virtual bool GetPositionAtProportion( float fProp, PointF2D * pptPos, int*isec=NULL, PointF2D * pptLeftHandle=NULL, PointF2D * pptRightHandle=NULL );
 
 	virtual void OnRender(int iHighlightLevel=0);
 
@@ -179,18 +181,22 @@ public:
 
 	virtual float CalculateProportion( float x, float y, int iSec );
 	virtual float CalculateMidPointProportion();
-	virtual bool GetPositionAtProportion( float fClingToProportion, float* tox, float* toy, int*isec=NULL );
+	virtual bool GetPositionAtProportion( float fProp, PointF2D * pptPos, int*isec=NULL, PointF2D * pptLeftHandle=NULL, PointF2D * pptRightHandle=NULL );
+	virtual bool GetPositionAtExtendedProportion(float fProp, PointF2D *pptPos, PointF2D * pptLeftHandle=NULL, PointF2D * pptRightHandle=NULL);
 	virtual GLine * Clip(float fClipProportion);
 	virtual bool Combine(GLine * pLine);
 	virtual bool SwapBeginEnd();
 
+	virtual bool Extend(float tBegin, float tEnd);
+
 	virtual bool isLengthCalculated();
 	virtual float getLength();
 
-	virtual PointF2D GetTangentPointF2D(float t);
+	virtual PointF2D GetTangentPointF2D(float s);
 
 
 	BezierSublinesInfo * getBSInfo(){return &bsinfo;};
+	float GetSFromProportion( float fProp );
 	/************************************************************************/
 	/* Members                                                              */
 	/************************************************************************/

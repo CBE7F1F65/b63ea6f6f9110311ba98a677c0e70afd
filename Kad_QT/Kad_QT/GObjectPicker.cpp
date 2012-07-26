@@ -127,7 +127,10 @@ void GObjectPicker::AdjustPositionToLocks()
 			break;
 		}
 		int isec = 0;
-		pLine->GetPositionAtProportion(fProp, &pickx_c, &picky_c, &isec);
+		PointF2D ptSplit;
+		pLine->GetPositionAtProportion(fProp, &ptSplit, &isec);
+		pickx_c = ptSplit.x;
+		picky_c = ptSplit.y;
 
 		snappedstate |= GOPSNAPPED_LINE|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
 		pSplitMarking->SetSplitPoint(pickx_c, picky_c, isec);

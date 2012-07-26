@@ -223,6 +223,80 @@ bool MathHelper::CalculateBezierSubDivision( const PointF2D &pb, const PointF2D 
 	return true;
 }
 
+bool MathHelper::SolveBezierExtendSubDivision( const PointF2D &pb, const PointF2D &pbh, const PointF2D &peh, const PointF2D &pe, float s, PointF2D * pnewa, PointF2D * pnewbh, PointF2D * pneweh )
+{
+	if (s >=0 && s <= 1)
+	{
+		ASSERT(false);
+		return false;
+	}
+	if (s < 0.0f)
+	{
+		s = (-s)/(1.0f-s);
+		float msinv = 1/(1-s);
+
+		// p1234 = pb
+		// p234 = pbh
+		// p4 = pe
+		// p34 = peh
+		// ?pnewa = p1
+		// ?pnewh = p2
+		PointF2D p123 = (pb-pbh*s)*msinv;
+		PointF2D p23 = (pbh-peh*s)*msinv;
+		PointF2D p12 = (p123-p23*s)*msinv;
+		PointF2D p3 = (peh-pe*s)*msinv;
+		PointF2D p2 = (p23-p3*s)*msinv;
+		PointF2D p1 = (p12-p2*s)*msinv;
+		if (pnewa)
+		{
+			*pnewa = p1;
+		}
+		if (pnewbh)
+		{
+			*pnewbh = p2;
+		}
+		if (pneweh)
+		{
+			*pneweh = p3;
+		}
+
+		return true;
+	}
+	if (s > 1.0f)
+	{
+		s = (s-1.0f)/s;
+		float msinv = 1/(1-s);
+
+		// p1234 = pe
+		// p123 = peh
+		// p1 = pb
+		// p12 = pbh
+		// ?pnewa = p4
+		// ?pnewh = p3
+		PointF2D p234 = (pe-peh*s)*msinv;
+		PointF2D p23 = (peh-pbh*s)*msinv;
+		PointF2D p34 = (p234-p23*s)*msinv;
+		PointF2D p2 = (pbh-pb*s)*msinv;
+		PointF2D p3 = (p23-p2*s)*msinv;
+		PointF2D p4 = (p34-p3*s)*msinv;
+		if (pnewa)
+		{
+			*pnewa = p4;
+		}
+		if (pnewbh)
+		{
+			*pnewbh = p2;
+		}
+		if (pneweh)
+		{
+			*pneweh = p3;
+		}
+
+		return true;
+	}
+	return false;
+}
+
 float MathHelper::LineSegmentLength( const PointF2D &p1, const PointF2D &p2 )
 {
 	float l = LineSegmentLengthPow2(p1, p2);
@@ -703,7 +777,233 @@ bool MathHelper::FindSubNHPFGBL( GBezierLine * pBezier, float fTargetLength, Poi
 
 	return false;
 }
+//////////////////////////////////////////////////////////////////////////
+/************************************************************************/
+/* Use Double                                                           */
+/************************************************************************/
+double cubeRoot(double x)
+{
+	if (x < 0)
+		return -pow(-x, 0.333333333333333);
+	else
+		return pow(x, 0.333333333333333);
+}
+int MathHelper::SolveCubicEquation( float a, float b, float c, float d, float x[3] )
+{
+	// cubic equation solver example using Cardano's method
+	
+	// this function returns the cube root if x were a negative number as well
 
+	// find the discriminant
+	double f, g, h;
+	f = (3 * c / a - pow(b, 2) / pow(a, 2)) / 3;
+	g = (2 * pow(b, 3) / pow(a, 3) - 9 * b * c / pow(a, 2) + 27 * d / a) / 27;
+	h = pow(g, 2) / 4 + pow(f, 3) / 27;
+	// evaluate discriminant
+	if (f == 0 && g == 0 && h == 0)
+	{
+		// 3 equal roots
+		double outx;
+		// when f, g, and h all equal 0 the roots can be found by the following line
+		outx = -cubeRoot(d / a);
+		x[0] = outx;
+		return 1;
+	}
+	else if (h <= 0)
+	{
+		// 3 real roots
+		double q, i, j, k, l, m, n, p;
+		// complicated maths making use of the method
+		i = pow(pow(g, 2) / 4 - h, 0.5);
+		j = cubeRoot(i);
+		k = acos(-(g / (2 * i)));
+		m = cos(k / 3);
+		n = 1.73205080756888 * sin(k / 3);
+		p = -(b / (3 * a));
+		// print solutions
+		x[0] = 2 * j * m + p;
+		x[1] = -j * (m + n) + p;
+		x[2] = -j * (m - n) + p;
+		return 3;
+	}
+	else if (h > 0)
+	{
+		// 1 real root and 2 complex roots
+		double r, s, t, u, p;
+		// complicated maths making use of the method
+		r = -(g / 2) + pow(h, 0.5);
+		s = cubeRoot(r);
+		t = -(g / 2) - pow(h, 0.5);
+		u = cubeRoot(t);
+		p = -(b / (3 * a));
+		// print solutions
+		x[0] = (s + u) + p;
+		return 1;
+	}
+	return 0;
+}
+
+bool MathHelper::CalculateExtendBezierToAimLength( PointF2D ptb, PointF2D ptbh, PointF2D pteh, PointF2D pte, float fAimLength, float fMinS, float fMaxS, float fLLength, float fRLength, PointF2D &ptlb, PointF2D &ptlbh, PointF2D &ptleh, PointF2D &ptle, PointF2D &ptrb, PointF2D &ptrbh, PointF2D &ptreh, PointF2D &ptre, PointF2D * pptPos, PointF2D * pptLeftHandle/*=NULL*/, PointF2D * pptRightHandle/*=NULL */ )
+{
+	if (fabsf(fAimLength-fLLength) < M_FLOATEPS || fabsf(fMinS - fMaxS) < M_FLOATEPS)
+	{
+		if (pptPos)
+		{
+			if (fMinS < 0.0f)
+			{
+				*pptPos = ptlb;
+			}
+			else
+			{
+				*pptPos = ptle;
+			}
+		}
+		if (pptLeftHandle)
+		{
+			*pptLeftHandle = ptlbh;
+		}
+		if (pptRightHandle)
+		{
+			*pptRightHandle = ptleh;
+		}
+		return true;
+	}
+	else if (fabsf(fAimLength-fRLength) < M_FLOATEPS)
+	{
+		if (pptPos)
+		{
+			if (fMinS < 0.0f)
+			{
+				*pptPos = ptrb;
+			}
+			else
+			{
+				*pptPos = ptre;
+			}
+		}
+		if (pptLeftHandle)
+		{
+			*pptLeftHandle = ptrbh;
+		}
+		if (pptRightHandle)
+		{
+			*pptRightHandle = ptreh;
+		}
+		return true;
+	}
+	
+	GBaseNode tBase;
+	GBezierLine * pTempLine = new GBezierLine(&tBase, PointF2D(), PointF2D());
+
+	if (fLLength < 0)
+	{
+		PointF2D ptna;
+		SolveBezierExtendSubDivision(ptb, ptbh, pteh, pte, fMinS, &ptna, &ptlbh, &ptleh);
+		if (fMinS < 0.0f)
+		{
+			ptlb = ptna;
+			ptle = pte;
+		}
+		else
+		{
+			ptle = ptna;
+			ptlb = ptb;
+		}
+		pTempLine->SetBeginEnd(ptlb.x, ptlb.y, ptle.x, ptle.y);
+		pTempLine->SetBeginHandlePos(ptlbh.x, ptlbh.y);
+		pTempLine->SetEndHandlePos(ptleh.x, ptleh.y);
+		fLLength = pTempLine->getLength();
+	}
+	else if (fRLength < 0)
+	{
+		PointF2D ptna;
+		SolveBezierExtendSubDivision(ptb, ptbh, pteh, pte, fMaxS, &ptna, &ptrbh, &ptreh);
+		if (fMaxS < 0.0f)
+		{
+			ptrb = ptna;
+			ptre = pte;
+		}
+		else
+		{
+			ptre = ptna;
+			ptrb = ptb;
+		}
+		pTempLine->SetBeginEnd(ptrb.x, ptrb.y, ptre.x, ptre.y);
+		pTempLine->SetBeginHandlePos(ptrbh.x, ptrbh.y);
+		pTempLine->SetEndHandlePos(ptreh.x, ptreh.y);
+		fRLength = pTempLine->getLength();
+	}
+
+	PointF2D ptmb;
+	PointF2D ptmbh;
+	PointF2D ptme;
+	PointF2D ptmeh;
+	float fMidS = (fMinS+fMaxS)/2;
+	PointF2D ptma;
+	SolveBezierExtendSubDivision(ptb, ptbh, pteh, pte, fMidS, &ptma, &ptmbh, &ptmeh);
+	if (fMidS < 0.0f)
+	{
+		ptmb = ptma;
+		ptme = pte;
+	}
+	else
+	{
+		ptme = ptma;
+		ptmb = ptb;
+	}
+	pTempLine->SetBeginEnd(ptmb.x, ptmb.y, ptme.x, ptme.y);
+	pTempLine->SetBeginHandlePos(ptmbh.x, ptmbh.y);
+	pTempLine->SetEndHandlePos(ptmeh.x, ptmeh.y);
+	float fMidLength = pTempLine->getLength();
+
+	if (fLLength < fRLength)
+	{
+		if (fAimLength < fLLength || fAimLength > fRLength)
+		{
+			ASSERT(false);
+			tBase.RemoveAllChildren(true);
+			return false;
+		}
+	}
+	else
+	{
+		if (fAimLength > fLLength || fAimLength < fRLength)
+		{
+			ASSERT(false);
+			tBase.RemoveAllChildren(true);
+			return false;
+		}
+
+	}
+	if ((fAimLength < fMidLength) ^ (fLLength > fRLength))
+	{
+		if (CalculateExtendBezierToAimLength(
+			ptb, ptbh, pteh, pte,
+			fAimLength, fMinS, fMidS, fLLength, fMidLength,
+			ptlb, ptlbh, ptleh, ptle,
+			ptmb, ptmbh, ptmeh, ptme,
+			pptPos, pptLeftHandle, pptRightHandle))
+		{
+			tBase.RemoveAllChildren(true);
+			return true;
+		}
+	}
+	else
+	{
+		if (CalculateExtendBezierToAimLength(
+			ptb, ptbh, pteh, pte,
+			fAimLength, fMidS, fMaxS, fMidLength, fRLength,
+			ptmb, ptmbh, ptmeh, ptme,
+			ptrb, ptrbh, ptreh, ptre,
+			pptPos, pptLeftHandle, pptRightHandle))
+		{
+			tBase.RemoveAllChildren(true);
+			return true;
+		}
+	}
+	tBase.RemoveAllChildren(true);
+	return false;
+}
 /************************************************************************/
 /* BezierSublinesInfo                                                   */
 /************************************************************************/

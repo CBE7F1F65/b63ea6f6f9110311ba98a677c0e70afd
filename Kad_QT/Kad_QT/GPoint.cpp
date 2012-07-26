@@ -455,9 +455,9 @@ GPiece * GPoint::getPiece()
 void GPoint::CallClingToMoved( bool bTry, int moveActionID )
 {
 	ASSERT(pClingTo);
-	float tox, toy;
-	((GLine *)pClingTo)->GetPositionAtProportion(fClingToProportion, &tox, &toy);
-	CallMoveTo(pClingTo, tox, toy, bTry, moveActionID);
+	PointF2D ptCling;
+	((GLine *)pClingTo)->GetPositionAtProportion(fClingToProportion, &ptCling);
+	CallMoveTo(pClingTo, ptCling.x, ptCling.y, bTry, moveActionID);
 }
 
 bool GPoint::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelationship/*=true*/ )

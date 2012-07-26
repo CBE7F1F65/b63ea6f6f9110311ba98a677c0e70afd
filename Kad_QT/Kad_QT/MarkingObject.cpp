@@ -448,22 +448,22 @@ void MarkingSplitLine::Update()
 	{
 		float fProp = pLine->CalculateProportion(ptSplitPoint.x, ptSplitPoint.y, iSplitSec);
 
-		float bx, by, ex, ey;
-		pLine->GetPositionAtProportion(fProp/2, &bx, &by);
-		pLine->GetPositionAtProportion((1+fProp)/2, &ex, &ey);
+		PointF2D ptB, ptE;
+		pLine->GetPositionAtProportion(fProp/2, &ptB);
+		pLine->GetPositionAtProportion((1+fProp)/2, &ptE);
 
 		QString str;
 
 		if (nMarkFlag & MARKFLAG_SPLITLENGTH_B)
 		{
-			pmuiSplitB->SetPosition(PointF2D(bx, by)+ptPosDiff);
+			pmuiSplitB->SetPosition(ptB+ptPosDiff);
 			str.sprintf("%f(%f%%)", fProp*fLineLength, fProp*100);
 			pmuiSplitB->SetString(&str);
 			pmuiSplitB->DoMove();
 		}
 		if (nMarkFlag & MARKFLAG_SPLITLENGTH_E)
 		{
-			pmuiSplitE->SetPosition(PointF2D(ex, ey)+ptPosDiff);
+			pmuiSplitE->SetPosition(ptE+ptPosDiff);
 			str.sprintf("%f(%f%%)", (1-fProp)*fLineLength, (1-fProp)*100);
 			pmuiSplitE->SetString(&str);
 			pmuiSplitE->DoMove();

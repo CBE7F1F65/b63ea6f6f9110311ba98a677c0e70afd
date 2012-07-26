@@ -22,6 +22,7 @@
 #include "ClipCommand.h"
 #include "RotateNodeBatchCommand.h"
 #include "ScaleNodeBatchCommand.h"
+#include "ExtendCommand.h"
 
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
@@ -56,6 +57,8 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 		return &RotateNodeBatchCommand::getInstance();
 	case COMM_SCALENODE_BATCH:
 		return &ScaleNodeBatchCommand::getInstance();
+	case COMM_EXTEND:
+		return &ExtendCommand::getInstance();
 
 	case COMM_TOBEZIER:
 	case COMM_TOSTRAIGHTLINE:

@@ -126,6 +126,9 @@
     <Filter Include="Main\Command\Node\Scale">
       <UniqueIdentifier>{b4b55f34-ff80-4825-83b7-bb4e5335c258}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\Command\Node\Extend">
+      <UniqueIdentifier>{7cced008-772a-47ad-9401-c9edd1536831}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_kad_qt.cpp">
@@ -476,6 +479,9 @@
     <ClCompile Include="ScaleNodeBatchCommand.cpp">
       <Filter>Main\Command\Node\Scale</Filter>
     </ClCompile>
+    <ClCompile Include="ExtendCommand.cpp">
+      <Filter>Main\Command\Node\Extend</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -681,6 +687,9 @@
     </ClInclude>
     <ClInclude Include="ScaleNodeBatchCommand.h">
       <Filter>Main\Command\Node\Scale</Filter>
+    </ClInclude>
+    <ClInclude Include="ExtendCommand.h">
+      <Filter>Main\Command\Node\Extend</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

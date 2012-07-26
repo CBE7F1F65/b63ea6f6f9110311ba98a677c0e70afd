@@ -246,7 +246,8 @@ public:
 	void ClearSplitMarking();
 	void UnlockSplitLine();
 
-private:
+//private:
+public:
 	void SetLockLockLine(GObject * pObj);
 public:
 	void UnlockLockLine();

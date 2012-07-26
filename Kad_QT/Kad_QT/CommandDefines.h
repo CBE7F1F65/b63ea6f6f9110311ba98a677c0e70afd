@@ -58,6 +58,8 @@ enum{
 	COMM_ROTATENODE_BATCH,
 	COMM_SCALENODE_BATCH,
 
+	COMM_EXTEND,
+
 	// Transform
 	COMM_TOBEZIER,
 	COMM_TOSTRAIGHTLINE,
@@ -345,6 +347,22 @@ enum{
 	CSI_SCALENODE_BATCH_WANTXSCALE,
 	CSI_SCALENODE_BATCH_WANTYSCALE,
 	CSI_SCALENODE_BATCH_WANTINDEXES,
+};
+
+/************************************************************************/
+/* EXTEND                                                               */
+/************************************************************************/
+
+enum{
+	CSP_EXTEND_I_F_INDEX_BEGINT,
+	CSP_EXTEND_F_ENDT,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_EXTEND_DUMMY=0,
+	CSI_EXTEND_WANTINDEX,
+	CSI_EXTEND_WANTBEGINT,
+	CSI_EXTEND_WANTENDT,
 };
 
 /************************************************************************/

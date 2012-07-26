@@ -477,9 +477,9 @@ void BezierCommand::RenderToTarget()
 			prh->RenderHandlePoint(ptNextHandle.x, ptNextHandle.y, col);
 			prh->RenderHandlePoint(minxn, minyn, col);
 		}
-		RenderHelper::getInstance().EndRenderTar();
+		prh->EndRenderTar();
 
-		Command::getInstance().SetRenderTarget(tar);
+		pcommand->SetRenderTarget(tar);
 
 	}
 

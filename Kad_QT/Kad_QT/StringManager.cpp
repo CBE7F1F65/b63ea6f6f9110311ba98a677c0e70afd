@@ -124,6 +124,8 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_ROTATENODE_BATCH,	"ROTATE_BATCH",	"ROT",	"Rotate Node Batch",	""	);
 	_BSET(	COMM_SCALENODE_BATCH,	"SCALE_BATCH",	"SCA",	"Scale Node Batch",	""	);
 
+	_BSET(	COMM_EXTEND,	"EXTEND",	"E",	"Extend Line",	""	);
+
 	_BSET(	COMM_TOBEZIER,	"TOBEZIER", "TOB",	"Straight Line To Bezier",	""	);
 	_BSET(	COMM_TOSTRAIGHTLINE,	"TOSTRAIGHTLINE", "TOS",	"Bezier To Straight Line",	""	);
 
