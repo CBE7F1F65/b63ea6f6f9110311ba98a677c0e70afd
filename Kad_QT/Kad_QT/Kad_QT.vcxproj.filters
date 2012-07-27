@@ -482,6 +482,9 @@
     <ClCompile Include="ExtendCommand.cpp">
       <Filter>Main\Command\Node\Extend</Filter>
     </ClCompile>
+    <ClCompile Include="GNodeRelationship.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -690,6 +693,9 @@
     </ClInclude>
     <ClInclude Include="ExtendCommand.h">
       <Filter>Main\Command\Node\Extend</Filter>
+    </ClInclude>
+    <ClInclude Include="GNodeRelationship.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

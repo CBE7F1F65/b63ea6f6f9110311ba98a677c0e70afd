@@ -89,6 +89,7 @@ void ExtendCommand::OnProcessCommand()
 
 								pTempLine = (GBezierLine *)pObj->CreateNewClone(&tBaseNode);
 								pTempLine->Extend(-0.5f, 1.5f);
+								pTempLine->SetLineRenderStyle(RHLINESTYLE_DOTTEDLINE);
 
 								pgp->SetLockLockLine(pTempLine);
 
@@ -127,10 +128,7 @@ void ExtendCommand::RenderToTarget()
 		HTARGET tar = RenderTargetManager::getInstance().UpdateTarget(RTID_COMMAND);
 
 		prh->BeginRenderTar(tar);
-		int savedlinestyle = prh->getLineStyle();
-		prh->SetLineStyle(RHLINESTYLE_DOTTEDLINE);
 		pTempLine->CallRender();
-		prh->SetLineStyle(savedlinestyle);
 		prh->EndRenderTar();
 
 		pcommand->SetRenderTarget(tar);

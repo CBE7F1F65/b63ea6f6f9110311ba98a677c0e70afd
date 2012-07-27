@@ -8,6 +8,7 @@
 #include "Command.h"
 #include "GObjectManager.h"
 #include "GLine.h"
+#include "GNodeRelationship.h"
 /************************************************************************/
 /* GPOINT                                                               */
 /************************************************************************/
@@ -481,6 +482,33 @@ bool GPoint::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelation
 	}
 	return false;
 }
+
+GNodeRelationshipGroup * GPoint::CreateRelationshipGroup()
+{
+	if (!mergeWithList.empty() || pClingTo)
+	{
+		GNodeRelationshipGroup * pnrg = new GNodeRelationshipGroup(this);
+		if (!mergeWithList.empty())
+		{
+			GNodeRelMergeWith * pnrmerg = new GNodeRelMergeWith(mergeWithList.front());
+			pnrg->AddRelationship(pnrmerg);
+		}
+		if (pClingTo)
+		{
+			GNodeRelClingTo * pnrclingto = new GNodeRelClingTo(pClingTo, fClingToProportion);
+			pnrg->AddRelationship(pnrclingto);
+		}
+		return pnrg;
+	}
+	return NULL;
+}
+
+void GPoint::Independ()
+{
+	super::Independ();
+	SeperateFrom();
+}
+
 /************************************************************************/
 /* GANCHORPOINT                                                         */
 /************************************************************************/
@@ -711,8 +739,13 @@ void GHandlePoint::OnRender( int iHighlightLevel/* =0 */ )
 		if (GObjectManager::getInstance().isHandleVisible() || iHighlightLevel)
 		{
 			DWORD col = getLineColor(iHighlightLevel);
-			RenderHelper::getInstance().RenderHandlePoint(x, y, col);
+			RenderHelper * prh = &RenderHelper::getInstance();
+			prh->RenderHandlePoint(x, y, col);
+
+			int nSavedLineStyle = prh->getLineStyle();
+			prh->SetLineStyle(getLine()->GetLineRenderStyle());
 			RenderHelper::getInstance().RenderLine(x, y, pAnchor->getX(), pAnchor->getY(), col);
+			prh->SetLineStyle(nSavedLineStyle);
 		}
 	}
 }
@@ -858,4 +891,22 @@ bool GHandlePoint::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRe
 		return true;
 	}
 	return false;
+}
+
+GNodeRelationshipGroup * GHandlePoint::CreateRelationshipGroup()
+{
+	if (pBindWith)
+	{
+		GNodeRelationshipGroup * pnrg = new GNodeRelationshipGroup(this);
+		GNodeRelBindWith * pnrbind = new GNodeRelBindWith(pBindWith);
+		pnrg->AddRelationship(pnrbind);
+		return pnrg;
+	}
+	return NULL;
+}
+
+void GHandlePoint::Independ()
+{
+	super::Independ();
+	BindWith();
 }

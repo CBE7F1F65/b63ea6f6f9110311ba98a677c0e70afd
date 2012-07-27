@@ -38,6 +38,9 @@ public:
 
 	virtual void OnRemove();
 
+	virtual GNodeRelationshipGroup * CreateRelationshipGroup();
+	virtual void Independ();
+
 	// Only Point To Line!
 	void ClearClingTo();
 	bool ClingTo(GObject * pObj, float fProp);
@@ -186,6 +189,9 @@ public:
 	virtual bool MoveTo( GObject * pCaller, float newx, float newy, bool bTry, int moveActionID=-1 );
 
 	virtual const char * getDisplayName();
+
+	virtual GNodeRelationshipGroup * CreateRelationshipGroup();
+	virtual void Independ();
 
 	GHandlePoint * getBindWith(){return pBindWith;};
     bool isBindWith(GHandlePoint * pHandle){return pBindWith==pHandle;};

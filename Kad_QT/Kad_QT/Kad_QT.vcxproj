@@ -211,6 +211,7 @@
     </ClCompile>
     <ClCompile Include="GLayer.cpp" />
     <ClCompile Include="GLine.cpp" />
+    <ClCompile Include="GNodeRelationship.cpp" />
     <ClCompile Include="GObject.cpp" />
     <ClCompile Include="GObjectManager.cpp" />
     <ClCompile Include="GObjectPicker.cpp" />
@@ -306,6 +307,7 @@
     <ClInclude Include="GeneratedFiles\ui_QTUI_StatusBar.h" />
     <ClInclude Include="GLayer.h" />
     <ClInclude Include="GLine.h" />
+    <ClInclude Include="GNodeRelationship.h" />
     <ClInclude Include="GObject.h" />
     <ClInclude Include="GObjectManager.h" />
     <ClInclude Include="GObjectPicker.h" />

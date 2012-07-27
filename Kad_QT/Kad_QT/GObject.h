@@ -57,6 +57,8 @@ class GBezierLine;
 class GLayer;
 class GPiece;
 
+class GNodeRelationshipGroup;
+
 class GObject
 {
 public:
@@ -81,12 +83,14 @@ public:
 	virtual int RemoveFromParent(bool bRelease);
 	virtual void CallResetID(int beginindex=0);
 
-	virtual void Independ();
+	virtual GNodeRelationshipGroup * CreateRelationshipGroup(){return NULL;};
+	virtual void Independ(){};
 
 	virtual GObject * FindNodeByID(int id);
 
 private:
 	int _ActualAddChildAfterObj(GObject * child, GObject * afterobj);
+	int _ReparentAfterObject( GObject * newparent, GObject * afterobj );
 	void _SetParent(GObject * parent);
 	list<GObject *>::iterator _ActualRemoveChild(list<GObject *>::iterator it, bool bRelease);
 	int _RemoveChild(int ID, bool bRelease);
@@ -158,6 +162,10 @@ protected:
     virtual void OnRender(int iHighlightLevel=0);
 	virtual void OnParentToggleDisplayVisible(bool toDisplayVisible);
 	virtual void OnParentToggleDisplayLocked(bool toDisplayLock);
+
+	virtual void OnAddChildAfterObj(GObject * pChild, GObject * pAfter){};
+	virtual void OnRemoveChild(GObject * pChild, bool bRelease){};
+
 public:
     virtual void CallPrecisionChanged(float fPrecision);
 	virtual void CallModify();

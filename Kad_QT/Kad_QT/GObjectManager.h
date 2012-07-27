@@ -117,7 +117,7 @@ private:
 public:
 	void SetLockTreeChange();
 
-	GBaseNode undobasenode;
+	GHistoryBaseNode undobasenode;
 	GBaseNode fakebasenode;
 	int stackedLayerIndex;
 	string defaultLayerName;

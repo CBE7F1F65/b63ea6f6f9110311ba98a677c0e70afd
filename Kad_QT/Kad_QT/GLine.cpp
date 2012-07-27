@@ -17,6 +17,7 @@ GLine::GLine(void)
 	plbegin = NULL;
 	plend = NULL;
 	pmid = NULL;
+	nLineRenderStyle = RHLINESTYLE_LINE;
 }
 
 GLine::~GLine(void)
@@ -260,6 +261,8 @@ bool GLine::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelations
 	if (super::CloneData(pClone, pNewParent, bNoRelationship))
 	{
 		GLine * pLine = (GLine *)pClone;
+		pLine->nLineRenderStyle = nLineRenderStyle;
+		//////////////////////////////////////////////////////////////////////////
 		list<GObject *>::reverse_iterator it=pLine->lstChildren.rbegin();
 		pLine->plbegin = (GAnchorPoint *)*it;
 		++it;
@@ -279,6 +282,26 @@ bool GLine::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelations
 	return false;
 }
 
+GNodeRelationshipGroup * GLine::CreateRelationshipGroup()
+{
+	if (!clingByList.empty())
+	{
+		GNodeRelationshipGroup * pnrg = new GNodeRelationshipGroup(this);
+		for (list<GPoint *>::iterator it=clingByList.begin(); it!=clingByList.end(); ++it)
+		{
+			GPoint * pClingPoint = *it;
+			GNodeRelClingBy * pnrclingby = new GNodeRelClingBy(pClingPoint, pClingPoint->getClingProportion());
+		}
+		return pnrg;
+	}
+	return NULL;
+}
+
+void GLine::Independ()
+{
+	super::Independ();
+	DeclingByOther();
+}
 /************************************************************************/
 /* GSTRAIGHTLINE                                                        */
 /************************************************************************/
@@ -303,7 +326,12 @@ void GStraightLine::UpdateMidPoint()
 void GStraightLine::OnRender( int iHighlightLevel/*=0*/ )
 {
 	DWORD col = getLineColor(iHighlightLevel);
+	RenderHelper * prh = &RenderHelper::getInstance();
+
+	int nSavedLineStyle = prh->getLineStyle();
+	prh->SetLineStyle(nLineRenderStyle);
 	RenderHelper::getInstance().RenderLine(plbegin->getX(), plbegin->getY(), plend->getX(), plend->getY(), col);
+	prh->SetLineStyle(nSavedLineStyle);
 }
 
 bool GStraightLine::CheckNearTo( float px, float py, float r, float *plx, float *ply, int *isec/*=NULL*/ )
@@ -500,7 +528,13 @@ void GBezierLine::OnRender( int iHighlightLevel/*=0*/ )
 	else
 	{
 		DWORD col = getLineColor(iHighlightLevel);
-		RenderHelper::getInstance().RenderBezierByInfo(&bsinfo, col);
+
+		RenderHelper * prh = &RenderHelper::getInstance();
+
+		int nSavedLineStyle = prh->getLineStyle();
+		prh->SetLineStyle(nLineRenderStyle);
+		prh->RenderBezierByInfo(&bsinfo, col);
+		prh->SetLineStyle(nSavedLineStyle);
 	}
 }
 

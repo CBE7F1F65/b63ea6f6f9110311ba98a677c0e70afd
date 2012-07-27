@@ -46,6 +46,9 @@ public:
 	virtual bool SwapBeginEnd() = 0;
 	virtual bool Extend(float tBegin, float tEnd) = 0;
 
+	virtual void SetLineRenderStyle(int nStyle){nLineRenderStyle = nStyle;};
+	virtual int GetLineRenderStyle(){return nLineRenderStyle;};
+
 	virtual bool isLengthCalculated(){return true;};
 	virtual float getLength() = 0;
 
@@ -61,6 +64,9 @@ public:
 
 	virtual void OnRemove();
 
+	virtual GNodeRelationshipGroup * CreateRelationshipGroup();
+	virtual void Independ();
+
 	bool AddClingBy(GPoint * pPoint);
 	void DeclingByOther(GPoint * pPoint=NULL);
 	bool isClingBy(GPoint * pPoint);
@@ -70,6 +76,10 @@ public:
 	/* Members                                                              */
 	/************************************************************************/
 protected:
+	//////////////////////////////////////////////////////////////////////////
+	GOBJM_COPYABLES();
+	int nLineRenderStyle;
+	GOBJM_COPYABLESEND();
 	//////////////////////////////////////////////////////////////////////////
 	GOBJM_CHILDPOINTERS();
 	GAnchorPoint * plbegin;

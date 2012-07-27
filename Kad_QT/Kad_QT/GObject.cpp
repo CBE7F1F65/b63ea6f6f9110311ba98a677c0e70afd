@@ -76,6 +76,8 @@ int GObject::_ActualAddChildAfterObj( GObject * child, GObject * afterobj )
 		ASSERT(child != afterobj);
 		ASSERT(!child->isAncestorOf(this));
 
+		OnAddChildAfterObj(child, afterobj);
+
 		child->_SetParent(this);
 		child->OnEnter();
 
@@ -122,16 +124,19 @@ int GObject::_ActualAddChildAfterObj( GObject * child, GObject * afterobj )
 
 list<GObject *>::iterator GObject::_ActualRemoveChild( list<GObject *>::iterator it, bool bRelease )
 {
-	if (!(*it)->isAttributeNode())
+	GObject * child = *it;
+	if (!child->isAttributeNode())
 	{
 		_ModifyNonAttributeChildrenCount(-1);
 	}
-	(*it)->OnRemove();
+	OnRemoveChild(child, bRelease);
+
+	child->OnRemove();
 	if (bRelease)
 	{
-		(*it)->OnRelease();
+		child->OnRelease();
 	}
-	(*it)->pParent = NULL;
+	child->pParent = NULL;
 	it = lstChildren.erase(it);
 
 	// Add OnModify and OnTreeChanged after all operation done!!
@@ -381,22 +386,32 @@ int GObject::Reparent( GObject * newparent )
 	return ReparentAfterObject(newparent, NULL);
 }
 
-int GObject::ReparentAfterObject( GObject * newparent, GObject * afterobj )
+int GObject::_ReparentAfterObject( GObject * newparent, GObject * afterobj )
 {
 	ASSERT(newparent != NULL);
 	ASSERT(newparent != pParent);
+
 	_CallTreeWillChange();
+
 	GObject * _pParent = pParent;
+
 	_RemoveFromParent(false);
 	if (!isLayer())
 	{
 		clearLineColor();
 	}
+
 	int ret = newparent->AddChildAfterObj(this, afterobj);
+
 	_CallTreeChanged(_pParent, _pParent);
 	_CallTreeChanged(newparent, this);
-	
+
 	return ret;
+}
+
+int GObject::ReparentAfterObject( GObject * newparent, GObject * afterobj )
+{
+	return _ReparentAfterObject(newparent, afterobj);
 }
 
 
@@ -865,28 +880,6 @@ bool GObject::isDescendantOf( GObject * pObj )
 		return false;
 	}
 	return pObj->isAncestorOf(this);
-}
-
-void GObject::Independ()
-{
-// 	if (isAttributeNode())
-// 	{
-// 		return;
-// 	}
-	pParent = NULL;
-	lstChildren.clear();
-// 	for (list<GObject *>::iterator it=listChildren.begin(); it!=listChildren.end(); )
-// 	{
-// 		if (!(*it)->isAttributeNode())
-// 		{
-// 			it = listChildren.erase(it);
-// 		}
-// 		else
-// 		{
-// 			++it;
-// 		}
-// 	}
-	nNonAttributeChildrenCount = 0;
 }
 
 DWORD GObject::getLineColor( int iHighlightLevel/*=0*/ )
