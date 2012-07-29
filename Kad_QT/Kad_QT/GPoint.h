@@ -186,6 +186,8 @@ public:
 	GAnchorPoint * GetAnchor(){return (GAnchorPoint *)getParent();};
 	virtual bool isHandlePoint(){return true;};
 
+	bool isIdenticalToAnchor();
+
 	virtual bool MoveTo( GObject * pCaller, float newx, float newy, bool bTry, int moveActionID=-1 );
 
 	virtual const char * getDisplayName();

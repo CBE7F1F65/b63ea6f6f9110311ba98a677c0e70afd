@@ -33,6 +33,8 @@ public:
 	bool bManualMode;
 
 	GBezierLine * pTempLine;
+	MarkingLine * pMarking;
+	int relativeAngle;
 	int lastAngle;
 };
 

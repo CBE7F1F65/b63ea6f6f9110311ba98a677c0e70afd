@@ -30,7 +30,6 @@ QTUI_Layer_Tree::QTUI_Layer_Tree(QWidget *parent) :
     this->header()->moveSection(_UILT_COLUMN_TREE, _UILT_COLUMN_LINECOLOR);
     this->setIndentation(_UILT_INDENTATION);
 
-    pHoveringNode = NULL;
     pDragDropLayer = NULL;
     pDragDropAfter = NULL;
 
@@ -44,7 +43,6 @@ QTUI_Layer_Tree::QTUI_Layer_Tree(QWidget *parent) :
 void QTUI_Layer_Tree::RebuildTree(GObject *changebase, GObject *activeitem)
 {
     selectednodes.clear();
-	pHoveringNode = NULL;
     QTreeWidgetItem * pBaseItem = FindItemByObj(changebase);
     if (!pBaseItem)
     {
@@ -112,7 +110,14 @@ list<GObject *> * QTUI_Layer_Tree::GetActiveNodes()
 
 GObject *QTUI_Layer_Tree::GetHoveringNode()
 {
-    return pHoveringNode;
+	QWidget * pParentWidget = this->parentWidget();
+	QPoint pt = pParentWidget->mapFromGlobal(QCursor::pos());
+	QTreeWidgetItem * pItem = this->itemAt(pt);
+	if (pItem)
+	{
+		return GetObjFromItem(pItem);
+	}
+    return NULL;
 }
 
 bool QTUI_Layer_Tree::GetDragDroppedNodes(GLayer **pLayerNode, GObject **pAfterNode)
@@ -177,34 +182,6 @@ void QTUI_Layer_Tree::resizeEvent(QResizeEvent *e)
 {
     AdjustSize();
 }
-
-void QTUI_Layer_Tree::mouseMoveEvent(QMouseEvent *e)
-{
-    QTreeWidgetItem * pItem = this->itemAt(e->pos());
-    if (pItem)
-    {
-        pHoveringNode = GetObjFromItem(pItem);
-    }
-    else
-    {
-        pHoveringNode = NULL;
-    }
-    QTreeWidget::mouseMoveEvent(e);
-}
-
-/*
-void QTUI_Layer_Tree::enterEvent(QEvent *e)
-{
-    pHoveringNode = NULL;
-    GObjectManager::getInstance().SetRenderUILayerIndicators(true);
-}
-
-void QTUI_Layer_Tree::leaveEvent(QEvent *e)
-{
-    pHoveringNode = NULL;
-    GObjectManager::getInstance().SetRenderUILayerIndicators(false);
-}
-*/
 
 void QTUI_Layer_Tree::AdjustSize()
 {

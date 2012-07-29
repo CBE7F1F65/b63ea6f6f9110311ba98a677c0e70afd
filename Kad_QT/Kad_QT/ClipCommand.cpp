@@ -61,7 +61,7 @@ void ClipCommand::OnProcessCommand()
 		// Routine
 		if (step > CSI_INIT)
 		{
-			int iret = pgp->PickPoint(staticPickFilterFunc);
+			int iret = pgp->PickPoint(staticPickFilterFunc, staticPickFilterFunc);
 			if (pgp->IsPickReady(iret))
 			{
 				if (!pcommand->IsInternalProcessing())

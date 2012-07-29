@@ -122,7 +122,7 @@ bool GObjectPicker::CheckCoord_Obj( GObject * pObj )
 	{
 		if (pObj->isRepresentablePoint())
 		{
-			if (pObj->isSlaveToLine() || pObj->isSlaveToPiece() && !isSnapToVirtualCoord())
+			if ((pObj->isSlaveToLine() || pObj->isSlaveToPiece() || pObj->isHandlePoint()) && !isSnapToVirtualCoord())
 			{
 				return false;
 			}

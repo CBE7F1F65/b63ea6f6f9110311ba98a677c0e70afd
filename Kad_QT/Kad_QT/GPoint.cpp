@@ -134,11 +134,12 @@ bool GPoint::CallRotate( GObject * pCaller, float orix, float oriy, int angle, b
 	PointF2D ptThis = GetPointF2D();
 	angle += pmh->GetLineAngle(ptOri, ptThis);
 	float fLength = pmh->LineSegmentLength(ptOri, ptThis);
-
+	/*
 	if (!fLength)
 	{
 		return true;
 	}
+	*/
 	float newx = fLength*cost(angle)+orix;
 	float newy = fLength*sint(angle)+oriy;
 
@@ -909,4 +910,9 @@ void GHandlePoint::Independ()
 {
 	super::Independ();
 	BindWith();
+}
+
+bool GHandlePoint::isIdenticalToAnchor()
+{
+	return this->GetPointF2D().Equals(GetAnchor()->GetPointF2D());
 }

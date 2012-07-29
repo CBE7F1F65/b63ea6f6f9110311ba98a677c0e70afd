@@ -197,7 +197,7 @@ void MarqueeSelect::Update()
 	
 	if (marqueestate != MARQSTATE_BEGAN)
 	{
-		int iret = pgp->PickPoint(staticMarqPickFilterCallback);
+		int iret = pgp->PickPoint(staticMarqPickFilterCallback, staticMarqPickFilterCallback);
 
         if (itemmovestate==MARQMOVESTATE_NONE && (baltdown || pmain->hge->Input_GetDIMouseKey(pmain->cursorrightkeyindex, DIKEY_DOWN)))
         {

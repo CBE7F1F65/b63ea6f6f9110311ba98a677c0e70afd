@@ -47,7 +47,7 @@ MainInterface::MainInterface()
 
 	bLockLeftMouseDown = false;
 
-    nPrecision = 25;
+    nPrecision = 50;
 }
 
 MainInterface::~MainInterface()

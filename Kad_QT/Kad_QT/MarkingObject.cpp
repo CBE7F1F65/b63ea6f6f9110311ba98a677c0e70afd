@@ -286,12 +286,13 @@ void MarkingObject::CallRender()
 MarkingLine::MarkingLine(GLine * pLine, int nFlag)
 {
 	ASSERT(pLine);
+	nRelativeAngle = 0;
 	SetValue(pLine, nFlag);
 }
 
 void MarkingLine::Update()
 {
-	if (nModifyVersion != pTargetObj->getModifyVersion())
+	if (nModifyVersion != pTargetObj->getModifyVersion() || bUpdate)
 	{
 		nModifyVersion = pTargetObj->getModifyVersion();
 
@@ -304,7 +305,8 @@ void MarkingLine::Update()
 		PointF2D ptEnd = pLine->GetEndPoint()->GetPointF2D();
 
 		int angle = pmh->GetLineAngle(ptBegin, ptEnd);
-		nLineAngle = angle;
+		nLineAngle = angle-nRelativeAngle;
+		pmh->RestrictAngle(&nLineAngle);
 
 		angle += ANGLEBASE_90;
 		pmh->RestrictAngle(&angle);
@@ -346,8 +348,17 @@ void MarkingLine::Update()
 		if (nMarkFlag & MARKFLAG_ANGLE)
 		{
 			fStraightLineLength = pmh->LineSegmentLength(ptBegin, ptEnd);
-			ptArcPoint = PointF2D(ptBegin.x+fStraightLineLength, ptBegin.y);
-			pmuiAngle->SetPosition(PointF2D(ptBegin.x+fStraightLineLength*cost(nLineAngle/2), ptBegin.y+fStraightLineLength*sint(nLineAngle/2)));
+			if (!nRelativeAngle)
+			{
+				ptArcPoint = PointF2D(ptBegin.x+fStraightLineLength, ptBegin.y);
+			}
+			else
+			{
+				ptArcPoint.x = ptBegin.x + fStraightLineLength*cost(nRelativeAngle);
+				ptArcPoint.y = ptBegin.y + fStraightLineLength*sint(nRelativeAngle);
+			}
+			int nDisplayAngle = nRelativeAngle+nLineAngle/2;
+			pmuiAngle->SetPosition(PointF2D(ptBegin.x+fStraightLineLength*cost(nDisplayAngle), ptBegin.y+fStraightLineLength*sint(nDisplayAngle)));
 
 			str.sprintf("%f", (float)(nLineAngle)/(ANGLEBASE_90/90));
 			pmuiAngle->SetString(&str);
@@ -397,11 +408,16 @@ void MarkingLine::Render()
 		{
 			prh->RenderLine(ptBegin.x, ptBegin.y, ptEnd.x, ptEnd.y, col);
 		}
-		prh->RenderArc(ptBegin.x, ptBegin.y, fStraightLineLength, 0, nLineAngle, col);
+		prh->RenderArc(ptBegin.x, ptBegin.y, fStraightLineLength, nRelativeAngle, nRelativeAngle+nLineAngle, col);
 	}
 	prh->SetLineStyle(savedstyle);
 }
 
+void MarkingLine::SetRelativeAngle( int nAngle )
+{
+	nRelativeAngle = nAngle;
+	CallUpdate();
+}
 /************************************************************************/
 /* MarkingSplitLine                                                     */
 /************************************************************************/
@@ -416,7 +432,7 @@ void MarkingSplitLine::Update()
 {
 	bool bRecalcPosition = false;
 	GLine * pLine = (GLine *)pTargetObj;
-	if (nModifyVersion != pTargetObj->getModifyVersion())
+	if (nModifyVersion != pTargetObj->getModifyVersion() || bUpdate)
 	{
 		nModifyVersion = pTargetObj->getModifyVersion();
 		bRecalcPosition = true;

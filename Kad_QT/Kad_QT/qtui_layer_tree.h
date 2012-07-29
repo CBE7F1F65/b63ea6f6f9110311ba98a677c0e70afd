@@ -28,9 +28,6 @@ protected:
     virtual void dropEvent(QDropEvent *e);
     virtual void dragMoveEvent(QDragMoveEvent *e);
     virtual void resizeEvent(QResizeEvent * e);
-    virtual void mouseMoveEvent(QMouseEvent * e);
-//    virtual void enterEvent(QEvent * e);
-//    virtual void leaveEvent(QEvent * e);
 
     
 private:
@@ -55,7 +52,6 @@ private:
     list<GObject *> selectednodes;
     GLayer * pDragDropLayer;
     GObject * pDragDropAfter;
-    GObject * pHoveringNode;
     GObject * pPreferredNextSelectItem;
 
     bool bInternalSelecting;

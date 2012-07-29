@@ -102,6 +102,7 @@ public:
 	void EndTryMove();
 	void BlockTryMove();
 	void UnblockTryMove();
+	void CancelTryMove();
 
 	bool IsTryMoving(){return bTryMove;};
 	bool IsTryMoveBlocking(){return bTryMoveBlock;};

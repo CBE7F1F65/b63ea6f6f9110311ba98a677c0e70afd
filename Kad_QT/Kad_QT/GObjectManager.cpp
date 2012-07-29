@@ -638,6 +638,13 @@ void GObjectManager::UnblockTryMove()
 	bTryMoveBlock = false;
 }
 
+void GObjectManager::CancelTryMove()
+{
+	EndTryMove();
+	UnblockTryMove();
+	pBaseNode->CallCancelTryMove();
+}
+
 int GObjectManager::GetMoveTypeInfo( int * pAngle/*=NULL*/, float * pScaleX/*=NULL*/, float * pScaleY/*=NULL*/ )
 {
 	if (pAngle)

@@ -158,6 +158,7 @@ protected:
     virtual void OnPrecisionChanged(float fPrecision);
 	virtual void OnModify();
 	virtual void OnClearModify();	// Post-Update
+	virtual void OnCancelTryMove();
 	virtual void OnUpdate();
     virtual void OnRender(int iHighlightLevel=0);
 	virtual void OnParentToggleDisplayVisible(bool toDisplayVisible);
@@ -173,6 +174,7 @@ public:
     virtual void CallRedrawModify();
 	virtual void CallUpdate();
 	virtual void CallRender(int iHighlightLevel=0);
+	virtual void CallCancelTryMove();
 
 protected:
 	virtual void ToggleTryMoveState(bool bTry);

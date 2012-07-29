@@ -7,6 +7,7 @@
 RotateNodeBatchCommand::RotateNodeBatchCommand(void)
 {
 	pTempLine = NULL;
+	pMarking = NULL;
 	ClearTemp();
 }
 
@@ -120,7 +121,7 @@ void RotateNodeBatchCommand::OnProcessCommand()
 
 		if (step >= CSI_ROTATENODE_BATCH_WANTX && step < CSI_ROTATENODE_BATCH_WANTINDEXES)
 		{
-			int iret = pgp->PickPoint(staticFilterCallback);
+			int iret = pgp->PickPoint(NULL, staticFilterCallback);
 			if (step < CSI_ROTATENODE_BATCH_WANTANGLE)
 			{
 				if (pgp->IsPickReady(iret))
@@ -138,11 +139,6 @@ void RotateNodeBatchCommand::OnProcessCommand()
 				if (!pTempLine)
 				{
 					pTempLine = new GBezierLine(&tBaseNode, PointF2D(), PointF2D());
-					MarkingLine * pMarking = new MarkingLine(pTempLine, MARKFLAG_ANGLE);
-					MarkingUI * pmuiAngle = pMarking->getMarkingUI(MARKFLAG_ANGLE);
-					pmuiAngle->SetEditable(true);
-					pmuiAngle->SetCallback(staticMIDCBAngle);
-					MarkingManager::getInstance().EnableMarking(pMarking);
 
 					pgp->UnlockAngles();
 					pgp->UnlockLength();
@@ -155,30 +151,46 @@ void RotateNodeBatchCommand::OnProcessCommand()
 				float picky = pgp->GetPickY_C();
 				pTempLine->SetBeginEnd(orix, oriy, pickx, picky);
 
-				int angle = MathHelper::getInstance().GetLineAngle(pTempLine->GetBeginPoint()->GetPointF2D(), pTempLine->GetEndPoint()->GetPointF2D());
-				float fAngle = angle*90.0f/ANGLEBASE_90;
-				if (pgp->IsPickReady(iret))
+				if (pgp->IsMouseDownReady())
 				{
-					if (!pcommand->IsInternalProcessing())
+					int angle = MathHelper::getInstance().GetLineAngle(pTempLine->GetBeginPoint()->GetPointF2D(), pTempLine->GetEndPoint()->GetPointF2D());
+					if (!pMarking)
 					{
-						pgm->EndTryMove();
-						pcommand->SetParamF(CSP_ROTATENODE_BATCH_F_XY_ANGLE_ORIGIN, fAngle, CWP_ANGLE);
-						pcommand->StepTo(CSI_ROTATENODE_BATCH_WANTINDEXES, CWP_INDEX);
+						pMarking = new MarkingLine(pTempLine, MARKFLAG_ANGLE);
+						pMarking->SetRelativeAngle(angle);
+						relativeAngle = angle;
+						MarkingUI * pmuiAngle = pMarking->getMarkingUI(MARKFLAG_ANGLE);
+						pmuiAngle->SetEditable(true);
+						pmuiAngle->SetCallback(staticMIDCBAngle);
+						MarkingManager::getInstance().EnableMarking(pMarking);
 					}
-				}
-				else
-				{
-					pgm->BeginTryMove();
-					int nMovedAngle = angle-lastAngle;
-					int moveActionID = pgm->GetNextMoveActionID(GMMATYPE_ROTATE, nMovedAngle);
-					for (list<GObject *>::reverse_iterator it=lstObj.rbegin(); it!=lstObj.rend(); ++it)
-					{
-						GObject * pObj = *it;
-						pObj->CallRotate(pObj, orix, oriy, nMovedAngle, true, moveActionID);
-					}
-				}
 
-				lastAngle = angle;
+					angle -= relativeAngle;
+					float fAngle = angle*90.0f/ANGLEBASE_90;
+
+					if (pgp->IsPickReady(iret))
+					{
+						if (!pcommand->IsInternalProcessing())
+						{
+							pgm->EndTryMove();
+							pcommand->SetParamF(CSP_ROTATENODE_BATCH_F_XY_ANGLE_ORIGIN, fAngle, CWP_ANGLE);
+							pcommand->StepTo(CSI_ROTATENODE_BATCH_WANTINDEXES, CWP_INDEX);
+						}
+					}
+					else
+					{
+						pgm->BeginTryMove();
+						int nMovedAngle = angle-lastAngle;
+						int moveActionID = pgm->GetNextMoveActionID(GMMATYPE_ROTATE, nMovedAngle);
+						for (list<GObject *>::reverse_iterator it=lstObj.rbegin(); it!=lstObj.rend(); ++it)
+						{
+							GObject * pObj = *it;
+							pObj->CallRotate(pObj, orix, oriy, nMovedAngle, true, moveActionID);
+						}
+					}
+
+					lastAngle = angle;
+				}
 			}
 		}
 	}
@@ -305,14 +317,16 @@ void RotateNodeBatchCommand::ClearTemp()
 	bManualMode = false;
 	lstObj.clear();
 	lastAngle = 0;
+	relativeAngle = 0;
 	if (pTempLine)
 	{
 		pTempLine->RemoveFromParent(true);
 		pTempLine = NULL;
+		pMarking = NULL;
 	}
 	pgp->UnlockAngles();
 	pgp->UnlockLength();
-	pgm->UnblockTryMove();
+	pgm->CancelTryMove();
 }
 
 void RotateNodeBatchCommand::OnClearCommand()

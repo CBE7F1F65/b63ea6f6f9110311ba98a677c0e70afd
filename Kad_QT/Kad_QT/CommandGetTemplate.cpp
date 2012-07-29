@@ -83,6 +83,10 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 	case COMM_TEST:
 		return &TestCommand::getInstance();
 #endif //DEBUGTEST
+	case COMM_PAN:
+	case COMM_ZOOMIN:
+	case COMM_DOZOOM:
+		break;
 	default:
 		ASSERT(false);
 	}

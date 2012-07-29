@@ -192,11 +192,13 @@ public:
 
 private:
 	PickFilterCallback pfilterfunc;
+	PickFilterCallback pbeforedownfilterfunc;
+	PickFilterCallback pafterdownfilterfunc;
 
 public:
-	int PickPoint(PickFilterCallback pfunc=NULL);
+	int PickPoint(PickFilterCallback pbeforefunc=NULL, PickFilterCallback pafterfunc=NULL);
 	int UpdatePickPoint();
-	int TestPickPoint(float x, float y, float *pfProportion=0, PickFilterCallback pfunc=NULL, float range_s=0);
+	int TestPickPoint(float x, float y, float *pfProportion=0, PickFilterCallback pbeforefunc=NULL, PickFilterCallback pafterfunc=NULL, float range_s=0);
 	void OnDeleteNode( GObject * pDeletedObj );
 
 	bool IsPickReady(int iret=-1);

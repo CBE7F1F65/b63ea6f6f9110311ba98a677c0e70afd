@@ -387,17 +387,21 @@ void BezierCommand::OnProcessCommand()
 		if (!pTempLine)
 		{
 			pTempLine = new GBezierLine(&tBaseNode, PointF2D(), PointF2D());
-
-			pMarking = new MarkingLine(pTempLine, MARKFLAG_LENGTH);
-			pMarking->getMarkingUI(MARKFLAG_LENGTH)->SetEditable(false);
-			pMarking->getMarkingUI(MARKFLAG_LENGTH)->SetCallback(staticMIDCBLength);
-			MarkingManager::getInstance().EnableMarking(pMarking);
 		}
 		pTempLine->SetBeginEnd(xb, yb, xn, yn, 0);
 		pTempLine->SetBeginHandlePos(bhx, bhy, 0);
 		pTempLine->SetEndHandlePos(nhx, nhy, 0);
 	}
-
+	if (step >= CSI_BEZIER_WANTNAX)
+	{
+		if (!pMarking)
+		{
+			pMarking = new MarkingLine(pTempLine, MARKFLAG_LENGTH);
+			pMarking->getMarkingUI(MARKFLAG_LENGTH)->SetEditable(false);
+			pMarking->getMarkingUI(MARKFLAG_LENGTH)->SetCallback(staticMIDCBLength);
+			MarkingManager::getInstance().EnableMarking(pMarking);
+		}
+	}
 	if (step >= CSI_BEZIER_WANTNHX)
 	{
 		if (pMarking)

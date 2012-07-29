@@ -332,33 +332,30 @@ void GObject::OnUpdate()
 		{
 			nTryState = GOBJTRYSTATE_MOVE_AFTERUPDATE;
 		}
-		else if (nTryState == GOBJTRYSTATE_MOVE_AFTERUPDATE && !GObjectManager::getInstance().IsTryMoving())
+		else if (nTryState == GOBJTRYSTATE_MOVE_AFTERUPDATE)
 		{
-			// Add Command
-			float tx = getX();
-			float ty = getY();
-			// Directly Move!!
-			MoveTo(NULL, fTryMove_bx, fTryMove_by, false, nUpdateMoveActionID);
-			GObjectManager::getInstance().PushMoveNodeByOffsetForBatchCommand(this, tx-fTryMove_bx, ty-fTryMove_by);
-			/*
-			MainInterface::getInstance().OnCommandWithParam(
-				COMM_MOVENODE,
-				CCCWPARAM_I(nID),
-				CCCWPARAM_F(tx),
-				CCCWPARAM_F(ty),
-				NULL
-				);
-			Command * pcommand = &Command::getInstance();
-			while (!pcommand->canCommandDone())
+			if (!GObjectManager::getInstance().IsTryMoving())
 			{
-				pcommand->ProcessCommand();
+				float tx = getX();
+				float ty = getY();
+				// Directly Move!!
+				MoveTo(NULL, fTryMove_bx, fTryMove_by, false, nUpdateMoveActionID);
+				GObjectManager::getInstance().PushMoveNodeByOffsetForBatchCommand(this, tx-fTryMove_bx, ty-fTryMove_by);
+				nTryState = GOBJTRYSTATE_MOVE_NULL;
 			}
-			pcommand->ProcessCommand();
-			*/
-			nTryState = GOBJTRYSTATE_MOVE_NULL;
 		}
 	}
 
+}
+
+void GObject::OnCancelTryMove()
+{
+	if (nTryState)
+	{
+		// Directly Move!!
+		MoveTo(NULL, fTryMove_bx, fTryMove_by, false, nUpdateMoveActionID);
+		nTryState = GOBJTRYSTATE_MOVE_NULL;
+	}
 }
 
 void GObject::OnRender( int iHighlightLevel/*=0*/ )
@@ -617,6 +614,18 @@ void GObject::OnParentToggleDisplayLocked( bool toDisplayLock )
 		(*it)->OnParentToggleDisplayLocked(toDisplayLock);
 	}
 
+}
+
+void GObject::CallCancelTryMove()
+{
+	OnCancelTryMove();
+	if (!lstChildren.empty())
+	{
+		FOREACH_GOBJ_CHILDREN_IT()
+		{
+			(*it)->CallCancelTryMove();
+		}
+	}
 }
 
 void GObject::CallRender( int iHighlightLevel/*=0*/ )

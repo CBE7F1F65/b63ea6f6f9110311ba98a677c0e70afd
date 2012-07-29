@@ -7,9 +7,10 @@
 #include "RenderHelper.h"
 #include "MarkingManager.h"
 
-int GObjectPicker::PickPoint( PickFilterCallback pfunc/*=NULL*/ )
+int GObjectPicker::PickPoint( PickFilterCallback pbeforefunc/*=NULL*/, PickFilterCallback pafterfunc/*=NULL*/ )
 {
-	pfilterfunc = pfunc;
+	pbeforedownfilterfunc = pbeforefunc;
+	pafterdownfilterfunc = pafterfunc;
 	int retstate = 0;
 	if (state == PICKSTATE_NULL)
 	{
@@ -91,6 +92,15 @@ int GObjectPicker::UpdatePickPoint()
 			SetSnapTo(snaptoflag, false);
 			SetSnapTo(GOPSNAP_GEOMETRY|(restoreSnapto&GOPSNAP_HANDLEONLY));
 		}
+	}
+
+	if (IsMouseDownReady())
+	{
+		pfilterfunc = pafterdownfilterfunc;
+	}
+	else
+	{
+		pfilterfunc = pbeforedownfilterfunc;
 	}
 
 	// Snap to Self

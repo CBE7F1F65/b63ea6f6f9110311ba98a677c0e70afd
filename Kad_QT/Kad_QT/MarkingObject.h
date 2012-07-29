@@ -129,11 +129,14 @@ public:
 	virtual void Update();
 	virtual void Render();
 
+	void SetRelativeAngle(int nAngle);
+
 protected:
 	PointF2D ptLengthDiff;
 	PointF2D ptArcPoint;
 	float fStraightLineLength;
 	int nLineAngle;
+	int nRelativeAngle;
 };
 
 class MarkingSplitLine : public MarkingObject

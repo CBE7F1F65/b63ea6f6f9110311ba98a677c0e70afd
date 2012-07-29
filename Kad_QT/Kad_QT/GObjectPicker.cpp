@@ -10,6 +10,8 @@ GObjectPicker::GObjectPicker(void)
 {
 	state = PICKSTATE_NULL;
 	pfilterfunc = NULL;
+	pbeforedownfilterfunc = NULL;
+	pafterdownfilterfunc = NULL;
 	SetSnapTo(GOPSNAP_GEOMETRY|GOPSNAP_COORD|GOPSNAP_GEOMETRYCOORD|GOPSNAP_CONTINUITY);
 	bCheckMouseDown = false;
 	bRenderMouseDown = false;
@@ -45,14 +47,14 @@ GObjectPicker::~GObjectPicker(void)
 void GObjectPicker::Init()
 {
 	state = PICKSTATE_NULL;
-	SetSnapRange_S(25.0f);
+	SetSnapRange_S(15.0f);
 }
 
-int GObjectPicker::TestPickPoint( float x, float y, float *pfProportion/*=0*/, PickFilterCallback pfunc/*=NULL*/, float range_s/*=0*/ )
+int GObjectPicker::TestPickPoint( float x, float y, float *pfProportion/*=0*/, PickFilterCallback pbeforefunc/*=NULL*/, PickFilterCallback pafterfunc/*=NULL*/, float range_s/*=0*/ )
 {
 	state = PICKSTATE_NULL;
 
-	PickPoint(pfunc);
+	PickPoint(pbeforefunc, pafterfunc);
 	bFilledPos = true;
 	bTestMode = true;
 	filledX_C = x;
@@ -70,7 +72,7 @@ int GObjectPicker::TestPickPoint( float x, float y, float *pfProportion/*=0*/, P
 
 	ClearSet();
 	UpdatePickPoint();
-	int iret = PickPoint(pfunc);
+	int iret = PickPoint(pbeforefunc, pafterfunc);
 	if (pfProportion)
 	{
 		*pfProportion = 0;

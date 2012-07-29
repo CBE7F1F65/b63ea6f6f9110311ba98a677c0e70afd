@@ -917,34 +917,38 @@ bool MathHelper::CalculateExtendBezierToAimLength( const QuadBezierPointF2D &qua
 		fRLength = pTempLine->getLength();
 	}
 
-	if (fAimLength < fLLength && fAimLength < fRLength)
+	if (fAimLength < fLLength && fAimLength < fRLength || fAimLength > fLLength && fAimLength > fRLength)
 	{
-		ASSERT(fMinS < 0.0f);
-		fMinS*=2;
-		if (CalculateExtendBezierToAimLength(
-			quadBezier,
-			fAimLength, fMinS, fMaxS, -1, fRLength,
-			QuadBezierPointF2D(),
-			quadRight,
-			pptPos, pQuadOutBezier))
+		if (fLLength > fRLength)
 		{
-			tBase.RemoveAllChildren(true);
-			return true;
+			ASSERT(fMinS < 0.0f);
+			fMinS*=2;
+			if (CalculateExtendBezierToAimLength(
+				quadBezier,
+				fAimLength, fMinS, fMaxS, -1, fRLength,
+				QuadBezierPointF2D(),
+				quadRight,
+				pptPos, pQuadOutBezier))
+			{
+				tBase.RemoveAllChildren(true);
+				return true;
+			}
 		}
-	}
-	else if (fAimLength > fLLength && fAimLength > fRLength)
-	{
-		ASSERT(fMaxS > 1.0f);
-		fMaxS = (fMaxS-1.0f)*2+1.0f;
-		if (CalculateExtendBezierToAimLength(
-			quadBezier,
-			fAimLength, fMinS, fMaxS, fLLength, -1,
-			quadLeft,
-			QuadBezierPointF2D(),
-			pptPos, pQuadOutBezier))
+		else
 		{
-			tBase.RemoveAllChildren(true);
-			return true;
+			ASSERT(fMaxS > 1.0f);
+			fMaxS = (fMaxS-1.0f)*2+1.0f;
+			if (CalculateExtendBezierToAimLength(
+				quadBezier,
+				fAimLength, fMinS, fMaxS, fLLength, -1,
+				quadLeft,
+				QuadBezierPointF2D(),
+				pptPos, pQuadOutBezier))
+			{
+				tBase.RemoveAllChildren(true);
+				return true;
+			}
+
 		}
 	}
 

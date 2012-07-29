@@ -192,7 +192,7 @@ bool QTUI_GLView::eventFilter(QObject *target, QEvent *e)
 		}
 
         Qt::KeyboardModifiers km = pke->modifiers();
-        if (km)
+        if (km & (~Qt::KeypadModifier))
         {
 			if (focusWidget() == this)
 			{

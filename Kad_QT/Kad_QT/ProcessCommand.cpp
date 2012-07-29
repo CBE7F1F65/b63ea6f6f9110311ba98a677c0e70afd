@@ -188,5 +188,6 @@ void Command::ProcessUnDoCommandCommit( RevertableCommand * rc )
 void Command::ProcessUnDoCommandParam( int command, RevertableCommand * rc )
 {
 	CommandTemplate * pct = CommandTemplate::GetTemplateByCommand(command);
+	ASSERT(pct);
 	pct->CallProcessUnDoCommand(command, rc);
 }

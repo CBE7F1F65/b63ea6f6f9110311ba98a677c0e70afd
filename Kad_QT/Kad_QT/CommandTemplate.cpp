@@ -416,12 +416,14 @@ GObject * CommandTemplate::TestPickSingleFilter( float x, float y, GObject * pFi
 		if (pFilterObj->isPoint())
 		{
 			pFilterTemplate = &PickFilterSinglePoint::getInstance();
-			iret = pTestPicker->TestPickPoint(x, y, pfProportion, ((PickFilterSinglePoint *)pFilterTemplate)->Use((GPoint *)pFilterObj));
+			PickFilterCallback pf = ((PickFilterSinglePoint *)pFilterTemplate)->Use((GPoint *)pFilterObj);
+			iret = pTestPicker->TestPickPoint(x, y, pfProportion, pf, pf);
 		}
 		else
 		{
 			pFilterTemplate = &PickFilterSingleObj::getInstance();
-			iret = pTestPicker->TestPickPoint(x, y, pfProportion, ((PickFilterSingleObj *)pFilterTemplate)->Use(pFilterObj));
+			PickFilterCallback pf = ((PickFilterSingleObj *)pFilterTemplate)->Use(pFilterObj);
+			iret = pTestPicker->TestPickPoint(x, y, pfProportion, pf, pf);
 		}
 	}
 	else

@@ -128,7 +128,7 @@ void ScaleNodeBatchCommand::OnProcessCommand()
 
 		if (step >= CSI_SCALENODE_BATCH_WANTX && step < CSI_SCALENODE_BATCH_WANTINDEXES)
 		{
-			int iret = pgp->PickPoint(staticFilterCallback);
+			int iret = pgp->PickPoint(NULL, staticFilterCallback);
 			if (step < CSI_SCALENODE_BATCH_WANTXSCALE)
 			{
 				if (pgp->IsPickReady(iret))
@@ -406,7 +406,7 @@ void ScaleNodeBatchCommand::ClearTemp()
 	bBeginSet = false;
 	pgp->UnlockXAxis();
 	pgp->UnlockYAxis();
-	pgm->UnblockTryMove();
+	pgm->CancelTryMove();
 }
 
 void ScaleNodeBatchCommand::OnClearCommand()
