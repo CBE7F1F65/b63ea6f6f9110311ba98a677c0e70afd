@@ -374,7 +374,9 @@ void ScaleNodeBatchCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 	ASSERT(fScaleX);
 	ASSERT(fScaleY);
 
-	int moveActionID = pgm->GetNextMoveActionID(GMMATYPE_SCALE, 0, 1/fScaleX, 1/fScaleY);
+	fScaleX = 1/fScaleX;
+	fScaleY = 1/fScaleY;
+	int moveActionID = pgm->GetNextMoveActionID(GMMATYPE_SCALE, 0, fScaleX, fScaleY);
 	for (; it!=--(rc->commandlist.end()); ++it)
 	{
 		int index = it->ival;
@@ -422,6 +424,10 @@ bool ScaleNodeBatchCommand::FilterCallback( GObject * pObj )
 	int step = pcommand->GetStep();
 	if (step == CSI_SCALENODE_BATCH_WANTXSCALE || step == CSI_SCALENODE_BATCH_WANTYSCALE )
 	{
+		if (pObj->isHandlePoint())
+		{
+			return false;
+		}
 		return !MarqueeSelect::getInstance().CheckObjInSelection(pObj, true, true, true, true, &lstObj);
 	}
 	return true;

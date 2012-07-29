@@ -30,6 +30,24 @@ public:
 	float y;
 };
 
+class GLine;
+class GBezierLine;
+
+class QuadBezierPointF2D
+{
+public:
+	QuadBezierPointF2D(){};
+	QuadBezierPointF2D(GBezierLine * pBezier);
+	QuadBezierPointF2D(PointF2D &ptb, PointF2D &pte) {ptb=ptb; pte=pte;};
+	QuadBezierPointF2D(PointF2D &ptb, PointF2D &ptbh, PointF2D &pteh, PointF2D &pte) {ptb=ptb; ptbh=ptbh; pteh=pteh; pte=pte;};
+	virtual ~QuadBezierPointF2D(){};
+
+public:
+	PointF2D ptb;
+	PointF2D ptbh;
+	PointF2D pteh;
+	PointF2D pte;
+};
 
 class BezierSublinesInfo
 {
@@ -73,8 +91,6 @@ private:
 	float fBoundingBY;
 };
 
-class GLine;
-class GBezierLine;
 
 enum{
 	MHLINEINTERSECT_NOINTERSECT,
@@ -110,8 +126,8 @@ public:
 
 	bool CalculateCatmullRom(const PointF2D &p1, const PointF2D &p2, const PointF2D &p3, const PointF2D &p4, float s, PointF2D * pq);
 	bool CalculateBezier(const PointF2D &pb, const PointF2D &pbh, const PointF2D &peh, const PointF2D &pe, float s, PointF2D * pq);
-	bool CalculateBezierSubDivision(const PointF2D &pb, const PointF2D &pbh, const PointF2D &peh, const PointF2D &pe, float s, PointF2D * p1bh, PointF2D * p1eh, PointF2D * p2eh, PointF2D * p2bh);
-	bool SolveBezierExtendSubDivision(const PointF2D &pb, const PointF2D &pbh, const PointF2D &peh, const PointF2D &pe, float s, PointF2D * pnewa, PointF2D * pnewbh, PointF2D * pneweh);
+	bool CalculateBezierSubDivision(const QuadBezierPointF2D quadBezier, float s, QuadBezierPointF2D * pQuadHandles);
+	bool SolveBezierExtendSubDivision(const QuadBezierPointF2D quadBezier, float s, PointF2D * pnewa, PointF2D * pnewbh, PointF2D * pneweh);
 //	int SolveCubicEquationPointF2D(PointF2D ptA, PointF2D ptB, PointF2D ptC, PointF2D ptD, float s[3]);
 	int SolveCubicEquation(float a, float b, float c, float d, float x[3]);
 
@@ -133,5 +149,6 @@ public:
 	bool FindNearestHandlePointForGivenBezierLength_TwoPoint(float fLength, PointF2D ptFirstAnchor, PointF2D ptFirstHandle, PointF2D ptSecondAnchor, PointF2D ptNear, PointF2D ptFar, float * px=NULL, float * py=NULL);
 	bool FindNearestHandlePointForGivenBezierLength(float fLength, PointF2D ptFirstAnchor, PointF2D ptFirstHandle, PointF2D ptSecondAnchor, float cx, float cy, float * px=NULL, float * py=NULL, bool bCheckLengthAvailableOnly=false);
 	bool FindSubNHPFGBL( GBezierLine * pBezier, float fTargetLength, PointF2D ptNear, PointF2D ptFar, float * px, float * py, float fNearLength=-1, float fFarLength=-1 );
-	bool CalculateExtendBezierToAimLength( PointF2D ptb, PointF2D ptbh, PointF2D pteh, PointF2D pte, float fAimLength, float fMinS, float fMaxS, float fLLength, float fRLength, PointF2D &ptlb, PointF2D &ptlbh, PointF2D &ptleh, PointF2D &ptle, PointF2D &ptrb, PointF2D &ptrbh, PointF2D &ptreh, PointF2D &ptre, PointF2D * pptPos, PointF2D * pptLeftHandle=NULL, PointF2D * pptRightHandle=NULL );
+	bool CalculateExtendBezierToAimLength( const QuadBezierPointF2D &quadBezier, float fAimLength, float fMinS, float fMaxS, float fLLength, float fRLength, QuadBezierPointF2D quadLeft, QuadBezierPointF2D quadRight, PointF2D * pptPos, QuadBezierPointF2D * pQuadOutBezier );
+	bool AreTwoAngleClose( int nAngle1, int nAngle2 );
 };

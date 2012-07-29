@@ -578,27 +578,23 @@ void CommandTemplate::ReAttachAfterMoveNode( GObject * pObj, bool bFindMerge/*=t
 	}
 }
 
-bool CommandTemplate::BindNewAnchorPoint( GAnchorPoint * pFrom, GAnchorPoint * pTo )
+bool CommandTemplate::BindNewAnchorPoint( GAnchorPoint * pOld, GAnchorPoint * pNew )
 {
-	ASSERT(pFrom);
-	ASSERT(pTo);
+	ASSERT(pOld);
+	ASSERT(pNew);
 
-	GHandlePoint * pFromHandle = pFrom->GetHandle();
-	GHandlePoint * pToHandle = pTo->GetHandle();
-	if ((pTo->getLine())->isStraightLine())
+	GHandlePoint * pOldHandle = pOld->GetHandle();
+	GHandlePoint * pNewHandle = pNew->GetHandle();
+	if ((pNew->getLine())->isStraightLine())
 	{
 		return false;
 	}
-	if (pToHandle->getBindWith())
-	{
-		return false;
-	}
-	if (!pFromHandle->getBindWith() && !pToHandle->getBindWith())
+	if (!pOldHandle->getBindWith() && !pNewHandle->getBindWith())
 	{
 		CommitFrontCommand(
 			CCMake_C(COMM_BINDHANDLE),
-			CCMake_O(pFromHandle),
-			CCMake_O(pToHandle),
+			CCMake_O(pOldHandle),
+			CCMake_O(pNewHandle),
 			NULL
 			);
 		return true;

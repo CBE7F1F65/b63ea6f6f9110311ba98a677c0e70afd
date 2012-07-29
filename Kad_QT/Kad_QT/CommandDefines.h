@@ -354,15 +354,15 @@ enum{
 /************************************************************************/
 
 enum{
-	CSP_EXTEND_I_F_INDEX_BEGINT,
-	CSP_EXTEND_F_ENDT,
+	CSP_EXTEND_I_F_INDEX_BEGINOFFSET,
+	CSP_EXTEND_F_ENDOFFSET,
 };
 //////////////////////////////////////////////////////////////////////////
 enum{
 	CSI_EXTEND_DUMMY=0,
 	CSI_EXTEND_WANTINDEX,
-	CSI_EXTEND_WANTBEGINT,
-	CSI_EXTEND_WANTENDT,
+	CSI_EXTEND_WANTBEGINOFFSET,
+	CSI_EXTEND_WANTENDOFFSET,
 };
 
 /************************************************************************/
@@ -475,6 +475,8 @@ enum{
 	CWP_X_N,
 	CWP_Y_N,
 	CWP_XY_N,
+	CWP_BEGINOFFSET,
+	CWP_ENDOFFSET,
 	CWP_XOFFSET,
 	CWP_YOFFSET,
 	CWP_XSCALE,

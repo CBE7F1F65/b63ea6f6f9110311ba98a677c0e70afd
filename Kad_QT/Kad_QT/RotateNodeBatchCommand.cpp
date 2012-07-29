@@ -363,6 +363,10 @@ bool RotateNodeBatchCommand::FilterCallback( GObject * pObj )
 	int step = pcommand->GetStep();
 	if (step == CSI_ROTATENODE_BATCH_WANTANGLE )
 	{
+		if (pObj->isHandlePoint())
+		{
+			return false;
+		}
 		return !MarqueeSelect::getInstance().CheckObjInSelection(pObj, true, true, true, true, &lstObj);
 	}
 	return true;

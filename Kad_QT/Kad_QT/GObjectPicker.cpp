@@ -430,6 +430,7 @@ void GObjectPicker::OnDeleteNode( GObject * pDeletedObj )
 			ClearSplitMarking();
 		}
 	}
+	UnlockLockLine();
 	/*
 	UnlockAngles();
 	UnlockLength();
@@ -514,7 +515,12 @@ void GObjectPicker::TraslateLineToStraightLine( GLine * pLine, int index, int is
 	else
 	{
 		GBezierLine * pBLine = (GBezierLine *)pLine;
-		pFakeLine[index]->SetBeginEnd(pBLine->getBSInfo()->GetX(isec), pBLine->getBSInfo()->GetY(isec), pBLine->getBSInfo()->GetX(isec+1), pBLine->getBSInfo()->GetY(isec+1));
+		BezierSublinesInfo * pBSInfo = pBLine->getBSInfo();
+		if (isec > pBSInfo->GetSubPointsCount()-2)
+		{
+			isec = pBSInfo->GetSubPointsCount()-2;
+		}
+		pFakeLine[index]->SetBeginEnd(pBSInfo->GetX(isec), pBSInfo->GetY(isec), pBSInfo->GetX(isec+1), pBSInfo->GetY(isec+1));
 	}
 }
 

@@ -396,7 +396,7 @@ float GStraightLine::getLength()
 	return fLength;
 }
 
-bool GStraightLine::GetPositionAtProportion( float fProp, PointF2D * pptPos, int*isec/*=NULL*/, PointF2D * pptLeftHandle/*=NULL*/, PointF2D * pptRightHandle/*=NULL */ )
+bool GStraightLine::GetPositionAtProportion( float fProp, PointF2D * pptPos, int*isec/*=NULL*/, QuadBezierPointF2D * pQuadHandles/*=NULL */ )
 {
 	float fbx = plbegin->getX();
 	float fby = plbegin->getY();
@@ -817,11 +817,11 @@ float GBezierLine::getLength()
 	return fLength;
 }
 
-bool GBezierLine::GetPositionAtProportion( float fProp, PointF2D * pptPos, int*isec/*=NULL*/, PointF2D * pptLeftHandle/*=NULL*/, PointF2D * pptRightHandle/*=NULL */ )
+bool GBezierLine::GetPositionAtProportion( float fProp, PointF2D * pptPos, int*isec/*=NULL*/, QuadBezierPointF2D * pQuadHandles/*=NULL */ )
 {
 	if (isStraightLine())
 	{
-		return GStraightLine::GetPositionAtProportion(fProp, pptPos, isec, pptLeftHandle, pptRightHandle);
+		return GStraightLine::GetPositionAtProportion(fProp, pptPos, isec, pQuadHandles);
 	}
 
 	if (fProp < M_FLOATEPS)
@@ -864,13 +864,13 @@ bool GBezierLine::GetPositionAtProportion( float fProp, PointF2D * pptPos, int*i
 	{
 		*isec = i;
 	}
-	if (pptLeftHandle || pptRightHandle)
+	if (pQuadHandles)
 	{
 		float s = GetSFromProportion(fProp);
 		MathHelper::getInstance().CalculateBezierSubDivision(
-			plbegin->GetPointF2D(), plbegin->GetHandle()->GetPointF2D(), plend->GetHandle()->GetPointF2D(), plend->GetPointF2D(),
+			QuadBezierPointF2D(this),
 			s,
-			NULL, pptLeftHandle, pptRightHandle, NULL);
+			pQuadHandles);
 	}
 
 
@@ -985,17 +985,21 @@ GLine * GBezierLine::Clip( float fClipProportion )
 		}
 	}
 
+	/*
 	PointF2D pSubBh1;
 	PointF2D pSubEh1;
 	PointF2D pSubBh2;
 	PointF2D pSubEh2;
+	*/
+	QuadBezierPointF2D quadHandles;
 	if (bBezier)
 	{
 		float s = GetSFromProportion(fClipProportion);
 		MathHelper::getInstance().CalculateBezierSubDivision(
-			ptBegin, plbegin->GetHandle()->GetPointF2D(), plend->GetHandle()->GetPointF2D(), ptEnd,
+			QuadBezierPointF2D(this),
 			s,
-			&pSubBh1, &pSubEh1, &pSubBh2, &pSubEh2);
+			&quadHandles);
+//			&pSubBh1, &pSubEh1, &pSubBh2, &pSubEh2);
 	}
 
 	plend->ClingTo(NULL, 0);
@@ -1009,8 +1013,8 @@ GLine * GBezierLine::Clip( float fClipProportion )
 	SetBeginEnd(ptBegin.x, ptBegin.y, ptClip.x, ptClip.y);
 	if (bBezier)
 	{
-		plbegin->SetHandlePosition(pSubBh1.x, pSubBh1.y);
-		plend->SetHandlePosition(pSubEh1.x, pSubEh1.y);
+		plbegin->SetHandlePosition(quadHandles.ptb.x, quadHandles.ptb.y);//(pSubBh1.x, pSubBh1.y);
+		plend->SetHandlePosition(quadHandles.ptbh.x, quadHandles.ptbh.y);//(pSubEh1.x, pSubEh1.y);
 	}
 
 	pClonedLine->SetBeginEnd(ptClip.x, ptClip.y, ptEnd.x, ptEnd.y);
@@ -1018,8 +1022,8 @@ GLine * GBezierLine::Clip( float fClipProportion )
 	GAnchorPoint * pNewEndPoint = pClonedLine->GetEndPoint();
 	if (bBezier)
 	{
-		pNewBeginPoint->SetHandlePosition(pSubBh2.x, pSubBh2.y);
-		pNewEndPoint->SetHandlePosition(pSubEh2.x, pSubEh2.y);
+		pNewBeginPoint->SetHandlePosition(quadHandles.pteh.x, quadHandles.pteh.y);//(pSubBh2.x, pSubBh2.y);
+		pNewEndPoint->SetHandlePosition(quadHandles.pte.x, quadHandles.pte.y);//(pSubEh2.x, pSubEh2.y);
 	}
 	if (pOEndHandleBind)
 	{
@@ -1269,34 +1273,28 @@ bool GBezierLine::SwapBeginEnd()
 
 bool GBezierLine::Extend( float tBegin, float tEnd )
 {
-// 	if (tBegin != 0.0f && tEnd != 1.0f)
-// 	{
-// 		if (Extend(0.0f, tEnd))
-// 		{
-// 			if (Extend(tBegin, 1.0f))
-// 			{
-// 				return true;
-// 			}
-// 		}
-// 		return false;
-// 	}
+	ASSERT(tBegin >= 0.0f);
+	ASSERT(tEnd >= 0.0f);
+
 	PointF2D ptNewBegin;
 	PointF2D ptNewEnd;
-	PointF2D ptNewBeginHandle[2];
-	PointF2D ptNewEndHandle[2];
+
+	QuadBezierPointF2D quadNewBeginBezierOutput;
+	QuadBezierPointF2D quadNewEndBezierOutput;
 	
 	GHandlePoint * pBeginHandle = plbegin->GetHandle();
 	GHandlePoint * pEndHandle = plend->GetHandle();
 
 	if (tBegin != 0.0f)
 	{
-		if (GetPositionAtExtendedProportion(tBegin, &ptNewBegin, &ptNewBeginHandle[0], &ptNewEndHandle[0]))
+		float tb = -tBegin;
+		if (GetPositionAtExtendedProportion(tb, &ptNewBegin, &quadNewBeginBezierOutput))
 		{
-			plbegin->CallMoveTo(this, ptNewBegin.x, ptNewBegin.y, false);
+			plbegin->CallMoveTo(plbegin, ptNewBegin.x, ptNewBegin.y, false);
 			if (!isStraightLine())
 			{
-				pBeginHandle->CallMoveTo(this, ptNewBeginHandle[0].x, ptNewBeginHandle[0].y, false);
-				pEndHandle->CallMoveTo(this, ptNewEndHandle[0].x, ptNewEndHandle[0].y, false);
+				pBeginHandle->CallMoveTo(pBeginHandle, quadNewBeginBezierOutput.ptbh.x, quadNewBeginBezierOutput.ptbh.y, false);
+				pEndHandle->CallMoveTo(pEndHandle, quadNewBeginBezierOutput.pteh.x, quadNewBeginBezierOutput.pteh.y, false);
 			}
 //			return true;
 		}
@@ -1307,16 +1305,23 @@ bool GBezierLine::Extend( float tBegin, float tEnd )
 		}
 	}
 
-	if (tEnd != 1.0f)
+	if (tEnd != 0.0f)
 	{
-		tEnd = (tEnd-1)/(tEnd-tBegin)+1.0f;
-		if (GetPositionAtExtendedProportion(tEnd, &ptNewEnd, &ptNewBeginHandle[1], &ptNewEndHandle[1]))
+		float te = tEnd;
+		if (tBegin != 0.0f)
 		{
-			plend->CallMoveTo(this, ptNewEnd.x, ptNewEnd.y, false);
+			te = te/(1+tBegin);
+			// tBegin == 1?
+//			tEnd = (tEnd-1)/(1.0f-tBegin)+1.0f;
+		}
+		te += 1.0f;
+		if (GetPositionAtExtendedProportion(te, &ptNewEnd, &quadNewEndBezierOutput))
+		{
+			plend->CallMoveTo(plend, ptNewEnd.x, ptNewEnd.y, false);
 			if (!isStraightLine())
 			{
-				pBeginHandle->CallMoveTo(this, ptNewBeginHandle[1].x, ptNewBeginHandle[1].y, false);
-				pEndHandle->CallMoveTo(this, ptNewEndHandle[1].x, ptNewEndHandle[1].y, false);
+				pBeginHandle->CallMoveTo(pBeginHandle, quadNewEndBezierOutput.ptbh.x, quadNewEndBezierOutput.ptbh.y, false);
+				pEndHandle->CallMoveTo(pEndHandle, quadNewEndBezierOutput.pteh.x, quadNewEndBezierOutput.pteh.y, false);
 			}
 //			return true;
 		}
@@ -1330,23 +1335,20 @@ bool GBezierLine::Extend( float tBegin, float tEnd )
 //	return false;
 }
 
-bool GBezierLine::GetPositionAtExtendedProportion( float fProp, PointF2D *pptPos, PointF2D * pptLeftHandle/*=NULL*/, PointF2D * pptRightHandle/*=NULL*/ )
+bool GBezierLine::GetPositionAtExtendedProportion( float fProp, PointF2D *pptPos, QuadBezierPointF2D * pQuadOutput/*=NULL*/ )
 {
 	if (isStraightLine())
 	{
-		return GStraightLine::GetPositionAtExtendedProportion(fProp, pptPos, pptLeftHandle, pptRightHandle);
+		return GStraightLine::GetPositionAtExtendedProportion(fProp, pptPos, pQuadOutput);
 	}
 	if (fProp >= 0.0f && fProp <= 1.0f)
 	{
-		return GetPositionAtProportion(fProp, pptPos, NULL, pptLeftHandle, pptRightHandle);
+		return GetPositionAtProportion(fProp, pptPos, NULL, pQuadOutput);
 	}
 
 	MathHelper * pmh = &MathHelper::getInstance();
-
-	PointF2D ptBegin = plbegin->GetPointF2D();
-	PointF2D ptEnd = plend->GetPointF2D();
-	PointF2D ptBeginHandle = plbegin->GetHandle()->GetPointF2D();
-	PointF2D ptEndHandle = plend->GetHandle()->GetPointF2D();
+	
+	QuadBezierPointF2D quadBezier(this);
 
 	PointF2D * pptHandle;
 
@@ -1376,11 +1378,11 @@ bool GBezierLine::GetPositionAtExtendedProportion( float fProp, PointF2D *pptPos
 	if (fProp < 0.0f)
 	{
 		if (pmh->CalculateExtendBezierToAimLength(
-			ptBegin, ptBeginHandle, ptEndHandle, ptEnd,
+			quadBezier,
 			fAimLength, fMinS, fMaxS, fLL, fRL,
-			PointF2D(), PointF2D(), PointF2D(), PointF2D(),
-			ptBegin, ptBeginHandle, ptEndHandle, ptEnd,
-			pptPos, pptLeftHandle, pptRightHandle))
+			QuadBezierPointF2D(),
+			quadBezier,
+			pptPos, pQuadOutput))
 		{
 			return true;
 		}
@@ -1388,11 +1390,11 @@ bool GBezierLine::GetPositionAtExtendedProportion( float fProp, PointF2D *pptPos
 	else
 	{
 		if (pmh->CalculateExtendBezierToAimLength(
-			ptBegin, ptBeginHandle, ptEndHandle, ptEnd,
+			quadBezier,
 			fAimLength, fMinS, fMaxS, fLL, fRL,
-			ptBegin, ptBeginHandle, ptEndHandle, ptEnd,
-			PointF2D(), PointF2D(), PointF2D(), PointF2D(),
-			pptPos, pptLeftHandle, pptRightHandle))
+			quadBezier,
+			QuadBezierPointF2D(),
+			pptPos, pQuadOutput))
 		{
 			return true;
 		}

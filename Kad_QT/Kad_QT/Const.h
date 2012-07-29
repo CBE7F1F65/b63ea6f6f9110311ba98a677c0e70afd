@@ -13,6 +13,7 @@
 #define M_STRMAX	256
 
 #define M_FLOATEPS	0.0001f
+#define M_FLOATEXTREMEEPS	0.000001f
 
 #define ANGLEBASE_90	90000
 #define ANGLEBASE_180	180000
@@ -20,6 +21,8 @@
 #define ANGLEBASE_360	360000
 #define ARC(X)		((X) * 0.00001745329251994329f)
 #define ANGLE(X)	(int)((X) * 57295.77951308232f)
+
+#define M_ANGLEEPS	9
 
 #define cost(X)	cosf(ARC(X))
 #define sint(X)	sinf(ARC(X))

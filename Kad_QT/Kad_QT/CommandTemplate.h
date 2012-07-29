@@ -71,7 +71,7 @@ public:
 
 	bool MergeClingNewPoint( GPoint * pFrom, GObject * pTo, float fProportion=0 );
 	void ReAttachAfterMoveNode( GObject * pObj, bool bFindMerge=true, list<GObject *>* lObjs=0 );
-	bool BindNewAnchorPoint( GAnchorPoint * pFrom, GAnchorPoint * pTo );
+	bool BindNewAnchorPoint( GAnchorPoint * pOld, GAnchorPoint * pNew );
 
 	GUICoordinate * pguic;
 	MainInterface * pmain;

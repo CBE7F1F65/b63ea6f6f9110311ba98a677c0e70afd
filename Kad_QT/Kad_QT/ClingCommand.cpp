@@ -97,21 +97,23 @@ void ClingCommand::OnDoneCommand()
 	{
 		return;
 	}
-	pFromPoint->ClingTo(pToObj, fProportion);
+	if (pFromPoint->ClingTo(pToObj, fProportion))
+	{
 
-	PushRevertable(
-		CCMake_C(COMM_I_COMMAND, 4, 1),
-		CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
-		CCMake_C(COMM_CLING),
-		CCMake_I(fromindex),
-		CCMake_I(toindex),
-		CCMake_F(fProportion),
-		CCMake_C(COMM_I_UNDO_PARAM, 3),
-		CCMake_I(fromindex),
-		CCMake_I(oClingToIndex),
-		CCMake_F(oClingToProportion),
-		NULL
-		);
+		PushRevertable(
+			CCMake_C(COMM_I_COMMAND, 4, 1),
+			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
+			CCMake_C(COMM_CLING),
+			CCMake_I(fromindex),
+			CCMake_I(toindex),
+			CCMake_F(fProportion),
+			CCMake_C(COMM_I_UNDO_PARAM, 3),
+			CCMake_I(fromindex),
+			CCMake_I(oClingToIndex),
+			CCMake_F(oClingToProportion),
+			NULL
+			);
+	}
 }
 
 void ClingCommand::OnProcessUnDoCommand( RevertableCommand * rc ) 

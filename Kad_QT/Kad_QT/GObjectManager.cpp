@@ -155,6 +155,10 @@ void GObjectManager::MoveToUnDoList( GObject * node )
 	if (node)
 	{
 		node->Reparent(&undobasenode);
+		GObjectManager::getInstance().OnDeleteNode(node);
+		MarqueeSelect::getInstance().OnDeleteNode(node);
+		GObjectPicker::getInstance().OnDeleteNode(node);
+		MarkingManager::getInstance().OnDeleteNode(node);
 	}
 }
 
@@ -184,7 +188,7 @@ void GObjectManager::OnTreeChanged( GObject * changingbase, GObject * activeitem
 		{
 			activeitem = pLastToSetActiveNode;
 		}
-		ASSERT(activeitem);
+//		ASSERT(activeitem);
 		if (bSetActiveLayer)
 		{
 			if (activeitem)

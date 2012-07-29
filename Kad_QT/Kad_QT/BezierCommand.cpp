@@ -293,7 +293,15 @@ void BezierCommand::OnProcessCommand()
 					{
 						if (pMergeToEnd->isAnchorPoint())
 						{
-							pBindAnchorEnd = (GAnchorPoint *)pMergeToEnd;
+							MathHelper * pmh = &MathHelper::getInstance();
+							GAnchorPoint * pMergeToEndAnchor = (GAnchorPoint *)pMergeToEnd;
+
+							int nToAngle = pmh->GetLineAngle(pMergeToEndAnchor->GetHandle()->GetPointF2D(), pMergeToEndAnchor->GetPointF2D());
+							int nFromAngle = pmh->GetLineAngle(pNCLine->GetEndPoint()->GetPointF2D(), pNCLine->GetEndPoint()->GetHandle()->GetPointF2D());
+							if (pmh->AreTwoAngleClose(nFromAngle, nToAngle))
+							{
+								pBindAnchorEnd = (GAnchorPoint *)pMergeToEnd;
+							}
 						}
 					}
 				}
@@ -303,7 +311,15 @@ void BezierCommand::OnProcessCommand()
 					{
 						if (pMergeToBegin->isAnchorPoint())
 						{
-							pBindAnchorBegin = (GAnchorPoint *)pMergeToBegin;
+							MathHelper * pmh = &MathHelper::getInstance();
+							GAnchorPoint * pMergeToBeginAnchor = (GAnchorPoint *)pMergeToBegin;
+
+							int nToAngle = pmh->GetLineAngle(pMergeToBeginAnchor->GetHandle()->GetPointF2D(), pMergeToBeginAnchor->GetPointF2D());
+							int nFromAngle = pmh->GetLineAngle(pNCLine->GetBeginPoint()->GetPointF2D(), pNCLine->GetBeginPoint()->GetHandle()->GetPointF2D());
+							if (pmh->AreTwoAngleClose(nFromAngle, nToAngle))
+							{
+								pBindAnchorBegin = (GAnchorPoint *)pMergeToBegin;
+							}
 						}
 					}
 				}

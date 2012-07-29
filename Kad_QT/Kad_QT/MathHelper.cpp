@@ -195,35 +195,26 @@ bool MathHelper::CalculateBezier( const PointF2D &pb, const PointF2D &pbh, const
 	return false;
 }
 
-bool MathHelper::CalculateBezierSubDivision( const PointF2D &pb, const PointF2D &pbh, const PointF2D &peh, const PointF2D &pe, float s, PointF2D * p1bh, PointF2D * p1eh, PointF2D * p2eh, PointF2D * p2bh )
+bool MathHelper::CalculateBezierSubDivision( const QuadBezierPointF2D quadBezier, float s, QuadBezierPointF2D * pQuadHandles )
 {
-	PointF2D p12 = (pbh-pb)*s+pb;
-	PointF2D p23 = (peh-pbh)*s+pbh;
-	PointF2D p34 = (pe-peh)*s+peh;
+	PointF2D p12 = (quadBezier.ptbh-quadBezier.ptb)*s+quadBezier.ptb;
+	PointF2D p23 = (quadBezier.pteh-quadBezier.ptbh)*s+quadBezier.ptbh;
+	PointF2D p34 = (quadBezier.pte-quadBezier.pteh)*s+quadBezier.pteh;
 
 	PointF2D p123 = (p23-p12)*s+p12;
 	PointF2D p234 = (p34-p23)*s+p23;
 
-	if (p1bh)
+	if (pQuadHandles)
 	{
-		*p1bh = p12;
-	}
-	if (p2bh)
-	{
-		*p2bh = p34;
-	}
-	if (p1eh)
-	{
-		*p1eh = p123;
-	}
-	if (p2eh)
-	{
-		*p2eh = p234;
+		pQuadHandles->ptb = p12;
+		pQuadHandles->pte = p34;
+		pQuadHandles->ptbh = p123;
+		pQuadHandles->pteh = p234;
 	}
 	return true;
 }
 
-bool MathHelper::SolveBezierExtendSubDivision( const PointF2D &pb, const PointF2D &pbh, const PointF2D &peh, const PointF2D &pe, float s, PointF2D * pnewa, PointF2D * pnewbh, PointF2D * pneweh )
+bool MathHelper::SolveBezierExtendSubDivision( const QuadBezierPointF2D quadBezier, float s, PointF2D * pnewa, PointF2D * pnewbh, PointF2D * pneweh )
 {
 	if (s >=0 && s <= 1)
 	{
@@ -241,10 +232,10 @@ bool MathHelper::SolveBezierExtendSubDivision( const PointF2D &pb, const PointF2
 		// p34 = peh
 		// ?pnewa = p1
 		// ?pnewh = p2
-		PointF2D p123 = (pb-pbh*s)*msinv;
-		PointF2D p23 = (pbh-peh*s)*msinv;
+		PointF2D p123 = (quadBezier.ptb-quadBezier.ptbh*s)*msinv;
+		PointF2D p23 = (quadBezier.ptbh-quadBezier.pteh*s)*msinv;
 		PointF2D p12 = (p123-p23*s)*msinv;
-		PointF2D p3 = (peh-pe*s)*msinv;
+		PointF2D p3 = (quadBezier.pteh-quadBezier.pte*s)*msinv;
 		PointF2D p2 = (p23-p3*s)*msinv;
 		PointF2D p1 = (p12-p2*s)*msinv;
 		if (pnewa)
@@ -273,10 +264,10 @@ bool MathHelper::SolveBezierExtendSubDivision( const PointF2D &pb, const PointF2
 		// p12 = pbh
 		// ?pnewa = p4
 		// ?pnewh = p3
-		PointF2D p234 = (pe-peh*s)*msinv;
-		PointF2D p23 = (peh-pbh*s)*msinv;
+		PointF2D p234 = (quadBezier.pte-quadBezier.pteh*s)*msinv;
+		PointF2D p23 = (quadBezier.pteh-quadBezier.ptbh*s)*msinv;
 		PointF2D p34 = (p234-p23*s)*msinv;
-		PointF2D p2 = (pbh-pb*s)*msinv;
+		PointF2D p2 = (quadBezier.ptbh-quadBezier.ptb*s)*msinv;
 		PointF2D p3 = (p23-p2*s)*msinv;
 		PointF2D p4 = (p34-p3*s)*msinv;
 		if (pnewa)
@@ -843,28 +834,24 @@ int MathHelper::SolveCubicEquation( float a, float b, float c, float d, float x[
 	return 0;
 }
 
-bool MathHelper::CalculateExtendBezierToAimLength( PointF2D ptb, PointF2D ptbh, PointF2D pteh, PointF2D pte, float fAimLength, float fMinS, float fMaxS, float fLLength, float fRLength, PointF2D &ptlb, PointF2D &ptlbh, PointF2D &ptleh, PointF2D &ptle, PointF2D &ptrb, PointF2D &ptrbh, PointF2D &ptreh, PointF2D &ptre, PointF2D * pptPos, PointF2D * pptLeftHandle/*=NULL*/, PointF2D * pptRightHandle/*=NULL */ )
+bool MathHelper::CalculateExtendBezierToAimLength( const QuadBezierPointF2D &quadBezier, float fAimLength, float fMinS, float fMaxS, float fLLength, float fRLength, QuadBezierPointF2D quadLeft, QuadBezierPointF2D quadRight, PointF2D * pptPos, QuadBezierPointF2D * pQuadOutBezier )
 {
-	if (fabsf(fAimLength-fLLength) < M_FLOATEPS || fabsf(fMinS - fMaxS) < M_FLOATEPS)
+	if (fabsf(fAimLength-fLLength) < M_FLOATEPS || fabsf(fMinS - fMaxS) < M_FLOATEXTREMEEPS)
 	{
 		if (pptPos)
 		{
 			if (fMinS < 0.0f)
 			{
-				*pptPos = ptlb;
+				*pptPos = quadLeft.ptb;
 			}
 			else
 			{
-				*pptPos = ptle;
+				*pptPos = quadLeft.pte;
 			}
 		}
-		if (pptLeftHandle)
+		if (pQuadOutBezier)
 		{
-			*pptLeftHandle = ptlbh;
-		}
-		if (pptRightHandle)
-		{
-			*pptRightHandle = ptleh;
+			*pQuadOutBezier = quadLeft;
 		}
 		return true;
 	}
@@ -874,20 +861,16 @@ bool MathHelper::CalculateExtendBezierToAimLength( PointF2D ptb, PointF2D ptbh, 
 		{
 			if (fMinS < 0.0f)
 			{
-				*pptPos = ptrb;
+				*pptPos = quadRight.ptb;
 			}
 			else
 			{
-				*pptPos = ptre;
+				*pptPos = quadRight.pte;
 			}
 		}
-		if (pptLeftHandle)
+		if (pQuadOutBezier)
 		{
-			*pptLeftHandle = ptrbh;
-		}
-		if (pptRightHandle)
-		{
-			*pptRightHandle = ptreh;
+			*pQuadOutBezier = quadRight;
 		}
 		return true;
 	}
@@ -898,91 +881,101 @@ bool MathHelper::CalculateExtendBezierToAimLength( PointF2D ptb, PointF2D ptbh, 
 	if (fLLength < 0)
 	{
 		PointF2D ptna;
-		SolveBezierExtendSubDivision(ptb, ptbh, pteh, pte, fMinS, &ptna, &ptlbh, &ptleh);
+		SolveBezierExtendSubDivision(quadBezier, fMinS, &ptna, &quadLeft.ptbh, &quadLeft.pteh);
 		if (fMinS < 0.0f)
 		{
-			ptlb = ptna;
-			ptle = pte;
+			quadLeft.ptb = ptna;
+			quadLeft.pte = quadBezier.pte;
 		}
 		else
 		{
-			ptle = ptna;
-			ptlb = ptb;
+			quadLeft.pte = ptna;
+			quadLeft.ptb = quadBezier.ptb;
 		}
-		pTempLine->SetBeginEnd(ptlb.x, ptlb.y, ptle.x, ptle.y);
-		pTempLine->SetBeginHandlePos(ptlbh.x, ptlbh.y);
-		pTempLine->SetEndHandlePos(ptleh.x, ptleh.y);
+		pTempLine->SetBeginEnd(quadLeft.ptb.x, quadLeft.ptb.y, quadLeft.pte.x, quadLeft.pte.y);
+		pTempLine->SetBeginHandlePos(quadLeft.ptbh.x, quadLeft.ptbh.y);
+		pTempLine->SetEndHandlePos(quadLeft.pteh.x, quadLeft.pteh.y);
 		fLLength = pTempLine->getLength();
 	}
-	else if (fRLength < 0)
+	if (fRLength < 0)
 	{
 		PointF2D ptna;
-		SolveBezierExtendSubDivision(ptb, ptbh, pteh, pte, fMaxS, &ptna, &ptrbh, &ptreh);
+		SolveBezierExtendSubDivision(quadBezier, fMaxS, &ptna, &quadRight.ptbh, &quadRight.pteh);
 		if (fMaxS < 0.0f)
 		{
-			ptrb = ptna;
-			ptre = pte;
+			quadRight.ptb = ptna;
+			quadRight.pte = quadBezier.pte;
 		}
 		else
 		{
-			ptre = ptna;
-			ptrb = ptb;
+			quadRight.pte = ptna;
+			quadRight.ptb = quadBezier.ptb;
 		}
-		pTempLine->SetBeginEnd(ptrb.x, ptrb.y, ptre.x, ptre.y);
-		pTempLine->SetBeginHandlePos(ptrbh.x, ptrbh.y);
-		pTempLine->SetEndHandlePos(ptreh.x, ptreh.y);
+		pTempLine->SetBeginEnd(quadRight.ptb.x, quadRight.ptb.y, quadRight.pte.x, quadRight.pte.y);
+		pTempLine->SetBeginHandlePos(quadRight.ptbh.x, quadRight.ptbh.y);
+		pTempLine->SetEndHandlePos(quadRight.pteh.x, quadRight.pteh.y);
 		fRLength = pTempLine->getLength();
 	}
 
-	PointF2D ptmb;
-	PointF2D ptmbh;
-	PointF2D ptme;
-	PointF2D ptmeh;
+	if (fAimLength < fLLength && fAimLength < fRLength)
+	{
+		ASSERT(fMinS < 0.0f);
+		fMinS*=2;
+		if (CalculateExtendBezierToAimLength(
+			quadBezier,
+			fAimLength, fMinS, fMaxS, -1, fRLength,
+			QuadBezierPointF2D(),
+			quadRight,
+			pptPos, pQuadOutBezier))
+		{
+			tBase.RemoveAllChildren(true);
+			return true;
+		}
+	}
+	else if (fAimLength > fLLength && fAimLength > fRLength)
+	{
+		ASSERT(fMaxS > 1.0f);
+		fMaxS = (fMaxS-1.0f)*2+1.0f;
+		if (CalculateExtendBezierToAimLength(
+			quadBezier,
+			fAimLength, fMinS, fMaxS, fLLength, -1,
+			quadLeft,
+			QuadBezierPointF2D(),
+			pptPos, pQuadOutBezier))
+		{
+			tBase.RemoveAllChildren(true);
+			return true;
+		}
+	}
+
+	QuadBezierPointF2D quadMiddle;
 	float fMidS = (fMinS+fMaxS)/2;
 	PointF2D ptma;
-	SolveBezierExtendSubDivision(ptb, ptbh, pteh, pte, fMidS, &ptma, &ptmbh, &ptmeh);
+	SolveBezierExtendSubDivision(quadBezier, fMidS, &ptma, &quadMiddle.ptbh, &quadMiddle.pteh);
 	if (fMidS < 0.0f)
 	{
-		ptmb = ptma;
-		ptme = pte;
+		quadMiddle.ptb = ptma;
+		quadMiddle.pte = quadBezier.pte;
 	}
 	else
 	{
-		ptme = ptma;
-		ptmb = ptb;
+		quadMiddle.pte = ptma;
+		quadMiddle.ptb = quadBezier.ptb;
 	}
-	pTempLine->SetBeginEnd(ptmb.x, ptmb.y, ptme.x, ptme.y);
-	pTempLine->SetBeginHandlePos(ptmbh.x, ptmbh.y);
-	pTempLine->SetEndHandlePos(ptmeh.x, ptmeh.y);
+	pTempLine->SetBeginEnd(quadMiddle.ptb.x, quadMiddle.ptb.y, quadMiddle.pte.x, quadMiddle.pte.y);
+	pTempLine->SetBeginHandlePos(quadMiddle.ptbh.x, quadMiddle.ptbh.y);
+	pTempLine->SetEndHandlePos(quadMiddle.pteh.x, quadMiddle.pteh.y);
 	float fMidLength = pTempLine->getLength();
 
-	if (fLLength < fRLength)
-	{
-		if (fAimLength < fLLength || fAimLength > fRLength)
-		{
-			ASSERT(false);
-			tBase.RemoveAllChildren(true);
-			return false;
-		}
-	}
-	else
-	{
-		if (fAimLength > fLLength || fAimLength < fRLength)
-		{
-			ASSERT(false);
-			tBase.RemoveAllChildren(true);
-			return false;
-		}
 
-	}
 	if ((fAimLength < fMidLength) ^ (fLLength > fRLength))
 	{
 		if (CalculateExtendBezierToAimLength(
-			ptb, ptbh, pteh, pte,
+			quadBezier,
 			fAimLength, fMinS, fMidS, fLLength, fMidLength,
-			ptlb, ptlbh, ptleh, ptle,
-			ptmb, ptmbh, ptmeh, ptme,
-			pptPos, pptLeftHandle, pptRightHandle))
+			quadLeft,
+			quadMiddle,
+			pptPos, pQuadOutBezier))
 		{
 			tBase.RemoveAllChildren(true);
 			return true;
@@ -991,17 +984,43 @@ bool MathHelper::CalculateExtendBezierToAimLength( PointF2D ptb, PointF2D ptbh, 
 	else
 	{
 		if (CalculateExtendBezierToAimLength(
-			ptb, ptbh, pteh, pte,
+			quadBezier,
 			fAimLength, fMidS, fMaxS, fMidLength, fRLength,
-			ptmb, ptmbh, ptmeh, ptme,
-			ptrb, ptrbh, ptreh, ptre,
-			pptPos, pptLeftHandle, pptRightHandle))
+			quadMiddle,
+			quadRight,
+			pptPos, pQuadOutBezier))
 		{
 			tBase.RemoveAllChildren(true);
 			return true;
 		}
 	}
 	tBase.RemoveAllChildren(true);
+	return false;
+}
+
+bool MathHelper::AreTwoAngleClose( int nAngle1, int nAngle2 )
+{
+	RestrictAngle(&nAngle1);
+	RestrictAngle(&nAngle2);
+	if (nAngle1 < nAngle2)
+	{
+		swap(nAngle1, nAngle2);
+	}
+	if (nAngle1-nAngle2 < M_ANGLEEPS)
+	{
+		return true;
+	}
+
+	nAngle2 += ANGLEBASE_360;
+	if (nAngle1 < nAngle2)
+	{
+		swap(nAngle1, nAngle2);
+	}
+	if (nAngle1-nAngle2 < M_ANGLEEPS)
+	{
+		return true;
+	}
+
 	return false;
 }
 /************************************************************************/
@@ -1247,4 +1266,19 @@ bool BezierSublinesInfo::GetBoundingBox( float * lx, float * ty, float * rx, flo
 bool BezierSublinesInfo::isLengthCalculated()
 {
 	return fLengths!=NULL;
+}
+
+QuadBezierPointF2D::QuadBezierPointF2D( GBezierLine * pBezier )
+{
+	if (pBezier)
+	{
+		ptb = pBezier->GetBeginPoint()->GetPointF2D();
+		ptbh = pBezier->GetBeginPoint()->GetHandle()->GetPointF2D();
+		pteh = pBezier->GetEndPoint()->GetHandle()->GetPointF2D();
+		pte = pBezier->GetEndPoint()->GetPointF2D();
+	}
+	else
+	{
+		DASSERT(false);
+	}
 }

@@ -24,7 +24,8 @@ public:
 	virtual void OnTerminalCommand();
 
 	virtual void RenderToTarget();
-	GBezierLine * pTempLine;
+	GBezierLine * pTempLineLeft;
+	GBezierLine * pTempLineRight;
 	
 };
 

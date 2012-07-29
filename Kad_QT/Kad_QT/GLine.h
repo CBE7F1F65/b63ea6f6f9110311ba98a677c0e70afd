@@ -39,8 +39,8 @@ public:
 	virtual bool CheckIntersectWithLineObj( GLine * pLine, list<PointF2D> *pPoints );
 	virtual float CalculateProportion( float x, float y, int iSec ) = 0;
 	virtual float CalculateMidPointProportion() = 0;
-	virtual bool GetPositionAtProportion( float fProp, PointF2D * pptPos, int*isec=NULL, PointF2D * pptLeftHandle=NULL, PointF2D * pptRightHandle=NULL ) = 0;
-	virtual bool GetPositionAtExtendedProportion(float fProp, PointF2D *pptPos, PointF2D * pptLeftHandle=NULL, PointF2D * pptRightHandle=NULL) {return GetPositionAtProportion(fProp, pptPos, NULL, pptLeftHandle, pptRightHandle);};
+	virtual bool GetPositionAtProportion( float fProp, PointF2D * pptPos, int*isec=NULL, QuadBezierPointF2D * pQuadHandles=NULL ) = 0;
+	virtual bool GetPositionAtExtendedProportion(float fProp, PointF2D *pptPos, QuadBezierPointF2D * pQuadOutput=NULL) {return GetPositionAtProportion(fProp, pptPos, NULL, pQuadOutput);};
 	virtual GLine * Clip(float fClipProportion) = 0;
 	virtual bool Combine(GLine * pLine) = 0;
 	virtual bool SwapBeginEnd() = 0;
@@ -138,7 +138,7 @@ public:
 
 	virtual float CalculateProportion( float x, float y, int iSec );
 	virtual float CalculateMidPointProportion();
-	virtual bool GetPositionAtProportion( float fProp, PointF2D * pptPos, int*isec=NULL, PointF2D * pptLeftHandle=NULL, PointF2D * pptRightHandle=NULL );
+	virtual bool GetPositionAtProportion( float fProp, PointF2D * pptPos, int*isec=NULL, QuadBezierPointF2D * pQuadHandles=NULL );
 
 	virtual void OnRender(int iHighlightLevel=0);
 
@@ -191,8 +191,8 @@ public:
 
 	virtual float CalculateProportion( float x, float y, int iSec );
 	virtual float CalculateMidPointProportion();
-	virtual bool GetPositionAtProportion( float fProp, PointF2D * pptPos, int*isec=NULL, PointF2D * pptLeftHandle=NULL, PointF2D * pptRightHandle=NULL );
-	virtual bool GetPositionAtExtendedProportion(float fProp, PointF2D *pptPos, PointF2D * pptLeftHandle=NULL, PointF2D * pptRightHandle=NULL);
+	virtual bool GetPositionAtProportion( float fProp, PointF2D * pptPos, int*isec=NULL, QuadBezierPointF2D * pQuadHandles=NULL );
+	virtual bool GetPositionAtExtendedProportion(float fProp, PointF2D *pptPos, QuadBezierPointF2D * pQuadOutput=NULL);
 	virtual GLine * Clip(float fClipProportion);
 	virtual bool Combine(GLine * pLine);
 	virtual bool SwapBeginEnd();

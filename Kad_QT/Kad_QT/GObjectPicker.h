@@ -129,6 +129,8 @@ public:
 	float GetPickX_S();
 	float GetPickY_S();
 
+	int GetPickSection(int index=0){return pickSection[index];};
+
 private:
 	void FillInitialPosition();
 	bool bFilledPos;
