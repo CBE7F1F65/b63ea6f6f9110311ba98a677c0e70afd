@@ -205,7 +205,7 @@ int GObjectPicker::UpdatePickPoint()
 		}
 		else
 		{
-			SetLockLockLine(pickObj[0]);
+			SetLockLockLine(pickObj[0], 0.5f);
 		}
 	}
 

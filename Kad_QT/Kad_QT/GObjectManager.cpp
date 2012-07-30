@@ -174,7 +174,7 @@ void GObjectManager::OnTreeWillChange()
 
 void GObjectManager::OnTreeChanged( GObject * changingbase, GObject * activeitem, bool bSetActiveLayer/*=true*/ )
 {
-	if (!changingbase || !pBaseNode || activeitem==pBaseNode)
+	if (!changingbase || !pBaseNode)
 	{
 		return;
 	}
@@ -184,7 +184,7 @@ void GObjectManager::OnTreeChanged( GObject * changingbase, GObject * activeitem
 	{
 		pBaseNode->CallResetID();
 //		ASSERT(activeitem != NULL);
-		if (!activeitem)
+		if (!activeitem || activeitem == pBaseNode)
 		{
 			activeitem = pLastToSetActiveNode;
 		}
@@ -208,13 +208,15 @@ void GObjectManager::OnTreeChanged( GObject * changingbase, GObject * activeitem
 			}
 			return;
 		}
+/*
 		if (activeitem)
 		{
 			if (!activeitem->isAttributeNode() && !activeitem->isRecDisplayFolded())
-			{
+			{*/
 				MainInterface::getInstance().OnRebuildLayerTree(changingbase, activeitem);
+/*
 			}
-		}
+		}*/
     }
 }
 

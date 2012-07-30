@@ -146,31 +146,33 @@ void GObjectPicker::AdjustPositionToLocks()
 	{
 		if (nOnLine < GOPONLINE_MAX)
 		{
-			float neartox, neartoy;
-			if (pLockedLine->CheckNearTo(pickx_c, picky_c, snaprange_c, &neartox, &neartoy, &pickSection[nOnLine]))
+			PointF2D ptPick;
+			bool bNearTo = pLockedLine->CheckNearTo(pickx_c, picky_c, snaprange_c, &ptPick.x, &ptPick.y, &pickSection[nOnLine]);
+			if (!bNearTo)
 			{
-				pickx_c = neartox;
-				picky_c = neartoy;
-
-				PointF2D ptPick(pickx_c, picky_c);
-				if (ptPick.StrictEquals(pLockedLine->GetBeginPoint()->GetPointF2D()))
-				{
-					snappedstate |= GOPSNAPPED_POINT|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
-					SetPickObj(pLockedLine->GetBeginPoint());
-					nOnLine = GOPONLINE_MAX;
-				}
-				else if (ptPick.StrictEquals(pLockedLine->GetEndPoint()->GetPointF2D()))
-				{
-					snappedstate |= GOPSNAPPED_POINT|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
-					SetPickObj(pLockedLine->GetEndPoint());
-					nOnLine = GOPONLINE_MAX;
-				}
-
-				if (!nOnLine)
-				{
-					AddSplitUI(pLockedLine);
-				}
+				pLockedLine->GetPositionAtProportion(fLockLineDefaultProportion, &ptPick, &pickSection[nOnLine]);
 			}
+			pickx_c = ptPick.x;
+			picky_c = ptPick.y;
+
+			if (ptPick.StrictEquals(pLockedLine->GetBeginPoint()->GetPointF2D()))
+			{
+				snappedstate |= GOPSNAPPED_POINT|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
+				SetPickObj(pLockedLine->GetBeginPoint());
+				nOnLine = GOPONLINE_MAX;
+			}
+			else if (ptPick.StrictEquals(pLockedLine->GetEndPoint()->GetPointF2D()))
+			{
+				snappedstate |= GOPSNAPPED_POINT|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
+				SetPickObj(pLockedLine->GetEndPoint());
+				nOnLine = GOPONLINE_MAX;
+			}
+
+			if (!nOnLine)
+			{
+				AddSplitUI(pLockedLine);
+			}
+
 			if (nOnLine < GOPONLINE_MAX)
 			{
 				snappedstate |= GOPSNAPPED_LINE|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
@@ -675,7 +677,7 @@ void GObjectPicker::UnlockSplitLine()
 	nSplitLockType = -1;
 }
 
-void GObjectPicker::SetLockLockLine( GObject * pObj )
+void GObjectPicker::SetLockLockLine( GObject * pObj, float fDefaultProportion )
 {
 	if (!pObj)
 	{
@@ -687,7 +689,9 @@ void GObjectPicker::SetLockLockLine( GObject * pObj )
 	}
 	if (pObj->isRepresentableLine())
 	{
+		ASSERT(fDefaultProportion >= 0.0f && fDefaultProportion <= 1.0f);
 		pLockedLine = (GLine *)pObj;
+		fLockLineDefaultProportion = fDefaultProportion;
 	}
 }
 

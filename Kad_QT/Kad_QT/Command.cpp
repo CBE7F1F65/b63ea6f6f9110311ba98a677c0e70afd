@@ -1155,7 +1155,7 @@ void Command::ClearUnDo()
 		SnapshotManager::getInstance().OnClearUnDo(ntodelete);
 		MainInterface::getInstance().OnClearUnDo(ntodelete);
 	}
-//	CreateCommandCommit(COMM_INITIAL);
+	CreateCommandCommit(COMM_INITIAL);
 }
 
 void Command::OnInit()

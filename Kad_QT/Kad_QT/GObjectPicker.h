@@ -253,7 +253,7 @@ public:
 
 //private:
 public:
-	void SetLockLockLine(GObject * pObj);
+	void SetLockLockLine(GObject * pObj, float fDefaultProportion);
 public:
 	void UnlockLockLine();
 
@@ -294,6 +294,7 @@ private:
 	bool bLockYAxis;
 
 	GLine * pLockedLine;
+	float fLockLineDefaultProportion;
 
 	int nSplitLockType;
 	float fSplitValue;

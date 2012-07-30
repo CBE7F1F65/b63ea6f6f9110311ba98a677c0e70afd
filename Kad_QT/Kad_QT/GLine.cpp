@@ -803,6 +803,15 @@ float GBezierLine::CalculateProportion( float x, float y, int iSec )
 	{
 		return GStraightLine::CalculateProportion(x, y, iSec);
 	}
+	PointF2D ptPoint(x, y);
+	if (ptPoint.StrictEquals(plbegin->GetPointF2D()))
+	{
+		return 0.0f;
+	}
+	else if (ptPoint.StrictEquals(plend->GetPointF2D()))
+	{
+		return 1.0f;
+	}
 	if (iSec >= 0 && iSec < bsinfo.GetSubPointsCount()-1)
 	{
 		float fTotalLength = getLength();
@@ -811,6 +820,10 @@ float GBezierLine::CalculateProportion( float x, float y, int iSec )
 			return 0;
 		}
 		float fsubproportion = MathHelper::getInstance().CalculateProportionOnStraightLine(bsinfo.GetX(iSec), bsinfo.GetY(iSec), bsinfo.GetX(iSec+1), bsinfo.GetY(iSec+1), x, y);
+		if (fsubproportion < 0 || fsubproportion > 1)
+		{
+			return 0;
+		}
 		float fSectionLength = bsinfo.GetLength(iSec);
 		float fPreLength = 0.0f;
 		if (iSec >= 1)
@@ -844,13 +857,46 @@ bool GBezierLine::GetPositionAtProportion( float fProp, PointF2D * pptPos, int*i
 		return GStraightLine::GetPositionAtProportion(fProp, pptPos, isec, pQuadHandles);
 	}
 
-	if (fProp < M_FLOATEPS)
+	if (fProp < 0.0f)
 	{
-		fProp = M_FLOATEPS;
+		fProp = 0.0f;
 	}
-	if (fProp > 1-M_FLOATEPS)
+	if (fProp > 1.0f)
 	{
-		fProp = 1-M_FLOATEPS;
+		fProp = 1.0f;
+	}
+
+	if (pQuadHandles)
+	{
+		float s = GetSFromProportion(fProp);
+		MathHelper::getInstance().CalculateBezierSubDivision(
+			QuadBezierPointF2D(this),
+			s,
+			pQuadHandles);
+	}
+	if (fProp == 0.0f)
+	{
+		if (pptPos)
+		{
+			*pptPos = plbegin->GetPointF2D();
+		}
+		if (isec)
+		{
+			*isec = 0;
+		}
+		return true;
+	}
+	if (fProp == 1.0f)
+	{
+		if (pptPos)
+		{
+			*pptPos = plend->GetPointF2D();
+		}
+		if (isec)
+		{
+			*isec = bsinfo.GetSubPointsCount()-2;
+		}
+		return true;
 	}
 
 	float fTotalLength = bsinfo.GetLength();
@@ -883,14 +929,6 @@ bool GBezierLine::GetPositionAtProportion( float fProp, PointF2D * pptPos, int*i
 	if (isec)
 	{
 		*isec = i;
-	}
-	if (pQuadHandles)
-	{
-		float s = GetSFromProportion(fProp);
-		MathHelper::getInstance().CalculateBezierSubDivision(
-			QuadBezierPointF2D(this),
-			s,
-			pQuadHandles);
 	}
 
 
