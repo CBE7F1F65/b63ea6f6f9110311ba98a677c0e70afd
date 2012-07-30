@@ -176,6 +176,7 @@ void GObjectPicker::AdjustPositionToLocks()
 				snappedstate |= GOPSNAPPED_LINE|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
 				SetPickObj(pLockedLine);
 				nOnLine++;
+				CheckSnapGeometryLine_ClingBy(pLockedLine);
 			}
 		}
 	}

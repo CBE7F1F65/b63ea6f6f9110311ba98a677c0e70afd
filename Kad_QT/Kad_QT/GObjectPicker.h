@@ -181,6 +181,7 @@ private:
 	bool CheckSnapPoint(float x, float y, int tostate);
 	bool CheckSnapPointCoord(float x, float y, int tostate);
 	bool CheckSnapGeometryLine(GObject * pObj);
+	bool CheckSnapGeometryLine_ClingBy(GLine * pLine);
 
 	bool CheckSnapGrid();
 	bool CheckCoord_Obj(GObject * pObj);

@@ -230,6 +230,7 @@ bool GObjectPicker::CheckSnapGeometryLine( GObject * pObj )
 						picky_c = neartoy;
 						nOnLine++;
 						AddSplitUI(pObj);
+						CheckSnapGeometryLine_ClingBy((GLine *)pObj);
 					}
 				}
 			}
@@ -244,6 +245,44 @@ bool GObjectPicker::CheckSnapGeometryLine( GObject * pObj )
 	}
 	return false;
 
+}
+
+bool GObjectPicker::CheckSnapGeometryLine_ClingBy( GLine * pLine )
+{
+	if (nOnLine == 1)
+	{
+		list<GPoint *> * plstClingBy = pLine->getClingBy();
+		if (!plstClingBy->empty())
+		{
+			for (list<GPoint *>::iterator it=plstClingBy->begin(); it!=plstClingBy->end(); ++it)
+			{
+				GPoint * pPoint = *it;
+				float objx = pPoint->getX();
+				float objy = pPoint->getY();
+				if (IsInSnapRangePoint_C(objx, objy))
+				{
+					bool bret = true;
+					if (pfilterfunc)
+					{
+						bret = pfilterfunc(pPoint);
+					}
+					if (bret)
+					{
+						snappedstate |= GOPSNAPPED_POINT|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
+						SetPickObj(pPoint);
+						PointF2D ptPick;
+						pLine->GetPositionAtProportion(pPoint->getClingProportion(), &ptPick, &pickSection[0]);
+						pickx_c = ptPick.x;
+						picky_c = ptPick.y;
+						nOnLine = GOPONLINE_MAX;
+						return true;
+					}
+				}
+
+			}
+		}
+	}
+	return false;
 }
 
 bool GObjectPicker::CheckSnapGrid()

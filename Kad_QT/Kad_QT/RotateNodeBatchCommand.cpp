@@ -155,17 +155,32 @@ void RotateNodeBatchCommand::OnProcessCommand()
 					int angle = MathHelper::getInstance().GetLineAngle(pTempLine->GetBeginPoint()->GetPointF2D(), pTempLine->GetEndPoint()->GetPointF2D());
 					if (!pMarking)
 					{
-						pMarking = new MarkingLine(pTempLine, MARKFLAG_ANGLE);
+						pMarking = new MarkingLine(pTempLine, MARKFLAG_ANGLE|MARKFLAG_LENGTH);
 						pMarking->SetRelativeAngle(angle);
 						relativeAngle = angle;
 						MarkingUI * pmuiAngle = pMarking->getMarkingUI(MARKFLAG_ANGLE);
+						MarkingUI * pmuiLength = pMarking->getMarkingUI(MARKFLAG_LENGTH);
 						pmuiAngle->SetEditable(true);
 						pmuiAngle->SetCallback(staticMIDCBAngle);
+						pmuiLength->SetEditable(true);
+						pmuiLength->SetCallback(staticMIDCBLength);
 						MarkingManager::getInstance().EnableMarking(pMarking);
 					}
 
 					angle -= relativeAngle;
 					float fAngle = angle*90.0f/ANGLEBASE_90;
+
+					MarkingUI * pmuiLength = pMarking->getMarkingUI(MARKFLAG_LENGTH);
+					if (!pmuiLength->IsValueLocked())
+					{
+						if (pmain->hge->Input_GetDIKey(DIK_LSHIFT) || pmain->hge->Input_GetDIKey(DIK_RSHIFT))
+						{
+							float fLength = MathHelper::getInstance().LineSegmentLength(PointF2D(orix, oriy), PointF2D(pgp->GetDownX_C(), pgp->GetDownY_C()));
+//							pTempLine->SetBeginEnd(orix, oriy, orix+fLength*cost(angle+relativeAngle), oriy+fLength*sint(angle+relativeAngle));
+							pgp->SetLockOrigin(orix, oriy);
+							pgp->SetLockLength(fLength);
+						}
+					}
 
 					if (pgp->IsPickReady(iret))
 					{
@@ -376,4 +391,35 @@ bool RotateNodeBatchCommand::FilterCallback( GObject * pObj )
 bool RotateNodeBatchCommand::staticFilterCallback( GObject * pObj )
 {
 	return getInstance().FilterCallback(pObj);
+}
+
+bool RotateNodeBatchCommand::MIDCBLength( MarkingUI * pmui, bool bAccept )
+{
+	GObjectPicker * pgp = &GObjectPicker::getInstance();
+	if (pmui->IsValueLocked())
+	{
+		bool bOk;
+		float fLockedLength = pmui->getFloat(&bOk);
+		if (bOk)
+		{
+			float x, y;
+			pcommand->GetParamXY(CSP_ROTATENODE_BATCH_F_XY_ANGLE_ORIGIN, &x, &y);
+			pgp->SetLockOrigin(x, y);
+			pgp->SetLockLength(fLockedLength);
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		pgp->UnlockLength();
+	}
+	return true;
+}
+
+bool RotateNodeBatchCommand::staticMIDCBLength( MarkingUI * pmui, bool bAccept )
+{
+	return getInstance().MIDCBLength(pmui, bAccept);
 }

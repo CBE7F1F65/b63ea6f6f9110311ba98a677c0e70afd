@@ -78,6 +78,7 @@ void MarkingUI::SetLock( bool bSet )
 	if (bSet)
 	{
 		pWidget->LockValue();
+		pWidget->DoCallback(true);
 	}
 	else
 	{
