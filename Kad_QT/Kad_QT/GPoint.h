@@ -32,6 +32,7 @@ public:
 	virtual bool MoveTo( GObject * pCaller, float newx, float newy, bool bTry, int moveActionID=-1 );
 	virtual bool CallMoveTo( GObject * pCaller, float newx, float newy, bool bTry, int moveActionID=-1 );
 	virtual bool CallRotate(GObject * pCaller, float orix, float oriy, int angle, bool bTry, int moveActionID=-1);
+	virtual bool CallFlip(GObject * pCaller, float orix, float oriy, int angle, bool bTry, int moveActionID=-1);
 	virtual bool CallScale(GObject * pCaller, float orix, float oriy, float fScaleX, float fScaleY, bool bTry, int moveActionID=-1);
 
 	PointF2D GetPointF2D(){return PointF2D(x, y);};

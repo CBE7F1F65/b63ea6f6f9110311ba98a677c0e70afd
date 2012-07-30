@@ -19,14 +19,13 @@
 LineCommand::LineCommand()
 {
 	pNextMergeToBegin = NULL;
-
 	pTempLine = NULL;
 }
 
 LineCommand::~LineCommand()
 {
-//	ClearTemp();
 }
+
 void LineCommand::OnProcessCommand()
 {
 	int step = OnNormalProcessCommand(GUIC_CREATEPOINT);
@@ -260,7 +259,7 @@ void LineCommand::OnDoneCommand()
 		CCMake_F(yb),
 		NULL
 		);
-	ClearTemp();
+	OnClearTemp();
 }
 
 bool LineCommand::staticMIDCBLength(MarkingUI * pmui, bool bAccept)
@@ -330,17 +329,14 @@ void LineCommand::OnInitCommand()
 	pMergeToBegin = NULL;
 	pMergeToEnd = NULL;
 	pNCLine = NULL;
-
-	ClearTemp();
 }
 
 void LineCommand::OnTerminalCommand()
 {
 	pNextMergeToBegin = NULL;
-	ClearTemp();
 }
 
-void LineCommand::ClearTemp()
+void LineCommand::OnClearTemp()
 {
 	if (pTempLine)
 	{
@@ -349,9 +345,4 @@ void LineCommand::ClearTemp()
 	}
 	pgp->UnlockLength();
 	pgp->UnlockAngles();
-}
-
-void LineCommand::OnClearCommand()
-{
-	ClearTemp();
 }

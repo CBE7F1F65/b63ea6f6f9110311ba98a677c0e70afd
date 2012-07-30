@@ -8,7 +8,6 @@ RotateNodeBatchCommand::RotateNodeBatchCommand(void)
 {
 	pTempLine = NULL;
 	pMarking = NULL;
-	ClearTemp();
 }
 
 
@@ -278,7 +277,6 @@ void RotateNodeBatchCommand::OnDoneCommand()
 			);
 
 	}
-	ClearTemp();
 }
 
 void RotateNodeBatchCommand::OnProcessUnDoCommand( RevertableCommand * rc )
@@ -308,11 +306,10 @@ void RotateNodeBatchCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 
 void RotateNodeBatchCommand::OnInitCommand()
 {
-	ClearTemp();
 	pgm->BlockTryMove();
 }
 
-void RotateNodeBatchCommand::ClearTemp()
+void RotateNodeBatchCommand::OnClearTemp()
 {
 	bManualMode = false;
 	lstObj.clear();
@@ -327,16 +324,6 @@ void RotateNodeBatchCommand::ClearTemp()
 	pgp->UnlockAngles();
 	pgp->UnlockLength();
 	pgm->CancelTryMove();
-}
-
-void RotateNodeBatchCommand::OnClearCommand()
-{
-	ClearTemp();
-}
-
-void RotateNodeBatchCommand::OnTerminalCommand()
-{
-	ClearTemp();
 }
 
 bool RotateNodeBatchCommand::staticMIDCBAngle( MarkingUI * pmui, bool bAccept )

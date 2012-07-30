@@ -911,6 +911,7 @@ void Command::TerminalInternalProcess()
 
 void Command::EnableSubCommand( bool bdisplay, int first, ... )
 {
+	/*
 	if (!GetCurrentCommand())
 	{
 		return;
@@ -935,10 +936,12 @@ void Command::EnableSubCommand( bool bdisplay, int first, ... )
 	va_end(ap);
 
 	EnableSubCommand(bdisplay, &sublist);
+	*/
 }
 
 void Command::EnableSubCommand( bool bdisplay, list<int> * sublist )
 {
+	/*
 	if (!GetCurrentCommand())
 	{
 		return;
@@ -974,25 +977,28 @@ void Command::EnableSubCommand( bool bdisplay, list<int> * sublist )
 	{
 		LogDisplaySubCommandEnd();
 	}
+	*/
 
 }
 void Command::ClearEnabledSubCommand()
 {
+/*
 	if (GetCurrentCommand())
 	{
 		ccomm.ClearEnabledSubCommand();
 	}
-//	enabledsubcommand.clear();
+//	enabledsubcommand.clear();*/
 }
 
 void Command::FinishPendingSubCommand()
 {
+/*
 	if (pendingparam.type)
 	{
 		LogFinishSubCommand(pendingparam.csub);
 		pendingparam.ClearSet();
 		LogWantNext();
-	}
+	}*/
 }
 
 void Command::DoPushRevertable()

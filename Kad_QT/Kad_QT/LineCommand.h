@@ -21,7 +21,7 @@ public:
 	virtual void RenderToTarget();
 	virtual void OnInitCommand();
 	virtual void OnTerminalCommand();
-	virtual void OnClearCommand();
+	virtual void OnClearTemp();
 
 	bool MIDCBLength(MarkingUI * pmui, bool bAccept);
 	bool MIDCBAngle(MarkingUI * pmui, bool bAccept);
@@ -31,7 +31,6 @@ public:
 
 private:
 
-	void ClearTemp();
 
 	GObject * pMergeToBegin;
 	GObject * pMergeToEnd;

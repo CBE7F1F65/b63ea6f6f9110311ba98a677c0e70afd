@@ -36,6 +36,9 @@ public:
 	virtual void OnProcessUnDoCommand(RevertableCommand * rc);
 	void CallProcessUnDoCommand(int comm, RevertableCommand * rc);
 
+	virtual void OnClearTemp();
+	void CallClearTemp();
+
 	virtual int OnNormalProcessCommand(int cursorindex=-1);
 	void DispatchNormalSubCommand(int subcommand);
 	void UpdateLastStep();

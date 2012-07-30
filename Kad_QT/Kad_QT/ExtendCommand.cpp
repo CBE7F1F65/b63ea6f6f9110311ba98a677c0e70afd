@@ -214,8 +214,6 @@ void ExtendCommand::OnDoneCommand()
 			CCMake_F(quadBezier.pte.y),
 			NULL);
 	}
-
-	ClearTemp();
 }
 
 void ExtendCommand::OnProcessUnDoCommand( RevertableCommand * rc )
@@ -252,22 +250,7 @@ void ExtendCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 	}
 }
 
-void ExtendCommand::OnInitCommand()
-{
-	ClearTemp();
-}
-
-void ExtendCommand::OnClearCommand()
-{
-	ClearTemp();
-}
-
-void ExtendCommand::OnTerminalCommand()
-{
-	ClearTemp();
-}
-
-void ExtendCommand::ClearTemp()
+void ExtendCommand::OnClearTemp()
 {
 	if (pTempLineLeft)
 	{

@@ -129,6 +129,12 @@
     <Filter Include="Main\Command\Node\Extend">
       <UniqueIdentifier>{7cced008-772a-47ad-9401-c9edd1536831}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\Command\Node\Flip">
+      <UniqueIdentifier>{a1768cad-f984-4f6e-ad68-58e5e109ef21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\GObject\Relationship">
+      <UniqueIdentifier>{a4af9df9-c204-4977-bb3a-6747f0d2fc95}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_kad_qt.cpp">
@@ -483,7 +489,10 @@
       <Filter>Main\Command\Node\Extend</Filter>
     </ClCompile>
     <ClCompile Include="GNodeRelationship.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Main\GObject\Relationship</Filter>
+    </ClCompile>
+    <ClCompile Include="FlipNodeBatchCommand.cpp">
+      <Filter>Main\Command\Node\Flip</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -695,7 +704,10 @@
       <Filter>Main\Command\Node\Extend</Filter>
     </ClInclude>
     <ClInclude Include="GNodeRelationship.h">
-      <Filter>Header Files</Filter>
+      <Filter>Main\GObject\Relationship</Filter>
+    </ClInclude>
+    <ClInclude Include="FlipNodeBatchCommand.h">
+      <Filter>Main\Command\Node\Flip</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

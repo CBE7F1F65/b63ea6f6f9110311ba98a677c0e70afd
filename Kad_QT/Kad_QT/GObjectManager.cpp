@@ -609,12 +609,12 @@ void GObjectManager::SetHandleVisible( bool bSet )
 	}
 }
 
-int GObjectManager::GetNextMoveActionID( int nMoveType, int nAngle/*=0*/, float fScaleX/*=1.0f*/, float fScaleY/*=1.0f*/ )
+int GObjectManager::GetNextMoveActionID( int nMoveType, int nAngle/*=0*/, float fXVal/*=1.0f*/, float fYVal/*=1.0f*/ )
 {
 	nMoveActionType = nMoveType;
 	nMoveActionAngle = nAngle;
-	fMoveActionScaleX = fScaleX;
-	fMoveActionScaleY = fScaleY;
+	fMoveActionXVal = fXVal;
+	fMoveActionYVal = fYVal;
 	return nMoveActionID++;
 }
 
@@ -653,11 +653,11 @@ int GObjectManager::GetMoveTypeInfo( int * pAngle/*=NULL*/, float * pScaleX/*=NU
 	}
 	if (pScaleX)
 	{
-		*pScaleX = fMoveActionScaleX;
+		*pScaleX = fMoveActionXVal;
 	}
 	if (pScaleY)
 	{
-		*pScaleY = fMoveActionScaleY;
+		*pScaleY = fMoveActionYVal;
 	}
 	return nMoveActionType;
 }

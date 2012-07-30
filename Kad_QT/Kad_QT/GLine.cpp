@@ -128,6 +128,20 @@ bool GLine::CallRotate( GObject * pCaller, float orix, float oriy, int angle, bo
 	return true;
 }
 
+bool GLine::CallFlip( GObject * pCaller, float orix, float oriy, int angle, bool bTry, int moveActionID/*=-1*/ )
+{
+	if (!canMove())
+	{
+		return false;
+	}
+	if (moveActionID < 0)
+	{
+		moveActionID = GObjectManager::getInstance().GetNextMoveActionID(GMMATYPE_FLIP, angle);
+	}
+	plbegin->CallFlip(pCaller, orix, oriy, angle, bTry, moveActionID);
+	plend->CallFlip(pCaller, orix, oriy, angle, bTry, moveActionID);
+	return true;
+}
 bool GLine::CallScale( GObject * pCaller, float orix, float oriy, float fScaleX, float fScaleY, bool bTry, int moveActionID/*=-1*/ )
 {
 	if (!canMove())
@@ -302,6 +316,7 @@ void GLine::Independ()
 	super::Independ();
 	DeclingByOther();
 }
+
 /************************************************************************/
 /* GSTRAIGHTLINE                                                        */
 /************************************************************************/
@@ -641,6 +656,11 @@ void GBezierLine::GetBoundingBox( float *xl, float *yt, float *xr, float * yb )
 	}
 	else
 	{
+		if (!bsinfo.GetSubPointsCount())
+		{
+			bsinfo.ResetPoints(plbegin->GetPointF2D(), plbegin->GetHandle()->GetPointF2D(), plend->GetHandle()->GetPointF2D(), plend->GetPointF2D(), MainInterface::getInstance().GetPrecision());
+			DASSERT(false);
+		}
 		if (!bsinfo.GetBoundingBox(xl, yt, xr, yb))
 		{
 			ASSERT(false);
@@ -793,7 +813,7 @@ float GBezierLine::CalculateProportion( float x, float y, int iSec )
 		float fsubproportion = MathHelper::getInstance().CalculateProportionOnStraightLine(bsinfo.GetX(iSec), bsinfo.GetY(iSec), bsinfo.GetX(iSec+1), bsinfo.GetY(iSec+1), x, y);
 		float fSectionLength = bsinfo.GetLength(iSec);
 		float fPreLength = 0.0f;
-		if (iSec > 1)
+		if (iSec >= 1)
 		{
 			fPreLength = bsinfo.GetLength(0, iSec-1);
 		}

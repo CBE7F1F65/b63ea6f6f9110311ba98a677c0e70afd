@@ -20,14 +20,13 @@ public:
 	virtual void RenderToTarget();
 	virtual void OnInitCommand();
 	virtual void OnTerminalCommand();
-	virtual void OnClearCommand();
+	virtual void OnClearTemp();
 
 	bool MIDCBLength(MarkingUI * pmui, bool bAccept);
 	static bool staticMIDCBLength(MarkingUI * pmui, bool bAccept);
 
 private:
 
-	void ClearTemp();
 
 	GObject * pMergeToBegin;
 	GObject * pMergeToEnd;

@@ -117,6 +117,7 @@ public:
 	virtual bool CallMoveByOffset(GObject * pCaller, float xoffset, float yoffset, bool bTry, int moveActionID=-1){return CallMoveTo(pCaller, getX()+xoffset, getY()+yoffset, bTry, moveActionID);};
 	virtual bool CallRotate(GObject * pCaller, float orix, float oriy, int angle, bool bTry, int moveActionID=-1){DASSERT(false); return false;};
 	virtual bool CallScale(GObject * pCaller, float orix, float oriy, float fScaleX, float fScaleY, bool bTry, int moveActionID=-1){DASSERT(false); return false;};
+	virtual bool CallFlip(GObject * pCaller, float orix, float oriy, int angle, bool bTry, int moveActionID=-1){DASSERT(false); return false;};
 
 	virtual bool isLayer(){return false;};
 	virtual bool isLine(){return false;};

@@ -55,7 +55,7 @@ public:
 	};
 	void EnableSubCommand(int subcommand)
 	{
-		enabledsubcommand.push_back(subcommand);
+//		enabledsubcommand.push_back(subcommand);
 	};
 	void ClearEnabledSubCommand()
 	{

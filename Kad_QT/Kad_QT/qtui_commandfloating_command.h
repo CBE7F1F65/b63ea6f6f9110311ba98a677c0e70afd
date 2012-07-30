@@ -17,7 +17,10 @@ protected:
     virtual void keyPressEvent(QKeyEvent *e);
 
 private:
-    void DoneEdit();
+	void DoneEdit();
+
+	QChar lastc;
+	QTime lastTime;
 
 signals:
     

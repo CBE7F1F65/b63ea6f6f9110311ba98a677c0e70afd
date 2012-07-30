@@ -17,15 +17,12 @@ public:
 	virtual void OnDoneCommand();
 	virtual void OnProcessUnDoCommand( RevertableCommand * rc );
 
-	void ClearTemp();
-
-	virtual void OnInitCommand();
-	virtual void OnClearCommand();
-	virtual void OnTerminalCommand();
+	virtual void OnClearTemp();
 
 	virtual void RenderToTarget();
+
+private:
 	GBezierLine * pTempLineLeft;
-	GBezierLine * pTempLineRight;
-	
+	GBezierLine * pTempLineRight;	
 };
 

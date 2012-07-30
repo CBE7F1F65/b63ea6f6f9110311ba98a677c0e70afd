@@ -16,10 +16,9 @@ public:
 	virtual void OnProcessCommand();
 	virtual void OnDoneCommand();
 	virtual void OnProcessUnDoCommand( RevertableCommand * rc );
+	virtual void OnClearTemp();
 
 	virtual void OnInitCommand();
-	virtual void OnClearCommand();
-	virtual void OnTerminalCommand();
 
 	bool MIDCBAngle(MarkingUI * pmui, bool bAccept);
 	static bool staticMIDCBAngle(MarkingUI * pmui, bool bAccept);
@@ -27,8 +26,7 @@ public:
 	bool FilterCallback(GObject * pObj);
 	static bool staticFilterCallback(GObject * pObj);
 	
-	void ClearTemp();
-
+private:
 	list<GObject *> lstObj;
 	bool bManualMode;
 

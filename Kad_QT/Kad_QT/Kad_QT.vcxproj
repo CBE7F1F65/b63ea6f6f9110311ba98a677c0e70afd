@@ -94,6 +94,7 @@
     <ClCompile Include="DeleteItemCommand.cpp" />
     <ClCompile Include="DuplicateCommand.cpp" />
     <ClCompile Include="ExtendCommand.cpp" />
+    <ClCompile Include="FlipNodeBatchCommand.cpp" />
     <ClCompile Include="GBaseNode.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_kad_qt.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -295,6 +296,7 @@
     <ClInclude Include="DeleteItemCommand.h" />
     <ClInclude Include="DuplicateCommand.h" />
     <ClInclude Include="ExtendCommand.h" />
+    <ClInclude Include="FlipNodeBatchCommand.h" />
     <ClInclude Include="GBaseNode.h" />
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h" />
     <ClInclude Include="GeneratedFiles\ui_QTDLG_LayerProperty.h" />

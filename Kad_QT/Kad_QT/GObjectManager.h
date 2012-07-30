@@ -9,6 +9,7 @@
 enum{
 	GMMATYPE_MOVE,
 	GMMATYPE_ROTATE,
+	GMMATYPE_FLIP,
 	GMMATYPE_SCALE,
 };
 
@@ -148,7 +149,7 @@ public:
 	void SetHandleVisible( bool bSet );
 	bool isHandleVisible(){return bHandleVisible;};
 
-	int GetNextMoveActionID(int nMoveType, int nAngle=0, float fScaleX=1.0f, float fScaleY=1.0f);
+	int GetNextMoveActionID(int nMoveType, int nAngle=0, float fXVal=1.0f, float fYVal=1.0f);
 	int GetMoveTypeInfo(int * pAngle=NULL, float * pScaleX=NULL, float * pScaleY=NULL);
 private:
 	bool bHandleVisible;
@@ -164,8 +165,8 @@ private:
 
 	int nMoveActionType;
 	int nMoveActionAngle;
-	float fMoveActionScaleX;
-	float fMoveActionScaleY;
+	float fMoveActionXVal;
+	float fMoveActionYVal;
 
 	int nMoveActionID;
 };

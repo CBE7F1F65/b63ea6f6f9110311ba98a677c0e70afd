@@ -18,6 +18,15 @@ public:
 	{
 		return (fabsf(x-point.x) < M_FLOATEPS) && (fabsf(y-point.y) < M_FLOATEPS);
 	}
+	bool StrictEquals(const PointF2D& point)
+	{
+		return x==point.x && y==point.y;
+	}
+
+	bool operator==(const PointF2D& point)
+	{
+		return StrictEquals(point);
+	}
 
 	float Dot(const PointF2D &point)
 	{

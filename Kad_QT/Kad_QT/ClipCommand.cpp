@@ -47,7 +47,8 @@ void ClipCommand::OnProcessCommand()
 	{
 		ret = pcommand->ProcessPending(
 			CSP_CLIP_I_F_INDEX_PROPORTION, COMMPARAMFLAG_F, CWP_PROPORTION,
-			CSI_FINISHCONTINUE
+			CSI_FINISH
+//			CSI_FINISHCONTINUE
 			);
 	}
 
@@ -78,11 +79,13 @@ void ClipCommand::OnProcessCommand()
 
 						pcommand->SetParamI(CSP_CLIP_I_F_INDEX_PROPORTION, index, CWP_INDEX);
 						pcommand->SetParamF(CSP_CLIP_I_F_INDEX_PROPORTION, fProportion, CWP_PROPORTION);
-						pcommand->StepTo(CSI_FINISHCONTINUE);
+						pcommand->StepTo(CSI_FINISH);
+//						pcommand->StepTo(CSI_FINISHCONTINUE);
 					}
 				}
 			}
 		}
+		/*
 		else if (step == CSI_FINISHCONTINUE)
 		{
 			ProtectPendingFinishCommand();
@@ -92,6 +95,7 @@ void ClipCommand::OnProcessCommand()
 				NULL
 				);
 		}
+		*/
 	}
 }
 

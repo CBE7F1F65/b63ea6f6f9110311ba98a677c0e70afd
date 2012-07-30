@@ -23,6 +23,7 @@
 #include "RotateNodeBatchCommand.h"
 #include "ScaleNodeBatchCommand.h"
 #include "ExtendCommand.h"
+#include "FlipNodeBatchCommand.h"
 
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
@@ -30,6 +31,7 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 	switch (comm)
 	{
 	case COMM_INITIAL:
+	case COMM_TERMINAL:
 		return &InitialCommand::getInstance();
 
 	case COMM_REPARENT:
@@ -57,6 +59,8 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 		return &RotateNodeBatchCommand::getInstance();
 	case COMM_SCALENODE_BATCH:
 		return &ScaleNodeBatchCommand::getInstance();
+	case COMM_FLIPNODE_BATCH:
+		return &FlipNodeBatchCommand::getInstance();
 	case COMM_EXTEND:
 		return &ExtendCommand::getInstance();
 

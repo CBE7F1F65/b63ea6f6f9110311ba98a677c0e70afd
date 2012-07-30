@@ -32,6 +32,7 @@ enum{
 
 	// Instant Commands
 	COMM_INITIAL,	// do nothing
+	COMM_TERMINAL,	// do nothing
 	COMM_UNDO,		// UnDo
 	COMM_REDO,		// ReDo
 
@@ -57,6 +58,7 @@ enum{
 	COMM_MOVENODEBYOFFSET_BATCH,
 	COMM_ROTATENODE_BATCH,
 	COMM_SCALENODE_BATCH,
+	COMM_FLIPNODE_BATCH,
 
 	COMM_EXTEND,
 
@@ -347,6 +349,23 @@ enum{
 	CSI_SCALENODE_BATCH_WANTXSCALE,
 	CSI_SCALENODE_BATCH_WANTYSCALE,
 	CSI_SCALENODE_BATCH_WANTINDEXES,
+};
+
+/************************************************************************/
+/* FLIPNODE_BATCH                                                       */
+/************************************************************************/
+
+enum{
+	CSP_FLIPNODE_BATCH_F_XY_ANGLE_ORIGIN,
+	CSP_FLIPNODE_BATCH_I_INDEXES,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_FLIPNODE_BATCH_DUMMY=0,
+	CSI_FLIPNODE_BATCH_WANTX,
+	CSI_FLIPNODE_BATCH_WANTY,
+	CSI_FLIPNODE_BATCH_WANTANGLE,
+	CSI_FLIPNODE_BATCH_WANTINDEXES,
 };
 
 /************************************************************************/

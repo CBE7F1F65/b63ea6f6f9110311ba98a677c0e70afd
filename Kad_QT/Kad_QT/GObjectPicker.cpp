@@ -151,19 +151,32 @@ void GObjectPicker::AdjustPositionToLocks()
 			{
 				pickx_c = neartox;
 				picky_c = neartoy;
+
+				PointF2D ptPick(pickx_c, picky_c);
+				if (ptPick.StrictEquals(pLockedLine->GetBeginPoint()->GetPointF2D()))
+				{
+					snappedstate |= GOPSNAPPED_POINT|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
+					SetPickObj(pLockedLine->GetBeginPoint());
+					nOnLine = GOPONLINE_MAX;
+				}
+				else if (ptPick.StrictEquals(pLockedLine->GetEndPoint()->GetPointF2D()))
+				{
+					snappedstate |= GOPSNAPPED_POINT|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
+					SetPickObj(pLockedLine->GetEndPoint());
+					nOnLine = GOPONLINE_MAX;
+				}
+
 				if (!nOnLine)
 				{
 					AddSplitUI(pLockedLine);
 				}
 			}
-			else
+			if (nOnLine < GOPONLINE_MAX)
 			{
-//				pickx_c = pLockedLine->GetMidPoint()->getX();
-//				picky_c = pLockedLine->GetMidPoint()->getY();
+				snappedstate |= GOPSNAPPED_LINE|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
+				SetPickObj(pLockedLine);
+				nOnLine++;
 			}
-			snappedstate |= GOPSNAPPED_LINE|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
-			SetPickObj(pLockedLine);
-			nOnLine++;
 		}
 	}
 	if (bLockXAxis)

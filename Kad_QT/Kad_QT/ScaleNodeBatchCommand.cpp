@@ -8,7 +8,6 @@
 ScaleNodeBatchCommand::ScaleNodeBatchCommand(void)
 {
 	pTempLine = NULL;
-	ClearTemp();
 }
 
 
@@ -354,7 +353,6 @@ void ScaleNodeBatchCommand::OnDoneCommand()
 			);
 
 	}
-	ClearTemp();
 }
 
 void ScaleNodeBatchCommand::OnProcessUnDoCommand( RevertableCommand * rc )
@@ -389,11 +387,10 @@ void ScaleNodeBatchCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 
 void ScaleNodeBatchCommand::OnInitCommand()
 {
-	ClearTemp();
 	pgm->BlockTryMove();
 }
 
-void ScaleNodeBatchCommand::ClearTemp()
+void ScaleNodeBatchCommand::OnClearTemp()
 {
 	bManualMode = false;
 	lstObj.clear();
@@ -407,16 +404,6 @@ void ScaleNodeBatchCommand::ClearTemp()
 	pgp->UnlockXAxis();
 	pgp->UnlockYAxis();
 	pgm->CancelTryMove();
-}
-
-void ScaleNodeBatchCommand::OnClearCommand()
-{
-	ClearTemp();
-}
-
-void ScaleNodeBatchCommand::OnTerminalCommand()
-{
-	ClearTemp();
 }
 
 bool ScaleNodeBatchCommand::FilterCallback( GObject * pObj )

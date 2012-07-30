@@ -338,16 +338,28 @@ void CommandTemplate::CallDoneCommand()
 	}
 	workinglayerID = pgm->GetActiveLayer()->getID();
 	OnDoneCommand();
+	CallClearTemp();
 }
 
 void CommandTemplate::CallClearCommand()
 {
 	OnClearCommand();
+	CallClearTemp();
 }
 
 void CommandTemplate::OnClearCommand()
 {
 
+}
+
+void CommandTemplate::OnClearTemp()
+{
+
+}
+
+void CommandTemplate::CallClearTemp()
+{
+	OnClearTemp();
 }
 
 void CommandTemplate::InstantProcessCommand()
@@ -388,6 +400,7 @@ void CommandTemplate::CallOnReDo()
 
 void CommandTemplate::CallInitCommand()
 {
+	CallClearTemp();
 	OnInitCommand();
 }
 
@@ -398,12 +411,13 @@ void CommandTemplate::OnInitCommand()
 
 void CommandTemplate::OnTerminalCommand()
 {
-
 }
 
 void CommandTemplate::CallTerminalCommand()
 {
 	OnTerminalCommand();
+	ReleaseTarget();
+	CallClearTemp();
 }
 
 GObject * CommandTemplate::TestPickSingleFilter( float x, float y, GObject * pFilterObj, float * pfProportion )
@@ -455,13 +469,17 @@ bool CommandTemplate::MergeClingNewPoint( GPoint * pFrom, GObject * pTo, float f
 	bool bRet = false;
 	if (pTo->isPoint())
 	{
-		CommitFrontCommand(
-			CCMake_C(COMM_MERGE),
-			CCMake_O(pFrom),
-			CCMake_O(pTo),
-			NULL
-			);
 		GPoint * pToPoint = (GPoint *)pTo;
+		GPoint * pFromPoint = (GPoint *)pFrom;
+		if (pToPoint->getMergeWith()->empty() && pFrom->getMergeWith()->empty())
+		{
+			CommitFrontCommand(
+				CCMake_C(COMM_MERGE),
+				CCMake_O(pFrom),
+				CCMake_O(pTo),
+				NULL
+				);
+		}
 		GLine * pToCling = pToPoint->getClingTo();
 		if (pToCling)
 		{
@@ -568,7 +586,8 @@ void CommandTemplate::ReAttachAfterMoveNode( GObject * pObj, bool bFindMerge/*=t
 	if (pTestPickedObj && pTestPickedObj->canBeMergedWith())
 	{
 		GPoint * pTestPickedPoint = (GPoint *)pTestPickedObj;
-		if (!pPoint->isMergeWith(pTestPickedPoint))
+//		if (!pPoint->isMergeWith(pTestPickedPoint))
+		if (pPoint->getMergeWith()->empty() && pTestPickedPoint->getMergeWith()->empty())
 		{
 			CommitFrontCommand(
 				CCMake_C(COMM_MERGE),

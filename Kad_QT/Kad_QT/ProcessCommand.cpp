@@ -101,7 +101,7 @@ int Command::ProcessCommittedCommand()
 			{
 				CreateCommand(it->ival);
 			}
-			else if (!((it->type) & COMMITTEDCOMMANDTYPE_COMMANDSHORT))
+			else// if (!((it->type) & COMMITTEDCOMMANDTYPE_COMMANDSHORT))
 			{
 				if (GetCurrentCommand())
 				{
@@ -109,10 +109,12 @@ int Command::ProcessCommittedCommand()
 				}
 				CreateCommand(it->ival);
 			}
+			/*
 			else if (GetCurrentCommand() && ((it->type) & COMMITTEDCOMMANDTYPE_SUBCOMMAND))
 			{
 				pendingparam = (*it);
 			}
+			*/
 		}
 	}
 	else

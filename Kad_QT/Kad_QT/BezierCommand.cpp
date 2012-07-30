@@ -456,7 +456,6 @@ void BezierCommand::OnDoneCommand()
 		CCMake_F(ybh),
 		NULL
 		);
-	ClearTemp();
 }
 
 void BezierCommand::RenderToTarget()
@@ -512,17 +511,14 @@ void BezierCommand::OnInitCommand()
 	pNCLine = NULL;
 	pBindAnchorBegin = NULL;
 	pBindAnchorEnd = NULL;
-
-	ClearTemp();
 }
 
 void BezierCommand::OnTerminalCommand()
 {
 	pNextMergeToBegin = NULL;
-	ClearTemp();
 }
 
-void BezierCommand::ClearTemp()
+void BezierCommand::OnClearTemp()
 {
 	if (pTempLine)
 	{
@@ -574,9 +570,4 @@ bool BezierCommand::MIDCBLength( MarkingUI * pmui, bool bAccept )
 		pgp->UnlockLength();
 	}
 	return true;
-}
-
-void BezierCommand::OnClearCommand()
-{
-	ClearTemp();
 }

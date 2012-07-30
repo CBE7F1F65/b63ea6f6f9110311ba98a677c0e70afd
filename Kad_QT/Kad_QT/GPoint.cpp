@@ -146,6 +146,29 @@ bool GPoint::CallRotate( GObject * pCaller, float orix, float oriy, int angle, b
 	return CallMoveTo(pCaller, newx, newy, bTry, moveActionID);
 }
 
+bool GPoint::CallFlip( GObject * pCaller, float orix, float oriy, int angle, bool bTry, int moveActionID/*=-1*/ )
+{
+	if (!canMove())
+	{
+		return false;
+	}
+	if (moveActionID < 0)
+	{
+		moveActionID = GObjectManager::getInstance().GetNextMoveActionID(GMMATYPE_FLIP, angle);
+	}
+	MathHelper * pmh = &MathHelper::getInstance();
+	PointF2D ptOri = PointF2D(orix, oriy);
+	PointF2D ptThis = GetPointF2D();
+
+	float px, py;
+	pmh->FindPerpendicularPoint(ptThis.x, ptThis.y, orix, oriy, angle, &px, &py);
+
+	float newx = 2*px-x;
+	float newy = 2*py-y;
+
+	return CallMoveTo(pCaller, newx, newy, bTry, moveActionID);
+}
+
 bool GPoint::CallScale( GObject * pCaller, float orix, float oriy, float fScaleX, float fScaleY, bool bTry, int moveActionID/*=-1*/ )
 {
 	if (!canMove())
@@ -582,9 +605,9 @@ bool GAnchorPoint::MoveTo( GObject * pCaller, float newx, float newy, bool bTry,
 		if (phandle)
 		{
 			int nMoveAngle;
-			float fScaleX;
-			float fScaleY;
-			int nMoveType = GObjectManager::getInstance().GetMoveTypeInfo(&nMoveAngle, &fScaleX, &fScaleY);
+			float fXVal;
+			float fYVal;
+			int nMoveType = GObjectManager::getInstance().GetMoveTypeInfo(&nMoveAngle, &fXVal, &fYVal);
 			if (nMoveType == GMMATYPE_ROTATE)
 			{
 				if (phandle->getMoveActionID() != moveActionID)
@@ -594,12 +617,21 @@ bool GAnchorPoint::MoveTo( GObject * pCaller, float newx, float newy, bool bTry,
 					phandle->CallMoveByOffset(pCaller, 0, 0, bTry, moveActionID);
 				}
 			}
+			else if (nMoveType == GMMATYPE_FLIP)
+			{
+				if (phandle->getMoveActionID() != moveActionID)
+				{
+					phandle->CallMoveByOffset(pCaller, xoffset, yoffset, bTry, moveActionID);
+					bret = phandle->CallFlip(pCaller, x, y, nMoveAngle, bTry, 0);
+					phandle->CallMoveByOffset(pCaller, 0, 0, bTry, moveActionID);
+				}
+			}
 			else if (nMoveType == GMMATYPE_SCALE)
 			{
 				if (phandle->getMoveActionID() != moveActionID)
 				{
 					phandle->CallMoveByOffset(pCaller, xoffset, yoffset, bTry, moveActionID);
-					bret = phandle->CallScale(pCaller, x, y, fScaleX, fScaleY, bTry, 0);
+					bret = phandle->CallScale(pCaller, x, y, fXVal, fYVal, bTry, 0);
 					phandle->CallMoveByOffset(pCaller, 0, 0, bTry, moveActionID);
 				}
 			}

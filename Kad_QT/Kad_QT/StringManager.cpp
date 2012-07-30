@@ -107,6 +107,7 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_OUTPUT,	"OUTPUT",	"O",	"Output",	""	);
 
 	_BSET(	COMM_INITIAL,	"INITIAL",	"",	"Initialization",	""	);
+	_BSET(	COMM_TERMINAL,	"TERMINAL",	"K",	"Terminal Command",	""	);
 	_BSET(	COMM_UNDO,	"UNDO", "U",	"UnDo",	""	);
 	_BSET(	COMM_REDO,	"REDO", "R",	"UnDo",	""	);
 
@@ -123,6 +124,7 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_MOVENODEBYOFFSET_BATCH,	"MOVEBYOFFSET_BATCH",	"MOFF_BATCH",	"Move Node Offset Batch",	""	);
 	_BSET(	COMM_ROTATENODE_BATCH,	"ROTATE_BATCH",	"ROT",	"Rotate Node Batch",	""	);
 	_BSET(	COMM_SCALENODE_BATCH,	"SCALE_BATCH",	"SCA",	"Scale Node Batch",	""	);
+	_BSET(	COMM_FLIPNODE_BATCH,	"FLIP_BATCH",	"FLI",	"Flip Node Batch",	""	);
 
 	_BSET(	COMM_EXTEND,	"EXTEND",	"E",	"Extend Line",	""	);
 
