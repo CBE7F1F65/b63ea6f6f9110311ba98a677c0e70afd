@@ -116,7 +116,7 @@ void GHistoryBaseNode::BuildRelationship( GObject * pObj )
 	if (pnrg)
 	{
 		lstRelations.push_back(pnrg);
-		pObj->Independ();
+		pObj->CallIndepend();
 	}
 	for (list<GObject *>::iterator it=pObj->getChildren()->begin(); it!=pObj->getChildren()->end(); ++it)
 	{

@@ -93,6 +93,9 @@ void ExtendCommand::OnProcessCommand()
 								pTempLineLeft->Clip(0.5f)->RemoveFromParent(true);
 								pTempLineLeft->SwapBeginEnd();
 
+								pTempLineLeft->CallIndepend();
+								pTempLineRight->CallIndepend();
+
 								pTempLineLeft->SetLineRenderStyle(RHLINESTYLE_DOTTEDLINE);
 								pTempLineRight->SetLineRenderStyle(RHLINESTYLE_DOTTEDLINE);
 
@@ -107,6 +110,7 @@ void ExtendCommand::OnProcessCommand()
 					{
 						GBezierLine * pBezier;
 						float fSplit = 0.0f;
+						float fSplitProp = 0.0f;
 						if (step == CSI_EXTEND_WANTBEGINOFFSET)
 						{
 							pBezier = pTempLineLeft;
@@ -117,14 +121,15 @@ void ExtendCommand::OnProcessCommand()
 						}
 						if (pObj == pBezier)
 						{
-							fSplit = pgp->CalculateProportion();
-							if (fSplit < 0 || fSplit > 1)
+							fSplitProp = pgp->CalculateProportion();
+							if (fSplitProp < 0 || fSplitProp > 1)
 							{
+								fSplitProp = 0;
 								fSplit = 0;
 							}
 							else
 							{
-								fSplit *= pBezier->getLength();
+								fSplit = fSplitProp * pBezier->getLength();
 							}
 						}
 						else
@@ -133,6 +138,7 @@ void ExtendCommand::OnProcessCommand()
 						if (step == CSI_EXTEND_WANTBEGINOFFSET)
 						{
 							pcommand->SetParamF(CSP_EXTEND_I_F_INDEX_BEGINOFFSET, fSplit, CWP_BEGINOFFSET);
+							pTempLineLeft->Clip(fSplitProp)->RemoveFromParent(true);
 							pgp->SetLockLockLine(pTempLineRight, 0.0f);
 							pcommand->StepTo(CSI_EXTEND_WANTENDOFFSET, CWP_ENDOFFSET);
 						}

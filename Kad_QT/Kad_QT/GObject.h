@@ -91,7 +91,6 @@ public:
 	virtual void CallResetID(int beginindex=0);
 
 	virtual GNodeRelationshipGroup * CreateRelationshipGroup(bool bClingBy=true, bool bOneWay=false){return NULL;};
-	virtual void Independ(){};
 
 	virtual GObject * FindNodeByID(int id);
 
@@ -163,7 +162,9 @@ protected:
 	virtual void OnEnter();
 	virtual void CallRelease();
 	virtual void OnRelease();
+	virtual void CallRemove();
 	virtual void OnRemove();
+	virtual void OnIndepend();
     virtual void OnPrecisionChanged(float fPrecision);
 	virtual void OnModify();
 	virtual void OnClearModify();	// Post-Update
@@ -184,6 +185,7 @@ public:
 	virtual void CallUpdate();
 	virtual void CallRender(int iHighlightLevel=0);
 	virtual void CallCancelTryMove();
+	virtual void CallIndepend();
 
 protected:
 	virtual void ToggleTryMoveState(bool bTry);

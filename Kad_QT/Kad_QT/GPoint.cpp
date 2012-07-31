@@ -189,6 +189,7 @@ bool GPoint::CallScale( GObject * pCaller, float orix, float oriy, float fScaleX
 
 void GPoint::OnRemove()
 {
+	super::OnRemove();
 	DeclingToOther();
 	SeperateFrom();
 }
@@ -543,9 +544,9 @@ GNodeRelationshipGroup * GPoint::CreateRelationshipGroup( bool bClingBy/*=true*/
 	return NULL;
 }
 
-void GPoint::Independ()
+void GPoint::OnIndepend()
 {
-	super::Independ();
+	super::OnIndepend();
 	SeperateFrom();
 }
 
@@ -954,9 +955,9 @@ GNodeRelationshipGroup * GHandlePoint::CreateRelationshipGroup( bool bClingBy/*=
 	return NULL;
 }
 
-void GHandlePoint::Independ()
+void GHandlePoint::OnIndepend()
 {
-	super::Independ();
+	super::OnIndepend();
 	BindWith();
 }
 

@@ -188,6 +188,7 @@ bool GLine::CheckIntersectWithLineObj( GLine * pLine, list<PointF2D> *pPoints )
 
 void GLine::OnRemove()
 {
+	super::OnRemove();
 	DeclingByOther();
 }
 
@@ -311,9 +312,9 @@ GNodeRelationshipGroup * GLine::CreateRelationshipGroup( bool bClingBy/*=true*/,
 	return NULL;
 }
 
-void GLine::Independ()
+void GLine::OnIndepend()
 {
-	super::Independ();
+	super::OnIndepend();
 	DeclingByOther();
 }
 
@@ -1334,6 +1335,11 @@ bool GBezierLine::Extend( float tBegin, float tEnd )
 	ASSERT(tBegin >= 0.0f);
 	ASSERT(tEnd >= 0.0f);
 
+	if (tBegin == 0.0f && tEnd == 0.0f)
+	{
+		return true;
+	}
+
 	PointF2D ptNewBegin;
 	PointF2D ptNewEnd;
 
@@ -1343,8 +1349,33 @@ bool GBezierLine::Extend( float tBegin, float tEnd )
 	GHandlePoint * pBeginHandle = plbegin->GetHandle();
 	GHandlePoint * pEndHandle = plend->GetHandle();
 
+	GPoint * pBeginMerge = NULL;
+	GPoint * pEndMerge = NULL;
+
+	list<GPoint *> lstClingBy = clingByList;
+	list<float> lstFCP;
+	if (!lstClingBy.empty())
+	{
+		for (list<GPoint *>::iterator it=lstClingBy.begin(); it!=lstClingBy.end(); ++it)
+		{
+			lstFCP.push_back((*it)->getClingProportion());
+		}
+	}
+
+	if (!plbegin->getMergeWith()->empty())
+	{
+		pBeginMerge = plbegin->getMergeWith()->front();
+	}
+	if (!plend->getMergeWith()->empty())
+	{
+		pEndMerge = plend->getMergeWith()->front();
+	}
+	DeclingByOther();
+
 	if (tBegin != 0.0f)
 	{
+		plbegin->SeperateFrom();
+
 		float tb = -tBegin;
 		if (GetPositionAtExtendedProportion(tb, &ptNewBegin, &quadNewBeginBezierOutput))
 		{
@@ -1365,6 +1396,8 @@ bool GBezierLine::Extend( float tBegin, float tEnd )
 
 	if (tEnd != 0.0f)
 	{
+		plend->SeperateFrom();
+
 		float te = tEnd;
 		if (tBegin != 0.0f)
 		{
@@ -1389,6 +1422,27 @@ bool GBezierLine::Extend( float tBegin, float tEnd )
 			return false;
 		}
 	}
+
+	float tTotalInv = 1.0f/(tBegin+tEnd+1);
+	if (pBeginMerge)
+	{
+		pBeginMerge->ClingTo(this, tBegin*tTotalInv);
+	}
+	if (pEndMerge)
+	{
+		pEndMerge->ClingTo(this, (tBegin+1)*tTotalInv);
+	}
+	if (!lstClingBy.empty())
+	{
+		list<float>::iterator jt=lstFCP.begin();
+		for (list<GPoint *>::iterator it=lstClingBy.begin(); it!=lstClingBy.end(); ++it, ++jt)
+		{
+			GPoint * pClingByPoint = *it;
+			float fCP = *jt;
+			pClingByPoint->ClingTo(this, (tBegin+fCP)*tTotalInv);
+		}
+	}
+
 	return true;
 //	return false;
 }
