@@ -78,15 +78,17 @@ void SetNodeNameCommand::OnDoneCommand()
 	string newname = pcommand->GetParamS(CSP_SETNODENAME_I_S_INDEX_NEWNAME);
 	if (!newname.length() || index < 0)
 	{
+		Terminal();
 		return;
 	}
 
 	GObject * pObj = pgm->FindObjectByID(index);
 	if (!pObj)
 	{
+		Terminal();
 		return;
 	}
-
+	
 	string oldname = pObj->getDisplayName();
 	pObj->setDisplayName(newname.c_str());
 	pgm->OnTreeChanged(pObj->getParent(), pObj);

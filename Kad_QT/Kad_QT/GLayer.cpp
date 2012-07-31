@@ -7,6 +7,7 @@
 #include <sstream>
 #include "ColorManager.h"
 
+#include "GObjectManager.h"
 
 GLayer::GLayer(void)
 {
@@ -55,7 +56,8 @@ bool GLayer::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelation
 {
 	if (super::CloneData(pClone, pNewParent))
 	{
-		setInitial(layerID, strDisplayName.c_str());
+		GLayer * pLayer = (GLayer *)pClone;
+		pLayer->setInitial(layerID, strDisplayName.c_str());
 		return true;
 	}
 	return false;

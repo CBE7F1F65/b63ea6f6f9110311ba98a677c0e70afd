@@ -4,6 +4,8 @@
 
 #include "GBaseNode.h"
 
+#include "GObjectManager.h"
+
 GPiece::GPiece(void)
 {
 }

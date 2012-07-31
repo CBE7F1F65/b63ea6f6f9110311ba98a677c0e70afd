@@ -7,6 +7,8 @@
 #include "CommandTemplate.h"
 #include "SnapshotManager.h"
 
+#include "URManager.h"
+
 
 void Command::EnterUnDo()
 {
@@ -29,6 +31,115 @@ void Command::ExitReDo()
 {
 	undoredoflag = CUNDOREDO_NULL;
 }
+
+void Command::ClearReDo()
+{
+	/*
+	int ntodelete = redolist.size();
+	if (ntodelete)
+	{
+		redolist.clear();
+		SnapshotManager::getInstance().OnClearReDo(ntodelete);
+		MainInterface::getInstance().OnClearReDo(ntodelete);
+	}
+	*/
+	int ntodelete = URManager::getInstance().ClearReDo();
+//	SnapshotManager::getInstance().OnClearReDo(ntodelete);
+	MainInterface::getInstance().OnClearReDo(ntodelete);
+}
+
+void Command::ClearUnDo()
+{
+	/*
+	int ntodelete = undolist.size();
+	if (ntodelete)
+	{
+		undolist.clear();
+		SnapshotManager::getInstance().OnClearUnDo(ntodelete);
+		MainInterface::getInstance().OnClearUnDo(ntodelete);
+	}
+	CreateCommandCommit(COMM_INITIAL);
+	*/
+}
+
+bool Command::PushUnDo()
+{
+	if (URManager::getInstance().PushUnDo(GObjectManager::getInstance().GetMainBaseNode()))
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Command::DoUnDo( int undostep/*=1*/ )
+{
+//	if (undolist.size()<=1 || undostep < 1)
+	URManager * purm = &URManager::getInstance();
+	if (!purm->CanUnDo())
+	{
+		MainInterface::getInstance().MBeep();
+		return false;
+	}
+	LogUnDo();
+
+	SetRenderTarget(0);
+	ClearCurrentCommand(true);
+	EnterUnDo();
+
+	purm->UnDo(GObjectManager::getInstance().GetMainBaseNode());
+
+//	SnapshotManager::getInstance().OnUnDo();
+	MainInterface::getInstance().OnUnDo();
+	ExitUnDo();
+
+	if (!GObjectManager::getInstance().GetActiveLayer())
+	{
+		GObjectManager::getInstance().SetActiveLayer_Internal();
+	}
+
+	if (undostep > 1)
+	{
+		DoUnDo(undostep-1);
+	}
+
+	return true;
+
+}
+
+bool Command::DoReDo( int redostep/*=1*/ )
+{
+//	if (redolist.empty() || redostep < 1)
+	URManager * purm = &URManager::getInstance();
+	if (!purm->CanReDo())
+	{
+		MainInterface::getInstance().MBeep();
+		return false;
+	}
+	LogReDo();
+
+	SetRenderTarget(0);
+	ClearCurrentCommand(true);
+	EnterReDo();
+
+	purm->ReDo(GObjectManager::getInstance().GetMainBaseNode());
+
+//	SnapshotManager::getInstance().OnReDo();
+	MainInterface::getInstance().OnReDo();
+	ExitReDo();
+
+	CommandTemplate::CallOnReDo();
+
+	if (redostep > 1)
+	{
+		DoReDo(redostep-1);
+	}
+
+	return true;
+}
+
+
+
+/*
 
 void Command::RevertUnDoList(RevertableCommand * rc)
 {
@@ -67,7 +178,7 @@ void Command::RevertUnDoList(RevertableCommand * rc)
 	}
 }
 
-bool Command::DoUnDo( int undostep/*=1*/ )
+bool Command::DoUnDo( int undostep/ *=1* / )
 {
 	if (undolist.size()<=1 || undostep < 1)
 	{
@@ -197,7 +308,7 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 	return true;
 }
 
-bool Command::DoReDo( int redostep/*=1*/ )
+bool Command::DoReDo( int redostep/ *=1* / )
 {
 	if (redolist.empty() || redostep < 1)
 	{
@@ -383,12 +494,12 @@ bool Command::DoUnDoDeleteNode( int objparentid, int objafterid )
 
 bool Command::DoReDoDeleteNode( int objparentid, int objafterid )
 {
-	/*
+	/ *
 	// Put back to undobase
 //	assert(obj != NULL);
 	GObject * obj = GObjectManager::getInstance().FindObjectByID(objid);
 	GObjectManager::getInstance().MoveToUnDoList(obj);
-	*/
+	* /
 	// No need to redo
 	return true;
 }
@@ -424,4 +535,4 @@ bool Command::DoReDoReparentNode( int objid, int oparentid, int afterid )
 //	objid->Reparent(aparentid);
 	// No need to redo
 	return true;
-}
+}*/

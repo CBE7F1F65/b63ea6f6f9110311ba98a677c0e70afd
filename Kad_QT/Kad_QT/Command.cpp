@@ -1001,46 +1001,16 @@ void Command::FinishPendingSubCommand()
 	}*/
 }
 
-void Command::DoPushRevertable()
+bool Command::DoPushRevertable()
 {
 	RevertableCommand * rc = &rcbuffer;
 	if (!rc->GetSize())
 	{
-		return;
+		return false;
 	}
+	/*
 	if (rc)
 	{
-		/*
-		list<RevertableCommand> rclist;
-		RevertableCommand rv;
-		rclist.push_front(rv);
-		for (list<CommittedCommand>::iterator it=rc->commandlist.begin(); it!=rc->commandlist.end(); ++it)
-		{
-
-			if (IsCCTypeCommand(it->type) && IsInternalCommand_CommandEndMark(it->ival))
-			{
-				RevertableCommand rvt;
-				rclist.push_front(rvt);
-			}
-			else
-			{
-				rclist.front().PushCommand(&(*it));
-			}
-		}
-		if (rclist.front().commandlist.empty())
-		{
-			rclist.pop_front();
-		}
-		RevertableCommand rvundo;
-		for (list<RevertableCommand>::iterator it=rclist.begin(); it!=rclist.end(); ++it)
-		{
-			for (list<CommittedCommand>::iterator jt=it->commandlist.begin(); jt!=it->commandlist.end(); ++jt)
-			{
-				rvundo.PushCommand(&(*jt));
-			}
-		}
-		undolist.push_back(rvundo);
-		*/
 		undolist.push_back(*rc);
 		while ((int)undolist.size() > undostepmax)
 		{
@@ -1049,12 +1019,14 @@ void Command::DoPushRevertable()
 			MainInterface::getInstance().OnClearPreviousHistory();
 		}
 	}
+	*/
+
+	bool pushed=false;
 	if (!IsUnDoReDoing())
 	{
 		ClearReDo();
 
 		string strcomm;
-		bool pushed=false;
 		int firstcomm = 0;
 		int firstusefulcomm = 0;
 		bool multicomm = false;
@@ -1105,7 +1077,7 @@ void Command::DoPushRevertable()
 		}
 		if (pushed)
 		{
-			SnapshotManager::getInstance().OnPushRevertable();
+//			SnapshotManager::getInstance().OnPushRevertable();
 			int comm = firstusefulcomm?firstusefulcomm:firstcomm;
 			string descstr = GetCommandDescriptionStr(comm);
 			if (multicomm)
@@ -1113,13 +1085,17 @@ void Command::DoPushRevertable()
 				descstr += "...";
 			}
 			MainInterface::getInstance().OnPushRevertable(descstr.c_str(), strcomm.c_str(), comm);
+			PushUnDo();
 		}
 	}
+	/*
 	if (undoredoflag == CUNDOREDO_REDOING)
 	{
 		ExitReDo();
 	}
+	*/
 	rcbuffer.Clear();
+	return pushed;
 }
 
 void Command::PushRevertable( RevertableCommand * rc )
@@ -1133,29 +1109,6 @@ void Command::PushRevertable( RevertableCommand * rc )
 		rcbuffer.PushEndMark();
 	}
 
-}
-
-void Command::ClearReDo()
-{
-	int ntodelete = redolist.size();
-	if (ntodelete)
-	{
-		redolist.clear();
-		SnapshotManager::getInstance().OnClearReDo(ntodelete);
-		MainInterface::getInstance().OnClearReDo(ntodelete);
-	}
-}
-
-void Command::ClearUnDo()
-{
-	int ntodelete = undolist.size();
-	if (ntodelete)
-	{
-		undolist.clear();
-		SnapshotManager::getInstance().OnClearUnDo(ntodelete);
-		MainInterface::getInstance().OnClearUnDo(ntodelete);
-	}
-	CreateCommandCommit(COMM_INITIAL);
 }
 
 void Command::OnInit()

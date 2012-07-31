@@ -19,7 +19,7 @@ GObjectPicker::GObjectPicker(void)
 	bTestMode = false;
 	for (int i=0; i<GOPONLINE_MAX; i++)
 	{
-		pFakeLine[i] = new GBezierLine(&(GObjectManager::getInstance().fakebasenode), PointF2D(0, 0), PointF2D(0, 0));
+		pFakeLine[i] = new GBezierLine(GObjectManager::getInstance().GetFakeBaseNode(), PointF2D(0, 0), PointF2D(0, 0));
 	}
 
 	bLockXAxis = false;

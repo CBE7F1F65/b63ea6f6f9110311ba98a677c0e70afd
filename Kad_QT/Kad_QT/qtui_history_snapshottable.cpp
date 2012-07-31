@@ -2,6 +2,7 @@
 #include "qtui_history_snapshottable.h"
 #include "IconManager.h"
 #include "SnapshotManager.h"
+#include "MainInterface.h"
 
 #define _UIHST_ICONSIZE  ICMSIZE_LARGE
 
@@ -68,5 +69,9 @@ void QTUI_History_SnapshotTable::DeleteSnapshot()
 
 void QTUI_History_SnapshotTable::RevertToSnapshot(int nSelected)
 {
-    SnapshotManager::getInstance().RevertToSnapshot(nSelected);
+	MainInterface::getInstance().OnCommandWithParam(
+		COMM_RESTORETOSNAPSHOT,
+		CCCWPARAM_I(nSelected+1),
+		NULL);
+//    SnapshotManager::getInstance().RevertToSnapshot(nSelected);
 }

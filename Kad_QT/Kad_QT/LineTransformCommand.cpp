@@ -55,12 +55,9 @@ void LineTransformCommand::OnDoneCommand()
 {
 	int index = pcommand->GetParamI(CSP_LINETRANSFORM_I_INDEX);
 	GObject * pObj = pgm->FindObjectByID(index);
-	if (!pObj)
+	if (!pObj || !pObj->isLine())
 	{
-		return;
-	}
-	if (!pObj->isLine())
-	{
+		Terminal();
 		return;
 	}
 	GLine * pLine = (GLine *)pObj;
@@ -68,6 +65,7 @@ void LineTransformCommand::OnDoneCommand()
 	switch (comm)
 	{
 	case COMM_TOBEZIER:
+		
 		if (pLine->toBezierLine())
 		{
 			PushRevertable(
@@ -90,6 +88,7 @@ void LineTransformCommand::OnDoneCommand()
 				PointF2D ptEH = pBezier->GetEndPoint()->GetHandle()->GetPointF2D();
 				GHandlePoint * pBHBind = pBezier->GetBeginPoint()->GetHandle()->getBindWith();
 				GHandlePoint * pEHBind = pBezier->GetEndPoint()->GetHandle()->getBindWith();
+
 				if (pBezier->toStraightLine())
 				{
 					PushRevertable(

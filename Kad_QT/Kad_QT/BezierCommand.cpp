@@ -429,7 +429,7 @@ void BezierCommand::OnDoneCommand()
 	pcommand->GetParamXY(CSP_BEZIER_XY_BH, &xbh, &ybh);
 	pcommand->GetParamXY(CSP_BEZIER_XY_NA, &xe, &ye);
 	pcommand->GetParamXY(CSP_BEZIER_XY_NH, &xeh, &yeh);
-
+	
 	GBezierLine * pLine = new GBezierLine(pgm->GetActiveLayer(), PointF2D(xb, yb), PointF2D(xbh, ybh), PointF2D(xeh, yeh), PointF2D(xe, ye));
 	pNCLine = pLine;
 

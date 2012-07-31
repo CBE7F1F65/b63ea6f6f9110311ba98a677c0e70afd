@@ -66,10 +66,12 @@ void MergeCommand::OnDoneCommand()
 	GObject * pToObj = pgm->FindObjectByID(toindex);
 	if (!pFromObj || !pToObj)
 	{
+		Terminal();
 		return;
 	}
 	if (!pFromObj->isPoint() || !pToObj->isPoint())
 	{
+		Terminal();
 		return;
 	}
 	GPoint * pFromPoint = (GPoint *)pFromObj;
@@ -77,8 +79,10 @@ void MergeCommand::OnDoneCommand()
 	
 	if (pFromPoint->isMergeWith(pToPoint))
 	{
+		Terminal();
 		return;
 	}
+	
 	pFromPoint->MergeWith(pToPoint);
 
 	PushRevertable(

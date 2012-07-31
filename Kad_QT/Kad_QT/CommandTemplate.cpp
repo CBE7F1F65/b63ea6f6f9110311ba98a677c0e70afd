@@ -627,3 +627,8 @@ void CommandTemplate::Release()
 {
 	tBaseNode.RemoveAllChildren(true);
 }
+
+void CommandTemplate::Terminal( int iReason/*=-1*/ )
+{
+	pcommand->TerminalCommand();
+}

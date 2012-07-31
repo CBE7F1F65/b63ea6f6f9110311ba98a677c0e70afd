@@ -8,12 +8,13 @@ public:
 	~SnapshotInfo(){};
 	void ClearSet()
 	{
-		diffstep=0;
-		bValid = true;
+//		diffstep=0;
+//		bValid = true;
 		savednode.RemoveAllChildren(true);
 	};
 
 	bool SaveNode(GBaseNode * pBaseNode=NULL);
+	/*
 	bool isValid()
 	{
 		return bValid;
@@ -25,7 +26,8 @@ public:
 
 	int diffstep;
 	bool bValid;
-	GBaseNode savednode;
+	*/
+	GBaseNodeCopyStack savednode;
 };
 
 class SnapshotManager
@@ -40,21 +42,21 @@ private:
 	void operator=(SnapshotManager const&);
 
 public:
-	void OnDeleteUnDo(int maxsize);
-	void OnUnDo();
-	void OnPushRevertable();
-	void OnReDo();
-	void OnClearReDo(int nClear);
-	void OnClearUnDo(int nClear);
+//	void OnDeleteUnDo(int maxsize);
+//	void OnUnDo();
+//	void OnPushRevertable();
+//	void OnReDo();
+//	void OnClearReDo(int nClear);
+//	void OnClearUnDo(int nClear);
 
-	void LoadNode(GObject * node);
+	void LoadNode(GBaseNodeCopyStack * node);
 
-	void _MovePointer(int movediff);
+//	void _MovePointer(int movediff);
 
 	int AddSnapshot();
 	int DeleteSnapshot(int nSnapshot);
 	bool RevertToSnapshot(int nSnapshot);
-	bool NeedLoad(int nSnapshot);
+//	bool NeedLoad(int nSnapshot);
 
 	void Release();
 

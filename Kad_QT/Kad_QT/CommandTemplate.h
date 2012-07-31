@@ -36,6 +36,8 @@ public:
 	virtual void OnProcessUnDoCommand(RevertableCommand * rc);
 	void CallProcessUnDoCommand(int comm, RevertableCommand * rc);
 
+	void Terminal(int iReason=-1);
+
 	virtual void OnClearTemp();
 	void CallClearTemp();
 

@@ -151,6 +151,7 @@ public:
 	list<CommittedCommand> commandlist;
 };
 
+
 #define CUNDOREDO_NULL		0x00
 #define CUNDOREDO_UNDOING	0x01
 #define CUNDOREDO_REDOING	0x02
@@ -245,6 +246,32 @@ public:
 	void EnableSubCommand(bool bdisplay, list<int> * sublist);
 	void ClearEnabledSubCommand();
 
+	bool DoUnDo(int undostep=1);
+	bool DoReDo(int redostep=1);
+/*
+	bool DoUnDoCommandCommit(RevertableCommand * rc);
+	bool DoUnDoCommandParam(int command, RevertableCommand * rc);
+	bool DoReDoCommandSingle(RevertableCommand * rc);
+	void RevertUnDoList(RevertableCommand * rc);
+
+	bool DoUnDoAddNode(int objid, int objparentid);
+	bool DoReDoAddNode(int objid, int objparentid);
+	bool DoUnDoDeleteNode(int objparentid, int objafterid);
+	bool DoReDoDeleteNode(int objparentid, int objafterid);
+	bool DoUnDoReparentNode(int objid, int oparentid, int afterid);
+	bool DoReDoReparentNode(int objid, int oparentid, int afterid);
+*/
+	bool IsUnDoReDoing(){return undoredoflag!=0;};
+	bool canCommandDone();
+
+	void PushRevertable(RevertableCommand * rc);
+
+private:
+	int PushCommand();
+	int PullCommand();
+	bool PushUnDo();
+	bool DoPushRevertable();
+
 	void LogCreate();
 	void LogFinish();
 	void LogTerminal();
@@ -258,36 +285,13 @@ public:
 	void LogUnDo();
 	void LogReDo();
 
-	bool DoUnDo(int undostep=1);
-	bool DoReDo(int redostep=1);
+//	list<RevertableCommand> undolist;
+//	list<RevertableCommand> redolist;
 
-	bool DoUnDoCommandCommit(RevertableCommand * rc);
-	bool DoUnDoCommandParam(int command, RevertableCommand * rc);
-	bool DoReDoCommandSingle(RevertableCommand * rc);
-	void RevertUnDoList(RevertableCommand * rc);
-
-	bool DoUnDoAddNode(int objid, int objparentid);
-	bool DoReDoAddNode(int objid, int objparentid);
-	bool DoUnDoDeleteNode(int objparentid, int objafterid);
-	bool DoReDoDeleteNode(int objparentid, int objafterid);
-	bool DoUnDoReparentNode(int objid, int oparentid, int afterid);
-	bool DoReDoReparentNode(int objid, int oparentid, int afterid);
-
-	bool IsUnDoReDoing(){return undoredoflag!=0;};
-	bool canCommandDone();
+	RevertableCommand rcbuffer;
 	int undoredoflag;
 	int undostepmax;
-
-	int PushCommand();
-	int PullCommand();
-
-	void PushRevertable(RevertableCommand * rc);
-	RevertableCommand rcbuffer;
-	void DoPushRevertable();
-	list<RevertableCommand> undolist;
-	list<RevertableCommand> redolist;
-
-protected:
+private:
 	int SetCurrentCommand(CommandStepInfo * info);
 	int ClearCurrentCommand(bool callterminal=false);
 public:

@@ -43,7 +43,7 @@ enum{
 #ifdef DEBUGTEST
 	COMM_TEST,
 #endif // DEBUGTEST
-
+	
 	// Node
 	COMM_DELETEITEM,
 	COMM_REPARENT,
@@ -76,6 +76,9 @@ enum{
 	// Draw
 	COMM_LINE,		// line
 	COMM_BEZIER,	// bezier curve
+
+	// Other
+	COMM_RESTORETOSNAPSHOT,
 
 	_COMM_NORMALCOMMANDEND,
 	_COMM_INTERNALBEGIN,
@@ -470,6 +473,18 @@ enum{
 	CSI_BEZIER_WANTNHY,
 };
 
+/************************************************************************/
+/* RESTORETOSNAPSHOT                                                    */
+/************************************************************************/
+
+enum{
+	CSP_RESTORETOSNAPSHOT_I_INDEX,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_RESTORETOSNAPSHOT_DUMMY,
+	CSI_RESTORETOSNAPSHOT_WANTINDEX,
+};
 
 /************************************************************************/
 /*                                                                      */

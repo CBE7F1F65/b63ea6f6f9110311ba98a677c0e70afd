@@ -59,6 +59,7 @@ void SetWorkingLayerCommand::OnDoneCommand()
 	int newobjid = pcommand->GetParamI(CSP_SETWORKINGLAYER_I_NEWINDEX);
 //	GObject * lastObj = GObjectManager::getInstance().FindObjectByID(lastobjid);
 	GObject * newObj = pgm->FindObjectByID(newobjid);
+	
 	pgm->SetActiveLayer_Internal(newObj);
 
 	PushRevertable(

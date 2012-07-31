@@ -201,6 +201,7 @@ void ExtendCommand::OnDoneCommand()
 		return;
 	}
 	QuadBezierPointF2D quadBezier(pBezier);
+
 	if (pBezier->Extend(fBegin, fEnd))
 	{
 		PushRevertable(

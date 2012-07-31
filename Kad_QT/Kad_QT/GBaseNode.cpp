@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "GBaseNode.h"
-
+#include "GObjectManager.h"
 
 GBaseNode::GBaseNode()
 {
@@ -12,9 +12,14 @@ GBaseNode::~GBaseNode(void)
 {
 }
 
-void GBaseNode::CopyBaseTo( GBaseNode * pTo )
+void GBaseNode::CopyBaseTo( GBaseNodeCopyStack * pTo )
 {
-	CreateNewClone(pTo);
+	ASSERT(pTo);
+	GBaseNode * pNewBase = (GBaseNode *)CreateNewClone(pTo);
+	if (!pNewBase)
+	{
+		DASSERT(false);
+	}
 }
 
 GObject * GBaseNode::CreateNewClone( GObject * pNewParent/*=NULL*/, GObject * pBeforeObj/*=NULL*/ )
@@ -24,13 +29,14 @@ GObject * GBaseNode::CreateNewClone( GObject * pNewParent/*=NULL*/, GObject * pB
 
 }
 
-void GBaseNode::CopyBaseFrom( GBaseNode * pFrom )
+void GBaseNode::RestoreBaseFrom( GBaseNodeCopyStack * pFrom )
 {
 	if (pFrom)
 	{
-		GObject * pOBase = pFrom->getChildren()->back();
+		GBaseNode * pOBase = (GBaseNode *)pFrom->getChildren()->back();
 		if (pOBase)
 		{
+			RemoveAllChildren(true);
 			for (list<GObject *>::reverse_iterator it=pOBase->getChildren()->rbegin(); it!=pOBase->getChildren()->rend(); ++it)
 			{
 				(*it)->CreateNewClone(this);

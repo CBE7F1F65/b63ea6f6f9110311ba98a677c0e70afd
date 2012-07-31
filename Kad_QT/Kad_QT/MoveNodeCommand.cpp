@@ -89,6 +89,7 @@ void MoveNodeCommand::OnDoneCommand()
 	GObject * pObj = pgm->FindObjectByID(index);
 	if (!pObj)
 	{
+		Terminal();
 		return;
 	}
 	float newx, newy;
@@ -107,10 +108,10 @@ void MoveNodeCommand::OnDoneCommand()
 	PointF2D p(tox, tox);
 	if (p.Equals(PointF2D(oldx, oldy)))
 	{
-		pcommand->StepTo(CSI_TERMINAL);
+		Terminal();
 		return;
 	}
-
+	
 	if (pObj->CallMoveTo(pObj, tox, toy, false))
 	{
 		pgm->OnTreeChanged(pObj->getParent(), pObj);

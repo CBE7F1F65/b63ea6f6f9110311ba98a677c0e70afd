@@ -83,10 +83,10 @@ public:
     void OnPrecisionChanged();
 
 	void AddNodeToDelete(GObject * pDeletedObj);
-
+	/*
 	void MoveToUnDoList(GObject * node);
 	GObject * GetUnDoListFront();
-
+	*/
 	bool CanDeleteItem( GObject * pObj );
 	bool CanReparentItem( GObject * pObj, int newparentindex );
 	bool CanDuplicateItem( GObject * pObj );
@@ -105,25 +105,33 @@ public:
 	void UnblockTryMove();
 	void CancelTryMove();
 
+	bool BeginClone();
+	void PushClone(GObject * pOri, GObject * pCloned);
+	void EndClone();
+
 	bool IsTryMoving(){return bTryMove;};
 	bool IsTryMoveBlocking(){return bTryMoveBlock;};
 
+	void SetLockTreeChange();
+
 public:
 	GMainBaseNode * GetMainBaseNode(){return pBaseNode;};
+	GBaseNode * GetFakeBaseNode(){return &fakebasenode;};
 private:
 	GMainBaseNode * pBaseNode;
 	GObject * pLastToSetActiveNode;
 	list<GObject*> nodetodelete;
 
-	int nLockTreeChangeState;
-public:
-	void SetLockTreeChange();
+	bool bCloning;
+	map<GObject *, GObject *> mapCloneList;
 
-	GHistoryBaseNode undobasenode;
+	int nLockTreeChangeState;
+
+//	GHistoryBaseNode undobasenode;
 	GBaseNode fakebasenode;
 	int stackedLayerIndex;
 	string defaultLayerName;
-private:
+
 	GLayer * pActiveLayer;
 
 //	GLayer * pActiveLayer;

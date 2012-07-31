@@ -11,6 +11,8 @@
 #include "Command.h"
 #include "MarkingManager.h"
 
+#include "URManager.h"
+
 #define GMLOCKTREESTATE_NULL			0x00
 #define GMLOCKTREESTATE_REQUIRELOCK		0x01
 #define GMLOCKTREESTATE_AFTERLOCK		0x02
@@ -31,18 +33,22 @@ void GObjectManager::Init()
 	Release();
 	pBaseNode = &GMainBaseNode::getInstance();//new GLayer(0, ColorManager::getInstance().GetLayerLineColor(0), "");
 	GLayer * pLayer = NewLayer(NULL, GetDefaultLayerName(stackedLayerIndex));
+
+	URManager::getInstance().Init(pBaseNode);
+
 	pActiveLayer = pLayer;
 	pLastActiveLayer = pLayer;
 }
 
 void GObjectManager::Release()
 {
+	URManager::getInstance().Release();
 	nLockTreeChangeState = GMLOCKTREESTATE_REQUIRELOCK;
 	if (pBaseNode)
 	{
 		pBaseNode->RemoveAllChildren(true);
 	}
-	undobasenode.RemoveAllChildren(true);
+//	undobasenode.RemoveAllChildren(true);
 	fakebasenode.RemoveAllChildren(true);
 	OnTreeChanged(pBaseNode, pBaseNode, false);
 	Delete();
@@ -58,6 +64,9 @@ void GObjectManager::Release()
 	nMoveActionType = GMMATYPE_MOVE;
 	bTryMove = false;
 	bTryMoveBlock = false;
+
+	bCloning = false;
+	mapCloneList.clear();
 }
 
 void GObjectManager::Update()
@@ -149,7 +158,7 @@ void GObjectManager::AddNodeToDelete( GObject * pDeletedObj )
 		MarkingManager::getInstance().OnDeleteNode(pDeletedObj);
 	}
 }
-
+/*
 void GObjectManager::MoveToUnDoList( GObject * node )
 {
 	if (node)
@@ -166,7 +175,7 @@ GObject * GObjectManager::GetUnDoListFront()
 {
 	return undobasenode.getNewestChild();
 }
-
+*/
 void GObjectManager::OnTreeWillChange()
 {
 	MainInterface::getInstance().OnTreeLockChange(true);
@@ -662,4 +671,54 @@ int GObjectManager::GetMoveTypeInfo( int * pAngle/*=NULL*/, float * pScaleX/*=NU
 		*pScaleY = fMoveActionYVal;
 	}
 	return nMoveActionType;
+}
+
+bool GObjectManager::BeginClone()
+{
+	if (bCloning)
+	{
+		return false;
+	}
+	bCloning = true;
+	return true;
+}
+
+void GObjectManager::PushClone( GObject * pOri, GObject * pCloned )
+{
+	ASSERT(bCloning);
+	mapCloneList.insert(pair<GObject *, GObject *>(pOri, pCloned));
+}
+
+void GObjectManager::EndClone()
+{
+	ASSERT(bCloning);
+	bCloning = false;
+
+	if (!mapCloneList.empty())
+	{
+		// Adjust Relationship here!
+		for (map<GObject *, GObject *>::iterator it=mapCloneList.begin(); it!=mapCloneList.end(); ++it)
+		{
+			GNodeRelationshipGroup * pnrg = it->first->CreateRelationshipGroup(false, true);
+			if (pnrg)
+			{
+				list<GNodeRelationship *> * plstRel = pnrg->GetRelList();
+				for (list<GNodeRelationship *>::iterator pRelIt = plstRel->begin(); pRelIt!=plstRel->end(); ++pRelIt)
+				{
+					GNodeRelationship * pRel = *pRelIt;
+					for (map<GObject *, GObject *>::iterator jt=mapCloneList.begin(); jt!=mapCloneList.end(); ++jt)
+					{
+						if (pRel->GetOther() == jt->first)
+						{
+							pRel->RestoreTo(it->second, jt->second);
+							break;
+						}
+					}
+				}
+				delete pnrg;
+			}
+		}
+
+		mapCloneList.clear();
+	}
 }

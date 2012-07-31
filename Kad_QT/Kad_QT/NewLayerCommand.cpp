@@ -57,7 +57,7 @@ void NewLayerCommand::OnDoneCommand()
 	const char * layername = pcommand->GetParamS(CSP_NEWLAYER_S_I_NAME_INDEX);
 	int layerIndex = pcommand->GetParamI(CSP_NEWLAYER_S_I_NAME_INDEX);
 	GLayer * pLayer = NULL;
-
+	
 	if (comm == COMM_NEWLAYER)
 	{
 		pLayer = pgm->NewLayer(pgm->GetActiveLayer(), layername, layerIndex);

@@ -103,21 +103,22 @@ void ClipCommand::OnDoneCommand()
 {
 	int index = pcommand->GetParamI(CSP_CLIP_I_F_INDEX_PROPORTION);
 	GObject * pObj = pgm->FindObjectByID(index);
-	if (!pObj->isLine())
+	if (!pObj || !pObj->isLine())
 	{
-		pcommand->TerminalCommand();
+		Terminal();
 		return;
 	}
 	float fProporation = pcommand->GetParamF(CSP_CLIP_I_F_INDEX_PROPORTION);
 	if (fProporation <= 0 || fProporation >= 1)
 	{
-		pcommand->TerminalCommand();
+		Terminal();
 		return;
 	}
 
 	GLine * pLine = (GLine *)pObj;
 	PointF2D ptOBH = pLine->GetBeginPoint()->GetHandle()->GetPointF2D();
 	PointF2D ptOEH = pLine->GetEndPoint()->GetHandle()->GetPointF2D();
+
 	GLine * pClonedLine = pLine->Clip(fProporation);
 	if (pClonedLine)
 	{

@@ -2,6 +2,18 @@
 #include "glayer.h"
 #include "GNodeRelationship.h"
 
+class GBaseNodeCopyStack : public GObject
+{
+public:
+	typedef GObject super;
+public:
+	GBaseNodeCopyStack(){};
+	virtual ~GBaseNodeCopyStack(){};
+
+public:
+	virtual GObject * CreateNewClone(GObject * pNewParent=NULL, GObject * pBeforeObj=NULL) {ASSERT(false); return NULL;};
+};
+
 class GBaseNode :
 	public GLayer
 {
@@ -11,9 +23,10 @@ public:
 	GBaseNode(void);
 	virtual ~GBaseNode(void);
 
-	void CopyBaseFrom( GBaseNode * pFrom );
-    void CopyBaseTo( GBaseNode * pTo );
+	void RestoreBaseFrom( GBaseNodeCopyStack * pFrom );
+    void CopyBaseTo( GBaseNodeCopyStack * pTo );
 
+public:
 	virtual GObject * CreateNewClone(GObject * pNewParent=NULL, GObject * pBeforeObj=NULL);
 };
 

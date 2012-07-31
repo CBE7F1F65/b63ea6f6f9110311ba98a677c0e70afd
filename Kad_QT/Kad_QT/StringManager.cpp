@@ -142,6 +142,8 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_LINE,	"LINE",	"L",	"Draw Line",	""	);
 	_BSET(	COMM_BEZIER,	"BEZIER",	"B",	"Draw Bezier Curve",	""	);
 
+	_BSET(	COMM_RESTORETOSNAPSHOT, "RESTORETOSNAPSHOT",	"",	"Restore to Snapshot",	""	);
+
 #undef _SSET
 #undef _LSET
 #undef _BSET

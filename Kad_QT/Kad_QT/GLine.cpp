@@ -296,9 +296,9 @@ bool GLine::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelations
 	return false;
 }
 
-GNodeRelationshipGroup * GLine::CreateRelationshipGroup()
+GNodeRelationshipGroup * GLine::CreateRelationshipGroup( bool bClingBy/*=true*/, bool bOneWay/*=false*/ )
 {
-	if (!clingByList.empty())
+	if (bClingBy && !clingByList.empty())
 	{
 		GNodeRelationshipGroup * pnrg = new GNodeRelationshipGroup(this);
 		for (list<GPoint *>::iterator it=clingByList.begin(); it!=clingByList.end(); ++it)

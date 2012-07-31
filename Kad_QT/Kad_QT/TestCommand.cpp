@@ -155,6 +155,7 @@ void TestCommand::OnDoneCommand()
 	float xb, yb, xe, ye;
 	pcommand->GetParamXY(CSP_LINE_XY_B, &xb, &yb);
 	pcommand->GetParamXY(CSP_LINE_XY_N, &xe, &ye);
+	
 	GStraightLine * pLine = new GBezierLine(pgm->GetActiveLayer(), PointF2D(xb, yb), PointF2D(xe, ye));
 
 	PushRevertable(

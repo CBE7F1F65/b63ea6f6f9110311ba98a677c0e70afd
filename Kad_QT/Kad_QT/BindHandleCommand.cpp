@@ -102,7 +102,7 @@ void BindHandleCommand::OnDoneCommand()
 	{
 		oldtotoindex = pOldToToHandlePoint->getID();
 	}
-
+	
     pFromHandlePoint->BindWith(pToHandlePoint);
 
 	PushRevertable(

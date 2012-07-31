@@ -15,16 +15,23 @@
 	}	\
 	ASSERT(pNewParent != this);	\
 	ASSERT(!(pNewParent->isDescendantOf(this)));	\
+	GObjectManager * pgm = &GObjectManager::getInstance();	\
+	bool bSelfCloning = pgm->BeginClone();	\
 	TNAME * _node = new TNAME();	\
 	_node->SetCloning(true); \
 	GBaseNode tempHoldingPlace;	\
-	CloneData(_node, &tempHoldingPlace);
+	CloneData(_node, &tempHoldingPlace);	\
+	pgm->PushClone(this, _node);
 
 #define _GOBJ_CLONE_POST_NORET()	\
 	tempHoldingPlace.AddChild(_node);	\
 	_node->SetCloning(false);	\
 	_node->ReparentBeforeObject(pNewParent, pBeforeObj);	\
-	_node->OnInit();
+	_node->OnInit();	\
+	if (bSelfCloning)	\
+	{	\
+		pgm->EndClone();	\
+	}
 
 #define _GOBJ_CLONE_POST()	\
 	_GOBJ_CLONE_POST_NORET();	\
@@ -83,7 +90,7 @@ public:
 	virtual int RemoveFromParent(bool bRelease);
 	virtual void CallResetID(int beginindex=0);
 
-	virtual GNodeRelationshipGroup * CreateRelationshipGroup(){return NULL;};
+	virtual GNodeRelationshipGroup * CreateRelationshipGroup(bool bClingBy=true, bool bOneWay=false){return NULL;};
 	virtual void Independ(){};
 
 	virtual GObject * FindNodeByID(int id);

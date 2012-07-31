@@ -98,7 +98,7 @@ void MoveNodeBatchCommand::OnDoneCommand()
 	PointF2D p(xoffset, yoffset);
 	if (p.Equals(PointF2D(0, 0)))
 	{
-		pcommand->StepTo(CSI_TERMINAL);
+		Terminal();
 		return;
 	}
 
@@ -107,10 +107,18 @@ void MoveNodeBatchCommand::OnDoneCommand()
 	while (index >= 0)
 	{
 		GObject * pObj = pgm->FindObjectByID(index);
-		ASSERT(pObj);
-		lobjs.push_back(pObj);
+		if (pObj)
+		{
+			lobjs.push_back(pObj);
+		}
 		i++;
 		index = pcommand->GetParamI(CSP_MOVENODE_BATCH_I_XY_INDEXES_NEWPOS+i);
+	}
+
+	if (lobjs.empty())
+	{
+		Terminal();
+		return;
 	}
 
 	pgm->SetLockTreeChange();
@@ -137,7 +145,8 @@ void MoveNodeBatchCommand::OnDoneCommand()
 
 	if (lobjs.empty())
 	{
-		pcommand->StepTo(CSI_TERMINAL);
+		Terminal();
+		return;
 	}
 	else
 	{

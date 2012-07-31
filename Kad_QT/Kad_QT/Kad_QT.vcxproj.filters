@@ -135,6 +135,9 @@
     <Filter Include="Main\GObject\Relationship">
       <UniqueIdentifier>{a4af9df9-c204-4977-bb3a-6747f0d2fc95}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\Command\Other">
+      <UniqueIdentifier>{a86a7d58-ded3-4b5d-8dc7-f23cd683bd89}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_kad_qt.cpp">
@@ -494,6 +497,12 @@
     <ClCompile Include="FlipNodeBatchCommand.cpp">
       <Filter>Main\Command\Node\Flip</Filter>
     </ClCompile>
+    <ClCompile Include="URManager.cpp">
+      <Filter>Main\Command\UndoRedo</Filter>
+    </ClCompile>
+    <ClCompile Include="RestoreToSnapshotCommand.cpp">
+      <Filter>Main\Command\Other</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -708,6 +717,12 @@
     </ClInclude>
     <ClInclude Include="FlipNodeBatchCommand.h">
       <Filter>Main\Command\Node\Flip</Filter>
+    </ClInclude>
+    <ClInclude Include="URManager.h">
+      <Filter>Main\Command\UndoRedo</Filter>
+    </ClInclude>
+    <ClInclude Include="RestoreToSnapshotCommand.h">
+      <Filter>Main\Command\Other</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

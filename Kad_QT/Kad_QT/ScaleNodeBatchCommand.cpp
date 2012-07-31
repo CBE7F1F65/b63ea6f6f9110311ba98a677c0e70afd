@@ -290,10 +290,18 @@ void ScaleNodeBatchCommand::OnDoneCommand()
 	while (index >= 0)
 	{
 		GObject * pObj = pgm->FindObjectByID(index);
-		ASSERT(pObj);
-		lobjs.push_back(pObj);
+		if (pObj)
+		{
+			lobjs.push_back(pObj);
+		}
 		i++;
 		index = pcommand->GetParamI(CSP_SCALENODE_BATCH_I_INDEXES+i);
+	}
+
+	if (lobjs.empty())
+	{
+		Terminal();
+		return;
 	}
 
 	pgm->SetLockTreeChange();

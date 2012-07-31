@@ -65,7 +65,7 @@ public:
 
 	virtual void OnRemove();
 
-	virtual GNodeRelationshipGroup * CreateRelationshipGroup();
+	virtual GNodeRelationshipGroup * CreateRelationshipGroup(bool bClingBy=true, bool bOneWay=false);
 	virtual void Independ();
 
 	bool AddClingBy(GPoint * pPoint);

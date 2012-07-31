@@ -119,7 +119,9 @@ void DeleteItemCommand::OnDoneCommand()
 			{
 				afterid = pOrderSibling->getID();
 			}
-			pgm->MoveToUnDoList(pObj);
+
+			pObj->RemoveFromParent(true);
+//			pgm->MoveToUnDoList(pObj);
 
 			PushRevertable(
 				CCMake_C(COMM_I_DELETENODE, 2),

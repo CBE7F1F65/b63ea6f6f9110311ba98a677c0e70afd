@@ -39,7 +39,7 @@ public:
 
 	virtual void OnRemove();
 
-	virtual GNodeRelationshipGroup * CreateRelationshipGroup();
+	virtual GNodeRelationshipGroup * CreateRelationshipGroup(bool bClingBy=true, bool bOneWay=false);
 	virtual void Independ();
 
 	// Only Point To Line!
@@ -193,7 +193,7 @@ public:
 
 	virtual const char * getDisplayName();
 
-	virtual GNodeRelationshipGroup * CreateRelationshipGroup();
+	virtual GNodeRelationshipGroup * CreateRelationshipGroup(bool bClingBy=true, bool bOneWay=false);
 	virtual void Independ();
 
 	GHandlePoint * getBindWith(){return pBindWith;};

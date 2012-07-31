@@ -201,7 +201,7 @@ void GPoint::ClearClingTo()
 
 bool GPoint::ClingTo( GObject * pObj, float fProp )
 {
-	if (fProp < M_FLOATEXTREMEEPS || fProp > M_FLOATEXTREMEEPS)
+	if (fProp < M_FLOATEXTREMEEPS || fProp > 1-M_FLOATEXTREMEEPS)
 	{
 		return false;
 	}
@@ -511,20 +511,32 @@ bool GPoint::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelation
 	return false;
 }
 
-GNodeRelationshipGroup * GPoint::CreateRelationshipGroup()
+GNodeRelationshipGroup * GPoint::CreateRelationshipGroup( bool bClingBy/*=true*/, bool bOneWay/*=false*/ )
 {
 	if (!mergeWithList.empty() || pClingTo)
 	{
 		GNodeRelationshipGroup * pnrg = new GNodeRelationshipGroup(this);
 		if (!mergeWithList.empty())
 		{
-			GNodeRelMergeWith * pnrmerg = new GNodeRelMergeWith(mergeWithList.front());
-			pnrg->AddRelationship(pnrmerg);
+			for (list<GPoint *>::iterator it=mergeWithList.begin(); it!=mergeWithList.end(); ++it)
+			{
+				GPoint * pOther = *it;
+				if (!bOneWay || this<pOther)
+				{
+					GNodeRelMergeWith * pnrmerg = new GNodeRelMergeWith(mergeWithList.front());
+					pnrg->AddRelationship(pnrmerg);
+				}
+			}
 		}
 		if (pClingTo)
 		{
 			GNodeRelClingTo * pnrclingto = new GNodeRelClingTo(pClingTo, fClingToProportion);
 			pnrg->AddRelationship(pnrclingto);
+		}
+		if (pnrg->GetRelList()->empty())
+		{
+			delete pnrg;
+			return NULL;
 		}
 		return pnrg;
 	}
@@ -930,9 +942,9 @@ bool GHandlePoint::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRe
 	return false;
 }
 
-GNodeRelationshipGroup * GHandlePoint::CreateRelationshipGroup()
+GNodeRelationshipGroup * GHandlePoint::CreateRelationshipGroup( bool bClingBy/*=true*/, bool bOneWay/*=false*/ )
 {
-	if (pBindWith)
+	if (pBindWith && (!bOneWay || this<pBindWith))
 	{
 		GNodeRelationshipGroup * pnrg = new GNodeRelationshipGroup(this);
 		GNodeRelBindWith * pnrbind = new GNodeRelBindWith(pBindWith);

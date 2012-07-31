@@ -4,6 +4,8 @@
 #include "GUICoordinate.h"
 #include "CommandTemplate.h"
 
+#include "URManager.h"
+
 int Command::ProcessPending( int index, int useflag, int fillprompt, int step, int wantprompt/*=0*/, bool pushback/*=true*/ )
 {
 	if (!pendingparam.type)

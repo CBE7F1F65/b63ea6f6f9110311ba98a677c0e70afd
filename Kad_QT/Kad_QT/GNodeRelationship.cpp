@@ -27,12 +27,16 @@ bool GNodeRelMergeWith::CanAddRelTo( GObject * pObj )
 	return pObj->canBeMergedWith();
 }
 
-bool GNodeRelMergeWith::RestoreTo( GObject * pObj )
+bool GNodeRelMergeWith::RestoreTo( GObject * pObj, GObject * pFrom/*=NULL*/ )
 {
 	ASSERT(pObj);
 	ASSERT(pObj->canBeMergedWith());
 	GPoint * pPoint = (GPoint *)pObj;
-	pPoint->MergeWith((GPoint *)pOther);
+	if (!pFrom)
+	{
+		pFrom = pOther;
+	}
+	pPoint->MergeWith((GPoint *)pFrom);
 	return true;
 }
 /************************************************************************/
@@ -50,12 +54,16 @@ bool GNodeRelBindWith::CanAddRelTo( GObject * pObj )
 	return pObj->isHandlePoint();
 }
 
-bool GNodeRelBindWith::RestoreTo( GObject * pObj )
+bool GNodeRelBindWith::RestoreTo( GObject * pObj, GObject * pFrom/*=NULL*/ )
 {
 	ASSERT(pObj);
 	ASSERT(pObj->isHandlePoint());
 	GHandlePoint * pHandle = (GHandlePoint *)pObj;
-	pHandle->BindWith((GHandlePoint *)pOther);
+	if (!pFrom)
+	{
+		pFrom = pOther;
+	}
+	pHandle->BindWith((GHandlePoint *)pFrom);
 	return true;
 }
 /************************************************************************/
@@ -74,12 +82,16 @@ bool GNodeRelClingTo::CanAddRelTo( GObject * pObj )
 	return pObj->canAttach();
 }
 
-bool GNodeRelClingTo::RestoreTo( GObject * pObj )
+bool GNodeRelClingTo::RestoreTo( GObject * pObj, GObject * pFrom/*=NULL*/ )
 {
 	ASSERT(pObj);
 	ASSERT(pObj->canAttach());
 	GPoint * pPoint = (GPoint *)pObj;
-	pPoint->ClingTo(pOther, fClingProp);
+	if (!pFrom)
+	{
+		pFrom = pOther;
+	}
+	pPoint->ClingTo(pFrom, fClingProp);
 	return true;
 }
 /************************************************************************/
@@ -98,11 +110,15 @@ bool GNodeRelClingBy::CanAddRelTo( GObject * pObj )
 	return pObj->canBeClingTo();
 }
 
-bool GNodeRelClingBy::RestoreTo( GObject * pObj )
+bool GNodeRelClingBy::RestoreTo( GObject * pObj, GObject * pFrom/*=NULL*/ )
 {
 	ASSERT(pObj);
 	ASSERT(pObj->canBeClingTo());
-	((GPoint *)pOther)->ClingTo(pObj, fClingProp);
+	if (!pFrom)
+	{
+		pFrom = pObj;
+	}
+	((GPoint *)pFrom)->ClingTo(pObj, fClingProp);
 	return true;
 }
 /************************************************************************/

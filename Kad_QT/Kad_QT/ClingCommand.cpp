@@ -74,10 +74,12 @@ void ClingCommand::OnDoneCommand()
 	GObject * pToObj = pgm->FindObjectByID(toindex);
 	if (!pFromObj)
 	{
+		pcommand->TerminalCommand();
 		return;
 	}
 	if (!pFromObj->isPoint() ||(pToObj && !pToObj->isLine()))
 	{
+		pcommand->TerminalCommand();
 		return;
 	}
 
@@ -95,8 +97,10 @@ void ClingCommand::OnDoneCommand()
 
 	if (pFromPoint->isClingTo(pToObj) && fabsf(pFromPoint->getClingProportion() - fProportion) < M_FLOATEPS)
 	{
+		pcommand->TerminalCommand();
 		return;
 	}
+	
 	if (pFromPoint->ClingTo(pToObj, fProportion))
 	{
 

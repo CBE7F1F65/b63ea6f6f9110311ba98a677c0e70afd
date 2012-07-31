@@ -24,6 +24,7 @@
 #include "ScaleNodeBatchCommand.h"
 #include "ExtendCommand.h"
 #include "FlipNodeBatchCommand.h"
+#include "RestoreToSnapshotCommand.h"
 
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
@@ -80,6 +81,9 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 		return &LineCommand::getInstance();
 	case COMM_BEZIER:
 		return &BezierCommand::getInstance();
+
+	case COMM_RESTORETOSNAPSHOT:
+		return &RestoreToSnapshotCommand::getInstance();
 
 	case COMM_OUTPUT:
 		return &OutputCommand::getInstance();

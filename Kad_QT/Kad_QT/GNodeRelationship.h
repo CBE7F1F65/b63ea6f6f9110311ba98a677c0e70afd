@@ -19,7 +19,7 @@ public:
 	virtual bool CanAddRelTo(GObject * pObj) = 0;
 	GObject * GetOther(){return pOther;};
 
-	virtual bool RestoreTo(GObject * pObj) = 0;
+	virtual bool RestoreTo(GObject * pObj, GObject * pFrom=NULL) = 0;
 
 protected:
 	GObject * pOther;
@@ -35,7 +35,7 @@ public:
 	virtual ~GNodeRelMergeWith(){};
 
 	virtual bool CanAddRelTo( GObject * pObj );
-	virtual bool RestoreTo(GObject * pObj);
+	virtual bool RestoreTo(GObject * pObj, GObject * pFrom=NULL);
 };
 
 class GNodeRelBindWith : public GNodeRelationship
@@ -47,7 +47,7 @@ public:
 	virtual ~GNodeRelBindWith(){};
 
 	virtual bool CanAddRelTo( GObject * pObj );
-	virtual bool RestoreTo(GObject * pObj);
+	virtual bool RestoreTo(GObject * pObj, GObject * pFrom=NULL);
 };
 
 class GNodeRelClingTo : public GNodeRelationship
@@ -59,7 +59,7 @@ public:
 	virtual ~GNodeRelClingTo(){};
 
 	virtual bool CanAddRelTo( GObject * pObj );
-	virtual bool RestoreTo(GObject * pObj);
+	virtual bool RestoreTo(GObject * pObj, GObject * pFrom=NULL);
 
 	float fClingProp;
 };
@@ -73,7 +73,7 @@ public:
 	virtual ~GNodeRelClingBy(){};
 
 	virtual bool CanAddRelTo( GObject * pObj );
-	virtual bool RestoreTo(GObject * pObj);
+	virtual bool RestoreTo(GObject * pObj, GObject * pFrom=NULL);
 
 	float fClingProp;
 };
@@ -86,6 +86,8 @@ public:
 
 	bool AddRelationship(GNodeRelationship * pRel);
 	bool RemoveRelationship(GObject * pOther=NULL);
+
+	list<GNodeRelationship *> * GetRelList(){return &lstRels;};
 
 	bool RestoreTo(GObject * pObj);
 

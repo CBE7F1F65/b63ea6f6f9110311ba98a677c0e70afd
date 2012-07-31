@@ -23,7 +23,7 @@ void SnapshotManager::Release()
 		it->ClearSet();
 	}
 }
-
+/*
 void SnapshotManager::OnDeleteUnDo( int maxsize )
 {
 	for (list<SnapshotInfo>::iterator it=snapshots.begin(); it!=snapshots.end(); ++it)
@@ -91,6 +91,7 @@ void SnapshotManager::_MovePointer( int movediff )
 		}
 	}
 }
+*/
 
 int SnapshotManager::AddSnapshot()
 {
@@ -124,46 +125,26 @@ bool SnapshotManager::RevertToSnapshot( int nSnapshot )
 		if (i==nSnapshot)
 		{
 			Command::getInstance().StepTo(CSI_TERMINAL);
-			if (!it->isValid())
-			{
-				if (MessageBoxManager::getInstance().DoOKCancelBox(MSGBM_OKCANCEL_SNAPSHOT_RECOVERFROMINVALID))
-				{
-					LoadNode(&(it->savednode));
-				}
-			}
-			else
-			{
-				MainInterface * pmain = &MainInterface::getInstance();
-				pmain->CallUnDoReDo(-it->diffstep);
-			}
+//			if (MessageBoxManager::getInstance().DoOKCancelBox(MSGBM_OKCANCEL_SNAPSHOT_RECOVERFROMINVALID))
+//			{
+				LoadNode(&(it->savednode));
+//			}
 			return true;
-			break;
 		}
 		i++;
 	}
 	return false;
 }
 
-void SnapshotManager::LoadNode( GObject * node )
+void SnapshotManager::LoadNode( GBaseNodeCopyStack * node )
 {
 	ASSERT(node);
-	GObjectManager * pgm = &GObjectManager::getInstance();
-	list<GObject *>dellist;
-	GMainBaseNode * pMainBaseNode = pgm->GetMainBaseNode();
-	for (list<GObject *>::iterator it=pMainBaseNode->getChildren()->begin(); it!=pMainBaseNode->getChildren()->end(); ++it)
-	{
-		dellist.push_back(*it);
-	}
-	pMainBaseNode->CopyBaseFrom((GBaseNode *)node);
-	for (list<GObject *>::iterator it=dellist.begin(); it!=dellist.end(); ++it)
-	{
-		pMainBaseNode->RemoveChild(*it, true);
-	}
-	Command::getInstance().StepTo(CSI_TERMINAL);
-	Command::getInstance().ClearUnDo();
-	Command::getInstance().ClearReDo();
-}
 
+	GObjectManager * pgm = &GObjectManager::getInstance();
+	GMainBaseNode * pMainBaseNode = pgm->GetMainBaseNode();
+	pMainBaseNode->RestoreBaseFrom(node);
+}
+/*
 bool SnapshotManager::NeedLoad( int nSnapshot )
 {
 	int i=0;
@@ -180,7 +161,7 @@ bool SnapshotManager::NeedLoad( int nSnapshot )
 	}
 	return false;
 }
-
+*/
 bool SnapshotInfo::SaveNode(GBaseNode * pBaseNode/* =NULL */)
 {
 	if (!pBaseNode)
@@ -191,6 +172,6 @@ bool SnapshotInfo::SaveNode(GBaseNode * pBaseNode/* =NULL */)
 	{
 		pBaseNode->CopyBaseTo(&savednode);
 	}
-	bValid = true;
+//	bValid = true;
 	return true;
 }

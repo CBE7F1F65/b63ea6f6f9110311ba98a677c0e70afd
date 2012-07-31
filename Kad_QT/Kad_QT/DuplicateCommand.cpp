@@ -87,7 +87,8 @@ void DuplicateCommand::OnDoneCommand()
 		}
 		i++;
 	}
-
+	
+	pgm->BeginClone();
 	for (list<GObject *>::iterator it=listobjs.begin(); it!=listobjs.end(); ++it)
 	{
 		GObject * pObj = *it;
@@ -119,4 +120,5 @@ void DuplicateCommand::OnDoneCommand()
 			);
 		i++;
 	}
+	pgm->EndClone();
 }

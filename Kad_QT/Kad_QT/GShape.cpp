@@ -4,6 +4,8 @@
 
 #include "GBaseNode.h"
 
+#include "GObjectManager.h"
+
 GShape::GShape(void)
 {
 }

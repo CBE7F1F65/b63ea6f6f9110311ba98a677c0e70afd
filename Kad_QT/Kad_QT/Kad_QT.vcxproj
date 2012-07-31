@@ -267,6 +267,7 @@
     <ClCompile Include="RenderHelper.cpp" />
     <ClCompile Include="RenderTargetManager.cpp" />
     <ClCompile Include="ReparentCommand.cpp" />
+    <ClCompile Include="RestoreToSnapshotCommand.cpp" />
     <ClCompile Include="RotateNodeBatchCommand.cpp" />
     <ClCompile Include="ScaleNodeBatchCommand.cpp" />
     <ClCompile Include="SeparateCommand.cpp" />
@@ -280,6 +281,7 @@
     <ClCompile Include="StringManager.cpp" />
     <ClCompile Include="TestCommand.cpp" />
     <ClCompile Include="UnDoReDoCommand.cpp" />
+    <ClCompile Include="URManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BezierCommand.h" />
@@ -327,6 +329,8 @@
     <ClInclude Include="MarkingManager.h" />
     <ClInclude Include="MarkingObject.h" />
     <ClInclude Include="PickFilterTemplate.h" />
+    <ClInclude Include="RestoreToSnapshotCommand.h" />
+    <ClInclude Include="URManager.h" />
     <CustomBuild Include="QTUI_NodeInfoFloating_Tree.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing QTUI_NodeInfoFloating_Tree.h...</Message>
