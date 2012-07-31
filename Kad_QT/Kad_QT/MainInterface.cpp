@@ -444,9 +444,9 @@ int MainInterface::OnCommandWithParam( int comm, int firsttype, ... )
 			break;
 		case COMMITTEDCOMMANDTYPE_STRING:
 			{
-				char * vais = (char *)va_arg(ap, char *);
+				string * vais = (string *)va_arg(ap, string *);
 				ASSERT(vais);
-				OnCommandSingleParamS(vais);
+				OnCommandSingleParamS(vais->c_str());
 // 				stringstream ss;
 // 				ss << "\"" << vais << "\"";
 // 				strlist.push_back(ss.str());

@@ -510,7 +510,17 @@ void QTUI_Layer_Tree::SLT_ItemDoubleClicked(QTreeWidgetItem *pItem, int column)
     if (ret == QDialog::Accepted)
     {
         QString str = pDlg->GetName();
-        pObj->setDisplayName(str.toUtf8());
+		if (str != pObj->getDisplayName())
+		{
+			str.insert(0, "\"");
+			str.insert(str.length(), "\"");
+			string stdstr = str.toStdString();
+			MainInterface::getInstance().OnCommandWithParam(
+				COMM_SETNODENAME, 
+				CCCWPARAM_I(pObj->getID()),
+				CCCWPARAM_S(&stdstr),
+				NULL);
+		}
         pObj->setLineColor(pDlg->GetLineColorSet());
         pObj->setDisplayVisible(pDlg->GetVisible());
         pObj->setDisplayLock(pDlg->GetLocked());

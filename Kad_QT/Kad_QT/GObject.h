@@ -161,6 +161,7 @@ public:
 protected:
 	virtual void OnInit();
 	virtual void OnEnter();
+	virtual void CallRelease();
 	virtual void OnRelease();
 	virtual void OnRemove();
     virtual void OnPrecisionChanged(float fPrecision);

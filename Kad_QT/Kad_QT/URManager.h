@@ -30,11 +30,11 @@ public:
 	void Init(GBaseNode * pBase);
 	void Release();
 
-	bool CanUnDo();
-	bool CanReDo();
+	bool CanUnDo(int step=1);
+	bool CanReDo(int step=1);
 	int PushUnDo(GBaseNode * pBase);
-	bool UnDo(GBaseNode * pBase);
-	bool ReDo(GBaseNode * pBase);
+	bool UnDo(GBaseNode * pBase, int step=1);
+	bool ReDo(GBaseNode * pBase, int step=1);
 
 	int ClearReDo();
 

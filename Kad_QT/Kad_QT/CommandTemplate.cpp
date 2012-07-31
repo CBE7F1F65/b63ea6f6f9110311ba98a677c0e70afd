@@ -323,7 +323,7 @@ void CommandTemplate::CallDoneCommand()
 			if (workinglayer)
 			{
 				PushRevertable(
-					CCMake_C(COMM_I_COMMAND, 2, 1),
+					CCMake_C(COMM_I_COMMAND, 2, 0),
 					CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayer->getID()),
 					CCMake_C(COMM_SETWORKINGLAYER),
 //					CCMake_I(workingLayer->getID()),

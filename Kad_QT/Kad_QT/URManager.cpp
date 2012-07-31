@@ -50,51 +50,25 @@ int URManager::PushUnDo( GBaseNode * pBase )
 	return index-1;
 }
 
-bool URManager::UnDo( GBaseNode * pBase )
+bool URManager::UnDo( GBaseNode * pBase, int step/*=1*/ )
 {
 	ASSERT(pBase);
-	if (CanUnDo())
+	if (CanUnDo(step))
 	{
-		index--;
-		/*
-		list<GObject *>dellist;
-		for (list<GObject *>::iterator it=pBase->getChildren()->begin(); it!=pBase->getChildren()->end(); ++it)
-		{
-			dellist.push_back(*it);
-		}
-		*/
+		index-=step;
 		pBase->RestoreBaseFrom(stack[index]->getBase());
-		/*
-		for (list<GObject *>::iterator it=dellist.begin(); it!=dellist.end(); ++it)
-		{
-			pBase->RemoveChild(*it, true);
-		}
-		*/
 		return true;
 	}
 	return false;
 }
 
-bool URManager::ReDo( GBaseNode * pBase )
+bool URManager::ReDo( GBaseNode * pBase, int step/*=1*/ )
 {
 	ASSERT(pBase);
-	if (CanReDo())
+	if (CanReDo(step))
 	{
-		index++;
-		/*
-		list<GObject *>dellist;
-		for (list<GObject *>::iterator it=pBase->getChildren()->begin(); it!=pBase->getChildren()->end(); ++it)
-		{
-			dellist.push_back(*it);
-		}
-		*/
+		index+=step;
 		pBase->RestoreBaseFrom(stack[index]->getBase());
-		/*
-		for (list<GObject *>::iterator it=dellist.begin(); it!=dellist.end(); ++it)
-		{
-			pBase->RemoveChild(*it, true);
-		}
-		*/
 		return true;
 	}
 	return false;
@@ -111,12 +85,20 @@ int URManager::ClearReDo()
 	return ntodelete;
 }
 
-bool URManager::CanUnDo()
+bool URManager::CanUnDo( int step/*=1*/ )
 {
-	return index > 0;
+	if (step < 1)
+	{
+		return false;
+	}
+	return index >= step;
 }
 
-bool URManager::CanReDo()
+bool URManager::CanReDo( int step/*=1*/ )
 {
-	return index < stack.size()-1;
+	if (step < 1)
+	{
+		return false;
+	}
+	return index < stack.size()-step;
 }

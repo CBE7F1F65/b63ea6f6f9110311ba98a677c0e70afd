@@ -134,7 +134,7 @@ list<GObject *>::iterator GObject::_ActualRemoveChild( list<GObject *>::iterator
 	child->OnRemove();
 	if (bRelease)
 	{
-		child->OnRelease();
+		child->CallRelease();
 	}
 	child->pParent = NULL;
 	it = lstChildren.erase(it);
@@ -308,10 +308,21 @@ void GObject::OnEnter()
 	}
 }
 
+void GObject::CallRelease()
+{
+	OnRelease();
+	if (!lstChildren.empty())
+	{
+		FOREACH_GOBJ_CHILDREN_IT()
+		{
+			(*it)->CallRelease();
+		}
+	}
+    GObjectManager::getInstance().AddNodeToDelete(this);
+}
+
 void GObject::OnRelease()
 {
-    RemoveAllChildren(true);
-    GObjectManager::getInstance().AddNodeToDelete(this);
 }
 
 void GObject::OnRemove()

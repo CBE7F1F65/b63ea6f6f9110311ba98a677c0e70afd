@@ -75,7 +75,7 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 {
 //	if (undolist.size()<=1 || undostep < 1)
 	URManager * purm = &URManager::getInstance();
-	if (!purm->CanUnDo())
+	if (!purm->CanUnDo(undostep))
 	{
 		MainInterface::getInstance().MBeep();
 		return false;
@@ -86,7 +86,7 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 	ClearCurrentCommand(true);
 	EnterUnDo();
 
-	purm->UnDo(GObjectManager::getInstance().GetMainBaseNode());
+	purm->UnDo(GObjectManager::getInstance().GetMainBaseNode(), undostep);
 
 //	SnapshotManager::getInstance().OnUnDo();
 	MainInterface::getInstance().OnUnDo();
@@ -97,11 +97,6 @@ bool Command::DoUnDo( int undostep/*=1*/ )
 		GObjectManager::getInstance().SetActiveLayer_Internal();
 	}
 
-	if (undostep > 1)
-	{
-		DoUnDo(undostep-1);
-	}
-
 	return true;
 
 }
@@ -110,7 +105,7 @@ bool Command::DoReDo( int redostep/*=1*/ )
 {
 //	if (redolist.empty() || redostep < 1)
 	URManager * purm = &URManager::getInstance();
-	if (!purm->CanReDo())
+	if (!purm->CanReDo(redostep))
 	{
 		MainInterface::getInstance().MBeep();
 		return false;
@@ -121,18 +116,13 @@ bool Command::DoReDo( int redostep/*=1*/ )
 	ClearCurrentCommand(true);
 	EnterReDo();
 
-	purm->ReDo(GObjectManager::getInstance().GetMainBaseNode());
+	purm->ReDo(GObjectManager::getInstance().GetMainBaseNode(), redostep);
 
 //	SnapshotManager::getInstance().OnReDo();
 	MainInterface::getInstance().OnReDo();
 	ExitReDo();
 
 	CommandTemplate::CallOnReDo();
-
-	if (redostep > 1)
-	{
-		DoReDo(redostep-1);
-	}
 
 	return true;
 }

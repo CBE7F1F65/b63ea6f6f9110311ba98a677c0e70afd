@@ -37,7 +37,7 @@ void GBaseNode::RestoreBaseFrom( GBaseNodeCopyStack * pFrom )
 		if (pOBase)
 		{
 			RemoveAllChildren(true);
-			for (list<GObject *>::reverse_iterator it=pOBase->getChildren()->rbegin(); it!=pOBase->getChildren()->rend(); ++it)
+			for (list<GObject *>::iterator it=pOBase->getChildren()->begin(); it!=pOBase->getChildren()->end(); ++it)
 			{
 				(*it)->CreateNewClone(this);
 			}
