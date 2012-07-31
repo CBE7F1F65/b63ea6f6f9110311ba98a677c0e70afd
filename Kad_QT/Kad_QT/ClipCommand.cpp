@@ -116,30 +116,20 @@ void ClipCommand::OnDoneCommand()
 	}
 
 	GLine * pLine = (GLine *)pObj;
-	PointF2D ptOBH = pLine->GetBeginPoint()->GetHandle()->GetPointF2D();
-	PointF2D ptOEH = pLine->GetEndPoint()->GetHandle()->GetPointF2D();
-
 	GLine * pClonedLine = pLine->Clip(fProporation);
 	if (pClonedLine)
 	{
 		PushRevertable(
-			CCMake_C(COMM_I_COMMAND, 3, 1),
+			CCMake_C(COMM_I_COMMAND, 3),
 			CCMake_CI(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 			CCMake_C(COMM_CLIP),
 			CCMake_I(index),
 			CCMake_F(fProporation),
-			CCMake_C(COMM_I_UNDO_PARAM, 6),
-			CCMake_I(pLine->getID()),
-			CCMake_I(pClonedLine->getID()),
-			CCMake_F(ptOBH.x),
-			CCMake_F(ptOBH.y),
-			CCMake_F(ptOEH.x),
-			CCMake_F(ptOEH.y),
 			NULL
 			);		
 	}
 }
-
+/*
 void ClipCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 {
 	ASSERT(rc);
@@ -162,7 +152,7 @@ void ClipCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 	pLine->GetBeginPoint()->SetHandlePosition(fobhx, fobhy);
 	pLine->GetEndPoint()->SetHandlePosition(foehx, foehy);
 }
-
+*/
 bool ClipCommand::staticPickFilterFunc( GObject * pObj )
 {
 	return getInstance().PickFilterFunc(pObj);

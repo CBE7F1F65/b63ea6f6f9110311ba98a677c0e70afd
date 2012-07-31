@@ -177,7 +177,7 @@ void MoveNodeBatchCommand::OnDoneCommand()
 
 	}
 }
-
+/*
 void MoveNodeBatchCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 {
 	ASSERT(rc);
@@ -199,3 +199,4 @@ void MoveNodeBatchCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 	}
 
 }
+*/

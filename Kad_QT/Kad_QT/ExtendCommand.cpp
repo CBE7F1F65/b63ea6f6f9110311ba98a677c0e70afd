@@ -200,31 +200,20 @@ void ExtendCommand::OnDoneCommand()
 		pcommand->TerminalCommand();
 		return;
 	}
-	QuadBezierPointF2D quadBezier(pBezier);
 
 	if (pBezier->Extend(fBegin, fEnd))
 	{
 		PushRevertable(
-			CCMake_C(COMM_I_COMMAND, 4, 1),
+			CCMake_C(COMM_I_COMMAND, 4),
 			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 			CCMake_C(COMM_EXTEND),
 			CCMake_I(index),
 			CCMake_F(fBeginOffset),
 			CCMake_F(fEndOffset),
-			CCMake_C(COMM_I_UNDO_PARAM, 9),
-			CCMake_I(index),
-			CCMake_F(quadBezier.ptb.x),
-			CCMake_F(quadBezier.ptb.y),
-			CCMake_F(quadBezier.ptbh.x),
-			CCMake_F(quadBezier.ptbh.y),
-			CCMake_F(quadBezier.pteh.x),
-			CCMake_F(quadBezier.pteh.y),
-			CCMake_F(quadBezier.pte.x),
-			CCMake_F(quadBezier.pte.y),
 			NULL);
 	}
 }
-
+/*
 void ExtendCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 {
 	ASSERT(rc);
@@ -258,7 +247,7 @@ void ExtendCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 		pBezier->SetEndHandlePos(ehx, ehy);
 	}
 }
-
+*/
 void ExtendCommand::OnClearTemp()
 {
 	if (pTempLineLeft)

@@ -434,10 +434,7 @@ void BezierCommand::OnDoneCommand()
 	pNCLine = pLine;
 
 	PushRevertable(
-		CCMake_C(COMM_I_ADDNODE, 2),
-		CCMake_I(pLine->getID()),
-		CCMake_I(pLine->getParent()->getID()),
-		CCMake_C(COMM_I_COMMAND, 9, 1),
+		CCMake_C(COMM_I_COMMAND, 9),
 		CCMake_CI(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 		CCMake_C(COMM_BEZIER),
 		CCMake_F(xb),
@@ -448,12 +445,6 @@ void BezierCommand::OnDoneCommand()
 		CCMake_F(ye),
 		CCMake_F(xeh),
 		CCMake_F(yeh),
-		CCMake_C(COMM_I_UNDO_COMMIT, 5),
-		CCMake_C(COMM_BEZIER),
-		CCMake_F(xb),
-		CCMake_F(yb),
-		CCMake_F(xbh),
-		CCMake_F(ybh),
 		NULL
 		);
 }

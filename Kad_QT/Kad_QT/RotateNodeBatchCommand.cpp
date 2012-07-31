@@ -301,7 +301,7 @@ void RotateNodeBatchCommand::OnDoneCommand()
 
 	}
 }
-
+/*
 void RotateNodeBatchCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 {
 	ASSERT(rc);
@@ -326,7 +326,7 @@ void RotateNodeBatchCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 		pgm->OnTreeChanged(pObj->getParent(), pObj);
 	}
 }
-
+*/
 void RotateNodeBatchCommand::OnInitCommand()
 {
 	pgm->BlockTryMove();

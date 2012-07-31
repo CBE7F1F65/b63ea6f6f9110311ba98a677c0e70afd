@@ -210,11 +210,7 @@ void ReparentCommand::OnDoneCommand()
 		int nowindex = pObj->getID();
 
 		PushRevertable(
-			CCMake_C(COMM_I_REPARENTNODE, 3),
-			CCMake_I(nowindex),
-			CCMake_I(oparentindex),
-			CCMake_I(oafterindex),
-			CCMake_C(COMM_I_COMMAND, 4, 0),
+			CCMake_C(COMM_I_COMMAND, 4),
 			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 			CCMake_C(COMM_REPARENT),
 			CCMake_I(tnewindex),

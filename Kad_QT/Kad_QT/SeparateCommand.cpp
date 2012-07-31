@@ -97,7 +97,7 @@ void SeparateCommand::OnDoneCommand()
 		NULL
 		);
 }
-
+/*
 void SeparateCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 {
 	ASSERT(rc);
@@ -119,3 +119,4 @@ void SeparateCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 
 	pFromPoint->MergeWith(pToPoint);
 }
+*/

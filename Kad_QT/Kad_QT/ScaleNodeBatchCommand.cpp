@@ -362,7 +362,7 @@ void ScaleNodeBatchCommand::OnDoneCommand()
 
 	}
 }
-
+/*
 void ScaleNodeBatchCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 {
 	ASSERT(rc);
@@ -392,7 +392,7 @@ void ScaleNodeBatchCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 		pgm->OnTreeChanged(pObj->getParent(), pObj);
 	}
 }
-
+*/
 void ScaleNodeBatchCommand::OnInitCommand()
 {
 	pgm->BlockTryMove();

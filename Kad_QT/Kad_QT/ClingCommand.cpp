@@ -85,16 +85,7 @@ void ClingCommand::OnDoneCommand()
 
 	GPoint * pFromPoint = (GPoint *)pFromObj;
 //	GLine * pToLine = (GLine *)pToObj;
-
-	GLine * pOClingto = pFromPoint->getClingTo();
-	int oClingToIndex = -1;
-	float oClingToProportion = 0;
-	if (pOClingto)
-	{
-		oClingToIndex = pOClingto->getID();
-		oClingToProportion = pFromPoint->getClingProportion();
-	}
-
+	
 	if (pFromPoint->isClingTo(pToObj) && fabsf(pFromPoint->getClingProportion() - fProportion) < M_FLOATEPS)
 	{
 		pcommand->TerminalCommand();
@@ -105,21 +96,17 @@ void ClingCommand::OnDoneCommand()
 	{
 
 		PushRevertable(
-			CCMake_C(COMM_I_COMMAND, 4, 1),
+			CCMake_C(COMM_I_COMMAND, 4),
 			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 			CCMake_C(COMM_CLING),
 			CCMake_I(fromindex),
 			CCMake_I(toindex),
 			CCMake_F(fProportion),
-			CCMake_C(COMM_I_UNDO_PARAM, 3),
-			CCMake_I(fromindex),
-			CCMake_I(oClingToIndex),
-			CCMake_F(oClingToProportion),
 			NULL
 			);
 	}
 }
-
+/*
 void ClingCommand::OnProcessUnDoCommand( RevertableCommand * rc ) 
 {
 	ASSERT(rc);
@@ -146,3 +133,4 @@ void ClingCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 		pPoint->ClingTo(pOClingToObj, oClingToProportion);
 	}
 }
+*/

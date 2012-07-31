@@ -124,9 +124,6 @@ void DeleteItemCommand::OnDoneCommand()
 //			pgm->MoveToUnDoList(pObj);
 
 			PushRevertable(
-				CCMake_C(COMM_I_DELETENODE, 2),
-				CCMake_I(parentid),
-				CCMake_I(afterid),
 				CCMake_C(COMM_I_COMMAND, 2, 0),
 				CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 				CCMake_C(COMM_DELETEITEM),
@@ -135,9 +132,4 @@ void DeleteItemCommand::OnDoneCommand()
 				);
 		}
 	}
-}
-
-void DeleteItemCommand::OnProcessUnDoCommand( RevertableCommand * rc )
-{
-
 }

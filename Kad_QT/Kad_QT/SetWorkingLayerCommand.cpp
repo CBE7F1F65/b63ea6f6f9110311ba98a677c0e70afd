@@ -66,14 +66,14 @@ void SetWorkingLayerCommand::OnDoneCommand()
 		CCMake_C(COMM_I_COMMAND, 2, 1),
 		CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 		CCMake_C(COMM_SETWORKINGLAYER),
-//		CCMake_I(lastobjid),
 		CCMake_I(newobjid),
+		// Remain
 		CCMake_C(COMM_I_UNDO_PARAM, 1),
 		CCMake_I(lastobjid),
 		NULL
 		);
 }
-
+// Remain
 void SetWorkingLayerCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 {
 	int lastobjid = pcommand->GetIvalFromRC(rc, CSPUNDO_SETWORKINGLAYER_I_LASTINDEX);

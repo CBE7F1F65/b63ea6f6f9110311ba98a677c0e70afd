@@ -17,7 +17,7 @@ private:
 public:
 	virtual void OnProcessCommand();
 	virtual void OnDoneCommand();
-	virtual void OnProcessUnDoCommand( RevertableCommand * rc );
+//	virtual void OnProcessUnDoCommand( RevertableCommand * rc );
 	
 };
 

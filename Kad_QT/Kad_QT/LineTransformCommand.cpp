@@ -69,11 +69,9 @@ void LineTransformCommand::OnDoneCommand()
 		if (pLine->toBezierLine())
 		{
 			PushRevertable(
-				CCMake_C(COMM_I_COMMAND, 2, 1),
+				CCMake_C(COMM_I_COMMAND, 2),
 				CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 				CCMake_C(COMM_TOBEZIER),
-				CCMake_I(index),
-				CCMake_C(COMM_I_UNDO_PARAM, 1),
 				CCMake_I(index),
 				NULL
 				);
@@ -84,26 +82,14 @@ void LineTransformCommand::OnDoneCommand()
 			if (!pLine->isStraightLine())
 			{
 				GBezierLine * pBezier = (GBezierLine *)pLine;
-				PointF2D ptBH = pBezier->GetBeginPoint()->GetHandle()->GetPointF2D();
-				PointF2D ptEH = pBezier->GetEndPoint()->GetHandle()->GetPointF2D();
-				GHandlePoint * pBHBind = pBezier->GetBeginPoint()->GetHandle()->getBindWith();
-				GHandlePoint * pEHBind = pBezier->GetEndPoint()->GetHandle()->getBindWith();
 
 				if (pBezier->toStraightLine())
 				{
 					PushRevertable(
-						CCMake_C(COMM_I_COMMAND, 2, 1),
+						CCMake_C(COMM_I_COMMAND, 2),
 						CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 						CCMake_C(COMM_TOSTRAIGHTLINE),
 						CCMake_I(index),
-						CCMake_C(COMM_I_UNDO_PARAM, 7),
-						CCMake_I(index),
-						CCMake_F(ptBH.x),
-						CCMake_F(ptBH.y),
-						CCMake_F(ptEH.x),
-						CCMake_F(ptEH.y),
-						CCMake_I(pBHBind?pBHBind->getID():-1),
-						CCMake_I(pEHBind?pEHBind->getID():-1),
 						NULL
 						);
 				}
@@ -113,7 +99,7 @@ void LineTransformCommand::OnDoneCommand()
 	}
 
 }
-
+/*
 void LineTransformCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 {
 	ASSERT(rc);
@@ -159,3 +145,4 @@ void LineTransformCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 		break;
 	}
 }
+*/

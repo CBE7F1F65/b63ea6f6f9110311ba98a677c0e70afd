@@ -109,9 +109,6 @@ void DuplicateCommand::OnDoneCommand()
 
 
 		PushRevertable(
-			CCMake_C(COMM_I_ADDNODE, 2),
-			CCMake_I(pDupObj->getID()),
-			CCMake_I(pParent->getID()),
 			CCMake_C(COMM_I_COMMAND, 2, 0),
 			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 			CCMake_C(COMM_DUPLICATE),

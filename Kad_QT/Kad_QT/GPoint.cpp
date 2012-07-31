@@ -201,14 +201,14 @@ void GPoint::ClearClingTo()
 
 bool GPoint::ClingTo( GObject * pObj, float fProp )
 {
-	if (fProp < M_FLOATEXTREMEEPS || fProp > 1-M_FLOATEXTREMEEPS)
-	{
-		return false;
-	}
 	if (!pObj)
 	{
 		DeclingToOther();
 		return true;
+	}
+	if (fProp < M_FLOATEXTREMEEPS || fProp > 1-M_FLOATEXTREMEEPS)
+	{
+		return false;
 	}
 	if (!pObj->canBeClingTo())
 	{

@@ -89,25 +89,21 @@ void SetNodeNameCommand::OnDoneCommand()
 		return;
 	}
 	
-	string oldname = pObj->getDisplayName();
 	pObj->setDisplayName(newname.c_str());
 	pgm->OnTreeChanged(pObj->getParent(), pObj);
 //	MainInterface::getInstance().CallChangeNode(pObj);
 
 	PushRevertable(
-		CCMake_C(COMM_I_COMMAND, 3, 1),
+		CCMake_C(COMM_I_COMMAND, 3),
 		CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 		CCMake_C(COMM_SETNODENAME),
 		CCMake_I(index),
 		CCMake_S(newname.c_str()),
-		CCMake_C(COMM_I_UNDO_PARAM, 2),
-		CCMake_I(index),
-		CCMake_S(oldname.c_str()),
 		NULL
 		);
 
 }
-
+/*
 void SetNodeNameCommand::OnProcessUnDoCommand( RevertableCommand * rc ) 
 {
 	ASSERT(rc);
@@ -122,3 +118,4 @@ void SetNodeNameCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 //	MainInterface::getInstance().CallChangeNode(pObj);
 
 }
+*/

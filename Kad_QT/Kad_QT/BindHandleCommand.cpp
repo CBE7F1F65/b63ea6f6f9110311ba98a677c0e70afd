@@ -121,7 +121,7 @@ void BindHandleCommand::OnDoneCommand()
 		NULL
 		);
 }
-
+/*
 void BindHandleCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 {
 	ASSERT(rc);
@@ -154,3 +154,4 @@ void BindHandleCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 	}
 	pFromHandlePoint->BindWith(pOldFromHandlePoint);
 }
+*/

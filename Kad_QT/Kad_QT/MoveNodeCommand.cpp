@@ -120,21 +120,17 @@ void MoveNodeCommand::OnDoneCommand()
 		ReAttachAfterMoveNode(pObj, true);
 
 		PushRevertable(
-			CCMake_C(COMM_I_COMMAND, 4, 1),
+			CCMake_C(COMM_I_COMMAND, 4),
 			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 			CCMake_C(comm),
 			CCMake_I(index),
 			CCMake_F(newx),
 			CCMake_F(newy),
-			CCMake_C(COMM_I_UNDO_PARAM, 3),
-			CCMake_I(index),
-			CCMake_F(oldx),
-			CCMake_F(oldy),
 			NULL
 			);
 	}
 }
-
+/*
 void MoveNodeCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 {
 	ASSERT(rc);
@@ -150,3 +146,4 @@ void MoveNodeCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 	pgm->OnTreeChanged(pObj->getParent(), pObj);
 //	MainInterface::getInstance().CallChangeNode(pObj);
 }
+*/

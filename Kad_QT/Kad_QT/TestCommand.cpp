@@ -159,20 +159,13 @@ void TestCommand::OnDoneCommand()
 	GStraightLine * pLine = new GBezierLine(pgm->GetActiveLayer(), PointF2D(xb, yb), PointF2D(xe, ye));
 
 	PushRevertable(
-		CCMake_C(COMM_I_ADDNODE, 2),
-		CCMake_I(pLine->getID()),
-		CCMake_I(pLine->getParent()->getID()),
-		CCMake_C(COMM_I_COMMAND, 5, 1),
+		CCMake_C(COMM_I_COMMAND, 5),
 		CCMake_CI(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 		CCMake_C(comm),
 		CCMake_F(xb),
 		CCMake_F(yb),
 		CCMake_F(xe),
 		CCMake_F(ye),
-		CCMake_C(COMM_I_UNDO_COMMIT, 3),
-		CCMake_C(comm),
-		CCMake_F(xb),
-		CCMake_F(yb),
 		NULL
 		);
 

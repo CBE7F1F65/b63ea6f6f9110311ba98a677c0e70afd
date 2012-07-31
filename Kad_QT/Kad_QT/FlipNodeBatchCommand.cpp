@@ -280,7 +280,7 @@ void FlipNodeBatchCommand::OnClearTemp()
 	}
 	pgp->UnlockAngles();
 }
-
+/*
 void FlipNodeBatchCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 {
 	ASSERT(rc);
@@ -305,7 +305,7 @@ void FlipNodeBatchCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 		pgm->OnTreeChanged(pObj->getParent(), pObj);
 	}
 }
-
+*/
 bool FlipNodeBatchCommand::staticMIDCBAngle( MarkingUI * pmui, bool bAccept )
 {
 	return getInstance().MIDCBAngle(pmui, bAccept);
