@@ -221,18 +221,18 @@ enum{
 };
 
 /************************************************************************/
-/* SEPARATE                                                             */
+/* DEMERGE                                                              */
 /************************************************************************/
 
 enum{
-	CSP_SEPARATE_I_FROMINDEX,
-	CSP_SEPARATE_I_TOINDEX,
+	CSP_DEMERGE_I_FROMINDEX,
+	CSP_DEMERGE_I_TOINDEX,
 };
 //////////////////////////////////////////////////////////////////////////
 enum{
-	CSI_SEPARATE_DUMMY=0,
-	CSI_SEPARATE_WANTFROMINDEX,
-	CSI_SEPARATE_WANTTOINDEX,
+	CSI_DEMERGE_DUMMY=0,
+	CSI_DEMERGE_WANTFROMINDEX,
+	CSI_DEMERGE_WANTTOINDEX,
 };
 /************************************************************************/
 /* DELETEITEM                                                           */

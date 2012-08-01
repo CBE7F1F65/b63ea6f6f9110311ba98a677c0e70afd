@@ -22,20 +22,20 @@ void DemergeCommand::OnProcessCommand()
 	if (step == CSI_INIT)
 	{
 		pcommand->StepTo(
-			CSI_SEPARATE_WANTFROMINDEX,
+			CSI_DEMERGE_WANTFROMINDEX,
 			CWP_INDEX);
 	}
-	else if (step == CSI_SEPARATE_WANTFROMINDEX)
+	else if (step == CSI_DEMERGE_WANTFROMINDEX)
 	{
 		ret = pcommand->ProcessPending(
-			CSP_SEPARATE_I_FROMINDEX, COMMPARAMFLAG_I, CWP_INDEX,
-			CSI_SEPARATE_WANTTOINDEX
+			CSP_DEMERGE_I_FROMINDEX, COMMPARAMFLAG_I, CWP_INDEX,
+			CSI_DEMERGE_WANTTOINDEX
 			);
 	}
-	else if (step == CSI_SEPARATE_WANTTOINDEX)
+	else if (step == CSI_DEMERGE_WANTTOINDEX)
 	{
 		ret = pcommand->ProcessPending(
-			CSP_SEPARATE_I_TOINDEX, COMMPARAMFLAG_I, CWP_INDEX,
+			CSP_DEMERGE_I_TOINDEX, COMMPARAMFLAG_I, CWP_INDEX,
 			CSI_FINISH
 			);
 	}
@@ -43,8 +43,8 @@ void DemergeCommand::OnProcessCommand()
 
 void DemergeCommand::OnDoneCommand()
 {
-	int fromindex = pcommand->GetParamI(CSP_SEPARATE_I_FROMINDEX);
-	int toindex = pcommand->GetParamI(CSP_SEPARATE_I_TOINDEX);
+	int fromindex = pcommand->GetParamI(CSP_DEMERGE_I_FROMINDEX);
+	int toindex = pcommand->GetParamI(CSP_DEMERGE_I_TOINDEX);
 
 	GObject * pFromObj = pgm->FindObjectByID(fromindex);
 	GObject * pToObj = pgm->FindObjectByID(toindex);
