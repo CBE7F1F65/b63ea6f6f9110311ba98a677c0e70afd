@@ -16,16 +16,6 @@ void SetNodeNameCommand::OnProcessCommand()
 	int step = OnNormalProcessCommand();
 
 	int nowstep = pcommand->GetStep();
-	if (IsStepped())
-	{
-		if (nowstep > CSI_INIT)
-		{
-			pcommand->EnableSubCommand(
-				(laststep.step==CSI_RESUME)?false:true,
-				SSC_TERMINAL,
-				SSC_NULL);
-		}
-	}
 	UpdateLastStep();
 
 	int ret = -1;
@@ -63,12 +53,6 @@ void SetNodeNameCommand::OnProcessCommand()
 			CSP_SETNODENAME_I_S_INDEX_NEWNAME, COMMPARAMFLAG_S, CWP_NAME,	// Fill in Param
 			CSI_FINISH					// Step to with want
 			);
-	}
-
-	if (ret > 0)
-	{
-		DispatchNormalSubCommand(ret);
-		pcommand->FinishPendingSubCommand();
 	}
 }
 

@@ -15,16 +15,6 @@ void ClingCommand::OnProcessCommand()
 {
 	int step = OnNormalProcessCommand();
 	int nowstep = pcommand->GetStep();
-	if (IsStepped())
-	{
-		if (nowstep > CSI_INIT)
-		{
-			pcommand->EnableSubCommand(
-				(laststep.step==CSI_RESUME)?false:true,
-				SSC_TERMINAL,
-				SSC_NULL);
-		}
-	}
 	UpdateLastStep();
 
 	int ret = -1;
@@ -55,12 +45,6 @@ void ClingCommand::OnProcessCommand()
 			CSP_CLING_I_F_TOINDEX_PROPORTION, COMMPARAMFLAG_F, CWP_PROPORTION,
 			CSI_FINISH
 			);
-	}
-
-	if (ret > 0)
-	{
-		DispatchNormalSubCommand(ret);
-		pcommand->FinishPendingSubCommand();
 	}
 }
 

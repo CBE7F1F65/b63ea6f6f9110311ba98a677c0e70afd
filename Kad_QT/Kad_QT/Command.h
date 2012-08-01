@@ -191,6 +191,8 @@ public:
 	void ExitUnDo();
 	void ExitReDo();
 
+	bool WillTerminalCurrentCommand();
+
 	inline bool IsCCTypeCommand(int type)
 	{
 		return type == COMMITTEDCOMMANDTYPE_COMMAND;

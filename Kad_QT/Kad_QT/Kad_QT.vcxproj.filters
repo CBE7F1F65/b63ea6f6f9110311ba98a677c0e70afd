@@ -395,9 +395,6 @@
     <ClCompile Include="MergeCommand.cpp">
       <Filter>Main\Command\Combination</Filter>
     </ClCompile>
-    <ClCompile Include="SeparateCommand.cpp">
-      <Filter>Main\Command\Combination</Filter>
-    </ClCompile>
     <ClCompile Include="ClingCommand.cpp">
       <Filter>Main\Command\Combination</Filter>
     </ClCompile>
@@ -502,6 +499,9 @@
     </ClCompile>
     <ClCompile Include="RestoreToSnapshotCommand.cpp">
       <Filter>Main\Command\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="DemergeCommand.cpp">
+      <Filter>Main\Command\Combination</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -655,9 +655,6 @@
     <ClInclude Include="MergeCommand.h">
       <Filter>Main\Command\Combination</Filter>
     </ClInclude>
-    <ClInclude Include="SeparateCommand.h">
-      <Filter>Main\Command\Combination</Filter>
-    </ClInclude>
     <ClInclude Include="ClingCommand.h">
       <Filter>Main\Command\Combination</Filter>
     </ClInclude>
@@ -723,6 +720,9 @@
     </ClInclude>
     <ClInclude Include="RestoreToSnapshotCommand.h">
       <Filter>Main\Command\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="DemergeCommand.h">
+      <Filter>Main\Command\Combination</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

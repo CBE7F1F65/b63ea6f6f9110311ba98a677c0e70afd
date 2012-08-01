@@ -163,7 +163,7 @@ void GLine::OnModify()
     {
         UpdateMidPoint();
     }
-	GObject::OnModify();
+	super::OnModify();
 }
 
 bool GLine::CheckIntersectWithLineObj( GLine * pLine, list<PointF2D> *pPoints )
@@ -513,16 +513,23 @@ void GBezierLine::UpdateMidPoint()
 		else
 		{
 			PointF2D pq;
-			MathHelper::getInstance().CalculateBezier(plbegin->GetPointF2D(), plbegin->GetHandle()->GetPointF2D(), plend->GetHandle()->GetPointF2D(), plend->GetPointF2D(), 0.5f, &pq);
-			pmid->SetPosition(pq.x, pq.y);
+			if (bsinfo.GetSubPointsCount())
+			{
+				GetPositionAtProportion(0.5f, &pq);
+				pmid->SetPosition(pq.x, pq.y);
+			}
+			else
+			{
+				DASSERT(false);
+				MathHelper::getInstance().CalculateBezier(plbegin->GetPointF2D(), plbegin->GetHandle()->GetPointF2D(), plend->GetHandle()->GetPointF2D(), plend->GetPointF2D(), 0.5f, &pq);
+				pmid->SetPosition(pq.x, pq.y);
+			}
 		}
 	}
 }
 
 void GBezierLine::OnModify()
 {
-	GStraightLine::OnModify();
-
     if (!lstChildren.empty())
     {
         if (plbegin && plend)
@@ -533,6 +540,7 @@ void GBezierLine::OnModify()
             }
 		}
 	}
+	super::OnModify();
 }
 
 void GBezierLine::OnRender( int iHighlightLevel/*=0*/ )
@@ -940,6 +948,12 @@ float GBezierLine::CalculateMidPointProportion()
 {
 	if (isStraightLine())
 	{
+		return GStraightLine::CalculateMidPointProportion();
+	}
+	return 0.5f;
+	/*
+	if (isStraightLine())
+	{
 		return 0.5f;
 	}
 	float lx;
@@ -950,6 +964,7 @@ float GBezierLine::CalculateMidPointProportion()
 		return CalculateProportion(pmid->getX(), pmid->getY(), isec);
 	}
 	return 0;
+	*/
 }
 
 bool GBezierLine::isLengthCalculated()
@@ -1062,7 +1077,7 @@ GLine * GBezierLine::Clip( float fClipProportion )
 	}
 
 	plend->ClingTo(NULL, 0);
-	plend->SeperateFrom();
+	plend->DemergeFrom();
 	DeclingByOther();
 
 	PointF2D ptClip;
@@ -1198,7 +1213,7 @@ bool GBezierLine::Combine( GLine * pLine )
 	pLine->RemoveFromParent(true);
 	//////////////////////////////////////////////////////////////////////////
 
-	pThisEnd->SeperateFrom();
+	pThisEnd->DemergeFrom();
 	pThisEnd->GetHandle()->BindWith();
 	DeclingByOther();
 
@@ -1296,8 +1311,8 @@ bool GBezierLine::SwapBeginEnd()
 		pEndHandle->BindWith();
 	}
 
-	plbegin->SeperateFrom();
-	plend->SeperateFrom();
+	plbegin->DemergeFrom();
+	plend->DemergeFrom();
 	DeclingByOther();
 
 	SetBeginEnd(ptOEnd.x, ptOEnd.y, ptOBegin.x, ptOBegin.y);
@@ -1374,7 +1389,7 @@ bool GBezierLine::Extend( float tBegin, float tEnd )
 
 	if (tBegin != 0.0f)
 	{
-		plbegin->SeperateFrom();
+		plbegin->DemergeFrom();
 
 		float tb = -tBegin;
 		if (GetPositionAtExtendedProportion(tb, &ptNewBegin, &quadNewBeginBezierOutput))
@@ -1396,7 +1411,7 @@ bool GBezierLine::Extend( float tBegin, float tEnd )
 
 	if (tEnd != 0.0f)
 	{
-		plend->SeperateFrom();
+		plend->DemergeFrom();
 
 		float te = tEnd;
 		if (tBegin != 0.0f)
@@ -1541,6 +1556,22 @@ float GBezierLine::GetSFromProportion( float fProp )
 		}
 		if (nroot > 1)
 		{
+			float fDiffMin = M_FLOATMAX;
+			int iMin = 0;
+			for (int i=0; i<3; i++)
+			{
+				PointF2D pq;
+				pmh->CalculateBezier(ptBegin, ptBeginHandle, ptEndHandle, ptEnd, s[i], &pq);
+				pq = pq-ptPos;
+				float fNowDiff = pq.x*pq.x+pq.y*pq.y;
+				if (fNowDiff < fDiffMin)
+				{
+					fDiffMin = fNowDiff;
+					iMin = i;
+				}
+			}
+			return s[iMin];
+			/*
 			float fDiff = 1.0f;
 			int iclose = -1;
 			for (int i=0; i<3; i++)
@@ -1553,6 +1584,7 @@ float GBezierLine::GetSFromProportion( float fProp )
 				}
 			}
 			return s[iclose];
+			*/
 		}
 		return s[0];
 	}

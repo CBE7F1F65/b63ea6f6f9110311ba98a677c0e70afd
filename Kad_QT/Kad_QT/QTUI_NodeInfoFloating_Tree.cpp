@@ -199,7 +199,7 @@ void QTUI_NodeInfoFloating_Tree::SLT_ItemChanged(QTreeWidgetItem *pItem, int nCo
                         if (pPoint->isMergeWith(pAnotherPoint))
                         {
                             pmain->OnCommandWithParam(
-                                        COMM_SEPARATE,
+                                        COMM_DEMERGE,
                                         CCCWPARAM_I(pPoint->getID()),
                                         CCCWPARAM_I(pAnotherPoint->getID()),
                                         NULL);

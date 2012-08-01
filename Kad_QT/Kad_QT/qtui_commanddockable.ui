@@ -92,6 +92,9 @@
    <class>QTUI_CommandPanel_CommandEdit</class>
    <extends>QPlainTextEdit</extends>
    <header location="global">qtui_commandpanel_commandedit.h</header>
+   <slots>
+    <slot>SLT_TextChanged()</slot>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>

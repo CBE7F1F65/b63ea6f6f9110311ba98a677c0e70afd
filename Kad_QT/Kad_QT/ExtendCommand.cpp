@@ -17,16 +17,6 @@ void ExtendCommand::OnProcessCommand()
 {
 	int step = OnNormalProcessCommand();
 	int nowstep = pcommand->GetStep();
-	if (IsStepped())
-	{
-		if (nowstep > CSI_INIT)
-		{
-			pcommand->EnableSubCommand(
-				(laststep.step==CSI_RESUME)?false:true,
-				SSC_TERMINAL,
-				SSC_NULL);
-		}
-	}
 	UpdateLastStep();
 
 	int ret = -1;
@@ -59,12 +49,7 @@ void ExtendCommand::OnProcessCommand()
 			);
 	}
 
-	if (ret > 0)
-	{
-		DispatchNormalSubCommand(ret);
-		pcommand->FinishPendingSubCommand();
-	}
-	else if (ret < 0)
+	if (ret < 0)
 	{
 		// Routine
 		if (step > CSI_INIT)
@@ -132,8 +117,10 @@ void ExtendCommand::OnProcessCommand()
 								fSplit = fSplitProp * pBezier->getLength();
 							}
 						}
-						else
+						else if (pObj == pBezier->GetEndPoint())
 						{
+							fSplitProp = 1.0f;
+							fSplit = pBezier->getLength();
 						}
 						if (step == CSI_EXTEND_WANTBEGINOFFSET)
 						{
@@ -209,7 +196,7 @@ void ExtendCommand::OnDoneCommand()
 	float fEndOffset = pcommand->GetParamF(CSP_EXTEND_F_ENDOFFSET);
 	float fBegin = fBeginOffset/fLength;
 	float fEnd = fEndOffset/fLength;
-	if (fBegin < 0 || fBegin > 1 || fEnd < 0 || fEnd > 1)
+	if (fBegin < 0 || fEnd < 0)
 	{
 		pcommand->TerminalCommand();
 		return;

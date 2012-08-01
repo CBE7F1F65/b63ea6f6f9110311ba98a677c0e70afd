@@ -12,6 +12,11 @@ int Command::ProcessPending( int index, int useflag, int fillprompt, int step, i
 	{
 		return -1;
 	}
+	if (IsCCTypeCommand(pendingparam.type) && IsInternalCommand_CommandEndMark(pendingparam.ival))
+	{
+		TerminalCommand();
+		return -1;
+	}
 
 	if (pendingparam.type & COMMITTEDCOMMANDTYPE_SUBCOMMAND)
 	{
@@ -134,6 +139,18 @@ int Command::ProcessCommittedCommand()
 
 	inputcommandlist.pop_front();
 	return GetCurrentCommand();
+}
+
+bool Command::WillTerminalCurrentCommand()
+{
+	if (!inputcommandlist.empty())
+	{
+		if (IsCCTypeCommand(inputcommandlist.front().type))
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 void Command::UpdateProcessCommand()

@@ -149,7 +149,7 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_CLING,	"CLING",	"",	"Cling To",	""	);
 	_BSET(	COMM_BINDHANDLE,	"BINDHANDLE",	"",	"Bind Handle",	""	);
 	_BSET(	COMM_MERGE,	"MERGE",	"",	"Merge With",	""	);
-	_BSET(	COMM_SEPARATE,	"SEPERATE",	"Y",	"Separate From",	""	);
+	_BSET(	COMM_DEMERGE,	"DEMERGE",	"",	"Demerge From",	""	);
 	_BSET(	COMM_DELETEITEM,	"DELETE",	"DEL",	"Delete Item",	""	);
 	_BSET(	COMM_SETNODENAME,	"SETNODENAME",	"",	"Set Display Name",	""	);
 	_BSET(	COMM_DUPLICATE,	"DUPLICATE",	"DUP",	"Duplicate Item",	""	);

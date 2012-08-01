@@ -1,30 +1,20 @@
 #include "StdAfx.h"
-#include "SeparateCommand.h"
+#include "DemergeCommand.h"
 
 
-SeparateCommand::SeparateCommand(void)
+DemergeCommand::DemergeCommand(void)
 {
 }
 
 
-SeparateCommand::~SeparateCommand(void)
+DemergeCommand::~DemergeCommand(void)
 {
 }
 
-void SeparateCommand::OnProcessCommand()
+void DemergeCommand::OnProcessCommand()
 {
 	int step = OnNormalProcessCommand();
 	int nowstep = pcommand->GetStep();
-	if (IsStepped())
-	{
-		if (nowstep > CSI_INIT)
-		{
-			pcommand->EnableSubCommand(
-				(laststep.step==CSI_RESUME)?false:true,
-				SSC_TERMINAL,
-				SSC_NULL);
-		}
-	}
 	UpdateLastStep();
 
 	int ret = -1;
@@ -49,15 +39,9 @@ void SeparateCommand::OnProcessCommand()
 			CSI_FINISH
 			);
 	}
-
-	if (ret > 0)
-	{
-		DispatchNormalSubCommand(ret);
-		pcommand->FinishPendingSubCommand();
-	}
 }
 
-void SeparateCommand::OnDoneCommand()
+void DemergeCommand::OnDoneCommand()
 {
 	int fromindex = pcommand->GetParamI(CSP_SEPARATE_I_FROMINDEX);
 	int toindex = pcommand->GetParamI(CSP_SEPARATE_I_TOINDEX);
@@ -83,12 +67,12 @@ void SeparateCommand::OnDoneCommand()
 		return;
 	}
 	
-	pFromPoint->SeperateFrom(pToPoint);
+	pFromPoint->DemergeFrom(pToPoint);
 
 	PushRevertable(
 		CCMake_C(COMM_I_COMMAND, 3),
 		CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
-		CCMake_C(COMM_SEPARATE),
+		CCMake_C(COMM_DEMERGE),
 		CCMake_I(fromindex),
 		CCMake_I(toindex),
 		NULL

@@ -16,16 +16,6 @@ void MoveNodeBatchCommand::OnProcessCommand()
 	int step = OnNormalProcessCommand();
 
 	int nowstep = pcommand->GetStep();
-	if (IsStepped())
-	{
-		if (nowstep > CSI_INIT)
-		{
-			pcommand->EnableSubCommand(
-				(laststep.step==CSI_RESUME)?false:true,
-				SSC_TERMINAL,
-				SSC_NULL);
-		}
-	}
 	UpdateLastStep();
 
 	int ret = -1;
@@ -65,12 +55,7 @@ void MoveNodeBatchCommand::OnProcessCommand()
 		}
 	}
 
-	if (ret > 0)
-	{
-		DispatchNormalSubCommand(ret);
-		pcommand->FinishPendingSubCommand();
-	}
-	else if (ret < 0)
+	if (ret < 0)
 	{
 		if (step >= CSI_MOVENODE_BATCH_WANTX && step < CSI_MOVENODE_BATCH_WANTINDEXES)
 		{

@@ -53,7 +53,7 @@ public:
 	// Only Point To Point!
 	bool MergeWith(GPoint * pPoint, bool bNoBackward=false);
 	bool isMergeWith(GPoint * pPoint);
-	bool SeperateFrom(GPoint * pPoint=NULL, bool bNoBackward=false);
+	bool DemergeFrom(GPoint * pPoint=NULL, bool bNoBackward=false);
 	list<GPoint *> * getMergeWith(){return &mergeWithList;};
 	void CallClingToMoved( bool bTry, int moveActionID );
 

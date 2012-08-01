@@ -191,7 +191,7 @@ void GPoint::OnRemove()
 {
 	super::OnRemove();
 	DeclingToOther();
-	SeperateFrom();
+	DemergeFrom();
 }
 
 void GPoint::ClearClingTo()
@@ -279,7 +279,7 @@ bool GPoint::MergeWith( GPoint * pPoint, bool bNoBackward/*=false*/ )
 {
 	if (!pPoint)
 	{
-		return SeperateFrom();
+		return DemergeFrom();
 	}
 	DASSERT(pPoint != this);
 	if (pPoint == this)
@@ -398,7 +398,7 @@ bool GPoint::isMergeWith( GPoint * pPoint )
 	return false;
 }
 
-bool GPoint::SeperateFrom( GPoint * pPoint/*=NULL*/, bool bNoBackward/*=false*/ )
+bool GPoint::DemergeFrom( GPoint * pPoint/*=NULL*/, bool bNoBackward/*=false*/ )
 {
 	DASSERT(pPoint!=this);
 	if (pPoint == this)
@@ -409,7 +409,7 @@ bool GPoint::SeperateFrom( GPoint * pPoint/*=NULL*/, bool bNoBackward/*=false*/ 
 	{
 		while (!mergeWithList.empty())
 		{
-			SeperateFrom(mergeWithList.front());
+			DemergeFrom(mergeWithList.front());
 		}
 		return true;
 	}
@@ -430,7 +430,7 @@ bool GPoint::SeperateFrom( GPoint * pPoint/*=NULL*/, bool bNoBackward/*=false*/ 
 			//////////////////////////////////////////////////////////////////////////
 			if (!bNoBackward)
 			{
-				pAnotherPoint->SeperateFrom(this, true);
+				pAnotherPoint->DemergeFrom(this, true);
 				++it;
 			}
 			else
@@ -547,7 +547,7 @@ GNodeRelationshipGroup * GPoint::CreateRelationshipGroup( bool bClingBy/*=true*/
 void GPoint::OnIndepend()
 {
 	super::OnIndepend();
-	SeperateFrom();
+	DemergeFrom();
 }
 
 /************************************************************************/

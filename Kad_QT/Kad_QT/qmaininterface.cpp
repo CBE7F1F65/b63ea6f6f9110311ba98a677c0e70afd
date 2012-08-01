@@ -119,11 +119,7 @@ void QMainInterface::ResolveMarkingOverlapping()
 			jrect.moveTo(pjw->pos());
 			if (irect.intersects(jrect))
 			{
-				float toy = pjw->y()-piw->height();
-				if (toy < 0)
-				{
-					toy = pjw->y()+pjw->height();
-				}
+				float toy = pjw->y()+pjw->height();
 				piw->move(piw->x(), toy);
 			}
 		}

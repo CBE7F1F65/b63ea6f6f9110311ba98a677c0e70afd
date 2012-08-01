@@ -31,18 +31,6 @@ void LineCommand::OnProcessCommand()
 	int step = OnNormalProcessCommand(GUIC_CREATEPOINT);
 
 	int nowstep = pcommand->GetStep();
-	if (IsStepped())
-	{
-		if (nowstep > CSI_INIT)
-		{
-			pcommand->EnableSubCommand(
-				(laststep.step==CSI_RESUME)?false:true,
-				SSC_UNDO,
-				SSC_REDO,
-				SSC_TERMINAL,
-				SSC_NULL);
-		}
-	}
 	UpdateLastStep();
 
 	int ret = -1;
@@ -89,16 +77,7 @@ void LineCommand::OnProcessCommand()
 		pgp->PushInterestPoint(bx, by);
 	}
 
-	if (!ret)
-	{
-	}
-	else if (ret > 0)
-	{
-		// Dispatch Subcommand
-		DispatchNormalSubCommand(ret);
-		pcommand->FinishPendingSubCommand();
-	}
-	else if (ret < 0)
+	if (ret < 0)
 	{
 		// Routine
 		if (step > CSI_INIT)
@@ -154,13 +133,15 @@ void LineCommand::OnProcessCommand()
 			pcommand->GetParamXY(CSP_LINE_XY_N, &nx1, &ny1);
 
 			ProtectPendingFinishCommand();
-
-			CommitFrontCommand(
-				CCMake_C(COMM_LINE),
-				CCMake_F(nx1),
-				CCMake_F(ny1),
-				NULL
-				);
+			if (!pcommand->WillTerminalCurrentCommand())
+			{
+				CommitFrontCommand(
+					CCMake_C(COMM_LINE),
+					CCMake_F(nx1),
+					CCMake_F(ny1),
+					NULL
+					);
+			}
 
 			if (pNCLine)
 			{

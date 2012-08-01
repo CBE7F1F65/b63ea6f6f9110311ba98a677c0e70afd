@@ -15,7 +15,7 @@
 #include "MoveNodeBatchCommand.h"
 #include "ClingCommand.h"
 #include "MergeCommand.h"
-#include "SeparateCommand.h"
+#include "DemergeCommand.h"
 #include "TestCommand.h"
 #include "BindHandleCommand.h"
 #include "LineTransformCommand.h"
@@ -43,8 +43,8 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 		return &BindHandleCommand::getInstance();
 	case COMM_MERGE:
 		return &MergeCommand::getInstance();
-	case COMM_SEPARATE:
-		return &SeparateCommand::getInstance();
+	case COMM_DEMERGE:
+		return &DemergeCommand::getInstance();
 	case COMM_DELETEITEM:
 		return &DeleteItemCommand::getInstance();
 	case COMM_SETNODENAME:

@@ -15,16 +15,6 @@ void MergeCommand::OnProcessCommand()
 {
 	int step = OnNormalProcessCommand();
 	int nowstep = pcommand->GetStep();
-	if (IsStepped())
-	{
-		if (nowstep > CSI_INIT)
-		{
-			pcommand->EnableSubCommand(
-				(laststep.step==CSI_RESUME)?false:true,
-				SSC_TERMINAL,
-				SSC_NULL);
-		}
-	}
 	UpdateLastStep();
 
 	int ret = -1;
@@ -49,12 +39,6 @@ void MergeCommand::OnProcessCommand()
 			CSI_FINISH
 			);
 	}
-
-	if (ret > 0)
-	{
-		DispatchNormalSubCommand(ret);
-		pcommand->FinishPendingSubCommand();
-	}
 }
 
 void MergeCommand::OnDoneCommand()
@@ -64,12 +48,12 @@ void MergeCommand::OnDoneCommand()
 
 	GObject * pFromObj = pgm->FindObjectByID(fromindex);
 	GObject * pToObj = pgm->FindObjectByID(toindex);
-	if (!pFromObj || !pToObj)
+	if (!pFromObj)
 	{
 		Terminal();
 		return;
 	}
-	if (!pFromObj->isPoint() || !pToObj->isPoint())
+	if (!pFromObj->isPoint() || (pToObj && !pToObj->isPoint()))
 	{
 		Terminal();
 		return;
@@ -83,7 +67,14 @@ void MergeCommand::OnDoneCommand()
 		return;
 	}
 	
-	pFromPoint->MergeWith(pToPoint);
+	if (pToPoint)
+	{
+		pFromPoint->MergeWith(pToPoint);
+	}
+	else
+	{
+		pFromPoint->DemergeFrom();
+	}
 
 	PushRevertable(
 		CCMake_C(COMM_I_COMMAND, 3),
@@ -114,6 +105,6 @@ void MergeCommand::OnProcessUnDoCommand( RevertableCommand * rc )
 	GPoint * pFromPoint = (GPoint *)pFromObj;
 	GPoint * pToPoint = (GPoint *)pToObj;
 
-	pFromPoint->SeperateFrom(pToPoint);
+	pFromPoint->DemergeFrom(pToPoint);
 }
 */

@@ -15,8 +15,8 @@
 #define _GUICG_MGID_MAIN	1
 #define _GUICG_MGID_AXIS	2
 
-#define _GUIC_SCALEMAX	40.0f
-#define _GUIC_SCALEMIN	1.0f
+#define _GUIC_SCALEMAX	80.0f
+#define _GUIC_SCALEMIN	0.04f
 #define _GUIC_DEFAULTSCALE	4.0f
 
 GUICoordinate::GUICoordinate()
