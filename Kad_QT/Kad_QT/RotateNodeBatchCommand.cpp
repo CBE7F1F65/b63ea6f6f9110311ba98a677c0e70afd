@@ -262,10 +262,6 @@ void RotateNodeBatchCommand::OnDoneCommand()
 		}
 	}
 
-	for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end(); ++it)
-	{
-		ReAttachAfterMoveNode(*it, true, &lobjs);
-	}
 
 	if (lobjs.empty())
 	{
@@ -298,6 +294,10 @@ void RotateNodeBatchCommand::OnDoneCommand()
 			CCMake_C(COMM_I_UNDO_PARAMFROMCOMMAND),
 			NULL
 			);
+		for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end(); ++it)
+		{
+			ReAttachAfterMoveNode(*it, true, &lobjs);
+		}
 
 	}
 }

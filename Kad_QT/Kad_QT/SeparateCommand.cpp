@@ -86,12 +86,9 @@ void SeparateCommand::OnDoneCommand()
 	pFromPoint->SeperateFrom(pToPoint);
 
 	PushRevertable(
-		CCMake_C(COMM_I_COMMAND, 3, 1),
+		CCMake_C(COMM_I_COMMAND, 3),
 		CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 		CCMake_C(COMM_SEPARATE),
-		CCMake_I(fromindex),
-		CCMake_I(toindex),
-		CCMake_C(COMM_I_UNDO_PARAM, 2),
 		CCMake_I(fromindex),
 		CCMake_I(toindex),
 		NULL

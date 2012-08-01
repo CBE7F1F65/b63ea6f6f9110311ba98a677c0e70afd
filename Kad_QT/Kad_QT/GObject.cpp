@@ -327,7 +327,7 @@ void GObject::OnRelease()
 
 void GObject::CallRemove()
 {
-	OnRelease();
+	OnRemove();
 	if (!lstChildren.empty())
 	{
 		FOREACH_GOBJ_CHILDREN_IT()

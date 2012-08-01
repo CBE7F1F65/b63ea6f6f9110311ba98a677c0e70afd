@@ -35,8 +35,8 @@ int MathHelper::LineSegmentIntersect( float x1, float y1, float x2, float y2, fl
     s2_x = x4 - x3;     s2_y = y4 - y3;
 	*/
 
-	float mua,mub;
-	float denom,numera,numerb;
+	double mua,mub;
+	double denom,numera,numerb;
 	/*
 	denom = (-s2_x * s1_y + s1_x * s2_y);
 	numera = (-s1_y * (x1 - x3) + s1_x * (y1 - y3));
@@ -89,7 +89,7 @@ int MathHelper::LineSegmentIntersect( float x1, float y1, float x2, float y2, fl
 	/* Is the intersection along the the segments */
 	mua = numera / denom;
 	mub = numerb / denom;
-	if (mua < 0 || mua > 1 || mub < 0 || mub > 1) {
+	if (mua < -M_FLOATEXTREMEEPS || mua > 1+M_FLOATEXTREMEEPS || mub < -M_FLOATEXTREMEEPS || mub > 1+M_FLOATEXTREMEEPS) {
 		if (intx)
 		{
 			*intx = 0;

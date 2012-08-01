@@ -106,18 +106,11 @@ void BindHandleCommand::OnDoneCommand()
     pFromHandlePoint->BindWith(pToHandlePoint);
 
 	PushRevertable(
-		CCMake_C(COMM_I_COMMAND, 3, 1),
+		CCMake_C(COMM_I_COMMAND, 3),
 		CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 		CCMake_C(COMM_BINDHANDLE),
 		CCMake_I(fromindex),
 		CCMake_I(toindex),
-		CCMake_C(COMM_I_UNDO_PARAM, 6),
-		CCMake_I(fromindex),
-		CCMake_I(oldfromtoindex),
-		CCMake_I(toindex),
-		CCMake_I(oldtotoindex),
-		CCMake_F(oldtox),
-		CCMake_F(oldtoy),
 		NULL
 		);
 }

@@ -322,11 +322,6 @@ void ScaleNodeBatchCommand::OnDoneCommand()
 		}
 	}
 
-	for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end(); ++it)
-	{
-		ReAttachAfterMoveNode(*it, true, &lobjs);
-	}
-
 	if (lobjs.empty())
 	{
 		pcommand->StepTo(CSI_TERMINAL);
@@ -360,6 +355,10 @@ void ScaleNodeBatchCommand::OnDoneCommand()
 			NULL
 			);
 
+		for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end(); ++it)
+		{
+			ReAttachAfterMoveNode(*it, true, &lobjs);
+		}
 	}
 }
 /*

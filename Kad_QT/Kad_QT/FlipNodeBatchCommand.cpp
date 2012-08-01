@@ -229,11 +229,6 @@ void FlipNodeBatchCommand::OnDoneCommand()
 		}
 	}
 
-	for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end(); ++it)
-	{
-		ReAttachAfterMoveNode(*it, true, &lobjs);
-	}
-
 	if (lobjs.empty())
 	{
 		pcommand->StepTo(CSI_TERMINAL);
@@ -265,6 +260,11 @@ void FlipNodeBatchCommand::OnDoneCommand()
 			CCMake_C(COMM_I_UNDO_PARAMFROMCOMMAND),
 			NULL
 			);
+
+		for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end(); ++it)
+		{
+			ReAttachAfterMoveNode(*it, true, &lobjs);
+		}
 
 	}
 }

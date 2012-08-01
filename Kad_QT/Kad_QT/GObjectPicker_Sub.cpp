@@ -201,9 +201,13 @@ bool GObjectPicker::SubFindLineLine( GLine * pLine1, GLine * pLine2 )
 
 	if (pLine1->CheckIntersectWithLineObj(pLine2, &pts))
 	{
-		pickx_c = pts.front().x;
-		picky_c = pts.front().y;
-		return true;
+		PointF2D * pptIntersect = &(pts.front());
+		if (IsInSnapRangePoint_C(pptIntersect->x, pptIntersect->y))
+		{
+			pickx_c = pptIntersect->x;
+			picky_c = pptIntersect->y;
+			return true;
+		}
 	}
 	return false;
 }

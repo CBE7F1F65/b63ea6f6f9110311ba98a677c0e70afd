@@ -469,30 +469,64 @@ bool CommandTemplate::MergeClingNewPoint( GPoint * pFrom, GObject * pTo, float f
 	if (pTo->isPoint())
 	{
 		GPoint * pToPoint = (GPoint *)pTo;
-		GPoint * pFromPoint = (GPoint *)pFrom;
 		if (pToPoint->getMergeWith()->empty() && pFrom->getMergeWith()->empty())
 		{
+			pFrom->MergeWith(pToPoint);
+			PushRevertable(
+				CCMake_C(COMM_I_COMMAND, 3),
+				CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
+				CCMake_C(COMM_MERGE),
+				CCMake_I(pFrom->getID()),
+				CCMake_I(pTo?pTo->getID():-1),
+				NULL
+				);
+			/*
 			CommitFrontCommand(
 				CCMake_C(COMM_MERGE),
 				CCMake_O(pFrom),
 				CCMake_O(pTo),
 				NULL
 				);
+				*/
 		}
 		GLine * pToCling = pToPoint->getClingTo();
 		if (pToCling)
 		{
+			float fProp = pToPoint->getClingProportion();
+			pFrom->ClingTo(pToCling, fProp);
+			PushRevertable(
+				CCMake_C(COMM_I_COMMAND, 4),
+				CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
+				CCMake_C(COMM_CLING),
+				CCMake_I(pFrom->getID()),
+				CCMake_I(pToCling?pToCling->getID():-1),
+				CCMake_F(fProp),
+				NULL
+				);
+			/*
 			CommitFrontCommand(
 				CCMake_C(COMM_CLING),
 				CCMake_O(pFrom),
 				CCMake_O(pToCling),
 				CCMake_F(pToPoint->getClingProportion()),
 				NULL);
+				*/
 		}
 		bRet = true;
 	}
 	if (pTo->isLine())
 	{
+		pFrom->ClingTo(pTo, fProportion);
+		PushRevertable(
+			CCMake_C(COMM_I_COMMAND, 4),
+			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
+			CCMake_C(COMM_CLING),
+			CCMake_I(pFrom->getID()),
+			CCMake_I(pTo?pTo->getID():-1),
+			CCMake_F(fProportion),
+			NULL
+			);
+		/*
 		CommitFrontCommand(
 			CCMake_C(COMM_CLING),
 			CCMake_O(pFrom),
@@ -500,6 +534,7 @@ bool CommandTemplate::MergeClingNewPoint( GPoint * pFrom, GObject * pTo, float f
 			CCMake_F(fProportion),
 			NULL
 			);
+			*/
 		bRet = true;
 	}
 	return true;
@@ -573,6 +608,18 @@ void CommandTemplate::ReAttachAfterMoveNode( GObject * pObj, bool bFindMerge/*=t
 	{
 		if (pPoint->getClingTo() != pTestPickedObj || fabsf(pPoint->getClingProportion() - fProportion) > M_FLOATEPS)
 		{
+			pPoint->ClingTo(pTestPickedObj, fProportion);
+
+			PushRevertable(
+				CCMake_C(COMM_I_COMMAND, 4),
+				CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
+				CCMake_C(COMM_CLING),
+				CCMake_I(pPoint->getID()),
+				CCMake_I(pTestPickedObj?pTestPickedObj->getID():-1),
+				CCMake_F(fProportion),
+				NULL
+				);
+			/*
 			CommitFrontCommand(
 				CCMake_C(COMM_CLING),
 				CCMake_O(pObj),
@@ -580,6 +627,7 @@ void CommandTemplate::ReAttachAfterMoveNode( GObject * pObj, bool bFindMerge/*=t
 				CCMake_F(fProportion),
 				NULL
 				);
+				*/
 		}
 	}
 	if (pTestPickedObj && pTestPickedObj->canBeMergedWith())
@@ -588,12 +636,23 @@ void CommandTemplate::ReAttachAfterMoveNode( GObject * pObj, bool bFindMerge/*=t
 //		if (!pPoint->isMergeWith(pTestPickedPoint))
 		if (pPoint->getMergeWith()->empty() && pTestPickedPoint->getMergeWith()->empty())
 		{
+			pPoint->MergeWith(pTestPickedPoint);
+			PushRevertable(
+				CCMake_C(COMM_I_COMMAND, 3),
+				CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
+				CCMake_C(COMM_MERGE),
+				CCMake_I(pPoint->getID()),
+				CCMake_I(pTestPickedPoint?pTestPickedPoint->getID():-1),
+				NULL
+				);
+			/*
 			CommitFrontCommand(
 				CCMake_C(COMM_MERGE),
 				CCMake_O(pObj),
 				CCMake_O(pTestPickedObj),
 				NULL
 				);
+				*/
 		}
 	}
 }
@@ -611,12 +670,23 @@ bool CommandTemplate::BindNewAnchorPoint( GAnchorPoint * pOld, GAnchorPoint * pN
 	}
 	if (!pOldHandle->getBindWith() && !pNewHandle->getBindWith())
 	{
+		pOldHandle->BindWith(pNewHandle);
+		PushRevertable(
+			CCMake_C(COMM_I_COMMAND, 3),
+			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
+			CCMake_C(COMM_BINDHANDLE),
+			CCMake_I(pOldHandle->getID()),
+			CCMake_I(pNewHandle->getID()),
+			NULL
+			);
+		/*
 		CommitFrontCommand(
 			CCMake_C(COMM_BINDHANDLE),
 			CCMake_O(pOldHandle),
 			CCMake_O(pNewHandle),
 			NULL
 			);
+			*/
 		return true;
 	}
 	return false;

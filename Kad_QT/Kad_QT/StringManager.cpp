@@ -85,6 +85,40 @@ const char * StringManager::GetIniFileName()
 
 void StringManager::FillSCInfo()
 {
+	/************************************************************************/
+	/*                                                                      */
+	/************************************************************************/
+	/*
+	Q	DefinePiece
+	W	Walk
+	E	Extend
+	R	Rotate
+	T	Trace
+	Y	Separate
+	U	Fullness
+	I	Mirror
+	O	Circle
+	P	Point
+	A	SeamAllowance
+	S	Scale
+	D	Dart
+	F	Flip
+	G	Grade
+	H	Attach
+	J	Join(Combine)
+	K	Terminal
+	L	Line
+	Z	Pleat
+	X	Clip
+	C	Rectangle
+	V	Move
+	B	Bezier
+	N	Notch
+	M	Measure
+	*/
+	/************************************************************************/
+	/*                                                                      */
+	/************************************************************************/
 #define _LSET(COMM, LSTR, DES, CMT)	\
 	scinfo[COMM].str = LSTR;	\
 	scinfo[COMM].description = hge->Ini_GetString(INIS_COMMAND_PREFIX LSTR, ININ_DES, DES);	\
@@ -98,40 +132,40 @@ void StringManager::FillSCInfo()
 	// Do not use _SSET, _LSET directly
 	// Keep format for Excel Editing
 #ifdef DEBUGTEST
-	_BSET(	COMM_TEST,	"TEST",	"T",	"Test",	""	);
+	_BSET(	COMM_TEST,	"TEST",	"",	"Test",	""	);
 #endif // DEBUGTEST
 
 	_BSET(	COMM_PAN,	"PAN",	"",	"Pan",	""	);
 	_BSET(	COMM_ZOOMIN,	"ZOOMIN",	"",	"Zone Zoom",	""	);
 	_BSET(	COMM_DOZOOM,	"ZOOM",	"",	"Instant Zoom",	""	);
-	_BSET(	COMM_OUTPUT,	"OUTPUT",	"O",	"Output",	""	);
+	_BSET(	COMM_OUTPUT,	"OUTPUT",	"OP",	"Output",	""	);
 
 	_BSET(	COMM_INITIAL,	"INITIAL",	"",	"Initialization",	""	);
 	_BSET(	COMM_TERMINAL,	"TERMINAL",	"K",	"Terminal Command",	""	);
-	_BSET(	COMM_UNDO,	"UNDO", "U",	"UnDo",	""	);
-	_BSET(	COMM_REDO,	"REDO", "R",	"UnDo",	""	);
+	_BSET(	COMM_UNDO,	"UNDO", "",	"UnDo",	""	);
+	_BSET(	COMM_REDO,	"REDO", "",	"UnDo",	""	);
 
 	_BSET(	COMM_REPARENT,	"REPARENT",	"",	"Reparent Item",	""	);
-	_BSET(	COMM_CLING,	"CLING",	"CLIN",	"Cling To",	""	);
-	_BSET(	COMM_BINDHANDLE,	"BINDHANDLE",	"BH",	"Bind Handle",	""	);
-	_BSET(	COMM_MERGE,	"MERGE",	"MER",	"Merge With",	""	);
-	_BSET(	COMM_SEPARATE,	"SEPERATE",	"SEP",	"Separate From",	""	);
+	_BSET(	COMM_CLING,	"CLING",	"",	"Cling To",	""	);
+	_BSET(	COMM_BINDHANDLE,	"BINDHANDLE",	"",	"Bind Handle",	""	);
+	_BSET(	COMM_MERGE,	"MERGE",	"",	"Merge With",	""	);
+	_BSET(	COMM_SEPARATE,	"SEPERATE",	"Y",	"Separate From",	""	);
 	_BSET(	COMM_DELETEITEM,	"DELETE",	"DEL",	"Delete Item",	""	);
 	_BSET(	COMM_SETNODENAME,	"SETNODENAME",	"",	"Set Display Name",	""	);
 	_BSET(	COMM_DUPLICATE,	"DUPLICATE",	"DUP",	"Duplicate Item",	""	);
-	_BSET(	COMM_MOVENODE,	"MOVE",	"M",	"Move Node",	""	);
+	_BSET(	COMM_MOVENODE,	"MOVE",	"MOV",	"Move Node",	""	);
 	_BSET(	COMM_MOVENODEBYOFFSET,	"MOVEBYOFFSET",	"MOFF",	"Move Node Offset",	""	);
-	_BSET(	COMM_MOVENODEBYOFFSET_BATCH,	"MOVEBYOFFSET_BATCH",	"MOFF_BATCH",	"Move Node Offset Batch",	""	);
-	_BSET(	COMM_ROTATENODE_BATCH,	"ROTATE_BATCH",	"ROT",	"Rotate Node Batch",	""	);
-	_BSET(	COMM_SCALENODE_BATCH,	"SCALE_BATCH",	"SCA",	"Scale Node Batch",	""	);
-	_BSET(	COMM_FLIPNODE_BATCH,	"FLIP_BATCH",	"FLI",	"Flip Node Batch",	""	);
+	_BSET(	COMM_MOVENODEBYOFFSET_BATCH,	"MOVEBYOFFSET_BATCH",	"V",	"Move Node Offset Batch",	""	);
+	_BSET(	COMM_ROTATENODE_BATCH,	"ROTATE_BATCH",	"R",	"Rotate Node Batch",	""	);
+	_BSET(	COMM_SCALENODE_BATCH,	"SCALE_BATCH",	"S",	"Scale Node Batch",	""	);
+	_BSET(	COMM_FLIPNODE_BATCH,	"FLIP_BATCH",	"F",	"Flip Node Batch",	""	);
 
 	_BSET(	COMM_EXTEND,	"EXTEND",	"E",	"Extend Line",	""	);
 
 	_BSET(	COMM_TOBEZIER,	"TOBEZIER", "TOB",	"Straight Line To Bezier",	""	);
 	_BSET(	COMM_TOSTRAIGHTLINE,	"TOSTRAIGHTLINE", "TOS",	"Bezier To Straight Line",	""	);
 
-	_BSET(	COMM_CLIP,	"CLIP",	"C",	"Clip",	""	);
+	_BSET(	COMM_CLIP,	"CLIP",	"X",	"Clip",	""	);
 //	_BSET(	COMM_COMBINE,	"COMBINE",	"COM",	"Combine Two Lines",	""	);
 //	No combine command
 

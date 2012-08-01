@@ -138,7 +138,18 @@ void ExtendCommand::OnProcessCommand()
 						if (step == CSI_EXTEND_WANTBEGINOFFSET)
 						{
 							pcommand->SetParamF(CSP_EXTEND_I_F_INDEX_BEGINOFFSET, fSplit, CWP_BEGINOFFSET);
-							pTempLineLeft->Clip(fSplitProp)->RemoveFromParent(true);
+							if (fSplit == 0.0f)
+							{
+								pTempLineLeft->RemoveFromParent(true);
+								pTempLineLeft = NULL;
+							}
+							else
+							{
+								if (fSplitProp != 1.0f)
+								{
+									pTempLineLeft->Clip(fSplitProp)->RemoveFromParent(true);
+								}
+							}
 							pgp->SetLockLockLine(pTempLineRight, 0.0f);
 							pcommand->StepTo(CSI_EXTEND_WANTENDOFFSET, CWP_ENDOFFSET);
 						}
@@ -152,15 +163,6 @@ void ExtendCommand::OnProcessCommand()
 				}
 			}
 		}
-		else if (step == CSI_FINISHCONTINUE)
-		{
-			ProtectPendingFinishCommand();
-
-			CommitFrontCommand(
-				CCMake_C(COMM_EXTEND),
-				NULL
-				);
-		}
 	}
 	RenderToTarget();
 }
@@ -168,13 +170,19 @@ void ExtendCommand::OnProcessCommand()
 void ExtendCommand::RenderToTarget()
 {
 	int nstep = pcommand->GetStep();
-	if (nstep >= CSI_EXTEND_WANTBEGINOFFSET && nstep <= CSI_EXTEND_WANTENDOFFSET && pTempLineLeft)
+	if (nstep >= CSI_EXTEND_WANTBEGINOFFSET && nstep <= CSI_EXTEND_WANTENDOFFSET && (pTempLineLeft||pTempLineRight))
 	{
 		HTARGET tar = RenderTargetManager::getInstance().UpdateTarget(RTID_COMMAND);
 
 		prh->BeginRenderTar(tar);
-		pTempLineLeft->CallRender();
-		pTempLineRight->CallRender();
+		if (pTempLineLeft)
+		{
+			pTempLineLeft->CallRender();
+		}
+		if (pTempLineRight)
+		{
+			pTempLineRight->CallRender();
+		}
 		prh->EndRenderTar();
 
 		pcommand->SetRenderTarget(tar);
@@ -217,6 +225,7 @@ void ExtendCommand::OnDoneCommand()
 			CCMake_F(fBeginOffset),
 			CCMake_F(fEndOffset),
 			NULL);
+		ReAttachAfterMoveNode(pBezier, true);
 	}
 }
 /*
