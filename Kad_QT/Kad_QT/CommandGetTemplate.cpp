@@ -25,6 +25,7 @@
 #include "ExtendCommand.h"
 #include "FlipNodeBatchCommand.h"
 #include "RestoreToSnapshotCommand.h"
+#include "JoinLineCommand.h"
 
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
@@ -70,6 +71,8 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 		return &LineTransformCommand::getInstance();
 	case COMM_CLIP:
 		return &ClipCommand::getInstance();
+	case COMM_JOIN:
+		return &JoinLineCommand::getInstance();
 
 	case COMM_NEWLAYER:
 	case COMM_NEWSUBLAYER:

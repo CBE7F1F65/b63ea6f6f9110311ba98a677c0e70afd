@@ -69,12 +69,13 @@ bool GNodeRelBindWith::RestoreTo( GObject * pObj, GObject * pFrom/*=NULL*/ )
 /************************************************************************/
 /* Cling To                                                             */
 /************************************************************************/
-GNodeRelClingTo::GNodeRelClingTo( /*GPoint * pPtSelf, */GLine * pLnOther, float fProp )
+GNodeRelClingTo::GNodeRelClingTo( GClingInfo & cli )
 {
 	nRelType = GREL_CLINGTO;
-	pOther = pLnOther;
+	pOther = cli.GetClingTo();
 	ASSERT(pOther);
-	fClingProp = fProp;
+	ASSERT(pOther == cli.GetClingTo());
+	clInfo = cli;
 }
 
 bool GNodeRelClingTo::CanAddRelTo( GObject * pObj )
@@ -91,18 +92,17 @@ bool GNodeRelClingTo::RestoreTo( GObject * pObj, GObject * pFrom/*=NULL*/ )
 	{
 		pFrom = pOther;
 	}
-	pPoint->ClingTo(pFrom, fClingProp);
-	return true;
+	return pPoint->ClingTo((GLine *)pFrom, clInfo.GetClingVal(), clInfo.GetClingType());
+//	return true;
 }
 /************************************************************************/
 /* Cling By                                                             */
 /************************************************************************/
-GNodeRelClingBy::GNodeRelClingBy( /*GLine * pLnSelf, */GPoint * pPtOther, float fProp )
+GNodeRelClingBy::GNodeRelClingBy( /*GLine * pLnSelf, */GPoint * pPtOther, GClingInfo & cli )
 {
 	nRelType = GREL_CLINGBY;
 	pOther = pPtOther;
 	ASSERT(pOther);
-	fClingProp = fProp;
 }
 
 bool GNodeRelClingBy::CanAddRelTo( GObject * pObj )
@@ -118,7 +118,7 @@ bool GNodeRelClingBy::RestoreTo( GObject * pObj, GObject * pFrom/*=NULL*/ )
 	{
 		pFrom = pObj;
 	}
-	((GPoint *)pFrom)->ClingTo(pObj, fClingProp);
+	((GPoint *)pFrom)->ClingTo(clInfo);
 	return true;
 }
 /************************************************************************/

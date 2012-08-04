@@ -19,18 +19,20 @@ enum{
 class QTUIUD_NIFT_NodeRelationship : public QObjectUserData
 {
 public:
-    QTUIUD_NIFT_NodeRelationship(GObject * pThisObj, GObject * pRelationParentObj, int nRType, float fProportion=0.0f)
+    QTUIUD_NIFT_NodeRelationship(GObject * pThisObj, GObject * pRelationParentObj, int nRType, int iValue=0, float fValue=0.0f)
     {
         pThis = pThisObj;
         pRelationParent = pRelationParentObj;
         nRelationType = nRType;
-        fClingProportion = fProportion;
+		iVal = iValue;
+        fVal = fValue;
     };
 
     GObject * pThis;
     GObject * pRelationParent;
     int nRelationType;
-    float fClingProportion;
+	int iVal;
+    float fVal;
 };
 
 class QTUIUD_NIFT_PushButton : public QObjectUserData
@@ -66,20 +68,14 @@ public slots:
     void SLT_ItemChanged(QTreeWidgetItem * pItem, int nColumn);
     void SLT_ItemClicked(QTreeWidgetItem * pItem, int nColumn);
     void SLT_ItemDoubleClicked(QTreeWidgetItem * pItem, int nColumn);
-
-	void SLT_CalculateLengthButtonClicked();
-	void SLT_TransformButtonClicked(bool bChecked);
-
+	
 private:
     void Clear();
     void UpdateNodeInfo(GObject * pObj, QTreeWidgetItem * pParent=NULL);
     void AdjustSize();
 
     QTreeWidgetItem * NewItemWithText(QTreeWidgetItem *pParent, QString str, int relID=-1, bool bChecked=true);
-    int NewRelationship(GObject * pObj, GObject * pRelationParent=NULL, int nRelationType=-1, float fProportion=0.0f);
-
-	QPushButton * NewCalculateLengthButton(QString strTooltip, QTreeWidgetItem * pParentItem);
-	QPushButton * NewTransformButton(QString str, QTreeWidgetItem * pParentItem, bool bChecked);
+	int NewRelationship(GObject * pObj, GObject * pRelationParent=NULL, int nRelationType=-1, int iVal=0, float fVal=0.0f);
 
     int CalculateTotalHeight(QTreeWidgetItem * pParent=0, int height=0);
 

@@ -489,18 +489,19 @@ bool CommandTemplate::MergeClingNewPoint( GPoint * pFrom, GObject * pTo, float f
 				);
 				*/
 		}
-		GLine * pToCling = pToPoint->getClingTo();
+		GClingInfo * pcli = pToPoint->getClingInfo();
+		GLine * pToCling = pcli->GetClingTo();
 		if (pToCling)
 		{
-			float fProp = pToPoint->getClingProportion();
-			pFrom->ClingTo(pToCling, fProp);
+			pFrom->ClingTo(*pcli);
 			PushRevertable(
-				CCMake_C(COMM_I_COMMAND, 4),
+				CCMake_C(COMM_I_COMMAND, 5),
 				CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 				CCMake_C(COMM_CLING),
 				CCMake_I(pFrom->getID()),
 				CCMake_I(pToCling?pToCling->getID():-1),
-				CCMake_F(fProp),
+				CCMake_I(pcli->GetClingType()),
+				CCMake_F(pcli->GetClingVal()),
 				NULL
 				);
 			/*
@@ -516,13 +517,14 @@ bool CommandTemplate::MergeClingNewPoint( GPoint * pFrom, GObject * pTo, float f
 	}
 	if (pTo->isLine())
 	{
-		pFrom->ClingTo(pTo, fProportion);
+		pFrom->ClingTo((GLine *)pTo, fProportion);
 		PushRevertable(
-			CCMake_C(COMM_I_COMMAND, 4),
+			CCMake_C(COMM_I_COMMAND, 5),
 			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 			CCMake_C(COMM_CLING),
 			CCMake_I(pFrom->getID()),
 			CCMake_I(pTo?pTo->getID():-1),
+			CCMake_I(GCLING_PROPORTION),
 			CCMake_F(fProportion),
 			NULL
 			);
@@ -606,28 +608,23 @@ void CommandTemplate::ReAttachAfterMoveNode( GObject * pObj, bool bFindMerge/*=t
 
 	if (!pTestPickedObj || pTestPickedObj->canBeClingTo())
 	{
-		if (pPoint->getClingTo() != pTestPickedObj || fabsf(pPoint->getClingProportion() - fProportion) > M_FLOATEPS)
+		if (fProportion >= M_FLOATEXTREMEEPS && fProportion <= 1-M_FLOATEXTREMEEPS)
 		{
-			pPoint->ClingTo(pTestPickedObj, fProportion);
-
-			PushRevertable(
-				CCMake_C(COMM_I_COMMAND, 4),
-				CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
-				CCMake_C(COMM_CLING),
-				CCMake_I(pPoint->getID()),
-				CCMake_I(pTestPickedObj?pTestPickedObj->getID():-1),
-				CCMake_F(fProportion),
-				NULL
-				);
-			/*
-			CommitFrontCommand(
-				CCMake_C(COMM_CLING),
-				CCMake_O(pObj),
-				CCMake_O(pTestPickedObj),
-				CCMake_F(fProportion),
-				NULL
-				);
-				*/
+			GClingInfo tcli = *pPoint->getClingInfo();
+			if (tcli.ApplyChange((GLine *)pTestPickedObj, fProportion))
+			{
+				pPoint->ClingTo(tcli);
+				PushRevertable(
+					CCMake_C(COMM_I_COMMAND, 5),
+					CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
+					CCMake_C(COMM_CLING),
+					CCMake_I(pPoint->getID()),
+					CCMake_I(pTestPickedObj?pTestPickedObj->getID():-1),
+					CCMake_I(tcli.GetClingType()),
+					CCMake_F(tcli.GetClingVal()),
+					NULL
+					);
+			}
 		}
 	}
 	if (pTestPickedObj && pTestPickedObj->canBeMergedWith())

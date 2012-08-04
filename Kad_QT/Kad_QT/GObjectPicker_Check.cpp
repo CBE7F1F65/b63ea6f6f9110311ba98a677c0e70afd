@@ -271,7 +271,7 @@ bool GObjectPicker::CheckSnapGeometryLine_ClingBy( GLine * pLine )
 						snappedstate |= GOPSNAPPED_POINT|GOPSNAPPED_OBJ|GOPSNAP_GEOMETRY;
 						SetPickObj(pPoint);
 						PointF2D ptPick;
-						pLine->GetPositionAtProportion(pPoint->getClingProportion(), &ptPick, &pickSection[0]);
+						pPoint->getClingInfo()->GetClingPosition(&ptPick, &pickSection[0]);
 						pickx_c = ptPick.x;
 						picky_c = ptPick.y;
 						nOnLine = GOPONLINE_MAX;

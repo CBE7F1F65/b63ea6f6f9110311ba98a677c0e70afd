@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "StringManager.h"
+#include "GPoint.h"
 
 StringManager::StringManager(void)
 {
@@ -166,8 +167,7 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_TOSTRAIGHTLINE,	"TOSTRAIGHTLINE", "TOS",	"Bezier To Straight Line",	""	);
 
 	_BSET(	COMM_CLIP,	"CLIP",	"X",	"Clip",	""	);
-//	_BSET(	COMM_COMBINE,	"COMBINE",	"COM",	"Combine Two Lines",	""	);
-//	No combine command
+	_BSET(	COMM_JOIN,	"JOIN",	"J",	"Join Two Lines",	""	);
 
 	_BSET(	COMM_SETWORKINGLAYER,	"SETWORKINGLAYER",	"",	"Set Working Layer",	""	);
 	_BSET(	COMM_NEWLAYER,	"NEWLAYER", "NL",	"New Layer",	""	);
@@ -213,6 +213,8 @@ void StringManager::FillWPInfo()
 	_PSET(	CWP_STEP,	"STEP"	);
 	_PSET(	CWP_INDEX,	"INDEX"	);
 	_PSET(	CWP_NAME,	"NAME"	);
+	_PSET(	CWP_TYPE,	"TYPE"	);
+	_PSET(	CWP_VALUE,	"VALUE"	);
 	_PSET(	CWP_PROPORTION,	"PROPORTION"	);
 	_PSET(	CWP_ANGLE,	"ANGLE"	);
 
@@ -242,4 +244,34 @@ void StringManager::FillSubSCInfo()
 
 
 #undef _SUBSET
+}
+
+const char * StringManager::GetNodeInfoClingTypeName( int nType )
+{
+	switch (nType)
+	{
+	case GCLING_PROPORTION:
+		return "By Proportion";
+	case GCLING_BEGINOFFSET:
+		return "By Begin Offset";
+	case GCLING_ENDOFFSET:
+		return "By End Offset";
+	}
+	ASSERT(false);
+	return NULL;
+}
+
+const char * StringManager::GetNodeInfoChangeClingTypeName( int nType )
+{
+	switch (nType)
+	{
+	case GCLING_PROPORTION:
+		return "Change to By Proportion";
+	case GCLING_BEGINOFFSET:
+		return "Change to By Begin Offset";
+	case GCLING_ENDOFFSET:
+		return "Change to By End Offset";
+	}
+	ASSERT(false);
+	return NULL;
 }

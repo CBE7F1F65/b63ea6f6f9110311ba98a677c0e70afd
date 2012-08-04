@@ -35,14 +35,21 @@ void ClingCommand::OnProcessCommand()
 	else if (step == CSI_CLING_WANTTOINDEX)
 	{
 		ret = pcommand->ProcessPending(
-			CSP_CLING_I_F_TOINDEX_PROPORTION, COMMPARAMFLAG_I, CWP_INDEX,
-			CSI_CLING_WANTPROPORTION, CWP_PROPORTION
+			CSP_CLING_I_TOINDEX, COMMPARAMFLAG_I, CWP_INDEX,
+			CSI_CLING_WANTCLINGTYPE, CWP_TYPE
 			);
 	}
-	else if (step == CSI_CLING_WANTPROPORTION)
+	else if (step == CSI_CLING_WANTCLINGTYPE)
 	{
 		ret = pcommand->ProcessPending(
-			CSP_CLING_I_F_TOINDEX_PROPORTION, COMMPARAMFLAG_F, CWP_PROPORTION,
+			CSP_CLING_I_F_TYPE_VALUE, COMMPARAMFLAG_I, CWP_TYPE,
+			CSI_CLING_WANTVAL, CWP_VALUE
+			);
+	}
+	else if (step == CSI_CLING_WANTVAL)
+	{
+		ret = pcommand->ProcessPending(
+			CSP_CLING_I_F_TYPE_VALUE, COMMPARAMFLAG_F, CWP_VALUE,
 			CSI_FINISH
 			);
 	}
@@ -51,8 +58,9 @@ void ClingCommand::OnProcessCommand()
 void ClingCommand::OnDoneCommand()
 {
 	int fromindex = pcommand->GetParamI(CSP_CLING_I_FROMINDEX);
-	int toindex = pcommand->GetParamI(CSP_CLING_I_F_TOINDEX_PROPORTION);
-	float fProportion = pcommand->GetParamF(CSP_CLING_I_F_TOINDEX_PROPORTION);
+	int toindex = pcommand->GetParamI(CSP_CLING_I_TOINDEX);
+	int nType = pcommand->GetParamI(CSP_CLING_I_F_TYPE_VALUE);
+	float fValue = pcommand->GetParamF(CSP_CLING_I_F_TYPE_VALUE);
 
 	GObject * pFromObj = pgm->FindObjectByID(fromindex);
 	GObject * pToObj = pgm->FindObjectByID(toindex);
@@ -68,24 +76,25 @@ void ClingCommand::OnDoneCommand()
 	}
 
 	GPoint * pFromPoint = (GPoint *)pFromObj;
-//	GLine * pToLine = (GLine *)pToObj;
+	GLine * pToLine = (GLine *)pToObj;
 	
-	if (pFromPoint->isClingTo(pToObj) && fabsf(pFromPoint->getClingProportion() - fProportion) < M_FLOATEPS)
+	GClingInfo * pcli = pFromPoint->getClingInfo();
+	if (pFromPoint->isClingTo(pToObj) && pcli->GetClingType() == nType && fabsf(pcli->GetClingVal()-fValue)<M_FLOATEXTREMEEPS)
 	{
 		pcommand->TerminalCommand();
 		return;
 	}
 	
-	if (pFromPoint->ClingTo(pToObj, fProportion))
+	if (pFromPoint->ClingTo(pToLine, fValue, nType))
 	{
-
 		PushRevertable(
-			CCMake_C(COMM_I_COMMAND, 4),
+			CCMake_C(COMM_I_COMMAND, 5),
 			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 			CCMake_C(COMM_CLING),
 			CCMake_I(fromindex),
 			CCMake_I(toindex),
-			CCMake_F(fProportion),
+			CCMake_I(nType),
+			CCMake_F(fValue),
 			NULL
 			);
 	}

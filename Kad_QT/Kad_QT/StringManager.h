@@ -116,6 +116,9 @@ public:
 	const char * GetLogFileName();
 	const char * GetIniFileName();
 
+	const char * GetNodeInfoClingTypeName(int nType);
+	const char * GetNodeInfoChangeClingTypeName(int nType);
+
 	HGE * hge;
 
 	CommandStrInfo scinfo[COMMANDINDEXMAX];
@@ -246,7 +249,7 @@ public:
 	_SMNODEINFODEF(	Length,	"Length"	);
 	_SMNODEINFODEF(	LengthCalculatePrompt,	"Press button to Calculate"	);
     _SMNODEINFODEF(	ClingTo,	"Cling To"	);
-    _SMNODEINFODEF(	ClingBy,	"Cling By"	);
+	_SMNODEINFODEF(	ClingBy,	"Cling By"	);
 	_SMNODEINFODEF(	MergeWith,	"Merge With"	);
 	_SMNODEINFODEF(	BindWith,	"Bind With"	);
 

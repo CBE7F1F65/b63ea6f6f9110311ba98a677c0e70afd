@@ -55,13 +55,13 @@ class GNodeRelClingTo : public GNodeRelationship
 public:
 	typedef GNodeRelationship super;
 public:
-	GNodeRelClingTo(/*GPoint * pPtSelf, */GLine * pLnOther, float fProp);
+	GNodeRelClingTo(GClingInfo &cli);
 	virtual ~GNodeRelClingTo(){};
 
 	virtual bool CanAddRelTo( GObject * pObj );
 	virtual bool RestoreTo(GObject * pObj, GObject * pFrom=NULL);
 
-	float fClingProp;
+	GClingInfo clInfo;
 };
 
 class GNodeRelClingBy : public GNodeRelationship
@@ -69,13 +69,13 @@ class GNodeRelClingBy : public GNodeRelationship
 public:
 	typedef GNodeRelationship super;
 public:
-	GNodeRelClingBy(/*GLine * pLnSelf, */GPoint * pPtOther, float fProp);
+	GNodeRelClingBy(/*GLine * pLnSelf, */GPoint * pPtOther, GClingInfo &cli);
 	virtual ~GNodeRelClingBy(){};
 
 	virtual bool CanAddRelTo( GObject * pObj );
 	virtual bool RestoreTo(GObject * pObj, GObject * pFrom=NULL);
 
-	float fClingProp;
+	GClingInfo clInfo;
 };
 
 class GNodeRelationshipGroup

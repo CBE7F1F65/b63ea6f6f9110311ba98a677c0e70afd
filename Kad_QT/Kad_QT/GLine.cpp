@@ -305,7 +305,7 @@ GNodeRelationshipGroup * GLine::CreateRelationshipGroup( bool bClingBy/*=true*/,
 		for (list<GPoint *>::iterator it=clingByList.begin(); it!=clingByList.end(); ++it)
 		{
 			GPoint * pClingPoint = *it;
-			GNodeRelClingBy * pnrclingby = new GNodeRelClingBy(pClingPoint, pClingPoint->getClingProportion());
+			GNodeRelClingBy * pnrclingby = new GNodeRelClingBy(pClingPoint, *pClingPoint->getClingInfo());
 		}
 		return pnrg;
 	}
@@ -1039,8 +1039,7 @@ GLine * GBezierLine::Clip( float fClipProportion )
 	PointF2D ptBegin = plbegin->GetPointF2D();
 	PointF2D ptEnd = plend->GetPointF2D();
 
-	GLine * pOEndClingTo = plend->getClingTo();
-	float fOEndClingProp = plend->getClingProportion();
+	GClingInfo oEndClingToInfo = *plend->getClingInfo();
 
 	list<GPoint *>  * plstEndMergeWith = plend->getMergeWith();
 	GPoint * pEndMergeWith = NULL;
@@ -1050,14 +1049,15 @@ GLine * GBezierLine::Clip( float fClipProportion )
 	}
 
 	list<GPoint *> lstClingBy = clingByList;
-	list<float> lstFCP;
+	list<GClingInfo> lstCLI;
 	if (!lstClingBy.empty())
 	{
 		for (list<GPoint *>::iterator it=lstClingBy.begin(); it!=lstClingBy.end(); ++it)
 		{
-			lstFCP.push_back((*it)->getClingProportion());
+			lstCLI.push_back(*(*it)->getClingInfo());
 		}
 	}
+	float fOLength = getLength();
 
 	/*
 	PointF2D pSubBh1;
@@ -1108,7 +1108,7 @@ GLine * GBezierLine::Clip( float fClipProportion )
 		pNewBeginPoint->GetHandle()->BindWith(plend->GetHandle());
 	}
 
-	pNewEndPoint->ClingTo(pOEndClingTo, fOEndClingProp);
+	pNewEndPoint->ClingTo(oEndClingToInfo);
 	if (pEndMergeWith)
 	{
 		pNewEndPoint->MergeWith(pEndMergeWith);
@@ -1118,36 +1118,62 @@ GLine * GBezierLine::Clip( float fClipProportion )
 
 	if (!lstClingBy.empty())
 	{
-		list<float>::iterator jt=lstFCP.begin();
+		list<GClingInfo>::iterator jt=lstCLI.begin();
 		for (list<GPoint *>::iterator it=lstClingBy.begin(); it!=lstClingBy.end(); ++it, ++jt)
 		{
 			GPoint * pClingByPoint = *it;
-			float fCP = *jt;
-			if (fCP < fClipProportion)
+			GClingInfo * pcli = &(*jt);
+			float fCP = 0;
+			if (pcli->CalculateClingProportion(&fCP, fOLength))
 			{
-				float fNewProp = fCP/fClipProportion;
-				ASSERT(fNewProp > 0 && fNewProp <= 1);
-				pClingByPoint->ClingTo(this, fNewProp);
-			}
-			else if (fCP > fClipProportion)
-			{
-				float fNewProp = (fCP-fClipProportion)/(1-fClipProportion);
-				ASSERT(fNewProp > 0 && fNewProp <= 1);
-				pClingByPoint->ClingTo(pClonedLine, fNewProp);
-			}
-			else
-			{
-//				pClingByPoint->MergeWith(plend);
-				// Cannot Undo
+				if (fCP < fClipProportion)
+				{
+					float fNewProp = fCP/fClipProportion;
+					ASSERT(fNewProp > 0 && fNewProp <= 1);
+					pcli->ApplyChange(this, fNewProp);
+					pClingByPoint->ClingTo(*pcli);
+				}
+				else if (fCP > fClipProportion)
+				{
+					float fNewProp = (fCP-fClipProportion)/(1-fClipProportion);
+					ASSERT(fNewProp > 0 && fNewProp <= 1);
+					pcli->ApplyChange(this, fNewProp);
+					pClingByPoint->ClingTo(*pcli);
+				}
+				else
+				{
+	//				pClingByPoint->MergeWith(plend);
+					// Cannot Undo
+				}
+
 			}
 		}
 	}
 	return pClonedLine;
 }
 
-bool GBezierLine::Combine( GLine * pLine )
+bool GBezierLine::JoinLine( GLine * pLine )
 {
-	ASSERT(pLine);
+	if (!pLine)
+	{
+		return false;
+	}
+
+	float fThisLength = getLength();
+	if (!fThisLength)
+	{
+		return false;
+	}
+	float fThatLength = pLine->getLength();
+	if (!fThatLength)
+	{
+		pLine->RemoveFromParent(true);
+		return true;
+	}
+
+	float fTotalLength = fThisLength+fThatLength;
+	float fCombinePointCP = fThisLength/fTotalLength;
+
 	GAnchorPoint * pThisBegin = GetBeginPoint();
 	GAnchorPoint * pThisEnd = GetEndPoint();
 	GAnchorPoint * pThatBegin = pLine->GetBeginPoint();
@@ -1176,20 +1202,20 @@ bool GBezierLine::Combine( GLine * pLine )
 
 	list<GPoint *> lstThisClingBy = clingByList;
 	list<GPoint *> lstThatClingBy = *(pLine->getClingBy());
-	list<float> lstThisFCP;
-	list<float> lstThatFCP;
+	list<GClingInfo> lstThisCLI;
+	list<GClingInfo> lstThatCLI;
 	if (!lstThisClingBy.empty())
 	{
 		for (list<GPoint *>::iterator it=lstThisClingBy.begin(); it!=lstThisClingBy.end(); ++it)
 		{
-			lstThisFCP.push_back((*it)->getClingProportion());
+			lstThisCLI.push_back(*(*it)->getClingInfo());
 		}
 	}
 	if (!lstThatClingBy.empty())
 	{
 		for (list<GPoint *>::iterator it=lstThatClingBy.begin(); it!=lstThatClingBy.end(); ++it)
 		{
-			lstThatFCP.push_back((*it)->getClingProportion());
+			lstThatCLI.push_back(*(*it)->getClingInfo());
 		}
 	}
 
@@ -1199,9 +1225,6 @@ bool GBezierLine::Combine( GLine * pLine )
 	{
 		pThatEndMergeWith = plstThatEndMergeWith->front();
 	}
-
-	float fThisLength = getLength();
-	float fThatLength = pLine->getLength();
 
 	PointF2D ptThatEnd = pThatEnd->GetPointF2D();
 	GHandlePoint * pThatEndHandle = pThatEnd->GetHandle();
@@ -1218,7 +1241,15 @@ bool GBezierLine::Combine( GLine * pLine )
 	DeclingByOther();
 
 	pThisEnd->CallMoveTo(pThisEnd, ptThatEnd.x, ptThatEnd.y, false);
-	pThisEnd->GetHandle()->CallMoveTo(pThisEnd, ptThatEndHandle.x, ptThatEndHandle.y, false);
+	
+	GHandlePoint * pThisBeginHandle = pThisBegin->GetHandle();
+	PointF2D ptThisBegin = pThisBegin->GetPointF2D();
+	PointF2D ptThisBeginHandle = pThisBeginHandle->GetPointF2D();
+	PointF2D ptThisNewBeginHandle = (ptThisBeginHandle-ptThisBegin)*(1.0f/fCombinePointCP)+ptThisBegin;
+	pThisBegin->GetHandle()->CallMoveTo(pThisBegin, ptThisNewBeginHandle.x, ptThisNewBeginHandle.y, false);
+	PointF2D ptThisNewEndHandle = (ptThatEndHandle-ptThatEnd)*(1.0f/(1-fCombinePointCP))+ptThatEnd;
+	pThisEnd->GetHandle()->CallMoveTo(pThisEnd, ptThisNewEndHandle.x, ptThisNewEndHandle.y, false);
+
 	if (pThatEndMergeWith)
 	{
 		pThisEnd->MergeWith(pThatEndMergeWith);
@@ -1228,29 +1259,36 @@ bool GBezierLine::Combine( GLine * pLine )
 		pThatEndHandleBindWith->BindWith(pThisEnd->GetHandle());
 	}
 
-	float fTotalLength = fThisLength+fThatLength;
-	float fCombinePointCP = fThisLength/fTotalLength;
-
 	if (!lstThisClingBy.empty())
 	{
-		list<float>::iterator jt=lstThisFCP.begin();
+		list<GClingInfo>::iterator jt=lstThisCLI.begin();
 		for (list<GPoint *>::iterator it=lstThisClingBy.begin(); it!=lstThisClingBy.end(); ++it, ++jt)
 		{
 			GPoint * pClingByPoint = *it;
-			float fCP = *jt;
-			fCP *= fCombinePointCP;
-			pClingByPoint->ClingTo(this, fCP);
+			GClingInfo * pcli = &(*jt);
+			float fCP = 0;
+			if (pcli->CalculateClingProportion(&fCP, fThisLength))
+			{
+				fCP *= fCombinePointCP;
+				pcli->ApplyChange(this, fCP);
+				pClingByPoint->ClingTo(*pcli);
+			}
 		}
 	}
 	if (!lstThatClingBy.empty())
 	{
-		list<float>::iterator jt=lstThatFCP.begin();
+		list<GClingInfo>::iterator jt=lstThatCLI.begin();
 		for (list<GPoint *>::iterator it=lstThatClingBy.begin(); it!=lstThatClingBy.end(); ++it, ++jt)
 		{
 			GPoint * pClingByPoint = *it;
-			float fCP = *jt;
-			fCP = fCP*(1-fCombinePointCP)+fCombinePointCP;
-			pClingByPoint->ClingTo(this, fCP);
+			GClingInfo * pcli = &(*jt);
+			float fCP = 0;
+			if (pcli->CalculateClingProportion(&fCP, fThisLength))
+			{
+				fCP = fCP*(1-fCombinePointCP)+fCombinePointCP;
+				pcli->ApplyChange(this, fCP);
+				pClingByPoint->ClingTo(*pcli);
+			}
 		}
 	}
 	if (!lstCombinPointMergeWith.empty())
@@ -1281,12 +1319,12 @@ bool GBezierLine::SwapBeginEnd()
 	}
 
 	list<GPoint *> lstClingBy = clingByList;
-	list<float> lstFCP;
+	list<GClingInfo> lstCLI;
 	if (!lstClingBy.empty())
 	{
 		for (list<GPoint *>::iterator it=lstClingBy.begin(); it!=lstClingBy.end(); ++it)
 		{
-			lstFCP.push_back((*it)->getClingProportion());
+			lstCLI.push_back(*(*it)->getClingInfo());
 		}
 	}
 
@@ -1334,12 +1372,18 @@ bool GBezierLine::SwapBeginEnd()
 
 	if (!lstClingBy.empty())
 	{
-		list<float>::iterator jt=lstFCP.begin();
+		list<GClingInfo>::iterator jt=lstCLI.begin();
 		for (list<GPoint *>::iterator it=lstClingBy.begin(); it!=lstClingBy.end(); ++it, ++jt)
 		{
 			GPoint * pClingByPoint = *it;
-			float fCP = *jt;
-			pClingByPoint->ClingTo(this, 1-fCP);
+			GClingInfo * pcli = &(*jt);
+			float fCP = 0;
+			if (pcli->CalculateClingProportion(&fCP, getLength()))
+			{
+				fCP = 1-fCP;
+				pcli->ApplyChange(this, fCP);
+				pClingByPoint->ClingTo(*pcli);
+			}
 		}
 	}
 	return true;
@@ -1367,13 +1411,15 @@ bool GBezierLine::Extend( float tBegin, float tEnd )
 	GPoint * pBeginMerge = NULL;
 	GPoint * pEndMerge = NULL;
 
+	float fOLength = getLength();
+
 	list<GPoint *> lstClingBy = clingByList;
-	list<float> lstFCP;
+	list<GClingInfo> lstCLI;
 	if (!lstClingBy.empty())
 	{
 		for (list<GPoint *>::iterator it=lstClingBy.begin(); it!=lstClingBy.end(); ++it)
 		{
-			lstFCP.push_back((*it)->getClingProportion());
+			lstCLI.push_back(*(*it)->getClingInfo());
 		}
 	}
 
@@ -1449,12 +1495,18 @@ bool GBezierLine::Extend( float tBegin, float tEnd )
 	}
 	if (!lstClingBy.empty())
 	{
-		list<float>::iterator jt=lstFCP.begin();
+		list<GClingInfo>::iterator jt=lstCLI.begin();
 		for (list<GPoint *>::iterator it=lstClingBy.begin(); it!=lstClingBy.end(); ++it, ++jt)
 		{
 			GPoint * pClingByPoint = *it;
-			float fCP = *jt;
-			pClingByPoint->ClingTo(this, (tBegin+fCP)*tTotalInv);
+			GClingInfo * pcli = &(*jt);
+			float fCP;
+			if (pcli->CalculateClingProportion(&fCP, fOLength))
+			{
+				fCP = (tBegin+fCP)*tTotalInv;
+				pcli->ApplyChange(this, fCP);
+				pClingByPoint->ClingTo(*pcli);
+			}
 		}
 	}
 

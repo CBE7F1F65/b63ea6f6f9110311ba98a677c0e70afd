@@ -1,6 +1,44 @@
 #pragma once
 #include "GObject.h"
 #include "MathHelper.h"
+
+/************************************************************************/
+/* GClingInfo                                                           */
+/************************************************************************/
+
+enum{
+	GCLING_PROPORTION,
+	GCLING_BEGINOFFSET,
+	GCLING_ENDOFFSET,
+};
+class GClingInfo
+{
+public:
+	GClingInfo(){ClearClingTo();};
+	virtual ~GClingInfo(){};
+
+	bool SetClingTo(GLine * pTo, float fVal, int nType=GCLING_PROPORTION);
+	void ClearClingTo();
+
+	bool CalculateClingProportion(float * pProp, float fLengthBase=-1);
+	bool GetClingPosition(PointF2D * pptPos, int * isec=NULL, QuadBezierPointF2D * pQuadHandles=NULL);
+
+	GLine * GetClingTo(){return pClingTo;};
+	float GetClingVal(){return fClingVal;};
+	int GetClingType(){return nClingType;};
+
+	bool isClingTo(GObject * pObj);
+	//////////////////////////////////////////////////////////////////////////
+	bool ApplyChange( GLine * pLine, float fProportion );
+	bool ApplyTypeChange(int nType);
+	//////////////////////////////////////////////////////////////////////////
+
+private:
+	GLine * pClingTo;
+	float fClingVal;
+	int nClingType;
+};
+
 /************************************************************************/
 /* GPoint                                                               */
 /************************************************************************/
@@ -44,11 +82,13 @@ public:
 
 	// Only Point To Line!
 	void ClearClingTo();
-	bool ClingTo(GObject * pObj, float fProp);
+	bool ClingTo(GLine* pLine, float fVal, int nType=GCLING_PROPORTION);
+	bool ClingTo(GClingInfo &cl){return ClingTo(cl.GetClingTo(), cl.GetClingVal(), cl.GetClingType());};
 	void DeclingToOther();
 	bool isClingTo(GObject * pObj);
-	GLine * getClingTo(){return pClingTo;};
-	float getClingProportion(){return fClingToProportion;};
+	GClingInfo * getClingInfo(){return &clInfo;};
+//	GLine * getClingTo(){return pClingTo;};
+//	float getClingProportion(){return fClingToProportion;};
 
 	// Only Point To Point!
 	bool MergeWith(GPoint * pPoint, bool bNoBackward=false);
@@ -70,8 +110,11 @@ protected:
 	//////////////////////////////////////////////////////////////////////////
 	
 	GOBJM_NONCOPYABLES();
-	GLine * pClingTo;
-	float fClingToProportion;
+	GClingInfo clInfo;
+
+//	GLine * pClingTo;
+//	float fClingToProportion;
+
 	list<GPoint *> mergeWithList;
 	GOBJM_NONCOPYABLESEND();
 };

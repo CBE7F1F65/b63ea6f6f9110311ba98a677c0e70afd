@@ -196,50 +196,41 @@ void GPoint::OnRemove()
 
 void GPoint::ClearClingTo()
 {
+	clInfo.ClearClingTo();
+	/*
 	pClingTo = NULL;
 	fClingToProportion = 0.0f;
+	*/
 }
 
-bool GPoint::ClingTo( GObject * pObj, float fProp )
+bool GPoint::ClingTo( GLine* pLine, float fVal, int nType/*=GCLING_PROPORTION*/ )
 {
-	if (!pObj)
+	if (!pLine)
 	{
 		DeclingToOther();
 		return true;
 	}
-	if (fProp < M_FLOATEXTREMEEPS || fProp > 1-M_FLOATEXTREMEEPS)
+
+	GClingInfo ocli = clInfo;
+	if (clInfo.GetClingTo())
 	{
+		clInfo.GetClingTo()->DeclingByOther(this);
+	}
+	if (!clInfo.SetClingTo(pLine, fVal, nType))
+	{
+		clInfo.SetClingTo(ocli.GetClingTo(), ocli.GetClingVal(), ocli.GetClingType());
 		return false;
 	}
-	if (!pObj->canBeClingTo())
-	{
-		return false;
-	}
-	if (isClingTo(pObj))
-	{
-		fClingToProportion = fProp;
-		return true;
-	}
-	ASSERT(pObj->isLine());
-	GLine * pLine = (GLine *)pObj;
-	if (pLine->AddClingBy(this))
-	{
-		if (pClingTo)
-		{
-			DeclingToOther();
-		}
-		pClingTo = pLine;
-		fClingToProportion = fProp;
-		return true;
-	}
-	return false;
+	pLine->AddClingBy(this);
+	return true;
 }
 
 void GPoint::DeclingToOther()
 {
-	if (pClingTo)
+	GLine * pClingToLine = clInfo.GetClingTo();
+	if (pClingToLine)
 	{
-		((GLine *)pClingTo)->DeclingByOther(this);
+		pClingToLine->DeclingByOther(this);
 	}
 	else
 	{
@@ -249,14 +240,8 @@ void GPoint::DeclingToOther()
 
 bool GPoint::isClingTo( GObject * pObj )
 {
-	if (!pObj)
-	{
-		return false;
-	}
-	if (pClingTo == pObj)
-	{
-		return true;
-	}
+	return clInfo.isClingTo(pObj);
+	/*
 	if (!pClingTo)
 	{
 		return false;
@@ -273,6 +258,7 @@ bool GPoint::isClingTo( GObject * pObj )
 		}
 	}
 	return false;
+	*/
 }
 
 bool GPoint::MergeWith( GPoint * pPoint, bool bNoBackward/*=false*/ )
@@ -484,10 +470,10 @@ GPiece * GPoint::getPiece()
 
 void GPoint::CallClingToMoved( bool bTry, int moveActionID )
 {
-	ASSERT(pClingTo);
+	ASSERT(clInfo.GetClingTo());
 	PointF2D ptCling;
-	((GLine *)pClingTo)->GetPositionAtProportion(fClingToProportion, &ptCling);
-	CallMoveTo(pClingTo, ptCling.x, ptCling.y, bTry, moveActionID);
+	clInfo.GetClingPosition(&ptCling);
+	CallMoveTo(clInfo.GetClingTo(), ptCling.x, ptCling.y, bTry, moveActionID);
 }
 
 bool GPoint::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelationship/*=true*/ )
@@ -500,7 +486,7 @@ bool GPoint::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelation
 
 		if (!bNoRelationship)
 		{
-			pPoint->ClingTo(pClingTo, fClingToProportion);
+			pPoint->ClingTo(clInfo);
 			if (pPoint->canBeMergedWith() && this->canBeMergedWith())
 			{
 				pPoint->MergeWith(this);
@@ -514,7 +500,7 @@ bool GPoint::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelation
 
 GNodeRelationshipGroup * GPoint::CreateRelationshipGroup( bool bClingBy/*=true*/, bool bOneWay/*=false*/ )
 {
-	if (!mergeWithList.empty() || pClingTo)
+	if (!mergeWithList.empty() || clInfo.GetClingTo())
 	{
 		GNodeRelationshipGroup * pnrg = new GNodeRelationshipGroup(this);
 		if (!mergeWithList.empty())
@@ -529,9 +515,9 @@ GNodeRelationshipGroup * GPoint::CreateRelationshipGroup( bool bClingBy/*=true*/
 				}
 			}
 		}
-		if (pClingTo)
+		if (clInfo.GetClingTo())
 		{
-			GNodeRelClingTo * pnrclingto = new GNodeRelClingTo(pClingTo, fClingToProportion);
+			GNodeRelClingTo * pnrclingto = new GNodeRelClingTo(clInfo);
 			pnrg->AddRelationship(pnrclingto);
 		}
 		if (pnrg->GetRelList()->empty())
@@ -964,4 +950,176 @@ void GHandlePoint::OnIndepend()
 bool GHandlePoint::isIdenticalToAnchor()
 {
 	return this->GetPointF2D().Equals(GetAnchor()->GetPointF2D());
+}
+
+/************************************************************************/
+/* GClingInfo                                                           */
+/************************************************************************/
+bool GClingInfo::SetClingTo( GLine * pTo, float fVal, int nType/*=GCLING_PROPORTION*/ )
+{
+	if (!pTo->canBeClingTo())
+	{
+		return false;
+	}
+
+	if (pTo)
+	{
+		float fProp = 0;
+		switch (nType)
+		{
+		case GCLING_PROPORTION:
+			fProp = fVal;
+			break;
+		case GCLING_BEGINOFFSET:
+			fProp = fVal/pTo->getLength();
+			break;
+		case GCLING_ENDOFFSET:
+			fProp = 1.0f - fVal/pTo->getLength();
+			break;
+		default:
+			ASSERT(false);
+			return false;
+		}
+		if (fProp > 1-M_FLOATEXTREMEEPS || fProp < M_FLOATEXTREMEEPS)
+		{
+			return false;
+		}
+	}
+
+
+	pClingTo = pTo;
+	fClingVal = fVal;
+	nClingType = nType;
+	return true;
+}
+
+void GClingInfo::ClearClingTo()
+{
+	pClingTo = NULL;
+	fClingVal = 0;
+	nClingType = GCLING_PROPORTION;
+}
+
+bool GClingInfo::GetClingPosition( PointF2D * pptPos, int * isec/*=NULL*/, QuadBezierPointF2D * pQuadHandles/*=NULL*/ )
+{
+	if (!pClingTo)
+	{
+		return false;
+	}
+
+	float fProp = 0;
+	if (CalculateClingProportion(&fProp))
+	{
+		return pClingTo->GetPositionAtProportion(fProp, pptPos, isec, pQuadHandles);
+	}
+
+	return false;
+}
+
+bool GClingInfo::CalculateClingProportion( float * pProp, float fLengthBase/*=-1*/ )
+{
+	if (!pClingTo)
+	{
+		return false;
+	}
+
+	float fProp = -1;
+	if (fLengthBase < 0 && nClingType != GCLING_PROPORTION)
+	{
+		fLengthBase = pClingTo->getLength();
+	}
+	switch (nClingType)
+	{
+	case GCLING_PROPORTION:
+		fProp = fClingVal;
+		break;
+	case GCLING_BEGINOFFSET:
+		fProp = fClingVal/fLengthBase;
+		break;
+	case GCLING_ENDOFFSET:
+		fProp = 1.0f-fClingVal/fLengthBase;
+		break;
+	}
+	if (fProp < 0 || fProp > 1)
+	{
+		return false;
+	}
+	if (pProp)
+	{
+		*pProp = fProp;
+	}
+	return true;
+}
+
+bool GClingInfo::isClingTo( GObject * pObj )
+{
+	if (!pObj)
+	{
+		return false;
+	}
+	if (pClingTo == pObj)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool GClingInfo::ApplyChange( GLine * pLine, float fProportion )
+{
+	if (!pLine)
+	{
+		if (!pClingTo)
+		{
+			ClearClingTo();
+			return true;
+		}
+		return false;
+	}
+	float fVal = fProportion;
+	switch (nClingType)
+	{
+	case GCLING_PROPORTION:
+		break;
+	case GCLING_BEGINOFFSET:
+		fVal = fProportion * pLine->getLength();
+		break;
+	case GCLING_ENDOFFSET:
+		fVal = (1.0f-fProportion) * pLine->getLength();
+	}
+	if (!isClingTo(pLine) || fabs(fVal-fClingVal) >= M_FLOATEPS)
+	{
+		return SetClingTo(pLine, fVal, nClingType);
+	}
+	return false;
+}
+
+bool GClingInfo::ApplyTypeChange( int nType )
+{
+	if (!pClingTo)
+	{
+		return false;
+	}
+	if (nClingType == nType)
+	{
+		return false;
+	}
+
+	float fProportion;
+	float fVal;
+	if (CalculateClingProportion(&fProportion))
+	{
+		switch (nType)
+		{
+		case GCLING_PROPORTION:
+			fVal = fProportion;
+			break;
+		case GCLING_BEGINOFFSET:
+			fVal = fProportion * pClingTo->getLength();
+			break;
+		case GCLING_ENDOFFSET:
+			fVal = (1.0f-fProportion) * pClingTo->getLength();
+		}
+		return SetClingTo(pClingTo, fVal, nType);
+	}
+	return false;
 }

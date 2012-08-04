@@ -67,6 +67,7 @@ enum{
 	COMM_TOSTRAIGHTLINE,
 
 	COMM_CLIP,
+	COMM_JOIN,
 
 	// Layers
 	COMM_NEWLAYER,		// new layer
@@ -180,14 +181,16 @@ enum{
 
 enum{
 	CSP_CLING_I_FROMINDEX,
-	CSP_CLING_I_F_TOINDEX_PROPORTION,
+	CSP_CLING_I_TOINDEX,
+	CSP_CLING_I_F_TYPE_VALUE,
 };
 //////////////////////////////////////////////////////////////////////////
 enum{
 	CSI_CLING_DUMMY=0,
 	CSI_CLING_WANTFROMINDEX,
 	CSI_CLING_WANTTOINDEX,
-	CSI_CLING_WANTPROPORTION,
+	CSI_CLING_WANTCLINGTYPE,
+	CSI_CLING_WANTVAL,
 };
 
 /************************************************************************/
@@ -434,6 +437,21 @@ enum{
 };
 
 /************************************************************************/
+/* JOIN                                                                 */
+/************************************************************************/
+
+enum{
+	CSP_JOIN_I_INDEX,
+	CSP_JOIN_I_DELETEINDEX,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_JOIN_DUMMY=0,
+	CSI_JOIN_WANTINDEX,
+	CSI_JOIN_WANTDELETEINDEX,
+};
+
+/************************************************************************/
 /* LINE                                                                 */
 /************************************************************************/
 
@@ -521,6 +539,8 @@ enum{
 	CWP_STEP,
 	CWP_INDEX,
 	CWP_NAME,
+	CWP_TYPE,
+	CWP_VALUE,
 	CWP_PROPORTION,
 	CWP_ANGLE,
 

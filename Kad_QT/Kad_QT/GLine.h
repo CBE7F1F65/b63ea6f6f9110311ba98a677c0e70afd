@@ -43,7 +43,7 @@ public:
 	virtual bool GetPositionAtProportion( float fProp, PointF2D * pptPos, int*isec=NULL, QuadBezierPointF2D * pQuadHandles=NULL ) = 0;
 	virtual bool GetPositionAtExtendedProportion(float fProp, PointF2D *pptPos, QuadBezierPointF2D * pQuadOutput=NULL) {return GetPositionAtProportion(fProp, pptPos, NULL, pQuadOutput);};
 	virtual GLine * Clip(float fClipProportion) = 0;
-	virtual bool Combine(GLine * pLine) = 0;
+	virtual bool JoinLine(GLine * pLine) = 0;
 	virtual bool SwapBeginEnd() = 0;
 	virtual bool Extend(float tBegin, float tEnd) = 0;
 
@@ -195,7 +195,7 @@ public:
 	virtual bool GetPositionAtProportion( float fProp, PointF2D * pptPos, int*isec=NULL, QuadBezierPointF2D * pQuadHandles=NULL );
 	virtual bool GetPositionAtExtendedProportion(float fProp, PointF2D *pptPos, QuadBezierPointF2D * pQuadOutput=NULL);
 	virtual GLine * Clip(float fClipProportion);
-	virtual bool Combine(GLine * pLine);
+	virtual bool JoinLine(GLine * pLine);
 	virtual bool SwapBeginEnd();
 
 	virtual bool Extend(float tBegin, float tEnd);
