@@ -9,6 +9,7 @@ public:
 	GPiece(void);
 	virtual ~GPiece(void);
 
+	virtual GPiece * getPiece(){return this;};
 	virtual bool isPiece(){return true;};
 
 	virtual const char * getDisplayName();

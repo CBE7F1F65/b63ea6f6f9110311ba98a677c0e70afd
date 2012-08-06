@@ -58,6 +58,7 @@ public:
 		y = 0;
 		bHasAngle = false;
 		angle = 0;
+		bPerpendicular = false;
 	};
 	void SetPosition(float _x, float _y)
 	{
@@ -73,14 +74,19 @@ public:
 
 	float GetX(){return x;};
 	float GetY(){return y;};
-	int GetAngle(){ASSERT(bHasAngle); return angle;};
+	int GetAngle(){ASSERT(bHasAngle); return angle+(bPerpendicular?ANGLEBASE_90:0);};
 	bool HasAngle(){return bHasAngle;};
+
+	void SetPerpendicular(bool bSet){bPerpendicular=bSet;};
+	bool isPerpendicular(){return bPerpendicular;};
 
 private:
 	float x;
 	float y;
 	bool bHasAngle;
 	int angle;
+
+	bool bPerpendicular;
 };
 
 class GObjectPicker
@@ -100,7 +106,6 @@ public:
 	void Init();
 private:
 	int state;
-	int restrict;
 
 	int mousestate;
 
@@ -116,7 +121,8 @@ private:
 public:
 	int GetSnappedState(){return snappedstate;};
 
-	void Render();
+	void RenderUnder();
+	void RenderAbove();
 
 	float GetPickX_C(){return pickx_c;};
 	float GetPickY_C(){return picky_c;};
@@ -213,7 +219,7 @@ public:
 	bool FindLineIntersectLine( GLine * pLine );
 	bool FindLineIntersectPIP( PickerInterestPointInfo * pPIP );
 	void SetPickObj( GObject * pObj );
-	void SetPickPIP( PickerInterestPointInfo info );
+	void SetPickPIP( PickerInterestPointInfo info, bool bPerp );
 	void SetPickObjCoord(GObject * pObj);
 	bool SubFindLineX( GLine * pLine, float y, int iIndex );
 	bool SubFindPIPX( PickerInterestPointInfo * pPIP, float y );

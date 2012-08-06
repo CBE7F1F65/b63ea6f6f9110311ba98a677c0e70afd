@@ -133,3 +133,27 @@ void QTUI_NodeInfoFloating_ChangeClingTypeButton::SLT_ButtonClicked()
 {
 	ChangeState(false);
 }
+/************************************************************************/
+/* SwapBeginEnd                                                         */
+/************************************************************************/
+QTUI_NodeInfoFloating_SwapBeginEndButton::QTUI_NodeInfoFloating_SwapBeginEndButton( GLine * _pLine )
+{
+	ASSERT(pLine);
+
+	pLine = _pLine;
+	this->setCheckable(false);
+	this->setMaximumHeight(_UINIFTB_ICONSIZE);
+	this->setMinimumHeight(_UINIFTB_ICONSIZE);
+	connect(this, SIGNAL(clicked()), this, SLOT(SLT_ButtonClicked()));
+
+	this->setText(StringManager::getInstance().GetNodeInfoSwapBeginEndName());
+}
+
+void QTUI_NodeInfoFloating_SwapBeginEndButton::SLT_ButtonClicked()
+{
+	MainInterface::getInstance().OnCommandWithParam(
+		COMM_SWAPBEGINEND,
+		CCCWPARAM_I(pLine->getID()),
+		NULL
+		);
+}

@@ -476,8 +476,12 @@ void QTUI_NodeInfoFloating_Tree::UpdateNodeInfo(GObject *pObj, QTreeWidgetItem *
 		QTreeWidgetItem * pTranslationItem = NewItemWithText(pParent, psm->GetNodeInfoTransformName(), NewRelationship(pObj));
 
 		QTreeWidgetItem * pBezierStraightLineItem = NewItemWithText(pTranslationItem, "");
-		QPushButton * pButton=new QTUI_NodeInfoFloating_TransformButton(pLine);
-		this->setItemWidget(pBezierStraightLineItem, _UINIFT_COLUMN_NAME, pButton);
+		QPushButton * pTransformButton=new QTUI_NodeInfoFloating_TransformButton(pLine);
+		this->setItemWidget(pBezierStraightLineItem, _UINIFT_COLUMN_NAME, pTransformButton);
+
+		QTreeWidgetItem * pSwapBeginEndItem = NewItemWithText(pTranslationItem, "");
+		QPushButton * pSwapButton=new QTUI_NodeInfoFloating_SwapBeginEndButton(pLine);
+		this->setItemWidget(pSwapBeginEndItem, _UINIFT_COLUMN_NAME, pSwapButton);
 	}
 
     AdjustSize();

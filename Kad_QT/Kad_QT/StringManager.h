@@ -260,6 +260,7 @@ public:
 	_SMNODEINFODEF(	Transform,	"Transform"	);
 	_SMNODEINFODEF(	ToBezier,	"To Bezier"	);
 	_SMNODEINFODEF(	ToStrightLine,	"To Straight Line"	);
+	_SMNODEINFODEF(	SwapBeginEnd,	"Swap Begin End Anchors"	);
 
 #undef _SMNODEINFODEF
 

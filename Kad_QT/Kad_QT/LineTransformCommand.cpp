@@ -80,6 +80,20 @@ void LineTransformCommand::OnDoneCommand()
 			}
 		}
 		break;
+	case COMM_SWAPBEGINEND:
+		{
+			if (pLine->SwapBeginEnd())
+			{
+				PushRevertable(
+					CCMake_C(COMM_I_COMMAND, 2),
+					CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
+					CCMake_C(COMM_SWAPBEGINEND),
+					CCMake_I(index),
+					NULL
+					);
+			}
+		}
+		break;
 	}
 
 }

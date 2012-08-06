@@ -25,6 +25,23 @@ protected:
 	GLine * pLine;
 };
 
+/************************************************************************/
+/* SwapBeginEnd                                                         */
+/************************************************************************/
+
+class QTUI_NodeInfoFloating_SwapBeginEndButton : public QPushButton
+{
+	Q_OBJECT
+public:
+	explicit QTUI_NodeInfoFloating_SwapBeginEndButton(GLine * pLine);
+
+private slots:
+	void SLT_ButtonClicked();
+
+protected:
+	GLine * pLine;
+};
+
 #endif
 
 /************************************************************************/

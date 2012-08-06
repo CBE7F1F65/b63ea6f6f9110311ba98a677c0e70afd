@@ -68,6 +68,7 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 
 	case COMM_TOBEZIER:
 	case COMM_TOSTRAIGHTLINE:
+	case COMM_SWAPBEGINEND:
 		return &LineTransformCommand::getInstance();
 	case COMM_CLIP:
 		return &ClipCommand::getInstance();

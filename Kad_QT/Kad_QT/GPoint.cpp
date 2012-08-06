@@ -472,8 +472,12 @@ void GPoint::CallClingToMoved( bool bTry, int moveActionID )
 {
 	ASSERT(clInfo.GetClingTo());
 	PointF2D ptCling;
-	clInfo.GetClingPosition(&ptCling);
-	CallMoveTo(clInfo.GetClingTo(), ptCling.x, ptCling.y, bTry, moveActionID);
+	float fProp;
+	clInfo.GetClingPosition(&ptCling, NULL, NULL, &fProp);
+	if (fProp > M_FLOATEXTREMEEPS && fProp < 1-M_FLOATEXTREMEEPS)
+	{
+		CallMoveTo(clInfo.GetClingTo(), ptCling.x, ptCling.y, bTry, moveActionID);
+	}
 }
 
 bool GPoint::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelationship/*=true*/ )
@@ -957,13 +961,14 @@ bool GHandlePoint::isIdenticalToAnchor()
 /************************************************************************/
 bool GClingInfo::SetClingTo( GLine * pTo, float fVal, int nType/*=GCLING_PROPORTION*/ )
 {
-	if (!pTo->canBeClingTo())
-	{
-		return false;
-	}
 
 	if (pTo)
 	{
+		if (!pTo->canBeClingTo())
+		{
+			return false;
+		}
+
 		float fProp = 0;
 		switch (nType)
 		{
@@ -1000,7 +1005,7 @@ void GClingInfo::ClearClingTo()
 	nClingType = GCLING_PROPORTION;
 }
 
-bool GClingInfo::GetClingPosition( PointF2D * pptPos, int * isec/*=NULL*/, QuadBezierPointF2D * pQuadHandles/*=NULL*/ )
+bool GClingInfo::GetClingPosition( PointF2D * pptPos, int * isec/*=NULL*/, QuadBezierPointF2D * pQuadHandles/*=NULL*/, float * pProp/*=NULL*/ )
 {
 	if (!pClingTo)
 	{
@@ -1008,12 +1013,13 @@ bool GClingInfo::GetClingPosition( PointF2D * pptPos, int * isec/*=NULL*/, QuadB
 	}
 
 	float fProp = 0;
-	if (CalculateClingProportion(&fProp))
+	bool bRetP = CalculateClingProportion(&fProp);
+	if (pProp)
 	{
-		return pClingTo->GetPositionAtProportion(fProp, pptPos, isec, pQuadHandles);
+		*pProp = fProp;
 	}
-
-	return false;
+	bool bRetC = pClingTo->GetPositionAtProportion(fProp, pptPos, isec, pQuadHandles);
+	return bRetP && bRetC;
 }
 
 bool GClingInfo::CalculateClingProportion( float * pProp, float fLengthBase/*=-1*/ )
@@ -1040,8 +1046,20 @@ bool GClingInfo::CalculateClingProportion( float * pProp, float fLengthBase/*=-1
 		fProp = 1.0f-fClingVal/fLengthBase;
 		break;
 	}
-	if (fProp < 0 || fProp > 1)
+	if (fProp < 0)
 	{
+		if (pProp)
+		{
+			*pProp = 0;
+		}
+		return false;
+	}
+	else if (fProp > 1)
+	{
+		if (pProp)
+		{
+			*pProp = 1;
+		}
 		return false;
 	}
 	if (pProp)

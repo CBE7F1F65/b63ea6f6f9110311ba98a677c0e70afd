@@ -33,6 +33,23 @@ public:
 		return x*point.x+y*point.y;
 	};
 
+	float Length2(){return x*x+y*y;};
+	float Length(){return sqrtf(Length2());};
+
+	PointF2D& Normalize()
+	{
+		float fLength = Length();
+		if (Length())
+		{
+			(*this) = (*this)/Length();
+		}
+		else
+		{
+			x += 1.0f;
+		}
+		return *this;
+	};
+
 public:
 
 	float x;

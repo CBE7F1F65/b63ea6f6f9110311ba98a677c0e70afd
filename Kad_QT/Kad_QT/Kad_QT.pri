@@ -72,8 +72,7 @@ HEADERS += ./Const.h \
     stdafx.h \
     SnapshotManager.h \
     SetWorkingLayerCommand.h \
-    SetNodeNameCommand.h \
-    SeparateCommand.h \
+	SetNodeNameCommand.h \
     ResourceCustomIDs.h \
     resource.h \
     ReparentCommand.h \
@@ -139,7 +138,91 @@ HEADERS += ./Const.h \
     MarkingManager.h \
     QTUI_MarkingFloating_Widget.h \
     LineTransformCommand.h \
-    QTUI_MarkingFloating_Edit.h
+    QTUI_MarkingFloating_Edit.h \
+    URManager.h \
+    TestCommand.h \
+    targetver.h \
+    StringManager.h \
+    stdafx.h \
+    SnapshotManager.h \
+    SetWorkingLayerCommand.h \
+    SetNodeNameCommand.h \
+    ScaleNodeBatchCommand.h \
+    RotateNodeBatchCommand.h \
+    RestoreToSnapshotCommand.h \
+    ResourceCustomIDs.h \
+    resource.h \
+    ReparentCommand.h \
+    RenderTargetManager.h \
+    RenderHelper.h \
+    QTUI_StatusBar.h \
+    QTUI_NodeInfoFloating_Widget.h \
+    QTUI_NodeInfoFloating_Tree.h \
+    QTUI_NodeInfoFloating_Buttons.h \
+    QTUI_MarkingFloating_Widget.h \
+    QTUI_MarkingFloating_Edit.h \
+    qtui_layer_tree.h \
+    qtui_layer_dockablepane.h \
+    qtui_history_table.h \
+    qtui_history_snapshottable.h \
+    qtui_history_dockablepane.h \
+    qtui_glview.h \
+    qtui_commandpanel_commandlog.h \
+    qtui_commandpanel_commandedit.h \
+    qtui_commandfloating_widget.h \
+    qtui_commandfloating_command.h \
+    qtui_commanddockable.h \
+    QTDLG_LayerProperty.h \
+    qmaininterface.h \
+    qkeystatemanager.h \
+    PickFilterTemplate.h \
+    OutputCommand.h \
+    NewLayerCommand.h \
+    MoveNodeCommand.h \
+    MoveNodeBatchCommand.h \
+    MouseCursorManager.h \
+    MessageBoxManager.h \
+    MergeCommand.h \
+    MathHelper.h \
+    MarqueeSelect.h \
+    MarkingObject.h \
+    MarkingManager.h \
+    MainInterface.h \
+    MainDependency.h \
+    LineTransformCommand.h \
+    LineCommand.h \
+    kad_qt.h \
+    JoinLineCommand.h \
+    InitialCommand.h \
+    IconManager.h \
+    GUICursor.h \
+    GUICoordinate.h \
+    GShape.h \
+    GPoint.h \
+    GPiece.h \
+    GObjectPicker.h \
+    GObjectManager.h \
+    GObject.h \
+    GNodeRelationship.h \
+    GLine.h \
+    GLayer.h \
+    GBaseNode.h \
+    FlipNodeBatchCommand.h \
+    ExtendCommand.h \
+    DuplicateCommand.h \
+    DemergeCommand.h \
+    DeleteItemCommand.h \
+    Const.h \
+    CommandTemplate.h \
+    CommandSubState.h \
+    CommandMap.h \
+    CommandDefines.h \
+    Command.h \
+    ColorManager.h \
+    ClipCommand.h \
+    ClingCommand.h \
+    BindHandleCommand.h \
+    BezierCommand.h
 SOURCES += ./InitDllLoader.cpp \
     ./kad_qt.cpp \
     ./main.cpp \
@@ -204,8 +287,7 @@ SOURCES += ./InitDllLoader.cpp \
     stdafx.cpp \
     SnapshotManager.cpp \
     SetWorkingLayerCommand.cpp \
-    SetNodeNameCommand.cpp \
-    SeparateCommand.cpp \
+	SetNodeNameCommand.cpp \
     ReparentCommand.cpp \
     RenderTargetManager.cpp \
     RenderHelper.cpp \
@@ -273,7 +355,93 @@ SOURCES += ./InitDllLoader.cpp \
     QTUI_MarkingFloating_Edit.cpp \
     GObjectPicker_Update.cpp \
     GObjectPicker_Sub.cpp \
-    GObjectPicker_Check.cpp
+    GObjectPicker_Check.cpp \
+    URManager.cpp \
+    UnDoReDoCommand.cpp \
+    TestCommand.cpp \
+    StringManager.cpp \
+    stdafx.cpp \
+    SnapshotManager.cpp \
+    SetWorkingLayerCommand.cpp \
+    SetNodeNameCommand.cpp \
+    ScaleNodeBatchCommand.cpp \
+    RotateNodeBatchCommand.cpp \
+    RestoreToSnapshotCommand.cpp \
+    ReparentCommand.cpp \
+    RenderTargetManager.cpp \
+    RenderHelper.cpp \
+    QTUI_StatusBar.cpp \
+    QTUI_NodeInfoFloating_Widget.cpp \
+    QTUI_NodeInfoFloating_Tree.cpp \
+    QTUI_NodeInfoFloating_Buttons.cpp \
+    QTUI_MarkingFloating_Widget.cpp \
+    QTUI_MarkingFloating_Edit.cpp \
+    qtui_layer_tree.cpp \
+    qtui_layer_dockablepane.cpp \
+    qtui_history_table.cpp \
+    qtui_history_snapshottable.cpp \
+    qtui_history_dockablepane.cpp \
+    qtui_glview.cpp \
+    qtui_commandpanel_commandlog.cpp \
+    qtui_commandpanel_commandedit.cpp \
+    qtui_commandfloating_widget.cpp \
+    qtui_commandfloating_command.cpp \
+    qtui_commanddockable.cpp \
+    QTDLG_LayerProperty.cpp \
+    qmaininterface.cpp \
+    qkeystatemanager.cpp \
+    ProcessCommand.cpp \
+    PickFilterTemplate.cpp \
+    OutputCommand.cpp \
+    NewLayerCommand.cpp \
+    MoveNodeCommand.cpp \
+    MoveNodeBatchCommand.cpp \
+    MouseCursorManager.cpp \
+    MessageBoxManager.cpp \
+    MergeCommand.cpp \
+    MathHelper.cpp \
+    MarqueeSelect.cpp \
+    MarkingObject.cpp \
+    MarkingManager.cpp \
+    MainInterface.cpp \
+    main.cpp \
+    LineTransformCommand.cpp \
+    LineCommand.cpp \
+    kad_qt.cpp \
+    JoinLineCommand.cpp \
+    InitialCommand.cpp \
+    InitDllLoader.cpp \
+    IconManager.cpp \
+    GUICursor.cpp \
+    GUICoordinate.cpp \
+    GShape.cpp \
+    GPoint.cpp \
+    GPiece.cpp \
+    GObjectPicker_Update.cpp \
+    GObjectPicker_Sub.cpp \
+    GObjectPicker_Check.cpp \
+    GObjectPicker.cpp \
+    GObjectManager.cpp \
+    GObject.cpp \
+    GNodeRelationship.cpp \
+    GLine.cpp \
+    GLayer.cpp \
+    GBaseNode.cpp \
+    FlipNodeBatchCommand.cpp \
+    ExtendCommand.cpp \
+    DuplicateCommand.cpp \
+    DemergeCommand.cpp \
+    DeleteItemCommand.cpp \
+    CommandTemplate.cpp \
+    CommandSubState.cpp \
+    CommandMap.cpp \
+    CommandGetTemplate.cpp \
+    Command.cpp \
+    ColorManager.cpp \
+    ClipCommand.cpp \
+    ClingCommand.cpp \
+    BindHandleCommand.cpp \
+    BezierCommand.cpp
 FORMS += ./kad_qt.ui \
     qtui_commanddockable.ui \
     qtui_commandfloating_widget.ui \

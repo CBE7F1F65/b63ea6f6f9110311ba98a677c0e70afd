@@ -202,6 +202,7 @@ void MarqueeSelect::Update()
         if (itemmovestate==MARQMOVESTATE_NONE && (baltdown || pmain->hge->Input_GetDIMouseKey(pmain->cursorrightkeyindex, DIKEY_DOWN)))
         {
             GObject * pPickedObj = pgp->GetPickedObj();
+			pgp->UnlockLockLine();
             MainInterface::getInstance().CallShowNodeInfo(pPickedObj, !baltdown);
         }
         else

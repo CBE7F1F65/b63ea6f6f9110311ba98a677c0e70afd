@@ -32,11 +32,12 @@ public:
 private:
 
 
-	GObject * pMergeToBegin;
-	GObject * pMergeToEnd;
-	GObject * pNextMergeToBegin;
+	GObject * pBeginPicked;
+	GObject * pEndPicked;
+	GObject * pNextBeginPicked;
 	float fProportionBegin;
 	float fProportionEnd;
+	int iSecBegin;
 
 	GLine * pNCLine;
 

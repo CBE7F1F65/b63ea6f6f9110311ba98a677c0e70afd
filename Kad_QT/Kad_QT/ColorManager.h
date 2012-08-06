@@ -163,8 +163,8 @@ public:
 	_CMFDEF(	BG,	0xff212830	);
 	_CMFDEF(	GridMain,	0xff333949	);
 	_CMFDEF(	GridSub,	0xff272d38	);
-	_CMFDEF(	GridXAxis,	0xff6d2426	);
-	_CMFDEF(	GridYAxis,	0xff236e26	);
+	_CMFDEF(	GridXAxis,	0xff6e2426	);
+	_CMFDEF(	GridYAxis,	0xff246e26	);
 	_CMFDEF(	Coord,	0xffffffff	);
 	_CMFDEF(	Cursor,	0xffffffff	);
 	_CMFDEF(	MarqueeLine,	0xffffffff	);
@@ -192,6 +192,8 @@ public:
     DWORD GetLayerLineUISelectColor(int layer=-1);
     DWORD GetLayerLineIndicatingColor(int layer=-1);
 	LineColorSet GetLayerLineColorSetByIndex( int layerID=-1 );
+
+	DWORD GetPIPLineColor(bool bPerp);
 
 	DWORD GetMarkingBackgroundColor(int typeflag);
 

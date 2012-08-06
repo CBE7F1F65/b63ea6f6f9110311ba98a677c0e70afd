@@ -165,6 +165,7 @@ void StringManager::FillSCInfo()
 
 	_BSET(	COMM_TOBEZIER,	"TOBEZIER", "TOB",	"Straight Line To Bezier",	""	);
 	_BSET(	COMM_TOSTRAIGHTLINE,	"TOSTRAIGHTLINE", "TOS",	"Bezier To Straight Line",	""	);
+	_BSET(	COMM_SWAPBEGINEND,	"SWAPBEGINEND",	"SWAP",	"Swap Begin Anchor and End Anchor",	""	);
 
 	_BSET(	COMM_CLIP,	"CLIP",	"X",	"Clip",	""	);
 	_BSET(	COMM_JOIN,	"JOIN",	"J",	"Join Two Lines",	""	);

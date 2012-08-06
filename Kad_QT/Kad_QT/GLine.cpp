@@ -435,7 +435,7 @@ float GStraightLine::CalculateMidPointProportion()
 	return 0.5f;
 }
 
-PointF2D GStraightLine::GetTangentPointF2D( float t )
+PointF2D GStraightLine::GetTangentPointF2D( float fProp )
 {
 	return plend->GetPointF2D()-plbegin->GetPointF2D();
 }
@@ -996,19 +996,21 @@ bool GBezierLine::toBezierLine()
 	return true;
 }
 
-PointF2D GBezierLine::GetTangentPointF2D( float s )
+PointF2D GBezierLine::GetTangentPointF2D( float fProp )
 {
 	if (isStraightLine())
 	{
-		return GStraightLine::GetTangentPointF2D(s);
+		return GStraightLine::GetTangentPointF2D(fProp);
 	}
+
+	float s = GetSFromProportion(fProp);
 	PointF2D p0 = plbegin->GetPointF2D();
 	PointF2D p1 = plbegin->GetHandle()->GetPointF2D();
 	PointF2D p2 = plend->GetHandle()->GetPointF2D();
 	PointF2D p3 = plend->GetPointF2D();
 	//dP(t) / dt =  -3(1-t)^2 * P0 + 3(1-t)^2 * P1 - 6t(1-t) * P1 - 3t^2 * P2 + 6t(1-t) * P2 + 3t^2 * P3
-	float t2 = s*s;
-	return p0*(-3*(t2-2*s+1))+p1*(3*(3*t2-4*s+1))+p2*(-3*(3*t2-2*s))+p3*(3*t2);
+	float s2 = s*s;
+	return p0*(-3*(s2-2*s+1))+p1*(3*(3*s2-4*s+1))+p2*(-3*(3*s2-2*s))+p3*(3*s2);
 }
 
 bool GBezierLine::CloneData(GObject * pClone, GObject * pNewParent, bool bNoRelationship/*=true*/)
@@ -1137,7 +1139,9 @@ GLine * GBezierLine::Clip( float fClipProportion )
 				{
 					float fNewProp = (fCP-fClipProportion)/(1-fClipProportion);
 					ASSERT(fNewProp > 0 && fNewProp <= 1);
-					pcli->ApplyChange(this, fNewProp);
+					int nType = pcli->GetClingType();
+					pcli->SetClingTo(pClonedLine, fNewProp);
+					pcli->ApplyTypeChange(nType);
 					pClingByPoint->ClingTo(*pcli);
 				}
 				else
@@ -1270,6 +1274,7 @@ bool GBezierLine::JoinLine( GLine * pLine )
 			if (pcli->CalculateClingProportion(&fCP, fThisLength))
 			{
 				fCP *= fCombinePointCP;
+				pcli->ApplyTypeChange(GCLING_PROPORTION);
 				pcli->ApplyChange(this, fCP);
 				pClingByPoint->ClingTo(*pcli);
 			}
@@ -1286,6 +1291,7 @@ bool GBezierLine::JoinLine( GLine * pLine )
 			if (pcli->CalculateClingProportion(&fCP, fThisLength))
 			{
 				fCP = fCP*(1-fCombinePointCP)+fCombinePointCP;
+				pcli->ApplyTypeChange(GCLING_PROPORTION);
 				pcli->ApplyChange(this, fCP);
 				pClingByPoint->ClingTo(*pcli);
 			}
@@ -1381,6 +1387,14 @@ bool GBezierLine::SwapBeginEnd()
 			if (pcli->CalculateClingProportion(&fCP, getLength()))
 			{
 				fCP = 1-fCP;
+				if (pcli->GetClingType() == GCLING_BEGINOFFSET)
+				{
+					pcli->ApplyTypeChange(GCLING_ENDOFFSET);
+				}
+				else if (pcli->GetClingType() == GCLING_ENDOFFSET)
+				{
+					pcli->ApplyTypeChange(GCLING_BEGINOFFSET);
+				}
 				pcli->ApplyChange(this, fCP);
 				pClingByPoint->ClingTo(*pcli);
 			}
@@ -1584,7 +1598,15 @@ bool GBezierLine::GetPositionAtExtendedProportion( float fProp, PointF2D *pptPos
 
 float GBezierLine::GetSFromProportion( float fProp )
 {
-	if (fProp >= 0 && fProp <= 1)
+	if (fProp == 0)
+	{
+		return 0;
+	}
+	else if (fProp == 1.0f)
+	{
+		return 1.0f;
+	}
+	else if (fProp > 0 && fProp < 1)
 	{
 		PointF2D ptPos;
 		GetPositionAtProportion(fProp, &ptPos);

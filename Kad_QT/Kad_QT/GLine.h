@@ -21,6 +21,7 @@ public:
 
 	virtual bool isLine(){return true;};
 
+	virtual GLine * getLine(){return this;};
 	virtual GPiece * getPiece();
 
 	virtual bool MoveTo(GObject * pCaller, float newx, float newy, bool bTry, int moveActionID=-1);
@@ -53,7 +54,7 @@ public:
 	virtual bool isLengthCalculated(){return true;};
 	virtual float getLength() = 0;
 
-	virtual PointF2D GetTangentPointF2D(float t) = 0;
+	virtual PointF2D GetTangentPointF2D(float fProp) = 0;
 
 	virtual const char * getDisplayName();
 
@@ -150,7 +151,7 @@ public:
 
 	virtual float getLength();
 
-	virtual PointF2D GetTangentPointF2D(float t);
+	virtual PointF2D GetTangentPointF2D(float fProp);
 };
 /************************************************************************/
 /* GBezierLine                                                          */
@@ -203,7 +204,7 @@ public:
 	virtual bool isLengthCalculated();
 	virtual float getLength();
 
-	virtual PointF2D GetTangentPointF2D(float s);
+	virtual PointF2D GetTangentPointF2D(float fProp);
 
 
 	BezierSublinesInfo * getBSInfo(){return &bsinfo;};

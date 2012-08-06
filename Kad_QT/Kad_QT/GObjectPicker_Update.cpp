@@ -240,9 +240,9 @@ void GObjectPicker::OnMouseUp()
 #define _GOPRENDER_POINT_A		5
 #define _GOPRENDER_POINT_CROSS	10
 
-void GObjectPicker::Render()
+
+void GObjectPicker::RenderUnder()
 {
-#define _GOP_RENDER_ALPHA	0xA0
 	GUICoordinate * pguic = &GUICoordinate::getInstance();
 	RenderHelper * prh = &RenderHelper::getInstance();
 	ColorManager * pcm = &ColorManager::getInstance();
@@ -250,18 +250,44 @@ void GObjectPicker::Render()
 	float xs = GetPickX_S();
 	float ys = GetPickY_S();
 
+#define _GOP_RENDERINDICATINGLINE_ALPHA	0xA0
 	if (snappedstate & GOPSNAPPED_XAXIS)
 	{
 		DWORD col = pcm->GetGridXAxisColor();
-		col = SETA(col, _GOP_RENDER_ALPHA);
+		col = SETA(col, _GOP_RENDERINDICATINGLINE_ALPHA);
 		prh->RenderLineR_S(0, ys, pguic->GetScreenWidth_S(), col);
 	}
 	if (snappedstate & GOPSNAPPED_YAXIS)
 	{
 		DWORD col = pcm->GetGridYAxisColor();
-		col = SETA(col, _GOP_RENDER_ALPHA);
+		col = SETA(col, _GOP_RENDERINDICATINGLINE_ALPHA);
 		prh->RenderLineB_S(xs, 0, pguic->GetScreenHeight_S(), col);
 	}
+	for (int i=0; i<nPickPIP; i++)
+	{
+		int pipangle = pickPIP[i].GetAngle();
+		float fx = pickPIP[i].GetX();
+		float fy = pickPIP[i].GetY();
+		float x1, y1, x2, y2;
+		bool bIntersect = MathHelper::getInstance().GetLineSegmentInRect(fx, fy, pipangle, pguic->StoCx(0), pguic->StoCy(0), pguic->StoCx(pguic->GetScreenWidth_S()), pguic->StoCy(pguic->GetScreenWidth_S()), &x1, &y1, &x2, &y2);
+		if (bIntersect)
+		{
+			DWORD col = pcm->GetPIPLineColor(pickPIP[i].isPerpendicular());
+			col = SETA(col, _GOP_RENDERINDICATINGLINE_ALPHA);
+			prh->RenderLine(x1, y1, x2, y2, col);
+		}
+	}
+}
+
+void GObjectPicker::RenderAbove()
+{
+	GUICoordinate * pguic = &GUICoordinate::getInstance();
+	RenderHelper * prh = &RenderHelper::getInstance();
+	ColorManager * pcm = &ColorManager::getInstance();
+
+	float xs = GetPickX_S();
+	float ys = GetPickY_S();
+
 	if (snappedstate & GOPSNAPPED_OBJ)
 	{
 		for (int i=0; i<nPickObj; i++)
@@ -272,7 +298,7 @@ void GObjectPicker::Render()
 			}
 		}
 	}
-	for (int i=0; i<nOnLine; i++)
+	for (int i=0; i<nPickObj; i++)
 	{
 		if (pickCoordEntityObj[i])
 		{
@@ -285,12 +311,10 @@ void GObjectPicker::Render()
 	}
 	if (snappedstate/* & GOPSNAPPED_POINT*/)
 	{
-
 		DWORD col = pcm->GetCursorColor();
-		col = SETA(col, _GOP_RENDER_ALPHA);
+		col = SETA(col, _GOP_RENDERINDICATINGLINE_ALPHA);
 		prh->RenderSquare_S(xs-_GOPRENDER_POINT_A, ys-_GOPRENDER_POINT_A, _GOPRENDER_POINT_A*2, col);
 		prh->RenderLineR_S(xs-_GOPRENDER_POINT_CROSS, ys, _GOPRENDER_POINT_CROSS*2, col);
 		prh->RenderLineB_S(xs, ys-_GOPRENDER_POINT_CROSS, _GOPRENDER_POINT_CROSS*2, col);
 	}
-
 }

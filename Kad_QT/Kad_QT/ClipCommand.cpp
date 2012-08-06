@@ -60,6 +60,11 @@ void ClipCommand::OnProcessCommand()
 						{
 							pObj = pObj->getLine();
 						}
+						if (pObj->isPoint())
+						{
+							GPoint * pPoint = (GPoint *)pObj;
+							pObj = pPoint->getClingInfo()->GetClingTo();
+						}
 						int index = pObj->getID();
 
 						pcommand->SetParamI(CSP_CLIP_I_F_INDEX_PROPORTION, index, CWP_INDEX);
@@ -145,6 +150,14 @@ bool ClipCommand::staticPickFilterFunc( GObject * pObj )
 
 bool ClipCommand::PickFilterFunc( GObject * pObj )
 {
+	if (pObj->isPoint() && pObj->canAttach())
+	{
+		GPoint * pPoint = (GPoint *)pObj;
+		if (pPoint->getClingInfo()->GetClingTo())
+		{
+			return false;
+		}
+	}
 	if (pObj->isLine() || pObj->isMidPoint())
 	{
 		return true;

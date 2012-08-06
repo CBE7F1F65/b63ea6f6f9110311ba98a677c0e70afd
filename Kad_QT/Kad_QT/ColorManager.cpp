@@ -323,3 +323,12 @@ DWORD ColorManager::GetMarkingBackgroundColor( int typeflag )
 	}
 	return 0xffffffff;
 }
+
+DWORD ColorManager::GetPIPLineColor( bool bPerp )
+{
+	if (bPerp)
+	{
+		return 0xff24ce26;
+	}
+	return 0xffce2426;
+}

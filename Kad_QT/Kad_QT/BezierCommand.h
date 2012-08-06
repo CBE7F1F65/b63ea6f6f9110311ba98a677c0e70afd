@@ -28,9 +28,11 @@ public:
 private:
 
 
-	GObject * pMergeToBegin;
-	GObject * pMergeToEnd;
-	GObject * pNextMergeToBegin;
+	GObject * pBeginPicked;
+	GObject * pEndPicked;
+	GObject * pNextBeginPicked;
+
+	int iSecPicked;
 
 	GAnchorPoint * pBindAnchorBegin;
 	GAnchorPoint * pBindAnchorEnd;

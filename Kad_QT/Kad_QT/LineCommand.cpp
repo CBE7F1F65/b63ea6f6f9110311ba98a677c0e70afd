@@ -18,7 +18,7 @@
 
 LineCommand::LineCommand()
 {
-	pNextMergeToBegin = NULL;
+	pNextBeginPicked = NULL;
 	pTempLine = NULL;
 }
 
@@ -93,8 +93,9 @@ void LineCommand::OnProcessCommand()
 					case CSI_LINE_WANTX1:
 					case CSI_LINE_WANTY1:
 						tosetpindex = CSP_LINE_XY_B;
-						pMergeToBegin = pgp->GetPickedObj();
-						if (pMergeToBegin)
+						pBeginPicked = pgp->GetPickedObj();
+						iSecBegin = pgp->GetPickSection();
+						if (pBeginPicked)
 						{
 							fProportionBegin = pgp->CalculateProportion();
 						}
@@ -102,8 +103,8 @@ void LineCommand::OnProcessCommand()
 					case CSI_LINE_WANTX2:
 					case CSI_LINE_WANTY2:
 						tosetpindex = CSP_LINE_XY_N;
-						pMergeToEnd = pgp->GetPickedObj();
-						if (pMergeToEnd)
+						pEndPicked = pgp->GetPickedObj();
+						if (pEndPicked)
 						{
 							fProportionEnd = pgp->CalculateProportion();
 						}
@@ -145,28 +146,28 @@ void LineCommand::OnProcessCommand()
 
 			if (pNCLine)
 			{
-				if (!pMergeToEnd)
+				if (!pEndPicked)
 				{
-					pMergeToEnd = TestPickObjSingleFilter(pNCLine->GetEndPoint(), pNCLine, &fProportionEnd);
+					pEndPicked = TestPickObjSingleFilter(pNCLine->GetEndPoint(), pNCLine, &fProportionEnd);
 				}
-				if (pNextMergeToBegin)
+				if (pNextBeginPicked)
 				{
-					pMergeToBegin = pNextMergeToBegin;
+					pBeginPicked = pNextBeginPicked;
 				}
-				else if (!pMergeToBegin)
+				else if (!pBeginPicked)
 				{
-					pMergeToBegin = TestPickObjSingleFilter(pNCLine->GetBeginPoint(), pNCLine, &fProportionBegin);
+					pBeginPicked = TestPickObjSingleFilter(pNCLine->GetBeginPoint(), pNCLine, &fProportionBegin);
 				}
-				if (pMergeToEnd)
+				if (pEndPicked)
 				{
-					MergeClingNewPoint(pNCLine->GetEndPoint(), pMergeToEnd, fProportionEnd);
+					MergeClingNewPoint(pNCLine->GetEndPoint(), pEndPicked, fProportionEnd);
 
 				}
-				if (pMergeToBegin)
+				if (pBeginPicked)
 				{
-					MergeClingNewPoint(pNCLine->GetBeginPoint(), pMergeToBegin, fProportionBegin);
+					MergeClingNewPoint(pNCLine->GetBeginPoint(), pBeginPicked, fProportionBegin);
 				}
-				pNextMergeToBegin = pNCLine->GetEndPoint();
+				pNextBeginPicked = pNCLine->GetEndPoint();
 			}
 		}
 	}
@@ -175,6 +176,18 @@ void LineCommand::OnProcessCommand()
 	{
 		float x1, y1;
 		pcommand->GetParamXY(CSP_LINE_XY_B, &x1, &y1);
+
+		if (pBeginPicked)
+		{
+			GLine * pBeginPickedLine = pBeginPicked->getLine();
+			if (pBeginPickedLine)
+			{
+				float fPtProp = pBeginPickedLine->CalculateProportion(x1, y1, iSecBegin);
+				PointF2D ptTangent = pBeginPickedLine->GetTangentPointF2D(fPtProp);
+				int nTangentAngle = MathHelper::getInstance().GetLineAngle(PointF2D(0, 0), ptTangent);
+				pgp->PushInterestPoint(x1, y1, true, nTangentAngle);
+			}
+		}
 
 		float x2 = pgp->GetPickX_C();
 		float y2 = pgp->GetPickY_C();
@@ -298,14 +311,21 @@ bool LineCommand::MIDCBAngle( MarkingUI * pmui, bool bAccept )
 
 void LineCommand::OnInitCommand()
 {
-	pMergeToBegin = NULL;
-	pMergeToEnd = NULL;
+	pEndPicked = NULL;
 	pNCLine = NULL;
+	if (pNextBeginPicked)
+	{
+		pBeginPicked = pNextBeginPicked;
+	}
+	else
+	{
+		pBeginPicked = NULL;
+	}
 }
 
 void LineCommand::OnTerminalCommand()
 {
-	pNextMergeToBegin = NULL;
+	pNextBeginPicked = NULL;
 }
 
 void LineCommand::OnClearTemp()

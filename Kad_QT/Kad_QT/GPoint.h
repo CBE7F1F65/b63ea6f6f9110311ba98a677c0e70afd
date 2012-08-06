@@ -21,7 +21,7 @@ public:
 	void ClearClingTo();
 
 	bool CalculateClingProportion(float * pProp, float fLengthBase=-1);
-	bool GetClingPosition(PointF2D * pptPos, int * isec=NULL, QuadBezierPointF2D * pQuadHandles=NULL);
+	bool GetClingPosition(PointF2D * pptPos, int * isec=NULL, QuadBezierPointF2D * pQuadHandles=NULL, float * pProp=NULL);
 
 	GLine * GetClingTo(){return pClingTo;};
 	float GetClingVal(){return fClingVal;};

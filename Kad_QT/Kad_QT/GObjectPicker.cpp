@@ -333,16 +333,19 @@ bool GObjectPicker::IsInSnapRangeAngle_C( float x, float y, int angle, float *pl
 	float x1, y1, x2, y2;
 	bool bIntersect = false;
 	GUICoordinate * pguic = &GUICoordinate::getInstance();
-	bIntersect = pmh->GetLineSegmentInRect(x, y, angle, 0, 0, pguic->GetScreenWidth_C(), pguic->GetScreenWidth_C(), &x1, &y1, &x2, &y2);
+	bIntersect = pmh->GetLineSegmentInRect(x, y, angle, pguic->StoCx(0), pguic->StoCy(0), pguic->StoCx(pguic->GetScreenWidth_S()), pguic->StoCy(pguic->GetScreenHeight_S()), &x1, &y1, &x2, &y2);
 
-	bool bret = pmh->PointNearToStraightLine(x, y, x1, y1, x2, y2, snaprange_c, &lx, &ly);
-	if (plx)
+	bool bret = pmh->PointNearToStraightLine(pickx_c, picky_c, x1, y1, x2, y2, snaprange_c, &lx, &ly);
+	if (bret)
 	{
-		*plx = lx;
-	}
-	if (ply)
-	{
-		*ply = ly;
+		if (plx)
+		{
+			*plx = lx;
+		}
+		if (ply)
+		{
+			*ply = ly;
+		}
 	}
 	return bret;
 }
@@ -505,10 +508,11 @@ void GObjectPicker::SetPickObj( GObject * pObj )
 	nPickObj++;
 }
 
-void GObjectPicker::SetPickPIP( PickerInterestPointInfo info )
+void GObjectPicker::SetPickPIP( PickerInterestPointInfo info, bool bPerp )
 {
 	ASSERT(nPickPIP < GOPONLINE_MAX);
 	pickPIP[nPickPIP] = info;
+	pickPIP[nPickPIP].SetPerpendicular(bPerp);
 	nPickPIP++;
 }
 

@@ -109,12 +109,14 @@ bool MainInterface::Render()
 	// Marking
 	MarkingManager::getInstance().Render();
 
+	// Snap Indication Lines
+	GObjectPicker::getInstance().RenderUnder();
 	// All Nodes
 	GObjectManager::getInstance().Render();
 	// Render Command Floating
 	Command::getInstance().Render();
 	// Render Snap
-	GObjectPicker::getInstance().Render();
+	GObjectPicker::getInstance().RenderAbove();
 
 	// Render MarqueeSelect
 	MarqueeSelect::getInstance().Render();

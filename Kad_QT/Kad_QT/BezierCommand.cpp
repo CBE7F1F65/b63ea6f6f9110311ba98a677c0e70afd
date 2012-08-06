@@ -137,16 +137,18 @@ void BezierCommand::OnProcessCommand()
 					{
 					case CSP_BEZIER_XY_BA:
 						pcommand->StepTo(CSI_BEZIER_WANTBHX, CWP_HANDLEX);
-						pMergeToBegin = pgp->GetPickedObj();
-						if (pMergeToBegin)
+						pBeginPicked = pgp->GetPickedObj();
+						iSecPicked = pgp->GetPickSection();
+						if (pBeginPicked)
 						{
 							fProportionBegin = pgp->CalculateProportion();
 						}
 						break;
 					case CSP_BEZIER_XY_NA:
 						pcommand->StepTo(CSI_BEZIER_WANTNHX, CWP_HANDLEX);
-						pMergeToEnd = pgp->GetPickedObj();
-						if (pMergeToEnd)
+						pEndPicked = pgp->GetPickedObj();
+						iSecPicked = pgp->GetPickSection();
+						if (pEndPicked)
 						{
 							fProportionEnd = pgp->CalculateProportion();
 						}
@@ -244,60 +246,60 @@ void BezierCommand::OnProcessCommand()
 
 			if (pNCLine)
 			{
-				if (!pMergeToEnd)
+				if (!pEndPicked)
 				{
-					pMergeToEnd = TestPickObjSingleFilter(pNCLine->GetEndPoint(), pNCLine, &fProportionEnd);
+					pEndPicked = TestPickObjSingleFilter(pNCLine->GetEndPoint(), pNCLine, &fProportionEnd);
 				}
-				if (pNextMergeToBegin)
+				if (pNextBeginPicked)
 				{
-					pMergeToBegin = pNextMergeToBegin;
+					pBeginPicked = pNextBeginPicked;
 				}
-				else if (!pMergeToBegin)
+				else if (!pBeginPicked)
 				{
-					pMergeToBegin = TestPickObjSingleFilter(pNCLine->GetBeginPoint(), pNCLine, &fProportionBegin);
+					pBeginPicked = TestPickObjSingleFilter(pNCLine->GetBeginPoint(), pNCLine, &fProportionBegin);
 				}
-				if (pMergeToEnd)
+				if (pEndPicked)
 				{
-					MergeClingNewPoint(pNCLine->GetEndPoint(), pMergeToEnd, fProportionEnd);
+					MergeClingNewPoint(pNCLine->GetEndPoint(), pEndPicked, fProportionEnd);
 				}
-				if (pMergeToBegin)
+				if (pBeginPicked)
 				{
-					MergeClingNewPoint(pNCLine->GetBeginPoint(), pMergeToBegin, fProportionBegin);
+					MergeClingNewPoint(pNCLine->GetBeginPoint(), pBeginPicked, fProportionBegin);
 				}
-				pNextMergeToBegin = pNCLine->GetEndPoint();
+				pNextBeginPicked = pNCLine->GetEndPoint();
 				
 				if (!pBindAnchorEnd)
 				{
-					if (pMergeToEnd)
+					if (pEndPicked)
 					{
-						if (pMergeToEnd->isAnchorPoint())
+						if (pEndPicked->isAnchorPoint())
 						{
 							MathHelper * pmh = &MathHelper::getInstance();
-							GAnchorPoint * pMergeToEndAnchor = (GAnchorPoint *)pMergeToEnd;
+							GAnchorPoint * pMergeToEndAnchor = (GAnchorPoint *)pEndPicked;
 
 							int nToAngle = pmh->GetLineAngle(pMergeToEndAnchor->GetHandle()->GetPointF2D(), pMergeToEndAnchor->GetPointF2D());
 							int nFromAngle = pmh->GetLineAngle(pNCLine->GetEndPoint()->GetPointF2D(), pNCLine->GetEndPoint()->GetHandle()->GetPointF2D());
 							if (pmh->AreTwoAngleClose(nFromAngle, nToAngle))
 							{
-								pBindAnchorEnd = (GAnchorPoint *)pMergeToEnd;
+								pBindAnchorEnd = (GAnchorPoint *)pEndPicked;
 							}
 						}
 					}
 				}
 				if (!pBindAnchorBegin)
 				{
-					if (pMergeToBegin)
+					if (pBeginPicked)
 					{
-						if (pMergeToBegin->isAnchorPoint())
+						if (pBeginPicked->isAnchorPoint())
 						{
 							MathHelper * pmh = &MathHelper::getInstance();
-							GAnchorPoint * pMergeToBeginAnchor = (GAnchorPoint *)pMergeToBegin;
+							GAnchorPoint * pMergeToBeginAnchor = (GAnchorPoint *)pBeginPicked;
 
 							int nToAngle = pmh->GetLineAngle(pMergeToBeginAnchor->GetHandle()->GetPointF2D(), pMergeToBeginAnchor->GetPointF2D());
 							int nFromAngle = pmh->GetLineAngle(pNCLine->GetBeginPoint()->GetPointF2D(), pNCLine->GetBeginPoint()->GetHandle()->GetPointF2D());
 							if (pmh->AreTwoAngleClose(nFromAngle, nToAngle))
 							{
-								pBindAnchorBegin = (GAnchorPoint *)pMergeToBegin;
+								pBindAnchorBegin = (GAnchorPoint *)pBeginPicked;
 							}
 						}
 					}
@@ -370,6 +372,35 @@ void BezierCommand::OnProcessCommand()
 		pTempLine->SetBeginEnd(xb, yb, xn, yn, 0);
 		pTempLine->SetBeginHandlePos(bhx, bhy, 0);
 		pTempLine->SetEndHandlePos(nhx, nhy, 0);
+
+		if (step == CSI_BEZIER_WANTBHX || step == CSI_BEZIER_WANTBHY)
+		{
+			if (pBeginPicked)
+			{
+				GLine * pBeginPickedLine = pBeginPicked->getLine();
+				if (pBeginPickedLine)
+				{
+					float fPtProp = pBeginPickedLine->CalculateProportion(xb, yb, iSecPicked);
+					PointF2D ptTangent = pBeginPickedLine->GetTangentPointF2D(fPtProp);
+					int nTangentAngle = MathHelper::getInstance().GetLineAngle(PointF2D(0, 0), ptTangent);
+					pgp->PushInterestPoint(xb, yb, true, nTangentAngle);
+				}
+			}
+		}
+		else if (step == CSI_BEZIER_WANTNHX || step == CSI_BEZIER_WANTNHY)
+		{
+			if (pEndPicked)
+			{
+				GLine * pEndPickedLine = pEndPicked->getLine();
+				if (pEndPickedLine)
+				{
+					float fPtProp = pEndPickedLine->CalculateProportion(xn, yn, iSecPicked);
+					PointF2D ptTangent = pEndPickedLine->GetTangentPointF2D(fPtProp);
+					int nTangentAngle = MathHelper::getInstance().GetLineAngle(PointF2D(0, 0), ptTangent);
+					pgp->PushInterestPoint(xn, yn, true, nTangentAngle);
+				}
+			}
+		}
 	}
 	if (step >= CSI_BEZIER_WANTNAX)
 	{
@@ -476,16 +507,23 @@ void BezierCommand::RenderToTarget()
 
 void BezierCommand::OnInitCommand()
 {
-	pMergeToBegin = NULL;
-	pMergeToEnd = NULL;
+	pEndPicked = NULL;
 	pNCLine = NULL;
 	pBindAnchorBegin = NULL;
 	pBindAnchorEnd = NULL;
+	if (pNextBeginPicked)
+	{
+		pBeginPicked = pNextBeginPicked;
+	}
+	else
+	{
+		pBeginPicked = NULL;
+	}
 }
 
 void BezierCommand::OnTerminalCommand()
 {
-	pNextMergeToBegin = NULL;
+	pNextBeginPicked = NULL;
 }
 
 void BezierCommand::OnClearTemp()

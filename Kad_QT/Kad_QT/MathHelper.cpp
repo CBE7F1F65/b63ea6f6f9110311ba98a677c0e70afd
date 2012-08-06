@@ -474,23 +474,30 @@ bool MathHelper::GetLineSegmentInRect( float x, float y, int angle, float lx, fl
 
 		int nowindex = 0;
 		// Check Left
-		tpy[nowindex] = y + (x-lx)/ftg;
+		tpy[nowindex] = y - (x-lx)*ftg;
 		if (tpy[nowindex] >= ty && tpy[nowindex] <= by)
 		{
 			tpx[nowindex] = lx;
 			nowindex++;
 		}
 		// Check Top
-		tpx[nowindex] = x + (y-ty)*ftg;
+		tpx[nowindex] = x - (y-ty)/ftg;
 		if (tpx[nowindex] >= lx && tpx[nowindex] <= rx)
 		{
 			tpy[nowindex] = ty;
-			nowindex++;
+			if (nowindex && tpx[nowindex]==tpx[nowindex-1] && tpy[nowindex]==tpy[nowindex-1])
+			{
+			}
+			else
+			{
+				nowindex++;
+			}
 		}
+
 		// Check Right
 		if (nowindex < 2)
 		{
-			tpy[nowindex] = y + (x-rx)/ftg;
+			tpy[nowindex] = y - (x-rx)*ftg;
 			if (tpy[nowindex] >= ty && tpy[nowindex] <= by)
 			{
 				tpx[nowindex] = rx;
@@ -500,11 +507,17 @@ bool MathHelper::GetLineSegmentInRect( float x, float y, int angle, float lx, fl
 		// Check Bottom
 		if (nowindex < 2)
 		{
-			tpx[nowindex] = x + (y-by)*ftg;
+			tpx[nowindex] = x - (y-by)/ftg;
 			if (tpx[nowindex] >= lx && tpx[nowindex] <= rx)
 			{
 				tpy[nowindex] = by;
-				nowindex++;
+				if (nowindex && tpx[nowindex]==tpx[nowindex-1] && tpy[nowindex]==tpy[nowindex-1])
+				{
+				}
+				else
+				{
+					nowindex++;
+				}
 			}
 		}
 		//

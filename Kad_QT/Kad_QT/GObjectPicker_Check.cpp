@@ -319,19 +319,35 @@ bool GObjectPicker::CheckSnapContinuity()
 				if (it->HasAngle())
 				{
 					float lx, ly;
-					if (IsInSnapRangeAngle_C(it->GetX(), it->GetY(), it->GetAngle(), &lx, &ly))
+					bool bPicked = false;
+					bool bPerp = false;
+
+					float itx = it->GetX();
+					float ity = it->GetY();
+					float itangle = it->GetAngle();
+
+					if (IsInSnapRangeAngle_C(itx, ity, itangle, &lx, &ly))
+					{
+						bPicked = true;
+					}
+					else if (IsInSnapRangeAngle_C(itx, ity, itangle+ANGLEBASE_90, &lx, &ly))
+					{
+						bPicked = true;
+						bPerp = true;
+					}
+					if (bPicked)
 					{
 						if (nOnLine)
 						{
 							if (FindLineIntersectPIP(&(*it)))
 							{
-								snappedstate |= GOPSNAP_CONTINUITY;
-								SetPickPIP((*it));
+								snappedstate |= GOPSNAPPED_CONTINUITY;
+								SetPickPIP((*it), bPerp);
 								nOnLine++;
 							}
 						}
-						snappedstate |= GOPSNAP_CONTINUITY;
-						SetPickPIP((*it));
+						snappedstate |= GOPSNAPPED_CONTINUITY;
+						SetPickPIP((*it), bPerp);
 						pickx_c = lx;
 						picky_c = ly;
 						nOnLine++;
