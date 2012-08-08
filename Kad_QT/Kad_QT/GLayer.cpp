@@ -41,7 +41,8 @@ const char * GLayer::getDisplayName()
 		ss << layerID;
 		strDisplayName += ss.str();
 		*/
-		ASSERT(false);
+//		ASSERT(false);
+		return "";
 	}
 	return strDisplayName.c_str();
 }
@@ -57,7 +58,10 @@ bool GLayer::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelation
 	if (super::CloneData(pClone, pNewParent))
 	{
 		GLayer * pLayer = (GLayer *)pClone;
-		pLayer->setInitial(layerID, strDisplayName.c_str());
+		if (!strlen(pClone->getDisplayName()))
+		{
+			pLayer->setInitial(layerID, strDisplayName.c_str());
+		}
 		return true;
 	}
 	return false;

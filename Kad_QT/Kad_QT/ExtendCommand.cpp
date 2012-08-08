@@ -151,7 +151,6 @@ void ExtendCommand::OnProcessCommand()
 			}
 		}
 	}
-	RenderToTarget();
 }
 
 void ExtendCommand::RenderToTarget()

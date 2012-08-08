@@ -33,8 +33,6 @@ Kad_QT::Kad_QT(QWidget *parent, Qt::WFlags flags)
 	connect(undoShortcut, SIGNAL(activated()), this, SLOT(SLT_UndoShortcutActivated()));
 	connect(redoShortcut_1, SIGNAL(activated()), this, SLOT(SLT_RedoShortcutActivated()));
 	connect(redoShortcut_2, SIGNAL(activated()), this, SLOT(SLT_RedoShortcutActivated()));
-
-    this->installEventFilter(this);
 }
 
 Kad_QT::~Kad_QT()
@@ -49,11 +47,6 @@ void Kad_QT::closeEvent( QCloseEvent *event )
 	settings.setValue(psm->GetRegistryGeometryName(), saveGeometry());
 	settings.setValue(psm->GetRegistryWindowStateName(), saveState());
     QWidget::closeEvent(event);
-}
-
-bool Kad_QT::eventFilter(QObject *target, QEvent *e)
-{
-    return QMainWindow::eventFilter(target, e);
 }
 
 void Kad_QT::on_action_Command_Line_triggered()

@@ -200,6 +200,7 @@ public:
 	}
 
 	_SMFDEF(	SnapshotDefault,	INIS_DEFAULTSTR,	"Snapshot"	);
+	_SMFDEF(	NodeCloneAppend,	INIS_DEFAULTSTR,	" Copy"	);
 
 #define _SMCLFDEF(STRNAME, DEF)	\
 	_SMFDEF(CL##STRNAME, INIS_COMMANDLOG, DEF)

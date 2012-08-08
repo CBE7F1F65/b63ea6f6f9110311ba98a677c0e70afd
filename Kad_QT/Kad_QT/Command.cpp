@@ -760,6 +760,14 @@ int Command::_FindNextSubStr( const char * str, CommittedCommand * cc, int maxns
 	}
 	if (!cc->type)
 	{
+		if (cc->sval == COMMAND_ENDMARK)
+		{
+			cc->type = COMMITTEDCOMMANDTYPE_COMMAND;
+			cc->ival = COMM_I_COMMAND_ENDMARK;
+		}
+	}
+	if (!cc->type)
+	{
 		cc->type = COMMITTEDCOMMANDTYPE_STRING;
 	}
 
@@ -1056,7 +1064,9 @@ bool Command::DoPushRevertable()
 							strcomm += ", ";
 						}
 					}
-					strcomm += "); ";
+					strcomm += ")";
+					strcomm += COMMAND_ENDMARK;
+					strcomm += " ";
 					if (!firstcomm)
 					{
 						firstcomm = comm;

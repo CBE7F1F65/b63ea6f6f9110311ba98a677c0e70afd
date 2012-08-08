@@ -112,6 +112,9 @@ public:
 	bool IsTryMoving(){return bTryMove;};
 	bool IsTryMoveBlocking(){return bTryMoveBlock;};
 
+	void SetManualCloning(bool bSet){bManualCloning=bSet;};
+	bool IsManualCloning(){return bManualCloning;};
+
 	void SetLockTreeChange();
 
 public:
@@ -170,6 +173,8 @@ private:
 
 	bool bTryMove;
 	bool bTryMoveBlock;
+
+	bool bManualCloning;
 
 	int nMoveActionType;
 	int nMoveActionAngle;

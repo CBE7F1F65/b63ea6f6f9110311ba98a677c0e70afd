@@ -19,6 +19,12 @@ public:
     explicit QTUI_Layer_Tree(QWidget *parent = 0);
 
 public:
+	void OnFrameUpdate();
+	void DeselectButtons(QTreeWidgetItem * pParent=NULL);
+	void OnButtonSelect(GObject * pObj, bool bSelected);
+	void ChangeChildrenButtonSelect(QTreeWidgetItem * pParent, bool bSelect);
+
+public:
     void RebuildTree( GObject * changebase, GObject * activeitem );
     list<GObject *> * GetActiveNodes();
     GObject * GetHoveringNode();
@@ -56,7 +62,6 @@ private:
 
     bool bInternalSelecting;
 
-signals:
     
 public slots:
     void SLT_ItemCollapsed(QTreeWidgetItem * pItem);

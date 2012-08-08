@@ -105,7 +105,9 @@ void DuplicateCommand::OnDoneCommand()
 //		GObject * pDupObj = pObj->CreateNewClone(&tempholdplace);
 //		pDupObj->ReparentBeforeObject(pParent, pObj);
 //		tempholdplace.RemoveAllChildren(true);
+		pgm->SetManualCloning(true);
 		GObject * pDupObj = pObj->CreateNewClone(pParent, pObj);
+		pgm->SetManualCloning(false);
 
 
 		PushRevertable(

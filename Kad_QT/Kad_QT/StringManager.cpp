@@ -176,6 +176,7 @@ void StringManager::FillSCInfo()
 
 	_BSET(	COMM_LINE,	"LINE",	"L",	"Draw Line",	""	);
 	_BSET(	COMM_BEZIER,	"BEZIER",	"B",	"Draw Bezier Curve",	""	);
+	_BSET(	COMM_CIRCLE,	"CIRCLE",	"O",	"Draw Circle",	""	);
 
 	_BSET(	COMM_RESTORETOSNAPSHOT, "RESTORETOSNAPSHOT",	"",	"Restore to Snapshot",	""	);
 
@@ -202,6 +203,7 @@ void StringManager::FillWPInfo()
 	_PSET(	CWP_X_E,	"END X"	);
 	_PSET(	CWP_Y_E,	"END Y"	);
 	_PSET(	CWP_XY_E,	"END X, Y"	);
+	_PSET(	CWP_R,	"R"	);
 	_PSET(	CWP_BEGINOFFSET,	"BEGIN OFFSET"	);
 	_PSET(	CWP_ENDOFFSET,	"END OFFSET"	);
 	_PSET(	CWP_XOFFSET,	"X OFFSET"	);

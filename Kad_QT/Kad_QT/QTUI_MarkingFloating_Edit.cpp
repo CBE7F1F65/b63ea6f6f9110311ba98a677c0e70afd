@@ -26,7 +26,7 @@ bool QTUI_MarkingFloating_Edit::eventFilter( QObject *pQObj, QEvent *e )
 			return true;
 		}
 	}
-	return QLineEdit::eventFilter(pQObj, e);
+	return false;
 }
 
 void QTUI_MarkingFloating_Edit::OnTabFocus()

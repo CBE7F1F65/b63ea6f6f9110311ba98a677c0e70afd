@@ -14,7 +14,6 @@ public:
 
 protected:
     virtual void closeEvent(QCloseEvent *event);
-    virtual bool eventFilter(QObject *target, QEvent *e);
 
 
 private slots:

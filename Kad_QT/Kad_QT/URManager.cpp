@@ -91,7 +91,7 @@ bool URManager::CanUnDo( int step/*=1*/ )
 	{
 		return false;
 	}
-	return index >= step;
+	return index >= step && index > 1;
 }
 
 bool URManager::CanReDo( int step/*=1*/ )

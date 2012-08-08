@@ -78,6 +78,7 @@ enum{
 	// Draw
 	COMM_LINE,		// line
 	COMM_BEZIER,	// bezier curve
+	COMM_CIRCLE,	// circle
 
 	// Other
 	COMM_RESTORETOSNAPSHOT,
@@ -493,6 +494,21 @@ enum{
 };
 
 /************************************************************************/
+/* CIRCLE                                                               */
+/************************************************************************/
+
+enum{
+	CSP_CIRCLE_XY_F_CENTER_R,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_CIRCLE_DUMMY=0,
+	CSI_CIRCLE_WANTX,
+	CSI_CIRCLE_WANTY,
+	CSI_CIRCLE_WANTR,
+};
+
+/************************************************************************/
 /* RESTORETOSNAPSHOT                                                    */
 /************************************************************************/
 
@@ -528,6 +544,7 @@ enum{
 	CWP_X_N,
 	CWP_Y_N,
 	CWP_XY_N,
+	CWP_R,
 	CWP_BEGINOFFSET,
 	CWP_ENDOFFSET,
 	CWP_XOFFSET,

@@ -70,7 +70,10 @@ int Command::ProcessPending( int index, int useflag, int fillprompt, int step, i
 
 	if (!bok)
 	{
-		LogError(pendingparam.sval.c_str());
+		if (!(IsCCTypeCommand(pendingparam.type)&&IsInternalCommand_CommandEndMark(pendingparam.ival)))
+		{
+			LogError(pendingparam.sval.c_str());
+		}
 		pendingparam.ClearSet();
 		return -1;
 	}
@@ -93,7 +96,7 @@ int Command::ProcessCommittedCommand()
 	{
 		LogError(it->sval.c_str());
 	}
-	else if (((it->type) & COMMITTEDCOMMANDTYPE_COMMAND))
+	else if (IsCCTypeCommand(it->type))
 	{
 		if (it->ival == COMM_UNDO || it->ival == COMM_REDO)
 		{
@@ -104,7 +107,10 @@ int Command::ProcessCommittedCommand()
 		}
 		else
 		{
-			if (!GetCurrentCommand())
+			if (IsInternalCommand_CommandEndMark(it->ival))
+			{
+			}
+			else if (!GetCurrentCommand())
 			{
 				CreateCommand(it->ival);
 			}

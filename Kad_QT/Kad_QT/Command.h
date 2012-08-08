@@ -69,6 +69,8 @@ public:
 	list<int>enabledsubcommand;
 };
 
+#define COMMAND_ENDMARK	";"
+
 #define	COMMITTEDCOMMANDTYPE_ERROR			0x00
 
 #define COMMITTEDCOMMANDTYPE_SUBCOMMAND		0x01
@@ -137,6 +139,7 @@ public:
 		CommittedCommand cc;
 		cc.type = COMMITTEDCOMMANDTYPE_COMMAND;
 		cc.ival = COMM_I_COMMAND_ENDMARK;
+		cc.sval = COMMAND_ENDMARK;
 		commandlist.push_back(cc);
 	};
 	void Clear()
@@ -195,7 +198,7 @@ public:
 
 	inline bool IsCCTypeCommand(int type)
 	{
-		return type == COMMITTEDCOMMANDTYPE_COMMAND;
+		return type & (COMMITTEDCOMMANDTYPE_COMMAND|COMMITTEDCOMMANDTYPE_COMMANDSHORT);
 	};
 	inline bool IsNormalCommand(int comm)
 	{

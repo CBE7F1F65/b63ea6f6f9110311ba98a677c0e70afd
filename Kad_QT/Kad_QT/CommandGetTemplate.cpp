@@ -26,6 +26,7 @@
 #include "FlipNodeBatchCommand.h"
 #include "RestoreToSnapshotCommand.h"
 #include "JoinLineCommand.h"
+#include "CircleCommand.h"
 
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
@@ -85,6 +86,8 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 		return &LineCommand::getInstance();
 	case COMM_BEZIER:
 		return &BezierCommand::getInstance();
+	case COMM_CIRCLE:
+		return &CircleCommand::getInstance();
 
 	case COMM_RESTORETOSNAPSHOT:
 		return &RestoreToSnapshotCommand::getInstance();

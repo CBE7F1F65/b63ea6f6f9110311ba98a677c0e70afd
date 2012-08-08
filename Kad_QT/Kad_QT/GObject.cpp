@@ -413,6 +413,10 @@ void GObject::OnClearModify()
 	bModified = false;
 }
 
+void GObject::OnClone( bool bBegin )
+{
+}
+
 int GObject::Reparent( GObject * newparent )
 {
 	/*
@@ -974,10 +978,24 @@ bool GObject::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelatio
 	pClone->bCloning = true;
 
 	//////////////////////////////////////////////////////////////////////////
-	
+	GObjectManager * pgm = &GObjectManager::getInstance();
+	bool bIsManualCloning = pgm->IsManualCloning();
+	if (bIsManualCloning)
+	{
+		pClone->strDisplayName = getDisplayName();
+		pClone->strDisplayName += StringManager::getInstance().GetNodeCloneAppendName();
+	}
+	if (isLayer())
+	{
+		pgm->SetManualCloning(false);
+	}
 	for (list<GObject *>::iterator it=lstChildren.begin(); it!=lstChildren.end(); ++it)
 	{
 		(*it)->CreateNewClone(pClone);
+	}
+	if (isLayer())
+	{
+		pgm->SetManualCloning(bIsManualCloning);
 	}
 
 	return true;

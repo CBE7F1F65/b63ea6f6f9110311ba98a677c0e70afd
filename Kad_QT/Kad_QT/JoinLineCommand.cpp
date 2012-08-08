@@ -76,7 +76,6 @@ void JoinLineCommand::OnProcessCommand()
 			}
 		}
 	}
-	RenderToTarget();
 }
 
 void JoinLineCommand::OnDoneCommand()

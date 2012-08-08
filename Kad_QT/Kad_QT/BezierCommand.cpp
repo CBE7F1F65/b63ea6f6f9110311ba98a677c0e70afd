@@ -426,8 +426,6 @@ void BezierCommand::OnProcessCommand()
 			pMarking->getMarkingUI(MARKFLAG_LENGTH)->SetEditable(false);
 		}
 	}
-
-	RenderToTarget();
 }
 
 void BezierCommand::OnDoneCommand()
@@ -541,7 +539,7 @@ void BezierCommand::OnClearTemp()
 
 bool BezierCommand::staticMIDCBLength( MarkingUI * pmui, bool bAccept )
 {
-	return BezierCommand::getInstance().MIDCBLength(pmui, bAccept);
+	return getInstance().MIDCBLength(pmui, bAccept);
 }
 
 bool BezierCommand::MIDCBLength( MarkingUI * pmui, bool bAccept )

@@ -207,8 +207,6 @@ void LineCommand::OnProcessCommand()
 
 		pTempLine->SetBeginEnd(x1, y1, x2, y2, 0);
 	}
-
-	RenderToTarget();
 }
 
 void LineCommand::RenderToTarget()
@@ -244,16 +242,15 @@ void LineCommand::OnDoneCommand()
 		CCMake_F(ye),
 		NULL
 		);
-	OnClearTemp();
 }
 
 bool LineCommand::staticMIDCBLength(MarkingUI * pmui, bool bAccept)
 {
-	return LineCommand::getInstance().MIDCBLength(pmui, bAccept);
+	return getInstance().MIDCBLength(pmui, bAccept);
 }
 bool LineCommand::staticMIDCBAngle(MarkingUI * pmui, bool bAccept)
 {
-	return LineCommand::getInstance().MIDCBAngle(pmui, bAccept);
+	return getInstance().MIDCBAngle(pmui, bAccept);
 }
 
 bool LineCommand::MIDCBLength( MarkingUI * pmui, bool bAccept )

@@ -14,6 +14,8 @@ private:
 
 protected:
     virtual void resizeEvent(QResizeEvent * e);
+	virtual bool eventFilter(QObject * target, QEvent * e);
+	virtual void mousePressEvent(QMouseEvent *e);
 
 public:
     void AddHistory(QString desc, QString commandstr, int command);
@@ -26,10 +28,19 @@ private:
     bool bInternalProcessing;
     void SetSelect(int torow);
 
+	void CopyRows(int iBegin, int iEnd);
+
+	QTableWidgetItem * pMenuBeginItem;
+
 signals:
 
 public slots:
     void SLT_ItemSelectionChanged();
+	void SLT_CopyShortcutActivated();
+	void SLT_CopyRow();
+	void SLT_CopyBelow();
+	void SLT_CopyToNow();
+	void SLT_ShowContextMenu(const QPoint& pos);
 };
 
 #endif // QTUI_HISTORY_TABLE_H

@@ -21,8 +21,16 @@ QTUI_History_Table::QTUI_History_Table(QWidget *parent) :
 
     nSelect = 0;
     bInternalProcessing = false;
+
+	pMenuBeginItem = NULL;
+
     setColumnCount(_UIHT_COLUMNCOUNT);
     connect(this, SIGNAL(itemSelectionChanged()), this, SLOT(SLT_ItemSelectionChanged()));
+
+	QShortcut * copyShortcut = new QShortcut(QKeySequence(tr("Ctrl+C", "Edit|Copy")), this);
+	connect(copyShortcut, SIGNAL(activated()), this, SLOT(SLT_CopyShortcutActivated()));
+
+	this->installEventFilter(this);
 }
 
 void QTUI_History_Table::AdjustSize()
@@ -81,7 +89,7 @@ void QTUI_History_Table::ClearLaterHistory(int ndelete)
     int laterrows = rowCount()-nowrow-1;
     if (ndelete > laterrows)
     {
-        ASSERT(false);
+        DASSERT(false);
         ndelete = laterrows;
     }
     for (int i=0; i<ndelete; i++)
@@ -162,4 +170,111 @@ void QTUI_History_Table::SLT_ItemSelectionChanged()
     }
 
     bInternalProcessing = false;
+}
+
+void QTUI_History_Table::SLT_CopyShortcutActivated()
+{
+	int nowrow = this->currentRow();
+	QTableWidgetItem * pItem = item(nowrow, UIHT_COLUMN_COMMAND);
+	if (pItem)
+	{
+		CopyRows(nowrow, nowrow);
+	}
+}
+
+void QTUI_History_Table::SLT_ShowContextMenu( const QPoint& pos )
+{
+	QTableWidgetItem * pItem = itemAt(pos);
+	if (pItem)
+	{
+		QPoint globalPos = mapToGlobal(pos);
+		pMenuBeginItem = pItem;
+		QMenu cmenu;
+		cmenu.addAction(tr("&Copy"), this, SLOT(SLT_CopyRow()));
+		cmenu.addAction(tr("Copy &Below"), this, SLOT(SLT_CopyBelow()));
+		cmenu.addAction(tr("Copy to &Now"), this, SLOT(SLT_CopyToNow()));
+		cmenu.exec(globalPos);
+		pMenuBeginItem = NULL;
+	}
+}
+
+bool QTUI_History_Table::eventFilter( QObject * target, QEvent * e )
+{
+	if (target == this)
+	{
+		if (e->type() == QEvent::MouseButtonPress)
+		{
+			QMouseEvent * emouse = static_cast<QMouseEvent *>(e);
+			if (emouse->button() == Qt::RightButton)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+void QTUI_History_Table::mousePressEvent( QMouseEvent *e )
+{
+	if (e->button() == Qt::RightButton)
+	{
+		e->setAccepted(false);
+		return;
+	}
+	return QTableWidget::mousePressEvent(e);
+}
+
+void QTUI_History_Table::SLT_CopyRow()
+{
+	if (pMenuBeginItem)
+	{
+		CopyRows(pMenuBeginItem->row(), pMenuBeginItem->row());
+	}
+}
+
+void QTUI_History_Table::SLT_CopyBelow()
+{
+	if (pMenuBeginItem)
+	{
+		CopyRows(pMenuBeginItem->row(), rowCount()-1);
+	}
+
+}
+
+void QTUI_History_Table::SLT_CopyToNow()
+{
+	if (pMenuBeginItem)
+	{
+		CopyRows(pMenuBeginItem->row(), nSelect);
+	}
+
+}
+
+void QTUI_History_Table::CopyRows( int iBegin, int iEnd )
+{
+	QString str;
+	if (iBegin > iEnd)
+	{
+		swap(iBegin, iEnd);
+	}
+	for (int i=iBegin; i<=iEnd; i++)
+	{
+		QTableWidgetItem * pItem = item(i, UIHT_COLUMN_COMMAND);
+		if (!pItem)
+		{
+			break;
+		}
+		if (str.length())
+		{
+			str += "\r\n";
+		}
+		str += pItem->text();
+	}
+	if (str.length())
+	{
+		QClipboard *pClipboard = QApplication::clipboard();
+		pClipboard->setText(str);
+
+		QMainInterface::getInstance().GetPCommandEdit()->appendPlainText(str);
+	}
 }

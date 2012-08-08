@@ -545,6 +545,18 @@
     <ClCompile Include="GeneratedFiles\Release\moc_QTUI_NodeInfoFloating_Buttons.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="QTUI_Layer_Buttons.cpp">
+      <Filter>QT\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_QTUI_Layer_Buttons.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_QTUI_Layer_Buttons.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="CircleCommand.cpp">
+      <Filter>Main\Command\Draw</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -769,6 +781,9 @@
     <ClInclude Include="qkeystatemanager.h">
       <Filter>QT\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="CircleCommand.h">
+      <Filter>Main\Command\Draw</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="kad_qt.ui">
@@ -857,6 +872,9 @@
     </CustomBuild>
     <CustomBuild Include="QTUI_NodeInfoFloating_Buttons.h">
       <Filter>QT\NodeFloating</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QTUI_Layer_Buttons.h">
+      <Filter>QT\Layer</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

@@ -7,6 +7,9 @@
 
 #include "QTDLG_LayerProperty.h"
 
+#include "QTUI_Layer_Buttons.h"
+#include "MarqueeSelect.h"
+
 #define _UILT_ICONSIZE  ICMSIZE_MIDDLE
 #define _UILT_LINECOLORSIZE 6
 #define _UILT_INDENTATION   16
@@ -16,7 +19,7 @@ enum{
     _UILT_COLUMN_VISIBLE,
     _UILT_COLUMN_LOCK,
     _UILT_COLUMN_LINECOLOR,
-    _UILT_COLUMN_LINESELECT,
+    _UILT_COLUMN_SELECT,
     _UILT_COLUMN_FRAMECOLOR,
 
     _UILT_COLUMNCOUNT,
@@ -189,7 +192,7 @@ void QTUI_Layer_Tree::AdjustSize()
     this->setColumnWidth(_UILT_COLUMN_VISIBLE, _UILT_ICONSIZE);
     this->setColumnWidth(_UILT_COLUMN_LOCK, _UILT_ICONSIZE);
     this->setColumnWidth(_UILT_COLUMN_LINECOLOR, _UILT_LINECOLORSIZE);
-    this->setColumnWidth(_UILT_COLUMN_LINESELECT, _UILT_ICONSIZE);
+    this->setColumnWidth(_UILT_COLUMN_SELECT, _UILT_ICONSIZE);
     this->setColumnWidth(_UILT_COLUMN_FRAMECOLOR, _UILT_ICONSIZE);
 
     this->resizeColumnToContents(_UILT_COLUMN_TREE);
@@ -284,6 +287,8 @@ void QTUI_Layer_Tree::BuildChildren(QTreeWidgetItem *pItem, GObject *pObjParent)
 
         QTreeWidgetItem * pNowItem = new QTreeWidgetItem(pItem);
 //        pNowItem->setFlags(Qt::ItemIsEditable|pNowItem->flags());
+		QPushButton * pSelectionButton = new QTUI_Layer_SelectionButton(pObj);
+		this->setItemWidget(pNowItem, _UILT_COLUMN_SELECT, pSelectionButton);
 
         UpdateNodeInfo(pNowItem, pObj);
 
@@ -528,13 +533,78 @@ void QTUI_Layer_Tree::SLT_ItemDoubleClicked(QTreeWidgetItem *pItem, int column)
     }
     delete pDlg;
 }
-/*
-QWidget *UILT_EditDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+
+void QTUI_Layer_Tree::OnFrameUpdate()
 {
-    if (index.column() == _UILT_COLUMN_TREE)
-    {
-        return QItemDelegate::createEditor(parent, option, index);
-    }
-    return 0;
+	DeselectButtons();
+	list <GObject *> * plstGUISelected = MarqueeSelect::getInstance().OnGetSelectedNodes();
+
+	if (!plstGUISelected->empty())
+	{
+		for (list<GObject *>::iterator it=plstGUISelected->begin(); it!=plstGUISelected->end(); ++it)
+		{
+			GObject * pObj = *it;
+			QTreeWidgetItem * pItem = FindItemByObj(pObj);
+			if (pItem)
+			{
+				QTUI_Layer_SelectionButton * pSelectionButton = (QTUI_Layer_SelectionButton *)this->itemWidget(pItem, _UILT_COLUMN_SELECT);
+				pSelectionButton->UpdateGUISelection(pObj, true);
+			}
+		}
+	}
 }
-*/
+
+void QTUI_Layer_Tree::DeselectButtons( QTreeWidgetItem * pParent/*=NULL*/ )
+{
+	if (!pParent)
+	{
+		pParent = this->invisibleRootItem();
+	}
+
+	int nCount = pParent->childCount();
+	if (!nCount)
+	{
+		return;
+	}
+	for (int i=0; i<nCount; i++)
+	{
+		QTreeWidgetItem *pItem = pParent->child(i);
+		if (pItem)
+		{
+			((QTUI_Layer_SelectionButton *)this->itemWidget(pItem, _UILT_COLUMN_SELECT))->UpdateGUISelection(GetObjFromItem(pItem), false);
+			DeselectButtons(pItem);
+		}
+	}
+	return;
+}
+
+void QTUI_Layer_Tree::OnButtonSelect( GObject * pObj, bool bSelected )
+{
+	ASSERT(pObj);
+	QTreeWidgetItem * pItem = FindItemByObj(pObj);
+	ASSERT(pItem);
+	ChangeChildrenButtonSelect(pItem, bSelected);
+}
+
+void QTUI_Layer_Tree::ChangeChildrenButtonSelect( QTreeWidgetItem * pParent, bool bSelect )
+{
+	ASSERT(pParent);
+	int nCount = pParent->childCount();
+	if (!nCount)
+	{
+		return;
+	}
+	for (int i=0; i<nCount; i++)
+	{
+		QTreeWidgetItem *pItem = pParent->child(i);
+		if (pItem)
+		{
+			QTUI_Layer_SelectionButton * pSelectionButton = ((QTUI_Layer_SelectionButton *)this->itemWidget(pItem, _UILT_COLUMN_SELECT));
+			if (pSelectionButton->isChecked() != bSelect)
+			{
+				pSelectionButton->click();
+			}
+			ChangeChildrenButtonSelect(pItem, bSelect);
+		}
+	}
+}

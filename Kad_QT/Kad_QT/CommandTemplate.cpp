@@ -378,6 +378,7 @@ void CommandTemplate::CallProcessCommand()
 {
 	comm = pcommand->GetCurrentCommand();
 	OnProcessCommand();
+	RenderToTarget();
 }
 
 void CommandTemplate::CallProcessUnDoCommand( int _comm, RevertableCommand * rc )

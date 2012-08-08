@@ -173,6 +173,7 @@ protected:
     virtual void OnRender(int iHighlightLevel=0);
 	virtual void OnParentToggleDisplayVisible(bool toDisplayVisible);
 	virtual void OnParentToggleDisplayLocked(bool toDisplayLock);
+	virtual void OnClone(bool bBegin);
 
 	virtual void OnAddChildAfterObj(GObject * pChild, GObject * pAfter){};
 	virtual void OnRemoveChild(GObject * pChild, bool bRelease){};
@@ -190,7 +191,7 @@ public:
 protected:
 	virtual void ToggleTryMoveState(bool bTry);
 public:
-	void SetCloning(bool bSet){bCloning = bSet;};
+	void SetCloning(bool bSet){bCloning = bSet; OnClone(bCloning);};
 	bool operator < (const GObject &right) const { return nID < right.nID; };
 
 public:

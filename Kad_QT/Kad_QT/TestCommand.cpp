@@ -147,7 +147,6 @@ void TestCommand::OnProcessCommand()
 		}
 	}
 	*/
-	RenderToTarget();
 }
 
 void TestCommand::OnDoneCommand()

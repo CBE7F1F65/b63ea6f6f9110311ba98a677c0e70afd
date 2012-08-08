@@ -151,7 +151,6 @@ void FlipNodeBatchCommand::OnProcessCommand()
 			}
 		}
 	}
-	RenderToTarget();
 }
 
 void FlipNodeBatchCommand::RenderToTarget()

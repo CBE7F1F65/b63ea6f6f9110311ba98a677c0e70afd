@@ -98,11 +98,11 @@ void QTUI_GLView::SLT_VScrollValueChanged(int val)
 
 void QTUI_GLView::mouseMoveEvent( QMouseEvent *e )
 {
+    QGLWidget::mouseMoveEvent(e);
 	if (hge)
 	{
         hge->Input_SetMousePos(e->x(), e->y());
 	}
-    QGLWidget::mouseMoveEvent(e);
 }
 /*
 void QTUI_GLView::mousePressEvent( QMouseEvent *e )
@@ -258,7 +258,7 @@ bool QTUI_GLView::eventFilter(QObject *target, QEvent *e)
 		}
 	}
 
-    return QGLWidget::eventFilter(target, e);
+    return false;
 }
 
 void QTUI_GLView::focusInEvent( QFocusEvent * e )

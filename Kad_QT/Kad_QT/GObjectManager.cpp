@@ -66,6 +66,7 @@ void GObjectManager::Release()
 	bTryMoveBlock = false;
 
 	bCloning = false;
+	bManualCloning = false;
 	mapCloneList.clear();
 }
 

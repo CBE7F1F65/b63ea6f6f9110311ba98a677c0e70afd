@@ -9,6 +9,7 @@
 #include "GLine.h"
 #include "MathHelper.h"
 #include "MarkingManager.h"
+#include "qmaininterface.h"
 
 #define MARQSTATE_NONE				0x00
 #define MARQSTATE_LEFTKEYDOWN		0x01
@@ -391,6 +392,8 @@ void MarqueeSelect::Update()
 
 	lastmx_c = mousex_c;
 	lastmy_c = mousey_c;
+
+	QMainInterface::getInstance().GetPLayerTree()->OnFrameUpdate();
 }
 
 void MarqueeSelect::Render()

@@ -44,6 +44,9 @@
        </attribute>
       </widget>
       <widget class="QTUI_History_Table" name="HistoryTable">
+       <property name="contextMenuPolicy">
+        <enum>Qt::CustomContextMenu</enum>
+       </property>
        <property name="horizontalScrollBarPolicy">
         <enum>Qt::ScrollBarAlwaysOff</enum>
        </property>
@@ -151,6 +154,9 @@
    <class>QTUI_History_Table</class>
    <extends>QTableWidget</extends>
    <header location="global">qtui_history_table.h</header>
+   <slots>
+    <slot>SLT_ShowContextMenu(QPoint)</slot>
+   </slots>
   </customwidget>
   <customwidget>
    <class>QTUI_History_SnapshotTable</class>
@@ -172,12 +178,12 @@
    <slot>AddSnapshot()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>246</x>
-     <y>440</y>
+     <x>541</x>
+     <y>311</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
-     <y>167</y>
+     <y>154</y>
     </hint>
    </hints>
   </connection>
@@ -188,12 +194,12 @@
    <slot>DeleteSnapshot()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>267</x>
-     <y>449</y>
+     <x>566</x>
+     <y>311</y>
     </hint>
     <hint type="destinationlabel">
      <x>256</x>
-     <y>178</y>
+     <y>154</y>
     </hint>
    </hints>
   </connection>
@@ -210,6 +216,22 @@
     <hint type="destinationlabel">
      <x>175</x>
      <y>130</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>HistoryTable</sender>
+   <signal>customContextMenuRequested(QPoint)</signal>
+   <receiver>HistoryTable</receiver>
+   <slot>SLT_ShowContextMenu(QPoint)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>120</x>
+     <y>229</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>155</x>
+     <y>230</y>
     </hint>
    </hints>
   </connection>
