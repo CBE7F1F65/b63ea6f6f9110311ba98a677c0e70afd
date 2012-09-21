@@ -5,6 +5,7 @@ class GPiece :
 {
 public:
 	typedef GShape super;
+	virtual const char * getTypeName();		// Do not implement seperately
 public:
 	GPiece(void);
 	virtual ~GPiece(void);

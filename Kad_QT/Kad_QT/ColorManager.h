@@ -61,6 +61,22 @@ public:
 	};
 	DWORD dwColors[_LINECOLOR_ENDINDEX];
 	bool bColorSet;
+
+	bool operator == (const LineColorSet &other) const
+	{
+		if (bColorSet != other.bColorSet)
+		{
+			return false;
+		}
+		for (int i=0; i<_LINECOLOR_ENDINDEX; i++)
+		{
+			if (dwColors[i] != other.dwColors[i])
+			{
+				return false;
+			}
+		}
+		return true;
+	}
 };
 
 

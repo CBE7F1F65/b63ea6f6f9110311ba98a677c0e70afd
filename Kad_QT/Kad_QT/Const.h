@@ -10,6 +10,10 @@
  #define DEBUGTEST
 #endif
 
+#define M_VERSION		0x0010
+#define M_VERSIONSTR	"0.1"
+#define M_SIGNATURE		"h5nc"
+
 #define M_STRMAX	256
 
 #define M_FLOATMIN	1.175494351e-38F

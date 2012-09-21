@@ -65,3 +65,28 @@ void Kad_QT::SLT_RedoShortcutActivated()
 	Command::getInstance().CreateReDoCommandCommit();
 	QMainInterface::getInstance().GetPNodeInfoFloatingTree()->ShowNodeInfo();
 }
+
+void Kad_QT::on_action_New_triggered()
+{
+	MainInterface::getInstance().OnCommand(COMM_NEW);
+}
+
+void Kad_QT::on_action_Open_triggered()
+{
+	MainInterface::getInstance().OnCommand(COMM_OPEN);
+}
+
+void Kad_QT::on_action_Save_triggered()
+{
+	MainInterface::getInstance().OnCommand(COMM_SAVE);
+}
+
+void Kad_QT::on_action_SaveAs_triggered()
+{
+	MainInterface::getInstance().OnCommand(COMM_SAVEAS);
+}
+
+void Kad_QT::on_action_Exit_triggered()
+{
+	MainInterface::getInstance().OnCommand(COMM_EXIT);
+}

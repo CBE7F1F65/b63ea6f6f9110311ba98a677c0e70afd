@@ -546,7 +546,7 @@ void GPoint::OnIndepend()
 
 GAnchorPoint::GAnchorPoint()
 {
-	phandle = NULL;
+	pHandle = NULL;
 }
 
 GAnchorPoint::GAnchorPoint(GObject * parent,  float _x, float _y )
@@ -554,7 +554,7 @@ GAnchorPoint::GAnchorPoint(GObject * parent,  float _x, float _y )
 	ASSERT(parent);
 
 	SetPosition(_x, _y);
-	phandle = new GHandlePoint(this, _x, _y);
+	pHandle = new GHandlePoint(this, _x, _y);
 
 	parent->AddChild(this);
 	OnInit();
@@ -583,17 +583,17 @@ void GAnchorPoint::SetHandlePosition( float hx, float hy, float fAllowance/*=-1 
 {
 	if (fAllowance >= 0)
 	{
-		if (fabsf(hx-phandle->getX()) <= fAllowance && fabsf(hy-phandle->getY()) <= fAllowance)
+		if (fabsf(hx-pHandle->getX()) <= fAllowance && fabsf(hy-pHandle->getY()) <= fAllowance)
 		{
 			return;
 		}
 	}
-	phandle->CallMoveTo(phandle, hx, hy, false);
+	pHandle->CallMoveTo(pHandle, hx, hy, false);
 }
 
 bool GAnchorPoint::isHandleIdentical()
 {
-	if (fabsf(phandle->getX()-x) < M_FLOATEPS && fabsf(phandle->getY()-y) < M_FLOATEPS)
+	if (fabsf(pHandle->getX()-x) < M_FLOATEPS && fabsf(pHandle->getY()-y) < M_FLOATEPS)
 	{
 		return true;
 	}
@@ -609,7 +609,7 @@ bool GAnchorPoint::MoveTo( GObject * pCaller, float newx, float newy, bool bTry,
 
 	if (bret)
 	{
-		if (phandle)
+		if (pHandle)
 		{
 			int nMoveAngle;
 			float fXVal;
@@ -617,34 +617,34 @@ bool GAnchorPoint::MoveTo( GObject * pCaller, float newx, float newy, bool bTry,
 			int nMoveType = GObjectManager::getInstance().GetMoveTypeInfo(&nMoveAngle, &fXVal, &fYVal);
 			if (nMoveType == GMMATYPE_ROTATE)
 			{
-				if (phandle->getMoveActionID() != moveActionID)
+				if (pHandle->getMoveActionID() != moveActionID)
 				{
-					phandle->CallMoveByOffset(pCaller, xoffset, yoffset, bTry, moveActionID);
-					bret = phandle->CallRotate(pCaller, x, y, nMoveAngle, bTry, 0);
-					phandle->CallMoveByOffset(pCaller, 0, 0, bTry, moveActionID);
+					pHandle->CallMoveByOffset(pCaller, xoffset, yoffset, bTry, moveActionID);
+					bret = pHandle->CallRotate(pCaller, x, y, nMoveAngle, bTry, 0);
+					pHandle->CallMoveByOffset(pCaller, 0, 0, bTry, moveActionID);
 				}
 			}
 			else if (nMoveType == GMMATYPE_FLIP)
 			{
-				if (phandle->getMoveActionID() != moveActionID)
+				if (pHandle->getMoveActionID() != moveActionID)
 				{
-					phandle->CallMoveByOffset(pCaller, xoffset, yoffset, bTry, moveActionID);
-					bret = phandle->CallFlip(pCaller, x, y, nMoveAngle, bTry, 0);
-					phandle->CallMoveByOffset(pCaller, 0, 0, bTry, moveActionID);
+					pHandle->CallMoveByOffset(pCaller, xoffset, yoffset, bTry, moveActionID);
+					bret = pHandle->CallFlip(pCaller, x, y, nMoveAngle, bTry, 0);
+					pHandle->CallMoveByOffset(pCaller, 0, 0, bTry, moveActionID);
 				}
 			}
 			else if (nMoveType == GMMATYPE_SCALE)
 			{
-				if (phandle->getMoveActionID() != moveActionID)
+				if (pHandle->getMoveActionID() != moveActionID)
 				{
-					phandle->CallMoveByOffset(pCaller, xoffset, yoffset, bTry, moveActionID);
-					bret = phandle->CallScale(pCaller, x, y, fXVal, fYVal, bTry, 0);
-					phandle->CallMoveByOffset(pCaller, 0, 0, bTry, moveActionID);
+					pHandle->CallMoveByOffset(pCaller, xoffset, yoffset, bTry, moveActionID);
+					bret = pHandle->CallScale(pCaller, x, y, fXVal, fYVal, bTry, 0);
+					pHandle->CallMoveByOffset(pCaller, 0, 0, bTry, moveActionID);
 				}
 			}
 			else
 			{
-				bret = phandle->CallMoveByOffset(pCaller, xoffset, yoffset, bTry, moveActionID);
+				bret = pHandle->CallMoveByOffset(pCaller, xoffset, yoffset, bTry, moveActionID);
 			}
 
 			if (bret)
@@ -677,7 +677,7 @@ bool GAnchorPoint::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRe
 	{
 		GAnchorPoint * pAnchor = (GAnchorPoint *)pClone;
 		list<GObject *>::reverse_iterator it=pAnchor->lstChildren.rbegin();
-		pAnchor->phandle = (GHandlePoint *)*it;
+		pAnchor->pHandle = (GHandlePoint *)*it;
 		return true;
 	}
 	return false;
@@ -688,15 +688,15 @@ bool GAnchorPoint::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRe
 
 GMidPoint::GMidPoint()
 {
-	setDisplayVisible(false);
-	setDisplayLock(true);
+//	setDisplayVisible(false);
+//	setDisplayLock(true);
 }
 
 GMidPoint::GMidPoint( GObject * parent )
 {
 	ASSERT(parent);
-	setDisplayVisible(false);
-	setDisplayLock(true);
+//	setDisplayVisible(false);
+//	setDisplayLock(true);
 	parent->AddChild(this);
 	OnInit();
 }

@@ -82,6 +82,9 @@ public:
 	void OnTreeChanged(GObject * changingbase, GObject * activeitem, bool bSetActiveLayer=true);
     void OnPrecisionChanged();
 
+	bool ReadXML(QXmlStreamReader * pqsr);
+	bool WriteXML(QXmlStreamWriter * pqsw);
+
 	void AddNodeToDelete(GObject * pDeletedObj);
 	/*
 	void MoveToUnDoList(GObject * node);

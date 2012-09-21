@@ -27,6 +27,7 @@
 #include "RestoreToSnapshotCommand.h"
 #include "JoinLineCommand.h"
 #include "CircleCommand.h"
+#include "SaveCommand.h"
 
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
@@ -92,12 +93,17 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 	case COMM_RESTORETOSNAPSHOT:
 		return &RestoreToSnapshotCommand::getInstance();
 
+	case COMM_SAVE:
+	case COMM_SAVEAS:
+		return &SaveCommand::getInstance();
+
 	case COMM_OUTPUT:
 		return &OutputCommand::getInstance();
 #ifdef DEBUGTEST
 	case COMM_TEST:
 		return &TestCommand::getInstance();
 #endif //DEBUGTEST
+
 	case COMM_PAN:
 	case COMM_ZOOMIN:
 	case COMM_DOZOOM:

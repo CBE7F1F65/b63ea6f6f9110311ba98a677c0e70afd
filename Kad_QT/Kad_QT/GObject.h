@@ -71,11 +71,18 @@ class GObject
 public:
 	GObject(void);
 	virtual ~GObject(void);
+	virtual const char * getTypeName()=0;
 
 public:
 	virtual GObject * CreateNewClone(GObject * pNewParent=NULL, GObject * pBeforeObj=NULL)=0;
 protected:
 	virtual bool CloneData(GObject * pClone, GObject * pNewParent, bool bNoRelationship=true);
+
+public:
+	bool CallReadXML(QXmlStreamReader &qsr);
+	bool CallWriteXML(QXmlStreamWriter &qsw);
+	virtual bool ReadXML(QXmlStreamReader &qsr);
+	virtual bool WriteXML(QXmlStreamWriter &qsw);
 
 public:
 	virtual int AddChild(GObject * child);

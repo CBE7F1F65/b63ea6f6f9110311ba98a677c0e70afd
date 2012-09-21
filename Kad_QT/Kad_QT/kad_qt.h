@@ -22,6 +22,16 @@ private slots:
 	void SLT_UndoShortcutActivated();
 	void SLT_RedoShortcutActivated();
 
+    void on_action_New_triggered();
+
+    void on_action_Open_triggered();
+
+    void on_action_Save_triggered();
+
+    void on_action_SaveAs_triggered();
+
+    void on_action_Exit_triggered();
+
 private:
 	Ui::Kad_QTClass ui;
 };

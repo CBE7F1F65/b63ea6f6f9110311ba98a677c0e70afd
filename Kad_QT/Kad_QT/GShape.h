@@ -5,6 +5,7 @@ class GShape :
 {
 public:
 	typedef GObject super;
+	virtual const char * getTypeName();		// Do not implement separately
 public:
 	GShape(void);
 	virtual ~GShape(void);

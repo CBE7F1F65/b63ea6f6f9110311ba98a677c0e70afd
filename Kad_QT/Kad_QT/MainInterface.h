@@ -79,6 +79,16 @@ public:
 	void DoUpdateFPS();
 	void DoUpdateStatusInfo();
 
+	// File
+
+	bool OpenFile();
+	bool OpenFile(const char * filename);
+	bool SaveFile(bool bSaveAs=false);
+	bool SaveFile(const char * filename);
+
+	int nFileStatus;
+	string savefilename;
+
 	bool HGEThreadFunc();
 
 

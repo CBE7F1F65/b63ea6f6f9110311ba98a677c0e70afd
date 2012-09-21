@@ -723,3 +723,21 @@ void GObjectManager::EndClone()
 		mapCloneList.clear();
 	}
 }
+
+bool GObjectManager::ReadXML( QXmlStreamReader * pqsr )
+{
+	if (!pqsr || !pBaseNode)
+	{
+		return false;
+	}
+	return pBaseNode->CallReadXML(*pqsr);
+}
+
+bool GObjectManager::WriteXML( QXmlStreamWriter * pqsw )
+{
+	if (!pqsw || !pBaseNode)
+	{
+		return false;
+	}
+	return pBaseNode->CallWriteXML(*pqsw);
+}

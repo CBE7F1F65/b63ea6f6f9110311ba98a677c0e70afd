@@ -25,6 +25,10 @@
 
 #define MV_ACTIVEDELAY	10
 
+#define MI_FILESTATUS_NEW		0x01
+#define MI_FILESTATUS_OPENED	0x10
+#define MI_FILESTATUS_MODIFIED	0x20
+
 MainInterface::MainInterface()
 {
 	hge = hgeCreate(HGE_VERSION);
@@ -48,6 +52,8 @@ MainInterface::MainInterface()
 	bLockLeftMouseDown = false;
 
     nPrecision = 50;
+
+	nFileStatus = MI_FILESTATUS_NEW|MI_FILESTATUS_OPENED;
 }
 
 MainInterface::~MainInterface()
@@ -744,4 +750,85 @@ float MainInterface::GetMouseX_C()
 float MainInterface::GetMouseY_C()
 {
 	return GUICoordinate::getInstance().GetCursorY_C();
+}
+
+/************************************************************************/
+/* File                                                                 */
+/************************************************************************/
+
+bool MainInterface::OpenFile()
+{
+	if (nFileStatus & MI_FILESTATUS_MODIFIED)
+	{
+		// Save File?
+	}
+	QString qsfilename = QFileDialog::getOpenFileName();
+	if (qsfilename.length())
+	{
+		return OpenFile(qsfilename.toUtf8());
+	}
+	return false;
+}
+
+bool MainInterface::OpenFile( const char * filename )
+{
+	return false;
+}
+
+bool MainInterface::SaveFile( bool bSaveAs/*=false*/ )
+{
+	if (bSaveAs || (nFileStatus & MI_FILESTATUS_NEW))
+	{
+		QString qsfilename = QFileDialog::getSaveFileName();
+		if (qsfilename.length())
+		{
+			savefilename = qsfilename.toStdString();
+		}
+		else
+		{
+			return false;
+		}
+	}
+	return SaveFile(savefilename.c_str());
+}
+
+bool MainInterface::SaveFile( const char * filename )
+{
+	QFile qsavefile(filename);
+	if (qsavefile.exists())
+	{
+		qsavefile.remove();
+	}
+	if (!qsavefile.open(QIODevice::ReadWrite))
+	{
+		return false;
+	}
+
+	savefilename = filename;
+	
+	QXmlStreamWriter qsw(&qsavefile);
+	qsw.setAutoFormatting(true);
+
+	StringManager * psm = &StringManager::getInstance();
+
+	qsw.writeStartDocument();
+
+	qsw.writeStartElement(psm->GetXMLStartName());
+	qsw.writeAttribute(psm->GetXMLSignatureName(), M_SIGNATURE);
+	qsw.writeAttribute(psm->GetXMLVersionName(), M_VERSIONSTR);
+
+	bool bdone = GObjectManager::getInstance().WriteXML(&qsw);
+
+	qsw.writeEndElement();
+
+	qsw.writeEndDocument();
+
+	qsavefile.close();
+
+	if (bdone)
+	{
+		nFileStatus &= ~(MI_FILESTATUS_NEW|MI_FILESTATUS_MODIFIED);
+	}
+
+	return bdone;
 }

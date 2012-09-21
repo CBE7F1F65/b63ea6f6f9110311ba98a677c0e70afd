@@ -6,6 +6,7 @@ class GBaseNodeCopyStack : public GObject
 {
 public:
 	typedef GObject super;
+	virtual const char * getTypeName();		// Do not implement separately
 public:
 	GBaseNodeCopyStack(){};
 	virtual ~GBaseNodeCopyStack(){};
@@ -19,6 +20,7 @@ class GBaseNode :
 {
 public:
 	typedef GLayer super;
+	virtual const char * getTypeName();		// Do not implement separately
 public:
 	GBaseNode(void);
 	virtual ~GBaseNode(void);
@@ -35,6 +37,7 @@ class GMainBaseNode :
 {
 public:
 	typedef GBaseNode super;
+	virtual const char * getTypeName();		// Do not implement separately
 public:
 	static GMainBaseNode& getInstance() { static GMainBaseNode instance; return instance; }
 

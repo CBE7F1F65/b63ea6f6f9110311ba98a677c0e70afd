@@ -62,7 +62,7 @@ void QTUI_GLView::SLT_OnUpdate()
 	if (hge)
 	{
 		float fps = hge->Timer_GetFPS(30);
-		QString str = QString("%1").arg(fps);
+		QString str = QString::number(fps);
 		this->window()->setWindowTitle(str);
 	}
 

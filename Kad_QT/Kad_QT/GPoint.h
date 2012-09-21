@@ -47,10 +47,14 @@ class GPoint :
 {
 public:
 	typedef GObject super;
+	virtual const char * getTypeName();		// Do not implement separately
 
 public:
 	GPoint();
 	virtual ~GPoint();
+
+	virtual bool ReadXML(QXmlStreamReader &qsr);	// Do not implement separately
+	virtual bool WriteXML(QXmlStreamWriter &qsw);	// Do not implement separately
 
 	virtual bool isPoint(){return true;};
 
@@ -189,6 +193,7 @@ class GMidPoint : public GAttributePoint
 {
 public:
 	typedef GAttributePoint super;
+	virtual const char * getTypeName();		// Do not implement separately
 public:
 	GMidPoint();
 	GMidPoint(GObject * parent);
@@ -216,10 +221,14 @@ class GHandlePoint : public GAttributePoint
 {
 public:
 	typedef GAttributePoint super;
+	virtual const char * getTypeName();		// Do not implement separately
 public:
 	GHandlePoint();
 	GHandlePoint(GObject * parent, float x, float y);
 	virtual ~GHandlePoint();
+
+	virtual bool ReadXML(QXmlStreamReader &qsr);	// Do not implement separately
+	virtual bool WriteXML(QXmlStreamWriter &qsw);	// Do not implement separately
 
 	virtual GObject * CreateNewClone(GObject * pNewParent=NULL, GObject * pBeforeObj=NULL);
 	virtual bool CloneData(GObject * pClone, GObject * pNewParent, bool bNoRelationship=true);
@@ -259,10 +268,14 @@ class GAnchorPoint : public GAttributePoint
 {
 public:
 	typedef GAttributePoint super;
+	virtual const char * getTypeName();		// Do not implement separately
 public:
 	GAnchorPoint();
 	GAnchorPoint(GObject * parent, float x, float y);
 	virtual ~GAnchorPoint();
+
+	virtual bool ReadXML(QXmlStreamReader &qsr);	// Do not implement separately
+	virtual bool WriteXML(QXmlStreamWriter &qsw);	// Do not implement separately
 
 	virtual GObject * CreateNewClone(GObject * pNewParent=NULL, GObject * pBeforeObj=NULL);
 	virtual bool CloneData(GObject * pClone, GObject * pNewParent, bool bNoRelationship=true);
@@ -275,7 +288,7 @@ public:
 	virtual const char * getDisplayName();
 	virtual bool isAnchorPoint(){return true;};
 
-	GHandlePoint * GetHandle(){return phandle;};
+	GHandlePoint * GetHandle(){return pHandle;};
 	void SetHandlePosition( float hx, float hy, float fAllowance=-1 );
 	bool isHandleIdentical();
 	/************************************************************************/
@@ -284,6 +297,6 @@ public:
 protected:
 	//////////////////////////////////////////////////////////////////////////
 	GOBJM_CHILDPOINTERS();
-	GHandlePoint * phandle;
+	GHandlePoint * pHandle;
 	GOBJM_CHILDPOINTERSEND();
 };

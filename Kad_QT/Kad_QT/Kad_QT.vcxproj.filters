@@ -168,6 +168,12 @@
     <Filter Include="Main\Helper\GObjectPicker\Template">
       <UniqueIdentifier>{976dec8d-1ec3-4be0-815b-8b18f1d8fb82}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\Command\File">
+      <UniqueIdentifier>{a570bb0c-4c69-40d1-924d-ff8c75499eb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\GObject\XML">
+      <UniqueIdentifier>{877c28c0-cb35-42a6-a4b5-4a65dc7b0939}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_kad_qt.cpp">
@@ -557,6 +563,12 @@
     <ClCompile Include="CircleCommand.cpp">
       <Filter>Main\Command\Draw</Filter>
     </ClCompile>
+    <ClCompile Include="SaveCommand.cpp">
+      <Filter>Main\Command\File</Filter>
+    </ClCompile>
+    <ClCompile Include="GObjectXML.cpp">
+      <Filter>Main\GObject\XML</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -783,6 +795,9 @@
     </ClInclude>
     <ClInclude Include="CircleCommand.h">
       <Filter>Main\Command\Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveCommand.h">
+      <Filter>Main\Command\File</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

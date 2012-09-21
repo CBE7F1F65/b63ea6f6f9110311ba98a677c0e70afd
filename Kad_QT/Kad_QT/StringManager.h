@@ -116,6 +116,42 @@ public:
 	const char * GetLogFileName();
 	const char * GetIniFileName();
 
+#define _SMXMLFDEF(STRNAME, VAL)	\
+	inline const char * GetXML##STRNAME##Name(){return VAL;}
+
+	_SMXMLFDEF(Start, "KadXML");
+	_SMXMLFDEF(Version, "Version");
+	_SMXMLFDEF(Signature, "Signature");
+
+#define _SMXMLNODEFDEF(STRNAME)	\
+	inline const char * GetXMLNode##STRNAME##Name(){return #STRNAME;}
+
+	_SMXMLNODEFDEF(ID);
+	_SMXMLNODEFDEF(DisplayName);
+	_SMXMLNODEFDEF(LineColors);
+	_SMXMLNODEFDEF(DisplayState);
+	_SMXMLNODEFDEF(Folded);
+	_SMXMLNODEFDEF(Children);
+	_SMXMLNODEFDEF(ChildrenCount);
+
+	_SMXMLNODEFDEF(Attr);
+	_SMXMLNODEFDEF(X);
+	_SMXMLNODEFDEF(Y);
+	_SMXMLNODEFDEF(ClingInfo);
+	_SMXMLNODEFDEF(ClingTo);
+	_SMXMLNODEFDEF(ClingVal);
+	_SMXMLNODEFDEF(ClingType);
+	_SMXMLNODEFDEF(MergeWith);
+	_SMXMLNODEFDEF(Handle);
+	_SMXMLNODEFDEF(BindWith);
+	_SMXMLNODEFDEF(Style);
+	_SMXMLNODEFDEF(Begin);
+	_SMXMLNODEFDEF(End);
+	_SMXMLNODEFDEF(Mid);
+	_SMXMLNODEFDEF(LayerID);
+
+#undef _SMXMLFDEF
+	
 	const char * GetNodeInfoClingTypeName(int nType);
 	const char * GetNodeInfoChangeClingTypeName(int nType);
 
@@ -201,6 +237,8 @@ public:
 
 	_SMFDEF(	SnapshotDefault,	INIS_DEFAULTSTR,	"Snapshot"	);
 	_SMFDEF(	NodeCloneAppend,	INIS_DEFAULTSTR,	" Copy"	);
+
+#undef _SMXMLFDEF
 
 #define _SMCLFDEF(STRNAME, DEF)	\
 	_SMFDEF(CL##STRNAME, INIS_COMMANDLOG, DEF)

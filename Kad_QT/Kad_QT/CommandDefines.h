@@ -18,6 +18,12 @@ enum{
 	COMM_PAN,		// enter pan mode
 	COMM_ZOOMIN,	// rect zoom
 
+	COMM_NEW,		// new file
+	COMM_SAVE,		// save
+	COMM_SAVEAS,	// save as
+	COMM_OPEN,		// open file
+	COMM_EXIT,		// exit
+
 	_COMM_NOLOGCOMMANDBEGIN,
 	// No log
 	COMM_DOZOOM,	// mouse wheel

@@ -10,9 +10,13 @@ class GLine :
 {
 public:
 	typedef GObject super;
+	virtual const char * getTypeName();		// Do not implement separately
 public:
 	GLine(void);
 	virtual ~GLine(void);
+
+	virtual bool ReadXML(QXmlStreamReader &qsr);
+	virtual bool WriteXML(QXmlStreamWriter &qsw);
 
 	virtual bool CloneData(GObject * pClone, GObject * pNewParent, bool bNoRelationship=true);
 
@@ -160,6 +164,7 @@ class GBezierLine : public GStraightLine
 {
 public:
 	typedef GStraightLine super;
+	virtual const char * getTypeName();		// Do not implement seperately
 public:
 	GBezierLine();
 	GBezierLine(GObject * parent, PointF2D pb, PointF2D pe);
