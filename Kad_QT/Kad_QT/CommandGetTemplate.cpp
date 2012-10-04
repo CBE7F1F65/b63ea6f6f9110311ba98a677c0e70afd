@@ -28,6 +28,7 @@
 #include "JoinLineCommand.h"
 #include "CircleCommand.h"
 #include "SaveCommand.h"
+#include "OpenCommand.h"
 
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
@@ -96,6 +97,8 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 	case COMM_SAVE:
 	case COMM_SAVEAS:
 		return &SaveCommand::getInstance();
+	case COMM_OPEN:
+		return &OpenCommand::getInstance();
 
 	case COMM_OUTPUT:
 		return &OutputCommand::getInstance();

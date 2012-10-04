@@ -772,7 +772,59 @@ bool MainInterface::OpenFile()
 
 bool MainInterface::OpenFile( const char * filename )
 {
-	return false;
+	QFile qopenfile(filename);
+	if (!qopenfile.open(QIODevice::ReadOnly))
+	{
+		return false;
+	}
+
+	QXmlStreamReader qsr(&qopenfile);
+
+	StringManager * psm = &StringManager::getInstance();
+
+	bool bok = false;
+	while (!qsr.atEnd() && !qsr.hasError())
+	{
+		QXmlStreamReader::TokenType token = qsr.readNext();
+		if (token != QXmlStreamReader::StartDocument)
+		{
+			break;
+		}
+
+		qsr.readNextStartElement();
+		if (qsr.name() != psm->GetXMLStartName())
+		{
+			break;
+		}
+		if (qsr.attributes().value(psm->GetXMLSignatureName()) != M_SIGNATURE)
+		{
+			break;
+		}
+		if (qsr.attributes().value(psm->GetXMLVersionName()) != M_VERSIONSTR)
+		{
+			break;
+		}
+
+		if (!qsr.hasError())
+		{
+			bok = true;
+		}
+		break;
+	}
+
+	if (bok)
+	{
+		bok = GObjectManager::getInstance().ReadXML(&qsr);
+	}
+
+	if (bok)
+	{
+		savefilename = filename;
+	}
+
+	qopenfile.close();
+
+	return bok;
 }
 
 bool MainInterface::SaveFile( bool bSaveAs/*=false*/ )
@@ -795,10 +847,12 @@ bool MainInterface::SaveFile( bool bSaveAs/*=false*/ )
 bool MainInterface::SaveFile( const char * filename )
 {
 	QFile qsavefile(filename);
+	/*
 	if (qsavefile.exists())
 	{
 		qsavefile.remove();
 	}
+	*/
 	if (!qsavefile.open(QIODevice::ReadWrite))
 	{
 		return false;

@@ -308,7 +308,9 @@ HEADERS += ./Const.h \
     ClingCommand.h \
     CircleCommand.h \
     BindHandleCommand.h \
-    BezierCommand.h
+    BezierCommand.h \
+    SaveCommand.h \
+    OpenCommand.h
 SOURCES += ./InitDllLoader.cpp \
     ./kad_qt.cpp \
     ./main.cpp \
@@ -615,7 +617,10 @@ SOURCES += ./InitDllLoader.cpp \
     ClingCommand.cpp \
     CircleCommand.cpp \
     BindHandleCommand.cpp \
-    BezierCommand.cpp
+    BezierCommand.cpp \
+    SaveCommand.cpp \
+    OpenCommand.cpp \
+    GObjectXML.cpp
 FORMS += ./kad_qt.ui \
     qtui_commanddockable.ui \
     qtui_commandfloating_widget.ui \

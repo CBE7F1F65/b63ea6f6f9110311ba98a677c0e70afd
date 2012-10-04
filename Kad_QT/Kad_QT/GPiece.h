@@ -6,6 +6,7 @@ class GPiece :
 public:
 	typedef GShape super;
 	virtual const char * getTypeName();		// Do not implement seperately
+	static const char * getStaticTypeName();		// Do not implement separately
 public:
 	GPiece(void);
 	virtual ~GPiece(void);

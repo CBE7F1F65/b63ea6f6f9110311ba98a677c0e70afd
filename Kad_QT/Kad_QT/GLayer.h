@@ -7,13 +7,14 @@ class GLayer :
 public:
 	typedef GObject super;
 	virtual const char * getTypeName();		// Do not implement separately
+	static const char * getStaticTypeName();		// Do not implement separately
 protected:
 	GLayer(void);
 public:
 	GLayer(int layerID, const char * layername);
 	virtual ~GLayer(void);
 
-	virtual bool ReadXML(QXmlStreamReader &qsr);
+	virtual bool ReadXML( GObjectXMLNode * pnode );
 	virtual bool WriteXML(QXmlStreamWriter &qsw);
 
 private:

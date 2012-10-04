@@ -7,6 +7,7 @@ class GBaseNodeCopyStack : public GObject
 public:
 	typedef GObject super;
 	virtual const char * getTypeName();		// Do not implement separately
+	static const char * getStaticTypeName();		// Do not implement separately
 public:
 	GBaseNodeCopyStack(){};
 	virtual ~GBaseNodeCopyStack(){};
@@ -21,6 +22,7 @@ class GBaseNode :
 public:
 	typedef GLayer super;
 	virtual const char * getTypeName();		// Do not implement separately
+	static const char * getStaticTypeName();		// Do not implement separately
 public:
 	GBaseNode(void);
 	virtual ~GBaseNode(void);
@@ -38,6 +40,7 @@ class GMainBaseNode :
 public:
 	typedef GBaseNode super;
 	virtual const char * getTypeName();		// Do not implement separately
+	static const char * getStaticTypeName();		// Do not implement separately
 public:
 	static GMainBaseNode& getInstance() { static GMainBaseNode instance; return instance; }
 
@@ -49,6 +52,7 @@ private:
 
 public:
 
+	bool CallReadXML(QXmlStreamReader &qsr);
 	virtual GObject * CreateNewClone(GObject * pNewParent=NULL, GObject * pBeforeObj=NULL);
 
 }; 

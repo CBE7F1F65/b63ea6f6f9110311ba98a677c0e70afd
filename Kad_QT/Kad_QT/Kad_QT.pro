@@ -10,7 +10,8 @@ CONFIG += debug precompile_header
 DEFINES += __DEBUG __OPENGL QT_LARGEFILE_SUPPORT QT_XML_LIB QT_OPENGL_LIB
 INCLUDEPATH += ./GeneratedFiles \
     ./GeneratedFiles/Debug \
-    "c:/Program Files (x86)/Microsoft DirectX SDK (February 2010)/Include" \
+    "c:/Program Files (x86)/Microsoft SDKs/Windows/v7.0A/Include" \
+    "c:/Program Files (x86)/Microsoft DirectX SDK (August 2007)/Include" \
     .
 
 LIBS += -L"./../../hge/lib/vc" \

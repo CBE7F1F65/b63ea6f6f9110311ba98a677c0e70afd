@@ -48,12 +48,13 @@ class GPoint :
 public:
 	typedef GObject super;
 	virtual const char * getTypeName();		// Do not implement separately
+	static const char * getStaticTypeName();		// Do not implement separately
 
 public:
 	GPoint();
 	virtual ~GPoint();
 
-	virtual bool ReadXML(QXmlStreamReader &qsr);	// Do not implement separately
+	virtual bool ReadXML( GObjectXMLNode * pnode );	// Do not implement separately
 	virtual bool WriteXML(QXmlStreamWriter &qsw);	// Do not implement separately
 
 	virtual bool isPoint(){return true;};
@@ -194,6 +195,7 @@ class GMidPoint : public GAttributePoint
 public:
 	typedef GAttributePoint super;
 	virtual const char * getTypeName();		// Do not implement separately
+	static const char * getStaticTypeName();		// Do not implement separately
 public:
 	GMidPoint();
 	GMidPoint(GObject * parent);
@@ -222,12 +224,13 @@ class GHandlePoint : public GAttributePoint
 public:
 	typedef GAttributePoint super;
 	virtual const char * getTypeName();		// Do not implement separately
+	static const char * getStaticTypeName();		// Do not implement separately
 public:
 	GHandlePoint();
 	GHandlePoint(GObject * parent, float x, float y);
 	virtual ~GHandlePoint();
 
-	virtual bool ReadXML(QXmlStreamReader &qsr);	// Do not implement separately
+	virtual bool ReadXML( GObjectXMLNode * pnode );	// Do not implement separately
 	virtual bool WriteXML(QXmlStreamWriter &qsw);	// Do not implement separately
 
 	virtual GObject * CreateNewClone(GObject * pNewParent=NULL, GObject * pBeforeObj=NULL);
@@ -269,12 +272,13 @@ class GAnchorPoint : public GAttributePoint
 public:
 	typedef GAttributePoint super;
 	virtual const char * getTypeName();		// Do not implement separately
+	static const char * getStaticTypeName();		// Do not implement separately
 public:
 	GAnchorPoint();
 	GAnchorPoint(GObject * parent, float x, float y);
 	virtual ~GAnchorPoint();
 
-	virtual bool ReadXML(QXmlStreamReader &qsr);	// Do not implement separately
+	virtual bool ReadXML( GObjectXMLNode * pnode );	// Do not implement separately
 	virtual bool WriteXML(QXmlStreamWriter &qsw);	// Do not implement separately
 
 	virtual GObject * CreateNewClone(GObject * pNewParent=NULL, GObject * pBeforeObj=NULL);

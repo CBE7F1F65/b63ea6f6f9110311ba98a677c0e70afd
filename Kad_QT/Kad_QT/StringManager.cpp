@@ -178,6 +178,10 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_BEZIER,	"BEZIER",	"B",	"Draw Bezier Curve",	""	);
 	_BSET(	COMM_CIRCLE,	"CIRCLE",	"O",	"Draw Circle",	""	);
 
+	_BSET(	COMM_SAVE,	"SAVE",	"SAV",	"Save",	""	);
+	_BSET(	COMM_SAVEAS,	"SAVEAS",	"SAVA",	"Save as",	""	);
+	_BSET(	COMM_OPEN,	"OPEN",	"OP",	"Open",	""	);
+
 	_BSET(	COMM_RESTORETOSNAPSHOT, "RESTORETOSNAPSHOT",	"",	"Restore to Snapshot",	""	);
 
 #undef _SSET

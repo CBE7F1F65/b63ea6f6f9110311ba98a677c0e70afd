@@ -37,6 +37,10 @@
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(ConfigurationName)</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(ConfigurationName)</OutDir>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IncludePath);$(VCInstallDir)atlmfc\include;$(DXSDK_DIR)Include</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(LibraryPath);$(VSInstallDir);$(VSInstallDir)lib;$(DXSDK_DIR)Lib\x86</LibraryPath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IncludePath);$(VCInstallDir)atlmfc\include;$(DXSDK_DIR)Include</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(LibraryPath);$(VSInstallDir);$(VSInstallDir)lib;$(DXSDK_DIR)Lib\x86</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -257,6 +261,7 @@
     <ClCompile Include="MoveNodeBatchCommand.cpp" />
     <ClCompile Include="MoveNodeCommand.cpp" />
     <ClCompile Include="NewLayerCommand.cpp" />
+    <ClCompile Include="OpenCommand.cpp" />
     <ClCompile Include="OutputCommand.cpp" />
     <ClCompile Include="PickFilterTemplate.cpp" />
     <ClCompile Include="ProcessCommand.cpp" />
@@ -334,6 +339,7 @@
     <ClInclude Include="GObject.h" />
     <ClInclude Include="GObjectManager.h" />
     <ClInclude Include="GObjectPicker.h" />
+    <ClInclude Include="GObjectXML.h" />
     <ClInclude Include="GPiece.h" />
     <ClInclude Include="GPoint.h" />
     <ClInclude Include="GShape.h" />
@@ -348,6 +354,7 @@
     <ClInclude Include="MainDependency.h" />
     <ClInclude Include="MarkingManager.h" />
     <ClInclude Include="MarkingObject.h" />
+    <ClInclude Include="OpenCommand.h" />
     <ClInclude Include="PickFilterTemplate.h" />
     <CustomBuild Include="QTUI_NodeInfoFloating_Buttons.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

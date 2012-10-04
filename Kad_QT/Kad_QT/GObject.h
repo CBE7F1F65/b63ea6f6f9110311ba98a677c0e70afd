@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ColorManager.h"
+#include "GObjectXML.h"
 
 #define GOBJ_DISPSTATE_NORMAL				0x00
 #define GOBJ_DISPSTATE_INVISIBLE			0x01
@@ -79,10 +80,11 @@ protected:
 	virtual bool CloneData(GObject * pClone, GObject * pNewParent, bool bNoRelationship=true);
 
 public:
-	bool CallReadXML(QXmlStreamReader &qsr);
 	bool CallWriteXML(QXmlStreamWriter &qsw);
-	virtual bool ReadXML(QXmlStreamReader &qsr);
+	bool BuildXMLChildren( GObjectXMLNode * pnode );
 	virtual bool WriteXML(QXmlStreamWriter &qsw);
+
+	virtual bool ReadXML(GObjectXMLNode * pnode);
 
 public:
 	virtual int AddChild(GObject * child);

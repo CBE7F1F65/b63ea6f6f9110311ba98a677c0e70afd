@@ -569,6 +569,9 @@
     <ClCompile Include="GObjectXML.cpp">
       <Filter>Main\GObject\XML</Filter>
     </ClCompile>
+    <ClCompile Include="OpenCommand.cpp">
+      <Filter>Main\Command\File</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -798,6 +801,12 @@
     </ClInclude>
     <ClInclude Include="SaveCommand.h">
       <Filter>Main\Command\File</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenCommand.h">
+      <Filter>Main\Command\File</Filter>
+    </ClInclude>
+    <ClInclude Include="GObjectXML.h">
+      <Filter>Main\GObject\XML</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
