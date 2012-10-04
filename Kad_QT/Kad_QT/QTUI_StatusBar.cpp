@@ -25,7 +25,7 @@ QTUI_StatusBar::~QTUI_StatusBar()
 void QTUI_StatusBar::UpdateStatusBar()
 {
     HGE * hge = MainInterface::getInstance().hge;
-    float fps = hge->Timer_GetFPS(30);
+    float fps = hge->Timer_GetFPS(QMainInterface::getInstance().GetPGLView()->GetUpdateFPSInterval());
 
     QString str;
     str.sprintf("  FPS: %f", fps);

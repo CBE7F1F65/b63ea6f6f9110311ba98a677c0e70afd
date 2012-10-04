@@ -41,6 +41,8 @@ public:
 
     void OnMainFrameSetupUIDone();
 
+	int GetUpdateFPSInterval();
+
 private:
 	QTimer * updatetimer;
 };

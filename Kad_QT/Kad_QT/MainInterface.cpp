@@ -585,7 +585,7 @@ void MainInterface::DoUpdateFPS()
 {
 	// No Command (internal process)
 	char fpsstr[M_STRMAX];
-	sprintf_s(fpsstr, M_STRMAX, "%.2f", hge->Timer_GetFPS(30));
+	sprintf_s(fpsstr, M_STRMAX, "%.2f", hge->Timer_GetFPS(QMainInterface::getInstance().GetPGLView()->GetUpdateFPSInterval()));
 	CallUpdateStatusBarText(IDS_STATUS_PANE2, fpsstr);
 }
 
@@ -819,7 +819,9 @@ bool MainInterface::OpenFile( const char * filename )
 
 	if (bok)
 	{
+		nFileStatus = MI_FILESTATUS_OPENED;
 		savefilename = filename;
+		QMainInterface::getInstance().GetPGLView()->window()->setWindowTitle(savefilename.c_str());
 	}
 
 	qopenfile.close();
@@ -853,7 +855,7 @@ bool MainInterface::SaveFile( const char * filename )
 		qsavefile.remove();
 	}
 	*/
-	if (!qsavefile.open(QIODevice::ReadWrite))
+	if (!qsavefile.open(QIODevice::WriteOnly))
 	{
 		return false;
 	}
@@ -882,6 +884,7 @@ bool MainInterface::SaveFile( const char * filename )
 	if (bdone)
 	{
 		nFileStatus &= ~(MI_FILESTATUS_NEW|MI_FILESTATUS_MODIFIED);
+		QMainInterface::getInstance().GetPGLView()->window()->setWindowTitle(savefilename.c_str());
 	}
 
 	return bdone;

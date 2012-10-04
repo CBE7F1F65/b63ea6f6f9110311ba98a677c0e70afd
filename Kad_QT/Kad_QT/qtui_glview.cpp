@@ -6,6 +6,8 @@
 
 using namespace Qt;
 
+#define GLVIEW_UPDATEINTERVAL	4
+
 HGE * hge=MainInterface::getInstance().hge;
 
 QTUI_GLView::QTUI_GLView(QWidget *parent)
@@ -41,7 +43,7 @@ void QTUI_GLView::OnMainFrameSetupUIDone()
     {
         updatetimer = new QTimer(this);
         connect( updatetimer, SIGNAL(timeout()), SLOT(SLT_OnUpdate()) );
-        updatetimer->start( 1 );
+        updatetimer->start( GLVIEW_UPDATEINTERVAL );
     }
 }
 
@@ -59,13 +61,6 @@ void QTUI_GLView::paintGL()
 
 void QTUI_GLView::SLT_OnUpdate()
 {
-	if (hge)
-	{
-		float fps = hge->Timer_GetFPS(30);
-		QString str = QString::number(fps);
-		this->window()->setWindowTitle(str);
-	}
-
 	updateGL();
 
 	MainInterface::getInstance().OnUpdateTimer();
@@ -328,4 +323,9 @@ void QTUI_GLView::OnFrame()
 void QTUI_GLView::OnFrameEnd()
 {
 	QMainInterface::getInstance().ResolveMarkingOverlapping();
+}
+
+int QTUI_GLView::GetUpdateFPSInterval()
+{
+	return 500 / GLVIEW_UPDATEINTERVAL;
 }
