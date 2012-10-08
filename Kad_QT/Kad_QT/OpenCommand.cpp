@@ -28,5 +28,8 @@ void OpenCommand::OnDoneCommand()
 			CCMake_S(pmain->savefilename.c_str()),
 			NULL
 			);
+
+		QMainInterface::getInstance().GetPCommandDockable()->setFocus();
+		QMainInterface::getInstance().GetPGLView()->setFocus();
 	}
 }

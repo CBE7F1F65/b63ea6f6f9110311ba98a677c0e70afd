@@ -29,7 +29,7 @@
 #include "CircleCommand.h"
 #include "SaveCommand.h"
 #include "OpenCommand.h"
-
+#include "AddSACommand.h"
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 {
@@ -90,6 +90,9 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 		return &BezierCommand::getInstance();
 	case COMM_CIRCLE:
 		return &CircleCommand::getInstance();
+
+	case COMM_ADDSA:
+		return &AddSACommand::getInstance();
 
 	case COMM_RESTORETOSNAPSHOT:
 		return &RestoreToSnapshotCommand::getInstance();

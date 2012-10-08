@@ -781,6 +781,10 @@ void MarqueeSelect::BeginMove( float nowx, float nowy )
 	if (!pMarkingOffset)
 	{
 		ASSERT(pBeginObj);
+		if (!pBeginObj)
+		{
+			return;
+		}
 		pMarkingOffset = new MarkingOffset(pBeginObj, MARKFLAG_OFFSET);
 
 		pMarkingOffset->getMarkingUI(MARKFLAG_XOFFSET)->SetEditable(true);
@@ -797,6 +801,10 @@ void MarqueeSelect::BeginMove( float nowx, float nowy )
 		if (selectednodes.size() == 1)
 		{
 			ASSERT(pBeginObj);
+			if (!pBeginObj)
+			{
+				return;
+			}
 			bool bAnchor=false;
 			bool bStraightLine=true;
 			bool bHandle=false;

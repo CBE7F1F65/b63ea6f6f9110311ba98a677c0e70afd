@@ -344,7 +344,7 @@ bool GObject::BuildXMLChildren( GObjectXMLNode * pnode )
 	{
 		StringManager * psm = &StringManager::getInstance();
 
-		for (list<GObjectXMLNode>::iterator it=pnode->lstChildren.begin(); it!=pnode->lstChildren.end(); ++it)
+		for (list<GObjectXMLNode>::reverse_iterator it=pnode->lstChildren.rbegin(); it!=pnode->lstChildren.rend(); ++it)
 		{
 			if (it->name == GLayer::getStaticTypeName())
 			{
@@ -722,6 +722,16 @@ bool GLine::ReadXML( GObjectXMLNode * pnode )
 		int prop_rs = strValue.toInt();
 		this->SetLineRenderStyle(prop_rs);
 	}
+	// SAInfo
+	QString strSAInfoPrefix = strPrefix + psm->GetXMLNodeSAName();
+	strValue = pnode->GetValue(psm->GetXMLNodeSASizeName(), strSAInfoPrefix);
+	if (strValue.length())
+	{
+		float prop_fsa = strValue.toFloat();
+		strValue = pnode-> GetValue(psm->GetXMLNodeSAFlagName(), strSAInfoPrefix);
+		int prop_nflag = strValue.toInt();
+		this->saInfo.SetSA(prop_fsa, prop_nflag);
+	}
 
 	return true;
 }
@@ -750,13 +760,21 @@ bool GLine::WriteXML(QXmlStreamWriter &qsw)
 	}
 	*/
 
+	qsw.writeStartElement(QString(GOBJXML_ATTRPREFIX) + GLine::getTypeName());
 	// RenderStyle[OPT]
 	if (nLineRenderStyle != RHLINESTYLE_LINE)
 	{
-		qsw.writeStartElement(QString(GOBJXML_ATTRPREFIX) + GLine::getTypeName());
 		qsw.writeTextElement(QString(GOBJXML_PROPPREFIX)+psm->GetXMLNodeStyleName(), QString::number(nLineRenderStyle));
+	}
+	// SA[OPT]
+	if (saInfo.GetRawSA())
+	{
+		qsw.writeStartElement(QString(GOBJXML_PROPSPREFIX)+psm->GetXMLNodeSAName());
+		qsw.writeTextElement(QString(GOBJXML_PROPPREFIX)+psm->GetXMLNodeSAFlagName(), QString::number(saInfo.GetFlag()));
+		qsw.writeTextElement(QString(GOBJXML_PROPPREFIX)+psm->GetXMLNodeSASizeName(), QString::number(saInfo.GetRawSA()));
 		qsw.writeEndElement();
 	}
+	qsw.writeEndElement();
 
 
 	return true;

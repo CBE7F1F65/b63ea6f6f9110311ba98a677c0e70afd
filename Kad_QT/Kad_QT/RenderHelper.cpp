@@ -331,7 +331,7 @@ void RenderHelper::RenderHandlePoint_S( float x, float y, DWORD col )
 	}
 }
 
-void RenderHelper::RenderBezierByInfo( BezierSublinesInfo * bsinfo, DWORD col, PointF2D *ptOffset/*=0*/ )
+void RenderHelper::RenderBezierByInfo( BezierSublinesInfo * bsinfo, DWORD col, float fsa/*=0.0f*/, float fmul/*=1.0f*/ )
 {
 	if (!bsinfo)
 	{
@@ -348,33 +348,60 @@ void RenderHelper::RenderBezierByInfo( BezierSublinesInfo * bsinfo, DWORD col, P
 
 	float xoffset = 0;
 	float yoffset = 0;
-	if (ptOffset)
+
+	MathHelper * pmh = &MathHelper::getInstance();
+
+	float fSpace=0;
+	float space_c = GUICoordinate::getInstance().StoCs(_RHSLASHLINE_SPACE);
+
+	PointF2D pt0 = bsinfo->GetPoint(0);
+	PointF2D pt1 = bsinfo->GetPoint(1);
+	PointF2D pte0 = bsinfo->GetPoint(nseg);
+	PointF2D pte1 = bsinfo->GetPoint(nseg-1);
+	PointF2D ptMinus;
+	PointF2D ptPlus;
+	bool bHaveMinus = false;
+	bool bHavePlus = false;
+
+	if (fsa)
 	{
-		xoffset = ptOffset->x;
-		yoffset = ptOffset->y;
+		if (!pt0.StrictEquals(pt1))
+		{
+			ptMinus = (pt0-pt1)*fmul*(fsa/pmh->LineSegmentLength(pt0, pt1))+pt0;
+			bHaveMinus = true;
+		}
+		if (!pte0.StrictEquals(pte1))
+		{
+			ptPlus = (pte0-pte1)*fmul*(fsa/pmh->LineSegmentLength(pte0, pte1))+pte0;
+			bHavePlus = true;
+		}
 	}
 
-	switch (savedstyle)
+	for (int i=0; i<nseg; i++)
 	{
-	case RHLINESTYLE_LINE:
-		for (int i=0; i<nseg; i++)
+
+		if (fsa)
 		{
-			RenderLine(bsinfo->GetX(i)+xoffset, bsinfo->GetY(i)+yoffset, bsinfo->GetX(i+1)+xoffset, bsinfo->GetY(i+1)+yoffset, col);
+			PointF2D ptNormal = pmh->GetNormal(bsinfo->GetPoint(i), bsinfo->GetPoint(i+1), fsa);
+			xoffset = ptNormal.x;
+			yoffset = ptNormal.y;
 		}
-		break;
-	case RHLINESTYLE_DOTTEDLINE:
-		for (int i=0; i<nseg; i++)
+
+		switch (savedstyle)
 		{
-			style = savedstyle;
-			RenderLine(bsinfo->GetX(i)+xoffset, bsinfo->GetY(i)+yoffset, bsinfo->GetX(i+1)+xoffset, bsinfo->GetY(i+1)+yoffset, col);
-//			RenderPoint(bsinfo->GetX(i)+xoffset, bsinfo->GetY(i)+yoffset, col);
-		}
-		break;
-	case RHLINESTYLE_SLASHLINE:
-		{
-			float fSpace=0;
-			float space_c = GUICoordinate::getInstance().StoCs(_RHSLASHLINE_SPACE);
-			for (int i=0; i<nseg-1; i++)
+		case RHLINESTYLE_LINE:
+			{
+				RenderLine(bsinfo->GetX(i)+xoffset, bsinfo->GetY(i)+yoffset, bsinfo->GetX(i+1)+xoffset, bsinfo->GetY(i+1)+yoffset, col);
+
+			}
+			break;
+		case RHLINESTYLE_DOTTEDLINE:
+			{
+				style = savedstyle;
+				RenderLine(bsinfo->GetX(i)+xoffset, bsinfo->GetY(i)+yoffset, bsinfo->GetX(i+1)+xoffset, bsinfo->GetY(i+1)+yoffset, col);
+			}
+			break;
+		case RHLINESTYLE_SLASHLINE:
 			{
 				if (fSpace < space_c)
 				{
@@ -393,10 +420,22 @@ void RenderHelper::RenderBezierByInfo( BezierSublinesInfo * bsinfo, DWORD col, P
 						fSpace = 0;
 					}
 				}
+				if (i == nseg-1)
+				{
+					RenderLine(bsinfo->GetX(nseg-1)+xoffset, bsinfo->GetY(nseg-1)+yoffset, bsinfo->GetX(nseg)+xoffset, bsinfo->GetY(nseg)+yoffset, col);
+				}
 			}
-			RenderLine(bsinfo->GetX(nseg-1)+xoffset, bsinfo->GetY(nseg-1)+yoffset, bsinfo->GetX(nseg)+xoffset, bsinfo->GetY(nseg)+yoffset, col);
+		}
+		if (i == 0 && bHaveMinus)
+		{
+			RenderLine(ptMinus.x+xoffset, ptMinus.y+yoffset, bsinfo->GetX(i)+xoffset, bsinfo->GetY(i)+yoffset, col);
+		}
+		if (i == nseg-1 && bHavePlus)
+		{
+			RenderLine(bsinfo->GetX(i)+xoffset, bsinfo->GetY(i)+yoffset, ptPlus.x+xoffset, ptPlus.y+yoffset, col);
 		}
 	}
+
 	style = savedstyle;
 
 }

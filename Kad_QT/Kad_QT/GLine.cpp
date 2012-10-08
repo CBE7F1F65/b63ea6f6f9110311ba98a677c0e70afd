@@ -277,6 +277,7 @@ bool GLine::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelations
 	{
 		GLine * pLine = (GLine *)pClone;
 		pLine->nLineRenderStyle = nLineRenderStyle;
+		pLine->saInfo = saInfo;
 		//////////////////////////////////////////////////////////////////////////
 		list<GObject *>::reverse_iterator it=pLine->lstChildren.rbegin();
 		pLine->plbegin = (GAnchorPoint *)*it;
@@ -318,6 +319,27 @@ void GLine::OnIndepend()
 	DeclingByOther();
 }
 
+void GLine::AddSA( float xinner, float yinner, float fsa )
+{
+	if (!fsa)
+	{
+		saInfo.ClearSA();
+		return;
+	}
+	bool bLeft = MathHelper::getInstance().IsPointInLeftOfLine(plbegin->GetPointF2D(), plend->GetPointF2D(), PointF2D(xinner, yinner));
+	int nSAFlag = 0;
+	if (bLeft)
+	{
+		nSAFlag |= GSA_RIGHT;
+	}
+	else
+	{
+		nSAFlag |= GSA_LEFT;
+	}
+	saInfo.SetSA(fsa, nSAFlag);
+	CallModify();
+}
+
 /************************************************************************/
 /* GSTRAIGHTLINE                                                        */
 /************************************************************************/
@@ -346,7 +368,23 @@ void GStraightLine::OnRender( int iHighlightLevel/*=0*/ )
 
 	int nSavedLineStyle = prh->getLineStyle();
 	prh->SetLineStyle(nLineRenderStyle);
-	RenderHelper::getInstance().RenderLine(plbegin->getX(), plbegin->getY(), plend->getX(), plend->getY(), col);
+	prh->RenderLine(plbegin->getX(), plbegin->getY(), plend->getX(), plend->getY(), col);
+	if (saInfo.GetRawSA())
+	{
+		prh->SetLineStyle(RHLINESTYLE_SLASHLINE);
+		PointF2D pt0 = plbegin->GetPointF2D();
+		PointF2D pt1 = plend->GetPointF2D();
+		if (!pt0.StrictEquals(pt1))
+		{
+			float fsa = saInfo.GetMulSA();
+			PointF2D ptNormal = MathHelper::getInstance().GetNormal(pt0, pt1, fsa);
+			float fl = MathHelper::getInstance().LineSegmentLength(pt0, pt1);
+			float fmul = saInfo.GetRawSA()/fl;
+			PointF2D ptMinus = (pt0-pt1)*fmul+pt0;
+			PointF2D ptPlus = (pt1-pt0)*fmul+pt1;
+			prh->RenderLine(ptMinus.x+ptNormal.x, ptMinus.y+ptNormal.y, ptPlus.x+ptNormal.x, ptPlus.y+ptNormal.y, col);
+		}
+	}
 	prh->SetLineStyle(nSavedLineStyle);
 }
 
@@ -557,7 +595,15 @@ void GBezierLine::OnRender( int iHighlightLevel/*=0*/ )
 
 		int nSavedLineStyle = prh->getLineStyle();
 		prh->SetLineStyle(nLineRenderStyle);
+
 		prh->RenderBezierByInfo(&bsinfo, col);
+
+		if (saInfo.GetRawSA())
+		{
+			prh->SetLineStyle(RHLINESTYLE_SLASHLINE);
+			prh->RenderBezierByInfo(&bsinfo, col, saInfo.GetMulSA(), saInfo.GetLeftMul());
+		}
+
 		prh->SetLineStyle(nSavedLineStyle);
 	}
 }
@@ -1665,4 +1711,43 @@ float GBezierLine::GetSFromProportion( float fProp )
 
 	ASSERT(false);
 	return 0;
+}
+
+/************************************************************************/
+/* GSAInfo                                                              */
+/************************************************************************/
+
+int GSAInfo::GetLeftMul()
+{
+	if (nSAFlag & GSA_RIGHT)
+	{
+		return -1;
+	}
+	return 1;
+}
+
+void GSAInfo::SetSA( float fsa, int flag )
+{
+	fSA = fsa;
+	nSAFlag = flag;
+}
+
+void GSAInfo::ClearSA()
+{
+	SetSA(0, 0);
+}
+
+float GSAInfo::GetMulSA()
+{
+	return fSA * GetLeftMul();
+}
+
+int GSAInfo::GetFlag()
+{
+	return nSAFlag;
+}
+
+float GSAInfo::GetRawSA()
+{
+	return fSA;
 }

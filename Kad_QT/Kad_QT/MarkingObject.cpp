@@ -399,7 +399,8 @@ void MarkingLine::Render()
 		else
 		{
 			GBezierLine * pBezier = (GBezierLine *)pLine;
-			prh->RenderBezierByInfo(pBezier->getBSInfo(), col, &ptLengthDiff);
+			float l = GUICoordinate::getInstance().StoCs(_MARKLENGTH_OFFSETLENGTH);
+			prh->RenderBezierByInfo(pBezier->getBSInfo(), col, l);
 		}
 	}
 	if (nMarkFlag & MARKFLAG_ANGLE)
@@ -523,7 +524,8 @@ void MarkingSplitLine::Render()
 		else
 		{
 			GBezierLine * pBezier = (GBezierLine *)pLine;
-			prh->RenderBezierByInfo(pBezier->getBSInfo(), col, &ptPosDiff);
+			float l = GUICoordinate::getInstance().StoCs(_MARKLENGTH_OFFSETLENGTH);
+			prh->RenderBezierByInfo(pBezier->getBSInfo(), col, l);
 		}
 	}
 	prh->SetLineStyle(savedstyle);

@@ -164,17 +164,20 @@ public:
 	float NearestPointOnStraightLine(float px, float py, float lx1, float ly1, float lx2, float ly2, float * nx, float * ny);
 	float NearestPointOnStraightLinePow2(float px, float py, float lx1, float ly1, float lx2, float ly2, float * nx, float * ny);
 	bool PointNearToStraightLine( float px, float py, float x1, float y1, float x2, float y2, float r, float * plx, float * ply );
-	void GetPerpendicularPointForLine( PointF2D pt1, PointF2D pt2, float s, float l, bool bUpward, PointF2D* ptp );
-	int GetLineAngle( PointF2D pt1, PointF2D pt2 );
+	void GetPerpendicularPointForLine( const PointF2D &pt1, const PointF2D &pt2, float s, float l, bool bUpward, PointF2D* ptp );
+	int GetLineAngle( const PointF2D &pt1, const PointF2D &pt2 );
 	void RestrictAngle( int* angle );
 	bool GetLineSegmentInRect( float x, float y, int angle, float lx, float ty, float rx, float by, float* x1, float* y1, float* x2, float* y2 );
 	float CalculateProportionOnStraightLine( float xb, float yb, float xe, float ye, float x, float y );
 	bool FindPerpendicularPoint( float x, float y, float lx, float ly, int langle, float * px=NULL, float * py=NULL );
 	int GetQuadrant( float x, float y, float xo=0, float yo=0 );
 
-	bool FindNearestHandlePointForGivenBezierLength_TwoPoint(float fLength, PointF2D ptFirstAnchor, PointF2D ptFirstHandle, PointF2D ptSecondAnchor, PointF2D ptNear, PointF2D ptFar, float * px=NULL, float * py=NULL);
-	bool FindNearestHandlePointForGivenBezierLength(float fLength, PointF2D ptFirstAnchor, PointF2D ptFirstHandle, PointF2D ptSecondAnchor, float cx, float cy, float * px=NULL, float * py=NULL, bool bCheckLengthAvailableOnly=false);
+	bool FindNearestHandlePointForGivenBezierLength_TwoPoint(float fLength, const PointF2D &ptFirstAnchor, const PointF2D &ptFirstHandle, const PointF2D &ptSecondAnchor, PointF2D ptNear, PointF2D ptFar, float * px=NULL, float * py=NULL);
+	bool FindNearestHandlePointForGivenBezierLength(float fLength, const PointF2D &ptFirstAnchor, const PointF2D &ptFirstHandle, const PointF2D &ptSecondAnchor, float cx, float cy, float * px=NULL, float * py=NULL, bool bCheckLengthAvailableOnly=false);
 	bool FindSubNHPFGBL( GBezierLine * pBezier, float fTargetLength, PointF2D ptNear, PointF2D ptFar, float * px, float * py, float fNearLength=-1, float fFarLength=-1 );
 	bool CalculateExtendBezierToAimLength( const QuadBezierPointF2D &quadBezier, float fAimLength, float fMinS, float fMaxS, float fLLength, float fRLength, QuadBezierPointF2D quadLeft, QuadBezierPointF2D quadRight, PointF2D * pptPos, QuadBezierPointF2D * pQuadOutBezier );
 	bool AreTwoAngleClose( int nAngle1, int nAngle2 );
+
+	bool IsPointInLeftOfLine(const PointF2D &ptA, const PointF2D &ptB, const PointF2D &ptC);
+	PointF2D GetNormal(const PointF2D &ptA, const PointF2D &ptB, float fMul=0.0f);
 };

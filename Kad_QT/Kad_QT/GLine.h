@@ -2,6 +2,37 @@
 #include "GObject.h"
 
 #include "GPoint.h"
+
+/************************************************************************/
+/* GSAInfo                                                              */
+/************************************************************************/
+
+#define GSA_LEFT			0x0000
+#define GSA_RIGHT	0x0001
+#define GSA_SQUAREBEGIN			0x0010
+#define GSA_SQUAREBYBEGIN		0x0020
+#define GSA_SQUAREEND			0x0040
+#define GSA_SQUAREBYEND			0x0080
+#define GSA_FLIPHEM				0x0100
+
+class GSAInfo{
+public:
+	GSAInfo(){ClearSA();};
+	virtual ~GSAInfo(){};
+
+	void SetSA(float fsa, int flag);
+	void ClearSA();
+
+	int GetLeftMul();
+	float GetMulSA();
+	float GetRawSA();
+	int GetFlag();
+
+private:
+	float fSA;
+	int nSAFlag;
+};
+
 /************************************************************************/
 /* GLINE                                                                */
 /************************************************************************/
@@ -53,6 +84,8 @@ public:
 	virtual bool SwapBeginEnd() = 0;
 	virtual bool Extend(float tBegin, float tEnd) = 0;
 
+	virtual void AddSA(float xinner, float yinner, float fsa);
+
 	virtual void SetLineRenderStyle(int nStyle){nLineRenderStyle = nStyle;};
 	virtual int GetLineRenderStyle(){return nLineRenderStyle;};
 
@@ -86,6 +119,7 @@ protected:
 	//////////////////////////////////////////////////////////////////////////
 	GOBJM_COPYABLES();
 	int nLineRenderStyle;
+	GSAInfo saInfo;
 	GOBJM_COPYABLESEND();
 	//////////////////////////////////////////////////////////////////////////
 	GOBJM_CHILDPOINTERS();

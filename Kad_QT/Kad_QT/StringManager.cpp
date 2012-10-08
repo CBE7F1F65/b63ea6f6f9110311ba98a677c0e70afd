@@ -178,6 +178,8 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_BEZIER,	"BEZIER",	"B",	"Draw Bezier Curve",	""	);
 	_BSET(	COMM_CIRCLE,	"CIRCLE",	"O",	"Draw Circle",	""	);
 
+	_BSET(	COMM_ADDSA,	"ADDSA",	"A",	"Add Seam Allowance",	"");
+
 	_BSET(	COMM_SAVE,	"SAVE",	"SAV",	"Save",	""	);
 	_BSET(	COMM_SAVEAS,	"SAVEAS",	"SAVA",	"Save as",	""	);
 	_BSET(	COMM_OPEN,	"OPEN",	"OP",	"Open",	""	);
@@ -224,6 +226,7 @@ void StringManager::FillWPInfo()
 	_PSET(	CWP_VALUE,	"VALUE"	);
 	_PSET(	CWP_PROPORTION,	"PROPORTION"	);
 	_PSET(	CWP_ANGLE,	"ANGLE"	);
+	_PSET(	CWP_SA,	"SA"	);
 
 #undef _PSET
 }

@@ -385,7 +385,7 @@ bool MathHelper::PointInRectTwoPoint( float px, float py, float x1, float y1, fl
 	return PointInRect(px, py, min(x1, x2)-r, min(y1, y2)-r, fabsf(x1-x2)+2*r, fabsf(y1-y2)+2*r);
 }
 
-void MathHelper::GetPerpendicularPointForLine( PointF2D pt1, PointF2D pt2, float s, float l, bool bUpward, PointF2D* ptp )
+void MathHelper::GetPerpendicularPointForLine( const PointF2D &pt1, const PointF2D &pt2, float s, float l, bool bUpward, PointF2D* ptp )
 {
 	int angle = GetLineAngle(pt1, pt2);
 	angle += ANGLEBASE_90;
@@ -405,7 +405,7 @@ void MathHelper::GetPerpendicularPointForLine( PointF2D pt1, PointF2D pt2, float
 	}
 }
 
-int MathHelper::GetLineAngle( PointF2D pt1, PointF2D pt2 )
+int MathHelper::GetLineAngle( const PointF2D &pt1, const PointF2D &pt2 )
 {
 	/*
 	if (pt1.Equals(pt2))
@@ -659,7 +659,7 @@ int MathHelper::GetQuadrant( float x, float y, float xo/*=0*/, float yo/*=0 */ )
 	return QUADRANT_3;
 }
 
-bool MathHelper::FindNearestHandlePointForGivenBezierLength_TwoPoint( float fLength, PointF2D ptFirstAnchor, PointF2D ptFirstHandle, PointF2D ptSecondAnchor, PointF2D ptNear, PointF2D ptFar, float * px/*=NULL*/, float * py/*=NULL*/ )
+bool MathHelper::FindNearestHandlePointForGivenBezierLength_TwoPoint( float fLength, const PointF2D &ptFirstAnchor, const PointF2D &ptFirstHandle, const PointF2D &ptSecondAnchor, PointF2D ptNear, PointF2D ptFar, float * px/*=NULL*/, float * py/*=NULL*/ )
 {
 	// !!TODO??
 	return false;
@@ -691,7 +691,7 @@ bool MathHelper::FindNearestHandlePointForGivenBezierLength_TwoPoint( float fLen
 
 }
 
-bool MathHelper::FindNearestHandlePointForGivenBezierLength( float fLength, PointF2D ptFirstAnchor, PointF2D ptFirstHandle, PointF2D ptSecondAnchor, float cx, float cy, float * px/*=NULL*/, float * py/*=NULL*/, bool bCheckLengthAvailableOnly/*=false*/ )
+bool MathHelper::FindNearestHandlePointForGivenBezierLength( float fLength, const PointF2D &ptFirstAnchor, const PointF2D &ptFirstHandle, const PointF2D &ptSecondAnchor, float cx, float cy, float * px/*=NULL*/, float * py/*=NULL*/, bool bCheckLengthAvailableOnly/*=false*/ )
 {
 	GBaseNode tbase;
 
@@ -1040,6 +1040,27 @@ bool MathHelper::AreTwoAngleClose( int nAngle1, int nAngle2 )
 
 	return false;
 }
+
+bool MathHelper::IsPointInLeftOfLine( const PointF2D &ptA, const PointF2D &ptB, const PointF2D &ptC )
+{
+	return ((ptB.x-ptA.x)*(ptC.y-ptA.y)-(ptB.y-ptA.y)*(ptC.x-ptA.x)) > 0;
+}
+
+PointF2D MathHelper::GetNormal( const PointF2D &ptA, const PointF2D &ptB, float fMul/*=0.0f*/ )
+{
+	PointF2D ptNormal = PointF2D(-(ptB.y-ptA.y), (ptB.x-ptA.x));
+	if (!fMul)
+	{
+		return ptNormal;
+	}
+	float fLength = LineSegmentLength(ptA, ptB);
+	if (fLength)
+	{
+		ptNormal = ptNormal * (fMul/fLength);
+	}
+	return ptNormal;
+}
+
 /************************************************************************/
 /* BezierSublinesInfo                                                   */
 /************************************************************************/

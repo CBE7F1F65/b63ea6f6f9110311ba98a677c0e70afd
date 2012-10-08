@@ -86,7 +86,7 @@ public:
 	void RenderArrowT_S(float x, float y, float length, float arrowsize, DWORD col);
 
 //	void RenderBezier(PointF2D pb, PointF2D pbh, PointF2D peh, PointF2D pe, DWORD col, float precisemul=1.0f);
-	void RenderBezierByInfo(BezierSublinesInfo * bsinfo, DWORD col, PointF2D *ptOffset=0);
+	void RenderBezierByInfo(BezierSublinesInfo * bsinfo, DWORD col, float fsa=0.0f, float fmul=1.0f);
 
 	void RenderAttributePoint_S(float x, float y, DWORD col);
 	void RenderSubstantivePoint_S(float x, float y, DWORD col);

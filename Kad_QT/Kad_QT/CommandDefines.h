@@ -86,6 +86,9 @@ enum{
 	COMM_BEZIER,	// bezier curve
 	COMM_CIRCLE,	// circle
 
+	// Seam
+	COMM_ADDSA,	// add seam
+
 	// Other
 	COMM_RESTORETOSNAPSHOT,
 
@@ -399,6 +402,23 @@ enum{
 };
 
 /************************************************************************/
+/* ADDSA                                                                */
+/************************************************************************/
+
+enum{
+	CSP_ADDSA_F_XY_SA_ORIGIN,
+	CSP_ADDSA_I_INDEXES,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_ADDSA_DUMMY=0,
+	CSI_ADDSA_WANTX,
+	CSI_ADDSA_WANTY,
+	CSI_ADDSA_WANTSA,
+	CSI_ADDSA_WANTINDEXES,
+};
+
+/************************************************************************/
 /* SETWORKINGLAYER                                                      */
 /************************************************************************/
 
@@ -567,6 +587,7 @@ enum{
 	CWP_VALUE,
 	CWP_PROPORTION,
 	CWP_ANGLE,
+	CWP_SA,
 
 	_CWP_ENDINDEX,
 };
