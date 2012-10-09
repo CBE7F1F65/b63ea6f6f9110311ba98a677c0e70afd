@@ -178,7 +178,9 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_BEZIER,	"BEZIER",	"B",	"Draw Bezier Curve",	""	);
 	_BSET(	COMM_CIRCLE,	"CIRCLE",	"O",	"Draw Circle",	""	);
 
-	_BSET(	COMM_ADDSA,	"ADDSA",	"A",	"Add Seam Allowance",	"");
+	_BSET(	COMM_ADDSA,	"ADDSA",	"A",	"Add Seam Allowance",	""	);
+
+	_BSET(	COMM_DUMP,	"DUMP",	"DU",	"Dump to Image File",	""	);
 
 	_BSET(	COMM_SAVE,	"SAVE",	"SAV",	"Save",	""	);
 	_BSET(	COMM_SAVEAS,	"SAVEAS",	"SAVA",	"Save as",	""	);

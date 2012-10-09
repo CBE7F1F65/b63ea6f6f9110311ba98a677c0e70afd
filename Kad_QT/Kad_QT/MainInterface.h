@@ -86,9 +86,6 @@ public:
 	bool SaveFile(bool bSaveAs=false);
 	bool SaveFile(const char * filename);
 
-	int nFileStatus;
-	string savefilename;
-
 	bool HGEThreadFunc();
 
 
@@ -112,10 +109,14 @@ public:
     };
     void SetPrecisionInt(int nVal);
 
+	int GetLeftKeyIndex(){return cursorleftkeyindex;};
+	int GetRightKeyIndex(){return cursorrightkeyindex;};
+
 	HGE * hge;
+private:
 	int resizewindow_w;
 	int resizewindow_h;
-private:
+
 	float mousex;
 	float mousey;
 	float lastmousex;
@@ -132,6 +133,20 @@ public:
 	float GetMouseX_C();
 	float GetMouseY_C();
 
+	float GetPrintMul();
+	int GetPrintDPI(){return printdpi;};
+	float GetDisplayMul(){return displaymul;};
+	int GetPrintsize_W();
+	int GetPrintsize_H();
+	int GetPrintMargin();
+
+	const char * GetSaveFileName() {return savefilename.c_str();};
+
+private:
+
+	int nFileStatus;
+	string savefilename;
+
 	int lastmousevwheel;
 	int mousevwheel;
 
@@ -146,6 +161,12 @@ public:
 	bool bActive;
 	int toactivedelay;
 	int inactivereason;
+
+	int printdpi;
+	float displaymul;
+	float printsize_w;
+	float printsize_h;
+	float printmargin;
 
 	bool bLockLeftMouseDown;
 

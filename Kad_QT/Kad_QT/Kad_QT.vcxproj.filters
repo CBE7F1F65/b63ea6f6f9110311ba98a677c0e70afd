@@ -578,6 +578,9 @@
     <ClCompile Include="AddSACommand.cpp">
       <Filter>Main\Command\Seam</Filter>
     </ClCompile>
+    <ClCompile Include="DumpCommand.cpp">
+      <Filter>Main\Command\Output</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -816,6 +819,9 @@
     </ClInclude>
     <ClInclude Include="AddSACommand.h">
       <Filter>Main\Command\Seam</Filter>
+    </ClInclude>
+    <ClInclude Include="DumpCommand.h">
+      <Filter>Main\Command\Output</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

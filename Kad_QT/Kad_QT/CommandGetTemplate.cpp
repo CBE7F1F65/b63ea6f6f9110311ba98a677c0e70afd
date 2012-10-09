@@ -30,6 +30,7 @@
 #include "SaveCommand.h"
 #include "OpenCommand.h"
 #include "AddSACommand.h"
+#include "DumpCommand.h"
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 {
@@ -93,6 +94,9 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 
 	case COMM_ADDSA:
 		return &AddSACommand::getInstance();
+
+	case COMM_DUMP:
+		return &DumpCommand::getInstance();
 
 	case COMM_RESTORETOSNAPSHOT:
 		return &RestoreToSnapshotCommand::getInstance();

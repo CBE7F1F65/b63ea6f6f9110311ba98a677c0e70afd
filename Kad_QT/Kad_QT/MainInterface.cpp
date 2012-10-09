@@ -53,6 +53,13 @@ MainInterface::MainInterface()
 
     nPrecision = 50;
 
+	printdpi = 150;
+	displaymul = 10.0f;
+
+	printsize_w = 11.0f;
+	printsize_h = 8.5f;
+	printmargin = 0.5f;
+
 	nFileStatus = MI_FILESTATUS_NEW|MI_FILESTATUS_OPENED;
 }
 
@@ -888,4 +895,24 @@ bool MainInterface::SaveFile( const char * filename )
 	}
 
 	return bdone;
+}
+
+float MainInterface::GetPrintMul()
+{
+	return printdpi/displaymul;
+}
+
+int MainInterface::GetPrintsize_W()
+{
+	return printdpi*printsize_w;
+}
+
+int MainInterface::GetPrintsize_H()
+{
+	return printdpi*printsize_h;
+}
+
+int MainInterface::GetPrintMargin()
+{
+	return printdpi*printmargin;
 }

@@ -131,4 +131,12 @@ public:
 	{
 		return y*scale+originy_s;
 	}
+
+	void EnterPrintMode();
+	void ExitPrintMode();
+
+	bool bprint;
+	float savedoriginx_s;
+	float savedoriginy_s;
+	float savedscale;
 };

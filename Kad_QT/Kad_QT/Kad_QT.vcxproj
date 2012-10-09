@@ -98,6 +98,7 @@
     <ClCompile Include="CommandSubState.cpp" />
     <ClCompile Include="CommandTemplate.cpp" />
     <ClCompile Include="DeleteItemCommand.cpp" />
+    <ClCompile Include="DumpCommand.cpp" />
     <ClCompile Include="DuplicateCommand.cpp" />
     <ClCompile Include="ExtendCommand.cpp" />
     <ClCompile Include="FlipNodeBatchCommand.cpp" />
@@ -322,6 +323,7 @@
     <ClInclude Include="CommandTemplate.h" />
     <ClInclude Include="Const.h" />
     <ClInclude Include="DeleteItemCommand.h" />
+    <ClInclude Include="DumpCommand.h" />
     <ClInclude Include="DuplicateCommand.h" />
     <ClInclude Include="ExtendCommand.h" />
     <ClInclude Include="FlipNodeBatchCommand.h" />

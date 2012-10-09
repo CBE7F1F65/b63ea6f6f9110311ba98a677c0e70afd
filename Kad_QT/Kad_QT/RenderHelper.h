@@ -33,6 +33,9 @@ public:
 #define _CTOSP(X, Y)	pguic->CtoSx(X), pguic->CtoSy(Y)
 #define _CTOSS(S)		pguic->CtoSs(S)
 
+	void TrueBaseRenderPoint_S(float x, float y, DWORD col);
+	void TrueBaseRenderLine_S(float x1, float y1, float x2, float y2, DWORD col);
+
 	void BaseRenderPoint_S(float x, float y, DWORD col);
 	void RenderPoint_S(float x, float y, DWORD col);
 	void RenderPoint(float x, float y, DWORD col)
@@ -111,8 +114,15 @@ public:
 	void SetLineStyle(int style=0);
 	void RenderLineMeasureMark( float x1, float y1, float x2, float y2, DWORD col );
 	int getLineStyle(){return style;};
+
+	void SetPrintMode(QPainterPath * path=NULL, float xoffset=0, float yoffset=0, float mul=1.0f);
 private:
 	int style;
+
+	QPainterPath * ppath;
+	float printXOffset;
+	float printYOffset;
+	float printMul;
 
 	HGE * hge;
 };

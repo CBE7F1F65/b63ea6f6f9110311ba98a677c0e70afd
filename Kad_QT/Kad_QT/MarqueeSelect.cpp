@@ -161,8 +161,8 @@ void MarqueeSelect::Update()
 	float mousex_c = pguic->GetCursorX_C();
 	float mousey_c = pguic->GetCursorY_C();
 
-	bool mlkeydown = pmain->hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_DOWN);
-	bool mlkeynotpressed = !pmain->hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex);
+	bool mlkeydown = pmain->hge->Input_GetDIMouseKey(pmain->GetLeftKeyIndex(), DIKEY_DOWN);
+	bool mlkeynotpressed = !pmain->hge->Input_GetDIMouseKey(pmain->GetLeftKeyIndex());
 	bool bctrldown = pmain->hge->Input_GetDIKey(DIK_LCONTROL) || pmain->hge->Input_GetDIKey(DIK_RCONTROL);
 	bool baltdown = pmain->hge->Input_GetDIKey(DIK_LMENU) || pmain->hge->Input_GetDIKey(DIK_RMENU);
 
@@ -200,7 +200,7 @@ void MarqueeSelect::Update()
 	{
 		int iret = pgp->PickPoint(staticMarqPickFilterCallback, staticMarqPickFilterCallback);
 
-        if (itemmovestate==MARQMOVESTATE_NONE && (baltdown || pmain->hge->Input_GetDIMouseKey(pmain->cursorrightkeyindex, DIKEY_DOWN)))
+        if (itemmovestate==MARQMOVESTATE_NONE && (baltdown || pmain->hge->Input_GetDIMouseKey(pmain->GetRightKeyIndex(), DIKEY_DOWN)))
         {
             GObject * pPickedObj = pgp->GetPickedObj();
 			pgp->UnlockLockLine();

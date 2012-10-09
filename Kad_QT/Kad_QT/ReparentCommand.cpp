@@ -35,7 +35,7 @@ void ReparentCommand::OnProcessCommand()
 			GObject * pObj = pgm->GetDragDroppedLayerNode();
 			if (!pObj)
 			{
-				pcommand->StepTo(CSI_TERMINAL);
+				Terminal();
 				return;
 			}
 			pcommand->SetParamI(CSP_REPARENT_I_NEWPARENTINDEX, pObj->getID(), CWP_INDEX);
@@ -108,7 +108,7 @@ void ReparentCommand::OnProcessCommand()
 
 			if (lids.empty())
 			{
-				pcommand->StepTo(CSI_TERMINAL);
+				Terminal();
 			}
 			else
 			{
@@ -139,13 +139,13 @@ void ReparentCommand::OnProcessCommand()
 				GObject * pNewParentObj = pgm->FindObjectByID(newparentindex);
 				if (!pAfterObj->isDescendantOf(pNewParentObj))
 				{
-					pcommand->StepTo(CSI_TERMINAL);
+					Terminal();
 					return;
 				}
 			}
 			if (!pgm->CanReparentItem(pObj, newparentindex))
 			{
-				pcommand->StepTo(CSI_TERMINAL);
+				Terminal();
 				return;
 			}
 			*/

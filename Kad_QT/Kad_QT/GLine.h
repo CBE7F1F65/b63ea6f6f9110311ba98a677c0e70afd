@@ -186,7 +186,7 @@ public:
 	virtual bool CheckNearTo(float px, float py, float r, float *plx, float *ply, int *isec=NULL);
 	virtual bool CheckIntersectWithRect(float xl, float yt, float xr, float yb);
 	virtual bool CheckIntersectStraightStraight(GStraightLine * pLine, list<PointF2D> *pPoints);
-	virtual void GetBoundingBox(float *xl, float *yt, float *xr, float * yb);
+	virtual bool GetBoundingBox(float *xl, float *yt, float *xr, float * yb);
 
 	virtual float getLength();
 
@@ -230,7 +230,7 @@ public:
 	virtual bool CheckIntersectWithRect(float xl, float yt, float xr, float yb);
 	virtual bool CheckIntersectBezierStraight(GStraightLine * pLine, list<PointF2D> *pPoints);
 	virtual bool CheckIntersectBezierBezier(GBezierLine * pLine, list<PointF2D> *pPoints);
-	virtual void GetBoundingBox(float *xl, float *yt, float *xr, float * yb);
+	virtual bool GetBoundingBox(float *xl, float *yt, float *xr, float * yb);
 
 	virtual float CalculateProportion( float x, float y, int iSec );
 	virtual float CalculateMidPointProportion();

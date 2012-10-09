@@ -25,7 +25,7 @@ void OpenCommand::OnDoneCommand()
 			CCMake_C(COMM_I_COMMAND, 2),
 			CCMake_CI(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 			CCMake_C(COMM_OPEN),
-			CCMake_S(pmain->savefilename.c_str()),
+			CCMake_S(pmain->GetSaveFileName()),
 			NULL
 			);
 

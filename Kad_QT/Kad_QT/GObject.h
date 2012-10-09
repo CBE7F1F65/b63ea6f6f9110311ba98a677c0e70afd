@@ -103,6 +103,8 @@ public:
 
 	virtual GObject * FindNodeByID(int id);
 
+	virtual bool GetBoundingBox(float * lx, float * ty, float * rx, float * by){return false;};
+
 private:
 	int _ActualAddChildAfterObj(GObject * child, GObject * afterobj);
 	int _ReparentAfterObject( GObject * newparent, GObject * afterobj );

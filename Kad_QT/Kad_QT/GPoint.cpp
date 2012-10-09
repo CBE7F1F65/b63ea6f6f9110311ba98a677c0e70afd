@@ -540,6 +540,15 @@ void GPoint::OnIndepend()
 	DemergeFrom();
 }
 
+bool GPoint::GetBoundingBox( float * lx, float * ty, float * rx, float * by )
+{
+	if (lx) { *lx = x; }
+	if (rx) { *rx = x; }
+	if (ty) { *ty = y; }
+	if (by) { *ty = y; }
+	return true;
+}
+
 /************************************************************************/
 /* GANCHORPOINT                                                         */
 /************************************************************************/

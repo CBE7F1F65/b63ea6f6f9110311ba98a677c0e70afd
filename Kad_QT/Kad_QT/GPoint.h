@@ -80,6 +80,8 @@ public:
 
 	PointF2D GetPointF2D(){return PointF2D(x, y);};
 
+	virtual bool GetBoundingBox(float * lx, float * ty, float * rx, float * by);
+
 	virtual void OnRemove();
 
 	virtual GNodeRelationshipGroup * CreateRelationshipGroup(bool bClingBy=true, bool bOneWay=false);

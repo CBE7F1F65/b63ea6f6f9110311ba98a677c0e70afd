@@ -741,3 +741,83 @@ bool GObjectManager::WriteXML( QXmlStreamWriter * pqsw )
 	}
 	return pBaseNode->CallWriteXML(*pqsw);
 }
+
+bool GObjectManager::Dump( list<GObject *>& lobjs )
+{
+	if (lobjs.empty())
+	{
+		return false;
+	}
+
+	GObject * pfront = lobjs.front();
+	float lside, tside, rside, bside;
+	if (!pfront->GetBoundingBox(&lside, &tside, &rside, &bside))
+	{
+		ASSERT(false);
+		return false;
+	}
+	float tlside, ttside, trside, tbside;
+	for (list<GObject *>::iterator it=++(lobjs.begin()); it!=lobjs.end(); ++it)
+	{
+		if (!(*it)->GetBoundingBox(&tlside, &ttside, &trside, &tbside))
+		{
+			ASSERT(false);
+			return false;
+		}
+		lside = min(tlside, lside);
+		tside = min(ttside, tside);
+		rside = max(trside, rside);
+		bside = max(tbside, bside);
+	}
+
+	MainInterface * pmain = &MainInterface::getInstance();
+	float fprintmul = pmain->GetPrintMul();
+	
+	float canvasx = (rside-lside)*fprintmul;
+	float canvasy = (bside-tside)*fprintmul;
+	QPixmap pixmap(canvasx, canvasy);
+	pixmap.fill();
+	QPainterPath path;
+
+	GUICoordinate * pguic = &GUICoordinate::getInstance();
+	pguic->EnterPrintMode();
+
+	RenderHelper::getInstance().SetPrintMode(&path, pguic->CtoSx(-lside), pguic->CtoSy(-tside), fprintmul/pmain->GetDisplayMul());
+	for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end(); ++it)
+	{
+		(*it)->CallRender();
+	}
+	RenderHelper::getInstance().SetPrintMode();
+	pguic->ExitPrintMode();
+
+	QPainter painter( &pixmap );
+//	painter.setRenderHint( QPainter::Antialiasing );
+
+	painter.setPen( Qt::black );
+//	painter.setBrush( Qt::gray );
+
+	painter.drawPath( path );
+
+	int printw = pmain->GetPrintsize_W();
+	int printh = pmain->GetPrintsize_H();
+	int printmargin = pmain->GetPrintMargin();
+
+	int centerprintw = printw-printmargin*2;
+	int centerprinth = printh-printmargin*2;
+
+	int xrow = ((int)canvasx)/(centerprintw)+1;
+	int yrow = ((int)canvasy)/(centerprinth)+1;
+
+	for (int i=0; i<xrow; i++)
+	{
+		for (int j=0; j<yrow; j++)
+		{
+			QPixmap pixtemp = pixmap.copy(i*centerprintw-printmargin, j*centerprinth-printmargin, printw, printh);
+			pixtemp.save(QString("Path_")+QString::number(i*xrow+j)+".png");
+		}
+	}
+
+	pixmap.save( "apath.png" );
+
+	return true;
+}

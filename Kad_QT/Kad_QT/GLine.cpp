@@ -400,16 +400,17 @@ bool GStraightLine::CheckNearTo( float px, float py, float r, float *plx, float 
 	return MathHelper::getInstance().PointNearToStraightLine(px, py, plbegin->getX(), plbegin->getY(), plend->getX(), plend->getY(), r, plx, ply);
 }
 
-void GStraightLine::GetBoundingBox( float *xl, float *yt, float *xr, float * yb )
+bool GStraightLine::GetBoundingBox( float *xl, float *yt, float *xr, float * yb )
 {
 	if (!xl || !yt || !xr || !yb)
 	{
-		return;
+		return false;
 	}
 	*xl = min(plbegin->getX(), plend->getX());
 	*xr = max(plbegin->getX(), plend->getX());
 	*yt = min(plbegin->getY(), plend->getY());
 	*yb = max(plbegin->getY(), plend->getY());
+	return true;
 }
 
 bool GStraightLine::CheckIntersectWithRect( float xl, float yt, float xr, float yb )
@@ -702,12 +703,11 @@ bool GBezierLine::CheckIntersectWithRect( float xl, float yt, float xr, float yb
 	return false;
 }
 
-void GBezierLine::GetBoundingBox( float *xl, float *yt, float *xr, float * yb )
+bool GBezierLine::GetBoundingBox( float *xl, float *yt, float *xr, float * yb )
 {
 	if (isStraightLine())
 	{
-		GStraightLine::GetBoundingBox(xl, yt, xr, yb);
-		return;
+		return GStraightLine::GetBoundingBox(xl, yt, xr, yb);
 	}
 	else
 	{
@@ -715,12 +715,15 @@ void GBezierLine::GetBoundingBox( float *xl, float *yt, float *xr, float * yb )
 		{
 			bsinfo.ResetPoints(plbegin->GetPointF2D(), plbegin->GetHandle()->GetPointF2D(), plend->GetHandle()->GetPointF2D(), plend->GetPointF2D(), MainInterface::getInstance().GetPrecision());
 			DASSERT(false);
+			return false;
 		}
 		if (!bsinfo.GetBoundingBox(xl, yt, xr, yb))
 		{
 			ASSERT(false);
+			return false;
 		}
 	}
+	return true;
 }
 
 GObject * GBezierLine::CreateNewClone( GObject * pNewParent/*=NULL*/, GObject * pBeforeObj/*=NULL*/ )

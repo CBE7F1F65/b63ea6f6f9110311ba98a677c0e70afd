@@ -90,7 +90,7 @@ void AddSACommand::OnProcessCommand()
 				lstObj = *(pgm->GetSelectedNodes(false));
 				if (lstObj.empty())
 				{
-					pcommand->StepTo(CSI_TERMINAL);
+					Terminal();
 					return;
 				}
 				lstObj.sort();
@@ -158,7 +158,7 @@ void AddSACommand::OnDoneCommand()
 
 	if (lobjs.empty())
 	{
-		pcommand->StepTo(CSI_TERMINAL);
+		Terminal();
 	}
 	else
 	{

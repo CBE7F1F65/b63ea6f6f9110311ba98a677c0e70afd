@@ -24,6 +24,11 @@ GUICoordinate::GUICoordinate()
 	hge = hgeCreate(HGE_VERSION);
 	tarGrid = NULL;
 	scale = _GUIC_DEFAULTSCALE;
+	originx_s = 0;
+	originy_s = 0;
+	savedscale = scale;
+	savedoriginx_s = 0;
+	savedoriginy_s = 0;
 
     SetShowGrid(true);
 }
@@ -176,7 +181,7 @@ void GUICoordinate::OnProcessPanCommand()
 	case CSI_PAN_READY:
 		if (hge->Input_GetDIKey(DIK_SPACE, DIKEY_UP))
 		{
-			if (hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex))
+			if (hge->Input_GetDIMouseKey(pmain->GetLeftKeyIndex()))
 			{
 				panwillterminate = true;
 			}
@@ -185,11 +190,11 @@ void GUICoordinate::OnProcessPanCommand()
 				pcommand->StepTo(CSI_FINISH);
 			}
 		}
-		if (hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex) && !hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_DOWN))
+		if (hge->Input_GetDIMouseKey(pmain->GetLeftKeyIndex()) && !hge->Input_GetDIMouseKey(pmain->GetLeftKeyIndex(), DIKEY_DOWN))
 		{
 			DoPan(pmain->GetMouseXForCoord()-pmain->GetLastMouseXForCoord(), pmain->GetMouseYForCoord()-pmain->GetLastMouseYForCoord());
 		}
-		else if (panwillterminate && !hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex))
+		else if (panwillterminate && !hge->Input_GetDIMouseKey(pmain->GetLeftKeyIndex()))
 		{
 			pcommand->StepTo(CSI_FINISH);
 		}
@@ -373,4 +378,24 @@ void GUICoordinate::DoScroll( bool horz, int pos, int range )
 	{
 		DoPan(0, -pos*scrh_s/(float)range);
 	}
+}
+
+void GUICoordinate::EnterPrintMode()
+{
+	savedscale = scale;
+	savedoriginx_s = originx_s;
+	savedoriginy_s = originy_s;
+	
+	scale = MainInterface::getInstance().GetDisplayMul();
+	originx_s = 0;
+	originy_s = 0;
+	UpdateScreenMeasure();
+}
+
+void GUICoordinate::ExitPrintMode()
+{
+	scale = savedscale;
+	originx_s = savedoriginx_s;
+	originy_s = savedoriginy_s;
+	UpdateScreenMeasure();
 }

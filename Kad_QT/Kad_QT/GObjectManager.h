@@ -78,6 +78,8 @@ public:
 	void RenderIndication();
 	void Delete();
 
+	bool Dump(list<GObject *>& lobjs);
+
 	void OnTreeWillChange();
 	void OnTreeChanged(GObject * changingbase, GObject * activeitem, bool bSetActiveLayer=true);
     void OnPrecisionChanged();

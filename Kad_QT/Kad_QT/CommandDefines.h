@@ -89,6 +89,9 @@ enum{
 	// Seam
 	COMM_ADDSA,	// add seam
 
+	// Dump
+	COMM_DUMP,	// dump to file
+
 	// Other
 	COMM_RESTORETOSNAPSHOT,
 
@@ -416,6 +419,19 @@ enum{
 	CSI_ADDSA_WANTY,
 	CSI_ADDSA_WANTSA,
 	CSI_ADDSA_WANTINDEXES,
+};
+
+/************************************************************************/
+/* DUMP                                                                 */
+/************************************************************************/
+
+enum{
+	CSP_DUMP_I_INDEXES,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_DUMP_DUMMY=0,
+	CSI_DUMP_WANTINDEXES,
 };
 
 /************************************************************************/

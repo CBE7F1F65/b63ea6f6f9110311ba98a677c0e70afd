@@ -44,7 +44,7 @@ void DuplicateCommand::OnProcessCommand()
 			}
 			if (lids.empty())
 			{
-				pcommand->StepTo(CSI_TERMINAL);
+				Terminal();
 			}
 			else
 			{

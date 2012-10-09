@@ -50,7 +50,7 @@ int GObjectPicker::UpdatePickPoint()
 	MainInterface * pmain = &MainInterface::getInstance();
 	if (!bTestMode)
 	{
-		if (pmain->hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_DOWN))
+		if (pmain->hge->Input_GetDIMouseKey(pmain->GetLeftKeyIndex(), DIKEY_DOWN))
 		{
 			ClearSet();
 		}
@@ -168,7 +168,7 @@ int GObjectPicker::UpdatePickPoint()
 
 	if (!bTestMode)
 	{
-		if (pmain->hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_DOWN))
+		if (pmain->hge->Input_GetDIMouseKey(pmain->GetLeftKeyIndex(), DIKEY_DOWN))
 		{
 			mousedownx_c = pickx_c;
 			mousedowny_c = picky_c;
@@ -179,7 +179,7 @@ int GObjectPicker::UpdatePickPoint()
 			mousestate = GOPMOUSE_DOWN;
 		}
 
-		if (pmain->hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_UP))
+		if (pmain->hge->Input_GetDIMouseKey(pmain->GetLeftKeyIndex(), DIKEY_UP))
 		{
 			mousestate = GOPMOUSE_UP;
 			state = PICKSTATE_READY;
@@ -191,7 +191,7 @@ int GObjectPicker::UpdatePickPoint()
 		state = PICKSTATE_READY;
 	}
 
-	if (pmain->hge->Input_GetDIMouseKey(pmain->cursorleftkeyindex, DIKEY_UP) || pmain->hge->Input_GetDIKey(DIK_ESCAPE))
+	if (pmain->hge->Input_GetDIMouseKey(pmain->GetLeftKeyIndex(), DIKEY_UP) || pmain->hge->Input_GetDIKey(DIK_ESCAPE))
 	{
 		ClearSplitMarking();
 		UnlockSplitLine();
