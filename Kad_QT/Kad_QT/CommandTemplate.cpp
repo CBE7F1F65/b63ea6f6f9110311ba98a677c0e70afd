@@ -466,79 +466,84 @@ bool CommandTemplate::MergeClingNewPoint( GPoint * pFrom, GObject * pTo, float f
 		pTo = pTo->getLine();
 //		fProportion = ((GLine *)pTo)->CalculateMidPointProportion();
 	}
-	bool bRet = false;
 	if (pTo->isPoint())
 	{
 		GPoint * pToPoint = (GPoint *)pTo;
 		if (pToPoint->getMergeWith()->empty() && pFrom->getMergeWith()->empty())
 		{
-			pFrom->MergeWith(pToPoint);
-			PushRevertable(
-				CCMake_C(COMM_I_COMMAND, 3),
-				CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
-				CCMake_C(COMM_MERGE),
-				CCMake_I(pFrom->getID()),
-				CCMake_I(pTo?pTo->getID():-1),
-				NULL
-				);
-			/*
-			CommitFrontCommand(
-				CCMake_C(COMM_MERGE),
-				CCMake_O(pFrom),
-				CCMake_O(pTo),
-				NULL
-				);
-				*/
+			if (pFrom->MergeWith(pToPoint))
+			{
+				PushRevertable(
+					CCMake_C(COMM_I_COMMAND, 3),
+					CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
+					CCMake_C(COMM_MERGE),
+					CCMake_I(pFrom->getID()),
+					CCMake_I(pTo?pTo->getID():-1),
+					NULL
+					);
+				/*
+				CommitFrontCommand(
+					CCMake_C(COMM_MERGE),
+					CCMake_O(pFrom),
+					CCMake_O(pTo),
+					NULL
+					);
+					*/
+
+			}
 		}
 		GClingInfo * pcli = pToPoint->getClingInfo();
 		GLine * pToCling = pcli->GetClingTo();
 		if (pToCling)
 		{
-			pFrom->ClingTo(*pcli);
+			if (pFrom->ClingTo(*pcli))
+			{
+				PushRevertable(
+					CCMake_C(COMM_I_COMMAND, 5),
+					CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
+					CCMake_C(COMM_CLING),
+					CCMake_I(pFrom->getID()),
+					CCMake_I(pToCling?pToCling->getID():-1),
+					CCMake_I(pcli->GetClingType()),
+					CCMake_F(pcli->GetClingVal()),
+					NULL
+					);
+				/*
+				CommitFrontCommand(
+					CCMake_C(COMM_CLING),
+					CCMake_O(pFrom),
+					CCMake_O(pToCling),
+					CCMake_F(pToPoint->getClingProportion()),
+					NULL);
+					*/
+			}
+		}
+	}
+	if (pTo->isLine())
+	{
+		if (pFrom->ClingTo((GLine *)pTo, fProportion))
+		{
 			PushRevertable(
 				CCMake_C(COMM_I_COMMAND, 5),
 				CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 				CCMake_C(COMM_CLING),
 				CCMake_I(pFrom->getID()),
-				CCMake_I(pToCling?pToCling->getID():-1),
-				CCMake_I(pcli->GetClingType()),
-				CCMake_F(pcli->GetClingVal()),
+				CCMake_I(pTo?pTo->getID():-1),
+				CCMake_I(GCLING_PROPORTION),
+				CCMake_F(fProportion),
 				NULL
 				);
 			/*
 			CommitFrontCommand(
 				CCMake_C(COMM_CLING),
 				CCMake_O(pFrom),
-				CCMake_O(pToCling),
-				CCMake_F(pToPoint->getClingProportion()),
-				NULL);
+				CCMake_O(pTo),
+				CCMake_F(fProportion),
+				NULL
+				);
 				*/
+
 		}
-		bRet = true;
-	}
-	if (pTo->isLine())
-	{
-		pFrom->ClingTo((GLine *)pTo, fProportion);
-		PushRevertable(
-			CCMake_C(COMM_I_COMMAND, 5),
-			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
-			CCMake_C(COMM_CLING),
-			CCMake_I(pFrom->getID()),
-			CCMake_I(pTo?pTo->getID():-1),
-			CCMake_I(GCLING_PROPORTION),
-			CCMake_F(fProportion),
-			NULL
-			);
-		/*
-		CommitFrontCommand(
-			CCMake_C(COMM_CLING),
-			CCMake_O(pFrom),
-			CCMake_O(pTo),
-			CCMake_F(fProportion),
-			NULL
-			);
-			*/
-		bRet = true;
 	}
 	return true;
 }
@@ -614,17 +619,19 @@ void CommandTemplate::ReAttachAfterMoveNode( GObject * pObj, bool bFindMerge/*=t
 			GClingInfo tcli = *pPoint->getClingInfo();
 			if (tcli.ApplyChange((GLine *)pTestPickedObj, fProportion))
 			{
-				pPoint->ClingTo(tcli);
-				PushRevertable(
-					CCMake_C(COMM_I_COMMAND, 5),
-					CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
-					CCMake_C(COMM_CLING),
-					CCMake_I(pPoint->getID()),
-					CCMake_I(pTestPickedObj?pTestPickedObj->getID():-1),
-					CCMake_I(tcli.GetClingType()),
-					CCMake_F(tcli.GetClingVal()),
-					NULL
-					);
+				if (pPoint->ClingTo(tcli))
+				{
+					PushRevertable(
+						CCMake_C(COMM_I_COMMAND, 5),
+						CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
+						CCMake_C(COMM_CLING),
+						CCMake_I(pPoint->getID()),
+						CCMake_I(pTestPickedObj?pTestPickedObj->getID():-1),
+						CCMake_I(tcli.GetClingType()),
+						CCMake_F(tcli.GetClingVal()),
+						NULL
+						);
+				}
 			}
 		}
 	}

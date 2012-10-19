@@ -203,6 +203,41 @@ void GPoint::ClearClingTo()
 	*/
 }
 
+bool GPoint::canClingTo( GLine * pLine )
+{
+	if (isDescendantOf(pLine))
+	{
+		return false;
+	}
+	GLine * pThisLine = this->getLine();
+	if (pThisLine)
+	{
+		list<GPoint *> * pThisLineClingBy = pThisLine->getClingBy();
+		if (!pThisLineClingBy->empty())
+		{
+			for (list<GPoint *>::iterator it=pThisLineClingBy->begin(); it!=pThisLineClingBy->end(); ++it)
+			{
+				if ((*it)->isDescendantOf(pLine))
+				{
+					return false;
+				}
+				list<GPoint *> * pThisLineClingByItMergeWith = (*it)->getMergeWith();
+				if (!pThisLineClingByItMergeWith->empty())
+				{
+					for (list<GPoint *>::iterator jt=pThisLineClingByItMergeWith->begin(); jt!=pThisLineClingByItMergeWith->end(); ++jt)
+					{
+						if ((*jt)->isDescendantOf(pLine))
+						{
+							return false;
+						}
+					}
+				}
+			}
+		}
+	}
+	return true;
+}
+
 bool GPoint::ClingTo( GLine* pLine, float fVal, int nType/*=GCLING_PROPORTION*/ )
 {
 	if (!pLine)
@@ -216,7 +251,7 @@ bool GPoint::ClingTo( GLine* pLine, float fVal, int nType/*=GCLING_PROPORTION*/ 
 	{
 		clInfo.GetClingTo()->DeclingByOther(this);
 	}
-	if (!clInfo.SetClingTo(pLine, fVal, nType))
+	if (!canClingTo(pLine) || !clInfo.SetClingTo(pLine, fVal, nType))
 	{
 		clInfo.SetClingTo(ocli.GetClingTo(), ocli.GetClingVal(), ocli.GetClingType());
 		return false;

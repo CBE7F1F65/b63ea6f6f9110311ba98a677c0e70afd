@@ -775,6 +775,20 @@ bool GObjectManager::Dump( list<GObject *>& lobjs )
 	
 	float canvasx = (rside-lside)*fprintmul;
 	float canvasy = (bside-tside)*fprintmul;
+
+	int printw = pmain->GetPrintsize_W();
+	int printh = pmain->GetPrintsize_H();
+	int printmargin = pmain->GetPrintMargin();
+
+	int centerprintw = printw-printmargin*2;
+	int centerprinth = printh-printmargin*2;
+
+	int xrow = ((int)canvasx)/(centerprintw)+1;
+	int yrow = ((int)canvasy)/(centerprinth)+1;
+
+	canvasx = xrow * printw;
+	canvasy = yrow * printh;
+
 	QPixmap pixmap(canvasx, canvasy);
 	pixmap.fill();
 	QPainterPath path;
@@ -782,7 +796,7 @@ bool GObjectManager::Dump( list<GObject *>& lobjs )
 	GUICoordinate * pguic = &GUICoordinate::getInstance();
 	pguic->EnterPrintMode();
 
-	RenderHelper::getInstance().SetPrintMode(&path, pguic->CtoSx(-lside), pguic->CtoSy(-tside), fprintmul/pmain->GetDisplayMul());
+	RenderHelper::getInstance().SetPrintMode(&path, pguic->CtoSx(-lside)+printmargin, pguic->CtoSy(-tside)+printmargin, fprintmul/pmain->GetDisplayMul());
 	for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end(); ++it)
 	{
 		(*it)->CallRender();
@@ -798,21 +812,36 @@ bool GObjectManager::Dump( list<GObject *>& lobjs )
 
 	painter.drawPath( path );
 
-	int printw = pmain->GetPrintsize_W();
-	int printh = pmain->GetPrintsize_H();
-	int printmargin = pmain->GetPrintMargin();
-
-	int centerprintw = printw-printmargin*2;
-	int centerprinth = printh-printmargin*2;
-
-	int xrow = ((int)canvasx)/(centerprintw)+1;
-	int yrow = ((int)canvasy)/(centerprinth)+1;
 
 	for (int i=0; i<xrow; i++)
 	{
 		for (int j=0; j<yrow; j++)
 		{
-			QPixmap pixtemp = pixmap.copy(i*centerprintw-printmargin, j*centerprinth-printmargin, printw, printh);
+			QPixmap pixtemp = pixmap.copy(i*centerprintw, j*centerprinth, printw, printh);
+
+			QPainter tpainter(&pixtemp);
+			tpainter.setPen(Qt::lightGray);
+			tpainter.drawRect(printmargin, printmargin, centerprintw, centerprinth);
+			tpainter.setPen(Qt::darkGray);
+			for (int k=0; k<printw/printmargin; k++)
+			{
+				if (k&1)
+				{
+					continue;
+				}
+				tpainter.drawLine(k*printmargin, printmargin, (k+1)*printmargin, printmargin);
+				tpainter.drawLine(k*printmargin, printh-printmargin, (k+1)*printmargin, printh-printmargin);
+			}
+			for (int k=0; k<printh/printmargin; k++)
+			{
+				if (k&1)
+				{
+					continue;
+				}
+				tpainter.drawLine(printmargin, k*printmargin, printmargin, (k+1)*printmargin);
+				tpainter.drawLine(printw-printmargin, k*printmargin, printw-printmargin, (k+1)*printmargin);
+			}
+
 			pixtemp.save(QString("Path_")+QString::number(i*xrow+j)+".png");
 		}
 	}

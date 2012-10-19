@@ -91,6 +91,7 @@ public:
 	void ClearClingTo();
 	bool ClingTo(GLine* pLine, float fVal, int nType=GCLING_PROPORTION);
 	bool ClingTo(GClingInfo &cl){return ClingTo(cl.GetClingTo(), cl.GetClingVal(), cl.GetClingType());};
+	bool canClingTo(GLine * pLine);
 	void DeclingToOther();
 	bool isClingTo(GObject * pObj);
 	GClingInfo * getClingInfo(){return &clInfo;};

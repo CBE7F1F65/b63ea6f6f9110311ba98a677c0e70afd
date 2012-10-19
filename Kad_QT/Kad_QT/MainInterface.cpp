@@ -53,7 +53,7 @@ MainInterface::MainInterface()
 
     nPrecision = 50;
 
-	printdpi = 150;
+	printdpi = 96;
 	displaymul = 10.0f;
 
 	printsize_w = 11.0f;
