@@ -161,6 +161,7 @@ void QTUI_Layer_Tree::dropEvent(QDropEvent *e)
             }
             MainInterface::getInstance().OnCommand(COMM_REPARENT);
             e->acceptProposedAction();
+			Reselect();
             return;
         }
     }
@@ -289,6 +290,10 @@ void QTUI_Layer_Tree::BuildChildren(QTreeWidgetItem *pItem, GObject *pObjParent)
 //        pNowItem->setFlags(Qt::ItemIsEditable|pNowItem->flags());
 		QPushButton * pSelectionButton = new QTUI_Layer_SelectionButton(pObj);
 		this->setItemWidget(pNowItem, _UILT_COLUMN_SELECT, pSelectionButton);
+		QPushButton * pVisibleButton = new QTUI_Layer_VisibleButton(pObj);
+		this->setItemWidget(pNowItem, _UILT_COLUMN_VISIBLE, pVisibleButton);
+		QPushButton * pLockButton = new QTUI_Layer_LockButton(pObj);
+		this->setItemWidget(pNowItem, _UILT_COLUMN_LOCK, pLockButton);
 
         UpdateNodeInfo(pNowItem, pObj);
 
@@ -352,7 +357,9 @@ void QTUI_Layer_Tree::SetItemData(QTreeWidgetItem *pItem, GObject *pObj)
 void QTUI_Layer_Tree::SetItemVisible(QTreeWidgetItem *pItem, bool bDisplayVisible, bool bRecDisplayVisable, GObject * pObj)
 {
     if (pItem)
-    {
+	{
+		QTUI_Layer_VisibleButton * pVisibleButton = (QTUI_Layer_VisibleButton *)this->itemWidget(pItem, _UILT_COLUMN_VISIBLE);
+		pVisibleButton->setChecked(bDisplayVisible);
     }
 }
 
@@ -360,6 +367,8 @@ void QTUI_Layer_Tree::SetItemLock(QTreeWidgetItem *pItem, bool bDisplayLocked, b
 {
     if (pItem)
     {
+		QTUI_Layer_LockButton * pLockButton = (QTUI_Layer_LockButton *)this->itemWidget(pItem, _UILT_COLUMN_LOCK);
+		pLockButton->setChecked(bDisplayLocked);
     }
 }
 

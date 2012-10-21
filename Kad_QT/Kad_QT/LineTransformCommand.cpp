@@ -52,7 +52,7 @@ void LineTransformCommand::OnDoneCommand()
 		
 		if (pLine->toBezierLine())
 		{
-			PushRevertable(
+			PushRevertible(
 				CCMake_C(COMM_I_COMMAND, 2),
 				CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 				CCMake_C(COMM_TOBEZIER),
@@ -69,7 +69,7 @@ void LineTransformCommand::OnDoneCommand()
 
 				if (pBezier->toStraightLine())
 				{
-					PushRevertable(
+					PushRevertible(
 						CCMake_C(COMM_I_COMMAND, 2),
 						CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 						CCMake_C(COMM_TOSTRAIGHTLINE),
@@ -84,7 +84,7 @@ void LineTransformCommand::OnDoneCommand()
 		{
 			if (pLine->SwapBeginEnd())
 			{
-				PushRevertable(
+				PushRevertible(
 					CCMake_C(COMM_I_COMMAND, 2),
 					CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 					CCMake_C(COMM_SWAPBEGINEND),
@@ -98,7 +98,7 @@ void LineTransformCommand::OnDoneCommand()
 
 }
 /*
-void LineTransformCommand::OnProcessUnDoCommand( RevertableCommand * rc )
+void LineTransformCommand::OnProcessUnDoCommand( RevertibleCommand * rc )
 {
 	ASSERT(rc);
 	list<CommittedCommand>::iterator it=rc->commandlist.begin();

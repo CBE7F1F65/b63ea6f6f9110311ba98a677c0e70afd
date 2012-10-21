@@ -919,6 +919,11 @@ public:
 	/************************************************************************/
 	virtual void		CALL	Gfx_SetTransform(D3DTRANSFORMSTATETYPE State, const D3DMATRIX * pMatrix) = 0;
 	virtual D3DMATRIX	CALL	Gfx_GetTransform(D3DTRANSFORMSTATETYPE State) = 0;
+#if IF_RENDERSYS(HRENDERSYS_GL)
+#if IF_FRAMWORK(HFRAMEWORK_QT)
+	virtual bool		CALL	Gfx_ResolveGLFuncs(const QGLContext * context) = 0;
+#endif
+#endif
 
 	virtual void		CALL	Gfx_SetTextureInfo(int nTexInfo, hgeTextureInfo * texInfo=NULL) = 0;
 	virtual void		CALL	Gfx_Resize(int width, int height) = 0;

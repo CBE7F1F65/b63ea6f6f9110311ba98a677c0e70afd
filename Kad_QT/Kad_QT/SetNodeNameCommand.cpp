@@ -77,7 +77,7 @@ void SetNodeNameCommand::OnDoneCommand()
 	pgm->OnTreeChanged(pObj->getParent(), pObj);
 //	MainInterface::getInstance().CallChangeNode(pObj);
 
-	PushRevertable(
+	PushRevertible(
 		CCMake_C(COMM_I_COMMAND, 3),
 		CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 		CCMake_C(COMM_SETNODENAME),
@@ -88,7 +88,7 @@ void SetNodeNameCommand::OnDoneCommand()
 
 }
 /*
-void SetNodeNameCommand::OnProcessUnDoCommand( RevertableCommand * rc ) 
+void SetNodeNameCommand::OnProcessUnDoCommand( RevertibleCommand * rc ) 
 {
 	ASSERT(rc);
 	list<CommittedCommand>::iterator it=rc->commandlist.begin();

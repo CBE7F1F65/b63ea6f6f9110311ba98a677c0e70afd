@@ -339,11 +339,8 @@ bool CALL HGE_Impl::Gfx_BeginScene(HTARGET targ)
 			bool bframebuffers = funcs.hasOpenGLFeature(QGLFunctions::Framebuffers);
 			if (bframebuffers)
 			{
-				/*GLuint fbo;
-				funcs.glGenFramebuffers(1, &fbo);
-				funcs.glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-				funcs.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, target->pTex, 0);*/
-				funcs.glBindFramebuffer(GL_FRAMEBUFFER, target->pFrameBuffer);
+				BindFramebufferEXT(GL_FRAMEBUFFER, target->pFrameBuffer);
+//				funcs.glBindFramebuffer(GL_FRAMEBUFFER, target->pFrameBuffer);
 
 
 				glMatrixMode(GL_PROJECTION);
@@ -360,7 +357,8 @@ bool CALL HGE_Impl::Gfx_BeginScene(HTARGET targ)
 			bool bframebuffers = funcs.hasOpenGLFeature(QGLFunctions::Framebuffers);
 			if (bframebuffers)
 			{
-				funcs.glBindFramebuffer(GL_FRAMEBUFFER, 0);
+				BindFramebufferEXT(GL_FRAMEBUFFER, 0);
+//				funcs.glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			}
 		}
 		pCurTarget = target;
@@ -941,22 +939,33 @@ HTARGET CALL HGE_Impl::Target_Create(int width, int height, bool zbuffer)
 	QGLFunctions funcs(QGLContext::currentContext());
 	if (funcs.hasOpenGLFeature(QGLFunctions::Framebuffers))
 	{
-		funcs.glGenFramebuffers(1, (GLuint *)(&(pTarget->pFrameBuffer)));
-		funcs.glBindFramebuffer(GL_FRAMEBUFFER, pTarget->pFrameBuffer);
+		GenFramebuffersEXT(1, (GLuint *)(&(pTarget->pFrameBuffer)));
+//		funcs.glGenFramebuffers(1, (GLuint *)(&(pTarget->pFrameBuffer)));
+		//TODO!!!!!!Crash here in Release mode
+		BindFramebufferEXT(GL_FRAMEBUFFER, pTarget->pFrameBuffer);
+//		funcs.glBindFramebuffer(GL_FRAMEBUFFER, pTarget->pFrameBuffer);
 		if (zbuffer)
 		{
-			funcs.glGenRenderbuffers(1, (GLuint*)&(pTarget->pDepth));
-			funcs.glBindRenderbuffer(GL_RENDERBUFFER, pTarget->pDepth);
-			funcs.glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-			funcs.glBindRenderbuffer(GL_RENDERBUFFER, 0);
+			GenRenderbuffersEXT(1, (GLuint*)&(pTarget->pDepth));
+			BindRenderbufferEXT(GL_RENDERBUFFER, pTarget->pDepth);
+			RenderbufferStorageEXT(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+			BindRenderbufferEXT(GL_RENDERBUFFER, 0);
+//			funcs.glGenRenderbuffers(1, (GLuint*)&(pTarget->pDepth));
+//			funcs.glBindRenderbuffer(GL_RENDERBUFFER, pTarget->pDepth);
+//			funcs.glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+//			funcs.glBindRenderbuffer(GL_RENDERBUFFER, 0);
 		}
 
 		// attach texture
-		funcs.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pTarget->pTex, 0);
+		FramebufferTexture2DEXT(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pTarget->pTex, 0);
 		// Attach to the FBO for depth
-		funcs.glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pTarget->pDepth); 
+		FramebufferRenderbufferEXT(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pTarget->pDepth); 
 
-		funcs.glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		BindFramebufferEXT(GL_FRAMEBUFFER, 0);
+
+//		funcs.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pTarget->pTex, 0);
+//		funcs.glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pTarget->pDepth); 
+//		funcs.glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
  #endif
 
@@ -997,7 +1006,8 @@ void CALL HGE_Impl::Target_Free(HTARGET target)
 			{
 				if (pTarget->pFrameBuffer)
 				{
-					funcs.glDeleteFramebuffers(1, &pTarget->pFrameBuffer);
+					DeleteFramebuffersEXT(1, &pTarget->pFrameBuffer);
+//					funcs.glDeleteFramebuffers(1, &pTarget->pFrameBuffer);
 				}
 				else
 				{
@@ -1005,7 +1015,8 @@ void CALL HGE_Impl::Target_Free(HTARGET target)
 				}
 				if (pTarget->pDepth)
 				{
-					funcs.glDeleteRenderbuffers(1, &pTarget->pDepth);
+					DeleteFramebuffersEXT(1, &pTarget->pDepth);
+//					funcs.glDeleteRenderbuffers(1, &pTarget->pDepth);
 				}
 			}
  #endif
@@ -1605,6 +1616,39 @@ void* getStaticVramTexture(unsigned int width, unsigned int height, unsigned int
 
 #endif // PSP
 
+#if IF_RENDERSYS(HRENDERSYS_GL)
+#if IF_FRAMWORK(HFRAMEWORK_QT)
+bool HGE_Impl::Gfx_ResolveGLFuncs(const QGLContext * context)
+{
+
+	bool ok=true;
+	#define RESOLVE_GL_FUNC(f) ok &= bool((f = (_gl##f) context->getProcAddress(QLatin1String("gl" #f))));
+	RESOLVE_GL_FUNC(GenFramebuffersEXT)
+	RESOLVE_GL_FUNC(GenRenderbuffersEXT)
+	RESOLVE_GL_FUNC(BindRenderbufferEXT)
+	RESOLVE_GL_FUNC(RenderbufferStorageEXT)
+	RESOLVE_GL_FUNC(DeleteFramebuffersEXT)
+	RESOLVE_GL_FUNC(DeleteRenderbuffersEXT)
+	RESOLVE_GL_FUNC(BindFramebufferEXT)
+	RESOLVE_GL_FUNC(FramebufferTexture2DEXT)
+	RESOLVE_GL_FUNC(FramebufferRenderbufferEXT)
+	RESOLVE_GL_FUNC(CheckFramebufferStatusEXT)
+
+	RESOLVE_GL_FUNC(ActiveTexture)
+	RESOLVE_GL_FUNC(TexImage3D)
+
+	RESOLVE_GL_FUNC(GenBuffers)
+	RESOLVE_GL_FUNC(BindBuffer)
+	RESOLVE_GL_FUNC(DeleteBuffers)
+	RESOLVE_GL_FUNC(MapBuffer)
+	RESOLVE_GL_FUNC(UnmapBuffer)
+	#undef RESOLVE_GL_FUNC
+	
+	return ok;
+}
+#endif
+#endif
+
 bool HGE_Impl::_GfxInit()
 {
 #if IF_RENDERSYS(HRENDERSYS_DX)
@@ -1923,7 +1967,26 @@ bool HGE_Impl::_GfxInit()
 	glDisable(GL_DITHER);
 
 	_SetBlendMode(BLEND_NULL);
-	
+
+
+	GenFramebuffersEXT = NULL;
+	GenRenderbuffersEXT = NULL;
+	BindRenderbufferEXT = NULL;
+	RenderbufferStorageEXT = NULL;
+	DeleteFramebuffersEXT = NULL;
+	DeleteRenderbuffersEXT = NULL;
+	BindFramebufferEXT = NULL;
+	FramebufferTexture2DEXT = NULL;
+	FramebufferRenderbufferEXT = NULL;
+	CheckFramebufferStatusEXT = NULL;
+	ActiveTexture = NULL;
+	TexImage3D = NULL;
+	GenBuffers = NULL;
+	BindBuffer = NULL;
+	DeleteBuffers = NULL;
+	MapBuffer = NULL;
+	UnmapBuffer = NULL;
+
 #endif
 
 	_AdjustWindow();
@@ -2069,7 +2132,8 @@ void HGE_Impl::_GfxDone()
 		{
 			if (target->pFrameBuffer)
 			{
-				funcs.glDeleteFramebuffers(1, &target->pFrameBuffer);
+				DeleteFramebuffersEXT(1, &target->pFrameBuffer);
+//				funcs.glDeleteFramebuffers(1, &target->pFrameBuffer);
 			}
 			else
 			{
@@ -2077,7 +2141,8 @@ void HGE_Impl::_GfxDone()
 			}
 			if (target->pDepth)
 			{
-				funcs.glDeleteRenderbuffers(1, &target->pDepth);
+				DeleteRenderbuffersEXT(1, &target->pDepth);
+//				funcs.glDeleteRenderbuffers(1, &target->pDepth);
 			}
 		}
  #endif

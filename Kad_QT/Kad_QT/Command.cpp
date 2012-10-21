@@ -518,7 +518,7 @@ bool Command::CheckParamSet( int index, int useflag )
 	return (ccomm.params[index].useflag & useflag);
 }
 
-int Command::GetIvalFromRC( RevertableCommand * rc, int csp )
+int Command::GetIvalFromRC( RevertibleCommand * rc, int csp )
 {
 	if (rc)
 	{
@@ -536,7 +536,7 @@ int Command::GetIvalFromRC( RevertableCommand * rc, int csp )
 	return 0;
 }
 
-float Command::GetFvalFromRC( RevertableCommand * rc, int csp )
+float Command::GetFvalFromRC( RevertibleCommand * rc, int csp )
 {
 	if (rc)
 	{
@@ -555,7 +555,7 @@ float Command::GetFvalFromRC( RevertableCommand * rc, int csp )
 
 }
 
-const char * Command::GetSvalFromRC( RevertableCommand * rc, int csp )
+const char * Command::GetSvalFromRC( RevertibleCommand * rc, int csp )
 {
 	if (rc)
 	{
@@ -574,7 +574,7 @@ const char * Command::GetSvalFromRC( RevertableCommand * rc, int csp )
 
 }
 
-int Command::GetCSubFromRC( RevertableCommand * rc, int csp )
+int Command::GetCSubFromRC( RevertibleCommand * rc, int csp )
 {
 	if (rc)
 	{
@@ -1009,9 +1009,9 @@ void Command::FinishPendingSubCommand()
 	}*/
 }
 
-bool Command::DoPushRevertable()
+bool Command::DoPushRevertible()
 {
-	RevertableCommand * rc = &rcbuffer;
+	RevertibleCommand * rc = &rcbuffer;
 	if (!rc->GetSize())
 	{
 		return false;
@@ -1087,14 +1087,14 @@ bool Command::DoPushRevertable()
 		}
 		if (pushed)
 		{
-//			SnapshotManager::getInstance().OnPushRevertable();
+//			SnapshotManager::getInstance().OnPushRevertible();
 			int comm = firstusefulcomm?firstusefulcomm:firstcomm;
 			string descstr = GetCommandDescriptionStr(comm);
 			if (multicomm)
 			{
 				descstr += "...";
 			}
-			MainInterface::getInstance().OnPushRevertable(descstr.c_str(), strcomm.c_str(), comm);
+			MainInterface::getInstance().OnPushRevertible(descstr.c_str(), strcomm.c_str(), comm);
 			PushUnDo();
 		}
 	}
@@ -1108,7 +1108,7 @@ bool Command::DoPushRevertable()
 	return pushed;
 }
 
-void Command::PushRevertable( RevertableCommand * rc )
+void Command::PushRevertible( RevertibleCommand * rc )
 {
 	if (rc)
 	{

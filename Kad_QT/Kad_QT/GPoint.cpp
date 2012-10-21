@@ -57,7 +57,7 @@ bool GPoint::MoveTo( GObject * pCaller, float newx, float newy, bool bTry, int m
 	{
 		if (nMoveActionID == moveActionID)
 		{
-			return false;
+			return true;
 		}
 	}
 	nMoveActionID = moveActionID;
@@ -111,9 +111,22 @@ bool GPoint::CallMoveTo( GObject * pCaller, float newx, float newy, bool bTry, i
 
 	if (!mergeWithList.empty())
 	{
+		list<GPoint *> demergeList;
 		for (list<GPoint *>::iterator it=mergeWithList.begin(); it!=mergeWithList.end(); ++it)
 		{
-			(*it)->MoveTo(pCaller, newx, newy, bTry, moveActionID);
+			if (!(*it)->MoveTo(pCaller, newx, newy, bTry, moveActionID))
+			{
+				demergeList.push_back(*it);
+			}
+		}
+		// TODO!!!!
+		// Push Revertible
+		if (!demergeList.empty())
+		{
+			for (list<GPoint *>::iterator it=demergeList.begin(); it!=demergeList.end(); ++it)
+			{
+				DemergeFrom(*it);
+			}
 		}
 	}
 	return MoveTo(pCaller, newx, newy, bTry, moveActionID);
@@ -511,7 +524,12 @@ void GPoint::CallClingToMoved( bool bTry, int moveActionID )
 	clInfo.GetClingPosition(&ptCling, NULL, NULL, &fProp);
 	if (fProp > M_FLOATEXTREMEEPS && fProp < 1-M_FLOATEXTREMEEPS)
 	{
-		CallMoveTo(clInfo.GetClingTo(), ptCling.x, ptCling.y, bTry, moveActionID);
+		if (!CallMoveTo(clInfo.GetClingTo(), ptCling.x, ptCling.y, bTry, moveActionID))
+		{
+			// TODO!!!!
+			// Push Revertible
+			ClearClingTo();
+		}
 	}
 }
 

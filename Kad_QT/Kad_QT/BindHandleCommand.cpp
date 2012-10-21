@@ -89,7 +89,7 @@ void BindHandleCommand::OnDoneCommand()
 	
     pFromHandlePoint->BindWith(pToHandlePoint);
 
-	PushRevertable(
+	PushRevertible(
 		CCMake_C(COMM_I_COMMAND, 3),
 		CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 		CCMake_C(COMM_BINDHANDLE),
@@ -99,7 +99,7 @@ void BindHandleCommand::OnDoneCommand()
 		);
 }
 /*
-void BindHandleCommand::OnProcessUnDoCommand( RevertableCommand * rc )
+void BindHandleCommand::OnProcessUnDoCommand( RevertibleCommand * rc )
 {
 	ASSERT(rc);
 	list<CommittedCommand>::iterator it=rc->commandlist.begin();

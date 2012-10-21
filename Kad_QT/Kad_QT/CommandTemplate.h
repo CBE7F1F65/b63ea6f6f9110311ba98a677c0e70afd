@@ -33,8 +33,8 @@ public:
 	void CallInitCommand();
 	virtual void OnTerminalCommand();
 	void CallTerminalCommand();
-	virtual void OnProcessUnDoCommand(RevertableCommand * rc);
-	void CallProcessUnDoCommand(int comm, RevertableCommand * rc);
+	virtual void OnProcessUnDoCommand(RevertibleCommand * rc);
+	void CallProcessUnDoCommand(int comm, RevertibleCommand * rc);
 
 	void Terminal(int iReason=-1);
 
@@ -46,10 +46,10 @@ public:
 	void UpdateLastStep();
 	bool IsStepped();
 
-	void PushRevertable(CommittedCommand * first, ...);
+	void PushRevertible(CommittedCommand * first, ...);
 
-	RevertableCommand rcbatch;
-	void PushRevertableBatch(int revertstate, CommittedCommand * first, ...);
+	RevertibleCommand rcbatch;
+	void PushRevertibleBatch(int revertstate, CommittedCommand * first, ...);
 
 	void CommitFrontCommand(CommittedCommand * first, ...);
 

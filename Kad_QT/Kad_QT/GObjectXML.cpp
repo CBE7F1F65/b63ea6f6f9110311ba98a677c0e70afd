@@ -231,6 +231,7 @@ bool GMainBaseNode::CallReadXML( QXmlStreamReader &qsr )
 	ASSERT(pbase->lstChildren.size() == 1);
 	pbase = &pbase->lstChildren.back();
 	
+	GObjectManager::getInstance().SetLockTreeChange();
 	this->RemoveAllChildren(true);
 	this->BuildXMLChildren(pbase);
 

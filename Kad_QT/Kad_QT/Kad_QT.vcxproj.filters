@@ -177,6 +177,9 @@
     <Filter Include="Main\Command\Seam">
       <UniqueIdentifier>{b7083797-b6e0-4dc2-a482-e999456c86fa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\Helper\DXF">
+      <UniqueIdentifier>{0cec8cda-7262-4411-a01f-55d34fafda38}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_kad_qt.cpp">
@@ -581,6 +584,9 @@
     <ClCompile Include="DumpCommand.cpp">
       <Filter>Main\Command\Output</Filter>
     </ClCompile>
+    <ClCompile Include="DXFWriter.cpp">
+      <Filter>Main\Helper\DXF</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -822,6 +828,9 @@
     </ClInclude>
     <ClInclude Include="DumpCommand.h">
       <Filter>Main\Command\Output</Filter>
+    </ClInclude>
+    <ClInclude Include="DXFWriter.h">
+      <Filter>Main\Helper\DXF</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

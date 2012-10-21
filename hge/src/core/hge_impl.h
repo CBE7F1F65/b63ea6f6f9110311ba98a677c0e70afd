@@ -73,11 +73,34 @@ struct CFontList
 	HD3DFONT font;
 	CFontList * next;
 };
-
+/*
 void DInit();
 void DDone();
 bool DFrame();
+*/
+#if IF_RENDERSYS(HRENDERSYS_GL)
 
+typedef void (APIENTRY *_glGenFramebuffersEXT) (GLsizei, GLuint *);
+typedef void (APIENTRY *_glGenRenderbuffersEXT) (GLsizei, GLuint *);
+typedef void (APIENTRY *_glBindRenderbufferEXT) (GLenum, GLuint);
+typedef void (APIENTRY *_glRenderbufferStorageEXT) (GLenum, GLenum, GLsizei, GLsizei);
+typedef void (APIENTRY *_glDeleteFramebuffersEXT) (GLsizei, const GLuint*);
+typedef void (APIENTRY *_glDeleteRenderbuffersEXT) (GLsizei, const GLuint*);
+typedef void (APIENTRY *_glBindFramebufferEXT) (GLenum, GLuint);
+typedef void (APIENTRY *_glFramebufferTexture2DEXT) (GLenum, GLenum, GLenum, GLuint, GLint);
+typedef void (APIENTRY *_glFramebufferRenderbufferEXT) (GLenum, GLenum, GLenum, GLuint);
+typedef GLenum (APIENTRY *_glCheckFramebufferStatusEXT) (GLenum);
+
+typedef void (APIENTRY *_glActiveTexture) (GLenum);
+typedef void (APIENTRY *_glTexImage3D) (GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid *);
+
+typedef void (APIENTRY *_glGenBuffers) (GLsizei, GLuint *);
+typedef void (APIENTRY *_glBindBuffer) (GLenum, GLuint);
+typedef void (APIENTRY *_glDeleteBuffers) (GLsizei, const GLuint *);
+typedef void *(APIENTRY *_glMapBuffer) (GLenum, GLenum);
+typedef GLboolean (APIENTRY *_glUnmapBuffer) (GLenum);
+
+#endif
 /*
 ** HGE Interface implementation
 */
@@ -381,6 +404,29 @@ public:
 
 	IDirect3DSurface9*	pScreenSurf;
 	IDirect3DSurface9*	pScreenDepth;
+#elif IF_RENDERSYS(HRENDERSYS_GL)
+#if IF_FRAMWORK(HFRAMEWORK_QT)
+	virtual bool	CALL Gfx_ResolveGLFuncs(const QGLContext * context);
+	_glGenFramebuffersEXT GenFramebuffersEXT;
+	_glGenRenderbuffersEXT GenRenderbuffersEXT;
+	_glBindRenderbufferEXT BindRenderbufferEXT;
+	_glRenderbufferStorageEXT RenderbufferStorageEXT;
+	_glDeleteFramebuffersEXT DeleteFramebuffersEXT;
+	_glDeleteRenderbuffersEXT DeleteRenderbuffersEXT;
+	_glBindFramebufferEXT BindFramebufferEXT;
+	_glFramebufferTexture2DEXT FramebufferTexture2DEXT;
+	_glFramebufferRenderbufferEXT FramebufferRenderbufferEXT;
+	_glCheckFramebufferStatusEXT CheckFramebufferStatusEXT;
+
+	_glActiveTexture ActiveTexture;
+	_glTexImage3D TexImage3D;
+
+	_glGenBuffers GenBuffers;
+	_glBindBuffer BindBuffer;
+	_glDeleteBuffers DeleteBuffers;
+	_glMapBuffer MapBuffer;
+	_glUnmapBuffer UnmapBuffer;
+#endif
 #endif
 
 	RECT					rectW;

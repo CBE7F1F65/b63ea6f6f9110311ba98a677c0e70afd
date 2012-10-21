@@ -76,7 +76,7 @@ void MergeCommand::OnDoneCommand()
 		pFromPoint->DemergeFrom();
 	}
 
-	PushRevertable(
+	PushRevertible(
 		CCMake_C(COMM_I_COMMAND, 3),
 		CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 		CCMake_C(COMM_MERGE),
@@ -86,7 +86,7 @@ void MergeCommand::OnDoneCommand()
 		);
 }
 /*
-void MergeCommand::OnProcessUnDoCommand( RevertableCommand * rc )
+void MergeCommand::OnProcessUnDoCommand( RevertibleCommand * rc )
 {
 	ASSERT(rc);
 	list<CommittedCommand>::iterator it=rc->commandlist.begin();

@@ -11,6 +11,7 @@ RenderHelper::RenderHelper(void)
 {
 	hge = hgeCreate(HGE_VERSION);
 	pguic = &GUICoordinate::getInstance();
+	pdxfw = &DXFWriter::getInstance();
 	style = 0;
 
 	ppath = NULL;
@@ -42,6 +43,7 @@ void RenderHelper::TrueBaseRenderPoint_S( float x, float y, DWORD col )
 	{
 		hge->Gfx_RenderPoint(x, y, 0, col);
 	}
+	pdxfw->WriteLine(x, y, x, y, 13);
 }
 
 void RenderHelper::TrueBaseRenderLine_S( float x1, float y1, float x2, float y2, DWORD col )
@@ -59,6 +61,7 @@ void RenderHelper::TrueBaseRenderLine_S( float x1, float y1, float x2, float y2,
 	{
 		hge->Gfx_RenderLine(x1, y1, x2, y2, col);
 	}
+	pdxfw->WriteLine(x1, y1, x2, y2, 13);
 }
 
 void RenderHelper::BaseRenderPoint_S( float x, float y, DWORD col )

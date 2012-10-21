@@ -203,7 +203,7 @@ void ExtendCommand::OnDoneCommand()
 
 	if (pBezier->Extend(fBegin, fEnd))
 	{
-		PushRevertable(
+		PushRevertible(
 			CCMake_C(COMM_I_COMMAND, 4),
 			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 			CCMake_C(COMM_EXTEND),
@@ -215,7 +215,7 @@ void ExtendCommand::OnDoneCommand()
 	}
 }
 /*
-void ExtendCommand::OnProcessUnDoCommand( RevertableCommand * rc )
+void ExtendCommand::OnProcessUnDoCommand( RevertibleCommand * rc )
 {
 	ASSERT(rc);
 	list<CommittedCommand>::iterator it=rc->commandlist.begin();

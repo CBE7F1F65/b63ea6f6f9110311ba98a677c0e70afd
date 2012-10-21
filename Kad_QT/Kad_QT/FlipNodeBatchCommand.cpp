@@ -220,7 +220,7 @@ void FlipNodeBatchCommand::OnDoneCommand()
 	else
 	{
 		int movedcount = lobjs.size();
-		PushRevertableBatch(
+		PushRevertibleBatch(
 			PUSHREVERTABLESTATE_BEGIN,
 			CCMake_C(COMM_I_COMMAND, 5+movedcount, 1),
 			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
@@ -232,13 +232,13 @@ void FlipNodeBatchCommand::OnDoneCommand()
 			);
 		for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end(); ++it)
 		{
-			PushRevertableBatch(
+			PushRevertibleBatch(
 				PUSHREVERTABLESTATE_CONTINUE,
 				CCMake_I((*it)->getID()),
 				NULL
 				);
 		}
-		PushRevertableBatch(
+		PushRevertibleBatch(
 			PUSHREVERTABLESTATE_END,
 			CCMake_I(-1),
 			CCMake_C(COMM_I_UNDO_PARAMFROMCOMMAND),
@@ -265,7 +265,7 @@ void FlipNodeBatchCommand::OnClearTemp()
 	pgp->UnlockAngles();
 }
 /*
-void FlipNodeBatchCommand::OnProcessUnDoCommand( RevertableCommand * rc )
+void FlipNodeBatchCommand::OnProcessUnDoCommand( RevertibleCommand * rc )
 {
 	ASSERT(rc);
 	list<CommittedCommand>::iterator it=rc->commandlist.begin();

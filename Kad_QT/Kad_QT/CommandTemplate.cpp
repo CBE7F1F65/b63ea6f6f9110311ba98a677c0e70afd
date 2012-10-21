@@ -210,14 +210,14 @@ void CommandTemplate::DeleteCC()
 	madecctodelete.clear();
 }
 
-void CommandTemplate::PushRevertable( CommittedCommand * first, ... )
+void CommandTemplate::PushRevertible( CommittedCommand * first, ... )
 {
 	if (!first)
 	{
 		return;
 	}
 
-	RevertableCommand _rc;
+	RevertibleCommand _rc;
 
 	va_list ap;
 	va_start(ap, first);
@@ -229,12 +229,12 @@ void CommandTemplate::PushRevertable( CommittedCommand * first, ... )
 	}
 	va_end(ap);
 
-	pcommand->PushRevertable(&_rc);
+	pcommand->PushRevertible(&_rc);
 
 	DeleteCC();
 }
 
-void CommandTemplate::PushRevertableBatch( int revertstate, CommittedCommand * first, ... )
+void CommandTemplate::PushRevertibleBatch( int revertstate, CommittedCommand * first, ... )
 {
 	if (revertstate == PUSHREVERTABLESTATE_BEGIN)
 	{
@@ -253,7 +253,7 @@ void CommandTemplate::PushRevertableBatch( int revertstate, CommittedCommand * f
 
 	if (revertstate == PUSHREVERTABLESTATE_END)
 	{
-		pcommand->PushRevertable(&rcbatch);
+		pcommand->PushRevertible(&rcbatch);
 		rcbatch.Clear();
 		DeleteCC();
 	}
@@ -322,7 +322,7 @@ void CommandTemplate::CallDoneCommand()
 		{
 			if (workinglayer)
 			{
-				PushRevertable(
+				PushRevertible(
 					CCMake_C(COMM_I_COMMAND, 2, 1),
 					CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayer->getID()),
 					CCMake_C(COMM_SETWORKINGLAYER),
@@ -381,13 +381,13 @@ void CommandTemplate::CallProcessCommand()
 	RenderToTarget();
 }
 
-void CommandTemplate::CallProcessUnDoCommand( int _comm, RevertableCommand * rc )
+void CommandTemplate::CallProcessUnDoCommand( int _comm, RevertibleCommand * rc )
 {
 	comm = _comm;
 	OnProcessUnDoCommand(rc);
 }
 
-void CommandTemplate::OnProcessUnDoCommand( RevertableCommand * rc )
+void CommandTemplate::OnProcessUnDoCommand( RevertibleCommand * rc )
 {
 
 }
@@ -473,7 +473,7 @@ bool CommandTemplate::MergeClingNewPoint( GPoint * pFrom, GObject * pTo, float f
 		{
 			if (pFrom->MergeWith(pToPoint))
 			{
-				PushRevertable(
+				PushRevertible(
 					CCMake_C(COMM_I_COMMAND, 3),
 					CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 					CCMake_C(COMM_MERGE),
@@ -498,7 +498,7 @@ bool CommandTemplate::MergeClingNewPoint( GPoint * pFrom, GObject * pTo, float f
 		{
 			if (pFrom->ClingTo(*pcli))
 			{
-				PushRevertable(
+				PushRevertible(
 					CCMake_C(COMM_I_COMMAND, 5),
 					CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 					CCMake_C(COMM_CLING),
@@ -523,7 +523,7 @@ bool CommandTemplate::MergeClingNewPoint( GPoint * pFrom, GObject * pTo, float f
 	{
 		if (pFrom->ClingTo((GLine *)pTo, fProportion))
 		{
-			PushRevertable(
+			PushRevertible(
 				CCMake_C(COMM_I_COMMAND, 5),
 				CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 				CCMake_C(COMM_CLING),
@@ -621,7 +621,7 @@ void CommandTemplate::ReAttachAfterMoveNode( GObject * pObj, bool bFindMerge/*=t
 			{
 				if (pPoint->ClingTo(tcli))
 				{
-					PushRevertable(
+					PushRevertible(
 						CCMake_C(COMM_I_COMMAND, 5),
 						CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 						CCMake_C(COMM_CLING),
@@ -642,7 +642,7 @@ void CommandTemplate::ReAttachAfterMoveNode( GObject * pObj, bool bFindMerge/*=t
 		if (pPoint->getMergeWith()->empty() && pTestPickedPoint->getMergeWith()->empty())
 		{
 			pPoint->MergeWith(pTestPickedPoint);
-			PushRevertable(
+			PushRevertible(
 				CCMake_C(COMM_I_COMMAND, 3),
 				CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 				CCMake_C(COMM_MERGE),
@@ -676,7 +676,7 @@ bool CommandTemplate::BindNewAnchorPoint( GAnchorPoint * pOld, GAnchorPoint * pN
 	if (!pOldHandle->getBindWith() && !pNewHandle->getBindWith())
 	{
 		pOldHandle->BindWith(pNewHandle);
-		PushRevertable(
+		PushRevertible(
 			CCMake_C(COMM_I_COMMAND, 3),
 			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 			CCMake_C(COMM_BINDHANDLE),

@@ -109,7 +109,7 @@ void ClipCommand::OnDoneCommand()
 	GLine * pClonedLine = pLine->Clip(fProporation);
 	if (pClonedLine)
 	{
-		PushRevertable(
+		PushRevertible(
 			CCMake_C(COMM_I_COMMAND, 3),
 			CCMake_CI(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 			CCMake_C(COMM_CLIP),
@@ -120,7 +120,7 @@ void ClipCommand::OnDoneCommand()
 	}
 }
 /*
-void ClipCommand::OnProcessUnDoCommand( RevertableCommand * rc )
+void ClipCommand::OnProcessUnDoCommand( RevertibleCommand * rc )
 {
 	ASSERT(rc);
 	list<CommittedCommand>::iterator it=rc->commandlist.begin();

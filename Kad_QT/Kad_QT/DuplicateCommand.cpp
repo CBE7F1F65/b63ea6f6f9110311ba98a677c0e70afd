@@ -110,7 +110,7 @@ void DuplicateCommand::OnDoneCommand()
 		pgm->SetManualCloning(false);
 
 
-		PushRevertable(
+		PushRevertible(
 			CCMake_C(COMM_I_COMMAND, 2),
 			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 			CCMake_C(COMM_DUPLICATE),

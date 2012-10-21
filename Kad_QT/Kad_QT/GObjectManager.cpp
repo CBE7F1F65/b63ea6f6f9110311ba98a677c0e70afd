@@ -10,6 +10,7 @@
 #include "MarqueeSelect.h"
 #include "Command.h"
 #include "MarkingManager.h"
+#include "DXFWriter.h"
 
 #include "URManager.h"
 
@@ -771,6 +772,15 @@ bool GObjectManager::Dump( list<GObject *>& lobjs )
 	}
 
 	MainInterface * pmain = &MainInterface::getInstance();
+
+	QString qsdumpbasename = pmain->GetSaveFileName();
+	if (qsdumpbasename.isEmpty())
+	{
+		qsdumpbasename = "Dump";
+	}
+	QFileInfo qf(qsdumpbasename);
+	qsdumpbasename = qf.absolutePath()+"\\"+qf.completeBaseName();
+
 	float fprintmul = pmain->GetPrintMul();
 	
 	float canvasx = (rside-lside)*fprintmul;
@@ -796,13 +806,28 @@ bool GObjectManager::Dump( list<GObject *>& lobjs )
 	GUICoordinate * pguic = &GUICoordinate::getInstance();
 	pguic->EnterPrintMode();
 
+
 	RenderHelper::getInstance().SetPrintMode(&path, pguic->CtoSx(-lside)+printmargin, pguic->CtoSy(-tside)+printmargin, fprintmul/pmain->GetDisplayMul());
+
+	DXFWriter * pdxfw = &DXFWriter::getInstance();
+	pdxfw->SetBaseName(qsdumpbasename.toUtf8());
+	pdxfw->SetTopY(canvasy);
+	pdxfw->WriteHeader();
+	pdxfw->WriteTables();
+	pdxfw->WriteEntitiesBegin();
+
 	for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end(); ++it)
 	{
 		(*it)->CallRender();
 	}
+
+	pdxfw->WriteEntitiesEnd();
+	pdxfw->WriteEOF();
+	pdxfw->SetBaseName();
+
 	RenderHelper::getInstance().SetPrintMode();
 	pguic->ExitPrintMode();
+
 
 	QPainter painter( &pixmap );
 //	painter.setRenderHint( QPainter::Antialiasing );
@@ -842,11 +867,11 @@ bool GObjectManager::Dump( list<GObject *>& lobjs )
 				tpainter.drawLine(printw-printmargin, k*printmargin, printw-printmargin, (k+1)*printmargin);
 			}
 
-			pixtemp.save(QString("Path_")+QString::number(i*xrow+j)+".png");
+			pixtemp.save(qsdumpbasename+"_"+QString::number(i*xrow+j)+".png");
 		}
 	}
 
-	pixmap.save( "apath.png" );
+	pixmap.save( qsdumpbasename+".png" );
 
 	return true;
 }

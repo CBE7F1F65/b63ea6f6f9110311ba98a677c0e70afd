@@ -21,7 +21,7 @@ void OpenCommand::OnDoneCommand()
 {
 	if (pmain->OpenFile())
 	{
-		PushRevertable(
+		PushRevertible(
 			CCMake_C(COMM_I_COMMAND, 2),
 			CCMake_CI(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 			CCMake_C(COMM_OPEN),

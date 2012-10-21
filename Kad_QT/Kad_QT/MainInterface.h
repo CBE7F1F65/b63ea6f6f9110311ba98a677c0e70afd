@@ -50,7 +50,7 @@ public:
 
 	int OnCommitCommand(const char * str);
 
-	void OnPushRevertable(const char * desc, const char * commandstr, int command);
+	void OnPushRevertible(const char * desc, const char * commandstr, int command);
 	void OnUnDo(int step=1);
 	void OnReDo(int step=1);
 	void OnClearReDo(int ndelete);

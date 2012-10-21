@@ -162,7 +162,7 @@ bool Command::WillTerminalCurrentCommand()
 void Command::UpdateProcessCommand()
 {
 	ProcessCommand();
-	DoPushRevertable();
+	DoPushRevertible();
 }
 
 void Command::ProcessCommand()
@@ -195,11 +195,11 @@ void Command::ProcessCommand()
 			break;
 		}
 	}
-//	DoPushRevertable();
+//	DoPushRevertible();
 }
 
 
-void Command::ProcessUnDoCommandCommit( RevertableCommand * rc )
+void Command::ProcessUnDoCommandCommit( RevertibleCommand * rc )
 {
 	for (list<CommittedCommand>::reverse_iterator it=rc->commandlist.rbegin(); it!=rc->commandlist.rend(); ++it)
 	{
@@ -212,7 +212,7 @@ void Command::ProcessUnDoCommandCommit( RevertableCommand * rc )
 	pendingparam = tp;
 }
 
-void Command::ProcessUnDoCommandParam( int command, RevertableCommand * rc )
+void Command::ProcessUnDoCommandParam( int command, RevertibleCommand * rc )
 {
 	CommandTemplate * pct = CommandTemplate::GetTemplateByCommand(command);
 	ASSERT(pct);

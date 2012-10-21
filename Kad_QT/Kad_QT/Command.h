@@ -121,11 +121,11 @@ public:
 	int csub;
 };
 
-class RevertableCommand
+class RevertibleCommand
 {
 public:
-	RevertableCommand(){};
-	~RevertableCommand(){};
+	RevertibleCommand(){};
+	~RevertibleCommand(){};
 
 	void PushCommand(CommittedCommand * cc)
 	{
@@ -181,8 +181,8 @@ private:
 public:
 	void UpdateProcessCommand();
 	void ProcessCommand();
-	void ProcessUnDoCommandCommit(RevertableCommand * rc);
-	void ProcessUnDoCommandParam(int command, RevertableCommand * rc);
+	void ProcessUnDoCommandCommit(RevertibleCommand * rc);
+	void ProcessUnDoCommandParam(int command, RevertibleCommand * rc);
 	int ProcessCommittedCommand();
 	int ProcessPending(int index, int useflag, int fillprompt, int step, int wantprompt=0, bool pushback=true);
 	void CommitFrontCommand(CommittedCommand &cc);
@@ -254,10 +254,10 @@ public:
 	bool DoUnDo(int undostep=1);
 	bool DoReDo(int redostep=1);
 /*
-	bool DoUnDoCommandCommit(RevertableCommand * rc);
-	bool DoUnDoCommandParam(int command, RevertableCommand * rc);
-	bool DoReDoCommandSingle(RevertableCommand * rc);
-	void RevertUnDoList(RevertableCommand * rc);
+	bool DoUnDoCommandCommit(RevertibleCommand * rc);
+	bool DoUnDoCommandParam(int command, RevertibleCommand * rc);
+	bool DoReDoCommandSingle(RevertibleCommand * rc);
+	void RevertUnDoList(RevertibleCommand * rc);
 
 	bool DoUnDoAddNode(int objid, int objparentid);
 	bool DoReDoAddNode(int objid, int objparentid);
@@ -269,13 +269,13 @@ public:
 	bool IsUnDoReDoing(){return undoredoflag!=0;};
 	bool canCommandDone();
 
-	void PushRevertable(RevertableCommand * rc);
+	void PushRevertible(RevertibleCommand * rc);
 
 private:
 	int PushCommand();
 	int PullCommand();
 	bool PushUnDo();
-	bool DoPushRevertable();
+	bool DoPushRevertible();
 
 	void LogCreate();
 	void LogFinish();
@@ -290,10 +290,10 @@ private:
 	void LogUnDo();
 	void LogReDo();
 
-//	list<RevertableCommand> undolist;
-//	list<RevertableCommand> redolist;
+//	list<RevertibleCommand> undolist;
+//	list<RevertibleCommand> redolist;
 
-	RevertableCommand rcbuffer;
+	RevertibleCommand rcbuffer;
 	int undoredoflag;
 	int undostepmax;
 private:
@@ -323,10 +323,10 @@ public:
 	int GetParamG(int index);
 	bool CheckParamSet(int index, int useflag);
 
-	int GetIvalFromRC( RevertableCommand * rc, int csp);
-	float GetFvalFromRC( RevertableCommand * rc, int csp );
-	const char * GetSvalFromRC( RevertableCommand * rc, int csp );
-	int GetCSubFromRC( RevertableCommand * rc, int csp );
+	int GetIvalFromRC( RevertibleCommand * rc, int csp);
+	float GetFvalFromRC( RevertibleCommand * rc, int csp );
+	const char * GetSvalFromRC( RevertibleCommand * rc, int csp );
+	int GetCSubFromRC( RevertibleCommand * rc, int csp );
 
 	list<CommittedCommand> inputcommandlist;
 	CommittedCommand pendingparam;

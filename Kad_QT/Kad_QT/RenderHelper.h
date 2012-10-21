@@ -3,6 +3,7 @@
 #include "MainDependency.h"
 #include "GUICoordinate.h"
 #include "MathHelper.h"
+#include "DXFWriter.h"
 
 enum{
 	RHLINESTYLE_LINE=0,
@@ -123,6 +124,8 @@ private:
 	float printXOffset;
 	float printYOffset;
 	float printMul;
+
+	DXFWriter * pdxfw;
 
 	HGE * hge;
 };

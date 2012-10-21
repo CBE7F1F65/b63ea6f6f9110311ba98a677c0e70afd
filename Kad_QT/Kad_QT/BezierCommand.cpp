@@ -441,7 +441,7 @@ void BezierCommand::OnDoneCommand()
 	GBezierLine * pLine = new GBezierLine(pgm->GetActiveLayer(), PointF2D(xb, yb), PointF2D(xbh, ybh), PointF2D(xeh, yeh), PointF2D(xe, ye));
 	pNCLine = pLine;
 
-	PushRevertable(
+	PushRevertible(
 		CCMake_C(COMM_I_COMMAND, 9),
 		CCMake_CI(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 		CCMake_C(COMM_BEZIER),

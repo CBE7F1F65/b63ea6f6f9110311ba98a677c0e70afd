@@ -104,7 +104,7 @@ void DumpCommand::OnDoneCommand()
 	if (pgm->Dump(lobjs))
 	{
 		int objcount = lobjs.size();
-		PushRevertableBatch(
+		PushRevertibleBatch(
 			PUSHREVERTABLESTATE_BEGIN,
 			CCMake_C(COMM_I_COMMAND, 2+objcount, 1),
 			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
@@ -113,13 +113,13 @@ void DumpCommand::OnDoneCommand()
 			);
 		for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end(); ++it)
 		{
-			PushRevertableBatch(
+			PushRevertibleBatch(
 				PUSHREVERTABLESTATE_CONTINUE,
 				CCMake_I((*it)->getID()),
 				NULL
 				);
 		}
-		PushRevertableBatch(
+		PushRevertibleBatch(
 			PUSHREVERTABLESTATE_END,
 			CCMake_I(-1),
 			CCMake_C(COMM_I_UNDO_PARAMFROMCOMMAND),

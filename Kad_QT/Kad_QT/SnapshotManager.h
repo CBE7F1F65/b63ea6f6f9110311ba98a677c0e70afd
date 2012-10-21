@@ -44,7 +44,7 @@ private:
 public:
 //	void OnDeleteUnDo(int maxsize);
 //	void OnUnDo();
-//	void OnPushRevertable();
+//	void OnPushRevertible();
 //	void OnReDo();
 //	void OnClearReDo(int nClear);
 //	void OnClearUnDo(int nClear);

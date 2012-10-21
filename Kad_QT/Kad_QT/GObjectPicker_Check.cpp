@@ -6,7 +6,7 @@ bool GObjectPicker::CheckSnapGeometryPoint( GObject * pObj )
 {
 	if (!snappedstate)
 	{
-		if (pObj->isRepresentablePoint())
+		if (pObj->isRepresentablePoint() && pObj->isDisplayVisible())
 		{
 			float objx = pObj->getX();
 			float objy = pObj->getY();
@@ -120,7 +120,7 @@ bool GObjectPicker::CheckCoord_Obj( GObject * pObj )
 	}
 	if (!(snappedstate&GOPSNAPPED_XAXIS) || !(snappedstate&GOPSNAPPED_YAXIS))
 	{
-		if (pObj->isRepresentablePoint())
+		if (pObj->isRepresentablePoint() && pObj->isDisplayVisible())
 		{
 			if ((pObj->isSlaveToLine() || pObj->isSlaveToPiece() || pObj->isHandlePoint()) && !isSnapToVirtualCoord())
 			{
@@ -200,7 +200,7 @@ bool GObjectPicker::CheckSnapGeometryLine( GObject * pObj )
 {
 	if (nOnLine < GOPONLINE_MAX)
 	{
-		if (pObj->isRepresentableLine() && pObj != pLockedLine)
+		if (pObj->isRepresentableLine() && pObj != pLockedLine && pObj->isDisplayVisible())
 		{
 			float neartox;
 			float neartoy;

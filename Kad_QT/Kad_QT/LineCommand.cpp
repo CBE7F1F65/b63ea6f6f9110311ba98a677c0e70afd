@@ -232,7 +232,7 @@ void LineCommand::OnDoneCommand()
 	GStraightLine * pLine = new GBezierLine(pgm->GetActiveLayer(), PointF2D(xb, yb), PointF2D(xe, ye));
 	pNCLine = pLine;
 
-	PushRevertable(
+	PushRevertible(
 		CCMake_C(COMM_I_COMMAND, 5),
 		CCMake_CI(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 		CCMake_C(COMM_LINE),

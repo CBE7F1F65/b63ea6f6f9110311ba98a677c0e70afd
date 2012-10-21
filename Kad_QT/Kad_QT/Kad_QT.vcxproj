@@ -100,6 +100,7 @@
     <ClCompile Include="DeleteItemCommand.cpp" />
     <ClCompile Include="DumpCommand.cpp" />
     <ClCompile Include="DuplicateCommand.cpp" />
+    <ClCompile Include="DXFWriter.cpp" />
     <ClCompile Include="ExtendCommand.cpp" />
     <ClCompile Include="FlipNodeBatchCommand.cpp" />
     <ClCompile Include="GBaseNode.cpp" />
@@ -325,6 +326,7 @@
     <ClInclude Include="DeleteItemCommand.h" />
     <ClInclude Include="DumpCommand.h" />
     <ClInclude Include="DuplicateCommand.h" />
+    <ClInclude Include="DXFWriter.h" />
     <ClInclude Include="ExtendCommand.h" />
     <ClInclude Include="FlipNodeBatchCommand.h" />
     <ClInclude Include="GBaseNode.h" />

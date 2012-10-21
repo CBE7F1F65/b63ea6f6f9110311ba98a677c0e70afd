@@ -24,3 +24,37 @@ protected:
 };
 
 #endif
+
+/************************************************************************/
+/* Visible                                                              */
+/************************************************************************/
+
+class QTUI_Layer_VisibleButton : public QPushButton
+{
+	Q_OBJECT
+public:
+	explicit QTUI_Layer_VisibleButton(GObject * pObj);
+
+private slots:
+	void SLT_ButtonClicked(bool bChecked);
+
+protected:
+	GObject * pObj;
+};
+
+/************************************************************************/
+/* Lock                                                                 */
+/************************************************************************/
+
+class QTUI_Layer_LockButton : public QPushButton
+{
+	Q_OBJECT
+public:
+	explicit QTUI_Layer_LockButton(GObject * pObj);
+
+	private slots:
+		void SLT_ButtonClicked(bool bChecked);
+
+protected:
+	GObject * pObj;
+};

@@ -131,19 +131,19 @@ bool Command::DoReDo( int redostep/*=1*/ )
 
 /*
 
-void Command::RevertUnDoList(RevertableCommand * rc)
+void Command::RevertUnDoList(RevertibleCommand * rc)
 {
 	ASSERT(rc);
 
-	list<RevertableCommand> rclist;
-	RevertableCommand rv;
+	list<RevertibleCommand> rclist;
+	RevertibleCommand rv;
 	rclist.push_front(rv);
 	for (list<CommittedCommand>::iterator it=rc->commandlist.begin(); it!=rc->commandlist.end(); ++it)
 	{
 
 		if (IsCCTypeCommand(it->type) && IsInternalCommand_CommandEndMark(it->ival))
 		{
-			RevertableCommand rvt;
+			RevertibleCommand rvt;
 			rclist.push_front(rvt);
 		}
 		else
@@ -157,8 +157,8 @@ void Command::RevertUnDoList(RevertableCommand * rc)
 	}
 
 	rc->Clear();
-//	RevertableCommand rvundo;
-	for (list<RevertableCommand>::iterator it=rclist.begin(); it!=rclist.end(); ++it)
+//	RevertibleCommand rvundo;
+	for (list<RevertibleCommand>::iterator it=rclist.begin(); it!=rclist.end(); ++it)
 	{
 		for (list<CommittedCommand>::iterator jt=it->commandlist.begin(); jt!=it->commandlist.end(); ++jt)
 		{
@@ -180,7 +180,7 @@ bool Command::DoUnDo( int undostep/ *=1* / )
 	SetRenderTarget(0);
 	ClearCurrentCommand(true);
 
-	RevertableCommand rc = undolist.back();
+	RevertibleCommand rc = undolist.back();
 	RevertUnDoList(&rc);
 
 	// Dispatch
@@ -196,8 +196,8 @@ bool Command::DoUnDo( int undostep/ *=1* / )
 		if (IsInternalCommand_Command(internalcommand))
 		{
 			ASSERT(pcount != 0);
-			RevertableCommand rct;
-			RevertableCommand rctundo;
+			RevertibleCommand rct;
+			RevertibleCommand rctundo;
 			int command = COMM_NULL;
 			++it;	//working layer
 			for (int i=0; i<pcount; i++)
@@ -310,7 +310,7 @@ bool Command::DoReDo( int redostep/ *=1* / )
 	SetRenderTarget(0);
 	ClearCurrentCommand(true);
 
-	RevertableCommand rc = redolist.back();
+	RevertibleCommand rc = redolist.back();
 
 	// Dispatch
 	EnterReDo();
@@ -325,7 +325,7 @@ bool Command::DoReDo( int redostep/ *=1* / )
 		if (internalcommand == COMM_I_COMMAND)
 		{
 			ASSERT(pcount != 0);
-			RevertableCommand rct;
+			RevertibleCommand rct;
 
 			//
 			++it;	//working layer
@@ -391,7 +391,7 @@ bool Command::DoReDo( int redostep/ *=1* / )
 		}
 	}
 	// Must process rcbuffer
-	DoPushRevertable();
+	DoPushRevertible();
 
 	SnapshotManager::getInstance().OnReDo();
 	MainInterface::getInstance().OnReDo();
@@ -412,19 +412,19 @@ bool Command::DoReDo( int redostep/ *=1* / )
 	return true;
 }
 
-bool Command::DoUnDoCommandCommit( RevertableCommand * rc )
+bool Command::DoUnDoCommandCommit( RevertibleCommand * rc )
 {
 	ProcessUnDoCommandCommit(rc);
 	return true;
 }
 
-bool Command::DoUnDoCommandParam( int command, RevertableCommand * rc )
+bool Command::DoUnDoCommandParam( int command, RevertibleCommand * rc )
 {
 	ProcessUnDoCommandParam(command, rc);
 	return true;
 }
 
-bool Command::DoReDoCommandSingle( RevertableCommand * rc )
+bool Command::DoReDoCommandSingle( RevertibleCommand * rc )
 {
 	// Can only commit to front
 	if (!rc)

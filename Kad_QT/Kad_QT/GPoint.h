@@ -71,7 +71,7 @@ public:
 	virtual inline float getY(){return y;};
 	void SetPosition(float x, float y);
 
-	virtual bool canMove(){return true;};
+	virtual bool canMove(){return !isDisplayLocked();};
 	virtual bool MoveTo( GObject * pCaller, float newx, float newy, bool bTry, int moveActionID=-1 );
 	virtual bool CallMoveTo( GObject * pCaller, float newx, float newy, bool bTry, int moveActionID=-1 );
 	virtual bool CallRotate(GObject * pCaller, float orix, float oriy, int angle, bool bTry, int moveActionID=-1);

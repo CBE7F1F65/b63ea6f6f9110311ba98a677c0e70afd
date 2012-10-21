@@ -43,7 +43,7 @@ void SnapshotManager::OnUnDo()
 	_MovePointer(-1);
 }
 
-void SnapshotManager::OnPushRevertable()
+void SnapshotManager::OnPushRevertible()
 {
 	_MovePointer(1);
 }

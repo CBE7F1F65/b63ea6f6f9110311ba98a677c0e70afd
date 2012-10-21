@@ -102,7 +102,7 @@ void MoveNodeCommand::OnDoneCommand()
 		pgm->OnTreeChanged(pObj->getParent(), pObj);
 //		MainInterface::getInstance().CallChangeNode(pObj);
 
-		PushRevertable(
+		PushRevertible(
 			CCMake_C(COMM_I_COMMAND, 4),
 			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 			CCMake_C(comm),
@@ -115,7 +115,7 @@ void MoveNodeCommand::OnDoneCommand()
 	}
 }
 /*
-void MoveNodeCommand::OnProcessUnDoCommand( RevertableCommand * rc )
+void MoveNodeCommand::OnProcessUnDoCommand( RevertibleCommand * rc )
 {
 	ASSERT(rc);
 	list<CommittedCommand>::iterator it=rc->commandlist.begin();

@@ -45,7 +45,7 @@ void RestoreToSnapshotCommand::OnDoneCommand()
 	}
 	if (SnapshotManager::getInstance().RevertToSnapshot(index))
 	{
-		PushRevertable(
+		PushRevertible(
 			CCMake_C(COMM_I_COMMAND, 2, 0),
 			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 			CCMake_C(COMM_RESTORETOSNAPSHOT),

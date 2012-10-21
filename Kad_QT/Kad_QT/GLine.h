@@ -174,7 +174,7 @@ public:
 
 	virtual void UpdateMidPoint();
 
-	virtual bool canMove(){return true;};
+	virtual bool canMove(){return !isDisplayLocked();};
 	virtual bool isStraightLine(){return true;};
 
 	virtual float CalculateProportion( float x, float y, int iSec );
@@ -214,7 +214,7 @@ public:
     virtual void OnPrecisionChanged(float fPrecision);
 	virtual void OnModify();
 	virtual void UpdateMidPoint();
-	virtual bool canMove(){return true;};
+	virtual bool canMove(){return !isDisplayLocked();};
 	virtual bool isStraightLine();
 	virtual bool toBezierLine();
 

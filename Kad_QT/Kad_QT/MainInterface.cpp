@@ -669,7 +669,7 @@ void MainInterface::SetPrecisionInt(int nVal)
     GObjectManager::getInstance().OnPrecisionChanged();
 }
 
-void MainInterface::OnPushRevertable( const char * desc, const char * commandstr, int command )
+void MainInterface::OnPushRevertible( const char * desc, const char * commandstr, int command )
 {
     QMainInterface::getInstance().GetPHistoryTable()->AddHistory(desc, commandstr, command);
 //	parentview->GetMainFrame()->AddHistory(desc, commandstr, command);
@@ -769,7 +769,7 @@ bool MainInterface::OpenFile()
 	{
 		// Save File?
 	}
-	QString qsfilename = QFileDialog::getOpenFileName();
+	QString qsfilename = QFileDialog::getOpenFileName(NULL, QString(), QString(), QString("*.xml"));
 	if (qsfilename.length())
 	{
 		return OpenFile(qsfilename.toUtf8());
@@ -840,7 +840,7 @@ bool MainInterface::SaveFile( bool bSaveAs/*=false*/ )
 {
 	if (bSaveAs || (nFileStatus & MI_FILESTATUS_NEW))
 	{
-		QString qsfilename = QFileDialog::getSaveFileName();
+		QString qsfilename = QFileDialog::getSaveFileName(NULL, QString(), QString(), QString("*.xml"));
 		if (qsfilename.length())
 		{
 			savefilename = qsfilename.toStdString();

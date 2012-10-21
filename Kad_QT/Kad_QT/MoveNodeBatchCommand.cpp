@@ -131,7 +131,7 @@ void MoveNodeBatchCommand::OnDoneCommand()
 	else
 	{
 		int movedcount = lobjs.size();
-		PushRevertableBatch(
+		PushRevertibleBatch(
 			PUSHREVERTABLESTATE_BEGIN,
 			CCMake_C(COMM_I_COMMAND, 4+movedcount, 1),
 			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
@@ -142,13 +142,13 @@ void MoveNodeBatchCommand::OnDoneCommand()
 			);
 		for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end(); ++it)
 		{
-			PushRevertableBatch(
+			PushRevertibleBatch(
 				PUSHREVERTABLESTATE_CONTINUE,
 				CCMake_I((*it)->getID()),
 				NULL
 				);
 		}
-		PushRevertableBatch(
+		PushRevertibleBatch(
 			PUSHREVERTABLESTATE_END,
 			CCMake_I(-1),
 			CCMake_C(COMM_I_UNDO_PARAMFROMCOMMAND),
@@ -163,7 +163,7 @@ void MoveNodeBatchCommand::OnDoneCommand()
 	}
 }
 /*
-void MoveNodeBatchCommand::OnProcessUnDoCommand( RevertableCommand * rc )
+void MoveNodeBatchCommand::OnProcessUnDoCommand( RevertibleCommand * rc )
 {
 	ASSERT(rc);
 	list<CommittedCommand>::iterator it=rc->commandlist.begin();

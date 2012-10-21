@@ -58,7 +58,7 @@ void MarqueeSelect::DeSelectAll()
 
 void MarqueeSelect::AddSelect( GObject * pObj, int level )
 {
-	if (!pObj)
+	if (!pObj || pObj->isDisplayLocked() || !pObj->isDisplayVisible())
 	{
 		return;
 	}
@@ -399,17 +399,20 @@ void MarqueeSelect::Update()
 void MarqueeSelect::Render()
 {
 	CheckValid();
-	for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end(); ++it)
+	if (!selectednodes.empty())
 	{
-		GObject * pObj = *it;
-		pObj->CallRender(LINECOLOR_ACTIVE);
-		if (pObj->isHandlePoint())
+		for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end(); ++it)
 		{
-			GHandlePoint * pHandle = (GHandlePoint *)pObj;
-			GHandlePoint * pOtherHandle = pHandle->getBindWith();
-			if (pOtherHandle)
+			GObject * pObj = *it;
+			pObj->CallRender(LINECOLOR_ACTIVE);
+			if (pObj->isHandlePoint())
 			{
-				pOtherHandle->CallRender(LINECOLOR_ACTIVE);
+				GHandlePoint * pHandle = (GHandlePoint *)pObj;
+				GHandlePoint * pOtherHandle = pHandle->getBindWith();
+				if (pOtherHandle)
+				{
+					pOtherHandle->CallRender(LINECOLOR_ACTIVE);
+				}
 			}
 		}
 	}
@@ -424,7 +427,7 @@ void MarqueeSelect::Render()
 
 void MarqueeSelect::CheckMarqueeSelect_Line( GObject * pObj, bool bAdd/*=true */ )
 {
-	if (!pObj)
+	if (!pObj || pObj->isDisplayLocked() || !pObj->isDisplayVisible())
 	{
 		return;
 	}
@@ -451,7 +454,7 @@ void MarqueeSelect::CheckMarqueeSelect_Line( GObject * pObj, bool bAdd/*=true */
 
 void MarqueeSelect::CheckMarqueeSelect_Pt( GObject * pObj, bool bAdd/*=true */ )
 {
-	if (!pObj)
+	if (!pObj || pObj->isDisplayLocked() || !pObj->isDisplayVisible())
 	{
 		return;
 	}
@@ -675,6 +678,10 @@ bool MarqueeSelect::CheckObjInSelection( GObject * pTestObj, bool bFindAncestor/
 
 void MarqueeSelect::DoMovePoint( GPoint * pPoint, float movedx_c, float movedy_c, int nMoveActionID )
 {
+	if (pPoint->isDisplayLocked() || !pPoint->isDisplayVisible())
+	{
+		return;
+	}
 	if (pPoint->isSlaveToLine())
 	{
 		DoMoveLine(pPoint->getLine(), movedx_c, movedy_c, nMoveActionID);
@@ -690,6 +697,10 @@ void MarqueeSelect::DoMovePoint( GPoint * pPoint, float movedx_c, float movedy_c
 
 void MarqueeSelect::DoMoveLine( GLine * pLine, float movedx_c, float movedy_c, int nMoveActionID )
 {
+	if (pLine->isDisplayLocked() || !pLine->isDisplayVisible())
+	{
+		return;
+	}
 	if (pLine->isSlaveToPiece())
 	{
 		DoMovePiece((GPiece *)pLine->getPiece(), movedx_c, movedy_c, nMoveActionID);
@@ -705,6 +716,10 @@ void MarqueeSelect::DoMoveLine( GLine * pLine, float movedx_c, float movedy_c, i
 
 void MarqueeSelect::DoMovePiece( GPiece * pPiece, float movedx_c, float movedy_c, int nMoveActionID )
 {
+	if (pPiece->isDisplayLocked() || !pPiece->isDisplayVisible())
+	{
+		return;
+	}
 	//ToDo!!
 	if (nomoveflag < MARQNOMOVE_PIECE)
 	{
@@ -715,15 +730,18 @@ void MarqueeSelect::DoMovePiece( GPiece * pPiece, float movedx_c, float movedy_c
 void MarqueeSelect::CheckValid()
 {
 	GObject * pObj = GObjectManager::getInstance().GetMainBaseNode();
-	for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end();)
+	if (!selectednodes.empty())
 	{
-		if (!pObj->isAncestorOf(*it))
+		for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end();)
 		{
-			it = selectednodes.erase(it);
-		}
-		else
-		{
-			++it;
+			if (!pObj->isAncestorOf(*it))
+			{
+				it = selectednodes.erase(it);
+			}
+			else
+			{
+				++it;
+			}
 		}
 	}
 }
@@ -781,7 +799,7 @@ void MarqueeSelect::BeginMove( float nowx, float nowy )
 	if (!pMarkingOffset)
 	{
 		ASSERT(pBeginObj);
-		if (!pBeginObj)
+		if (!pBeginObj || pBeginObj->isDisplayLocked() || !pBeginObj->isDisplayVisible())
 		{
 			return;
 		}

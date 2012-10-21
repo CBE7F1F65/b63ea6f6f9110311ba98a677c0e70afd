@@ -529,6 +529,7 @@ void GObject::setDisplayVisible( bool toDisplayVisible )
 				(*it)->OnParentToggleDisplayVisible(toDisplayVisible);
 			}
 		}
+		CallRedrawModify();
 	}
 }
 
@@ -674,7 +675,7 @@ void GObject::CallCancelTryMove()
 
 void GObject::CallRender( int iHighlightLevel/*=0*/ )
 {
-    if (iHighlightLevel || canRender())
+    if (/*iHighlightLevel || */canRender())
     {
         OnRender(iHighlightLevel);
 

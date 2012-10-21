@@ -136,7 +136,7 @@ void CircleCommand::OnDoneCommand()
 		pLine[i]->GetEndPoint()->MergeWith(pLine[inext]->GetBeginPoint());
 	}
 
-	PushRevertable(
+	PushRevertible(
 		CCMake_C(COMM_I_COMMAND, 4),
 		CCMake_CI(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 		CCMake_C(COMM_CIRCLE),

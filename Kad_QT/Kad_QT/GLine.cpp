@@ -69,7 +69,7 @@ bool GLine::MoveTo( GObject * pCaller, float newx, float newy, bool bTry, int mo
 	{
 		if (nMoveActionID == moveActionID)
 		{
-			return false;
+			return true;
 		}
 	}
 	nMoveActionID = moveActionID;

@@ -87,7 +87,7 @@ void ClingCommand::OnDoneCommand()
 	
 	if (pFromPoint->ClingTo(pToLine, fValue, nType))
 	{
-		PushRevertable(
+		PushRevertible(
 			CCMake_C(COMM_I_COMMAND, 5),
 			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 			CCMake_C(COMM_CLING),
@@ -100,7 +100,7 @@ void ClingCommand::OnDoneCommand()
 	}
 }
 /*
-void ClingCommand::OnProcessUnDoCommand( RevertableCommand * rc ) 
+void ClingCommand::OnProcessUnDoCommand( RevertibleCommand * rc ) 
 {
 	ASSERT(rc);
 	list<CommittedCommand>::iterator it=rc->commandlist.begin();

@@ -32,7 +32,7 @@ QTUI_GLView::~QTUI_GLView()
 void QTUI_GLView::initializeGL()
 {
     QGLWidget::initializeGL();
-
+	MainInterface::getInstance().hge->Gfx_ResolveGLFuncs(this->context());
 }
 
 void QTUI_GLView::OnMainFrameSetupUIDone()

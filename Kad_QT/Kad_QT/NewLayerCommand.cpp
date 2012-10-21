@@ -71,7 +71,7 @@ void NewLayerCommand::OnDoneCommand()
 	{
 		layerIndex = pLayer->getLayerID();
 	}
-	PushRevertable(
+	PushRevertible(
 		CCMake_C(COMM_I_COMMAND, 3),
 		CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 		CCMake_C(comm),
