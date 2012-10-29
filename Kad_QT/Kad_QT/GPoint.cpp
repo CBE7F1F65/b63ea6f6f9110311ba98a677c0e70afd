@@ -77,22 +77,13 @@ bool GPoint::MoveTo( GObject * pCaller, float newx, float newy, bool bTry, int m
 	ToggleTryMoveState(bTry);
 	x = newx;
 	y = newy;
+	HNOPB(!nTryState && nID > 0);
+	HNOP;
+	HNOPE;
 	
 	if (!isAnchorPoint())
 	{
 		CallModify();
-		if (isHandlePoint())
-		{
-			GLine * pLine = getLine();
-			list<GPoint *> * pClingByList = pLine->getClingBy();
-			if (!pClingByList->empty())
-			{
-				for (list<GPoint *>::iterator it=pClingByList->begin(); it!=pClingByList->end(); ++it)
-				{
-					(*it)->CallClingToMoved(false, moveActionID);
-				}
-			}
-		}
 	}
 
 	return true;
@@ -109,23 +100,26 @@ bool GPoint::CallMoveTo( GObject * pCaller, float newx, float newy, bool bTry, i
 		moveActionID = GObjectManager::getInstance().GetNextMoveActionID(GMMATYPE_MOVE);
 	}
 
-	if (!mergeWithList.empty())
+	if (pCaller)
 	{
-		list<GPoint *> demergeList;
-		for (list<GPoint *>::iterator it=mergeWithList.begin(); it!=mergeWithList.end(); ++it)
+		if (!mergeWithList.empty())
 		{
-			if (!(*it)->MoveTo(pCaller, newx, newy, bTry, moveActionID))
+			list<GPoint *> demergeList;
+			for (list<GPoint *>::iterator it=mergeWithList.begin(); it!=mergeWithList.end(); ++it)
 			{
-				demergeList.push_back(*it);
+				if (!(*it)->MoveTo(pCaller, newx, newy, bTry, moveActionID))
+				{
+					demergeList.push_back(*it);
+				}
 			}
-		}
-		// TODO!!!!
-		// Push Revertible
-		if (!demergeList.empty())
-		{
-			for (list<GPoint *>::iterator it=demergeList.begin(); it!=demergeList.end(); ++it)
+			// TODO!!!!
+			// Push Revertible
+			if (!demergeList.empty())
 			{
-				DemergeFrom(*it);
+				for (list<GPoint *>::iterator it=demergeList.begin(); it!=demergeList.end(); ++it)
+				{
+					DemergeFrom(*it);
+				}
 			}
 		}
 	}
@@ -519,12 +513,22 @@ GPiece * GPoint::getPiece()
 void GPoint::CallClingToMoved( bool bTry, int moveActionID )
 {
 	ASSERT(clInfo.GetClingTo());
+	
+	HNOPB(!bTry && nID==198);
+	HNOP;
+	HNOPE;
+	if (GObjectManager::getInstance().WillSelfMove(this))
+	{
+		return;
+	}
+	
+//	return;
 	PointF2D ptCling;
 	float fProp;
 	clInfo.GetClingPosition(&ptCling, NULL, NULL, &fProp);
 	if (fProp > M_FLOATEXTREMEEPS && fProp < 1-M_FLOATEXTREMEEPS)
 	{
-		if (!CallMoveTo(clInfo.GetClingTo(), ptCling.x, ptCling.y, bTry, moveActionID))
+		if (!CallMoveTo(this, ptCling.x, ptCling.y, bTry, moveActionID))
 		{
 			// TODO!!!!
 			// Push Revertible
@@ -602,6 +606,13 @@ bool GPoint::GetBoundingBox( float * lx, float * ty, float * rx, float * by )
 	return true;
 }
 
+bool GPoint::Isolate()
+{
+	DemergeFrom();
+	DeclingToOther();
+	return true;
+}
+
 /************************************************************************/
 /* GANCHORPOINT                                                         */
 /************************************************************************/
@@ -669,8 +680,12 @@ bool GAnchorPoint::MoveTo( GObject * pCaller, float newx, float newy, bool bTry,
 
 	bool bret = super::MoveTo(pCaller, newx, newy, bTry, moveActionID);
 
-	if (bret)
+	if (bret && pCaller)
 	{
+		HNOPB(!nTryState && nID > 0);
+		HNOP;
+		HNOPE;
+
 		if (pHandle)
 		{
 			int nMoveAngle;
@@ -682,6 +697,9 @@ bool GAnchorPoint::MoveTo( GObject * pCaller, float newx, float newy, bool bTry,
 				if (pHandle->getMoveActionID() != moveActionID)
 				{
 					pHandle->CallMoveByOffset(pCaller, xoffset, yoffset, bTry, moveActionID);
+					HNOPB(!bTry && nID > 0 && (x!=pHandle->getX() || y!=pHandle->getY()));
+					HNOP;
+					HNOPE;
 					bret = pHandle->CallRotate(pCaller, x, y, nMoveAngle, bTry, 0);
 					pHandle->CallMoveByOffset(pCaller, 0, 0, bTry, moveActionID);
 				}
@@ -717,7 +735,7 @@ bool GAnchorPoint::MoveTo( GObject * pCaller, float newx, float newy, bool bTry,
 				{
 					for (list<GPoint *>::iterator it=pClingByList->begin(); it!=pClingByList->end(); ++it)
 					{
-						(*it)->CallClingToMoved(false, -1);
+						(*it)->CallClingToMoved(bTry, bTry?moveActionID:-1);
 					}
 				}
 			}
@@ -781,6 +799,13 @@ GObject * GMidPoint::CreateNewClone( GObject * pNewParent/*=NULL*/, GObject * pB
 	_GOBJ_CLONE_PRE(GMidPoint);
 	_GOBJ_CLONE_POST();
 }
+
+void GMidPoint::OnRender( int iHighlightLevel/* =0 */ )
+{
+	DWORD col = getLineColor(iHighlightLevel);
+	RenderHelper::getInstance().RenderMidPoint(x, y, col);
+}
+
 /************************************************************************/
 /* GAttributePoint                                                      */
 /************************************************************************/
@@ -947,15 +972,26 @@ bool GHandlePoint::MoveTo( GObject * pCaller, float newx, float newy, bool bTry,
 		}
 	}
 	*/
-
 	bool bret = super::MoveTo(pCaller, newx, newy, bTry, moveActionID);
-	if (bret)
+	if (bret && pCaller)
 	{
+		HNOPB(!nTryState && nID > 0);
+		HNOP;
+		HNOPE;
 		if (pCaller && pCaller->isHandlePoint())
 		{
+			GLine * pLine = getLine();
+			list<GPoint *> * pClingByList = pLine->getClingBy();
+			if (!pClingByList->empty())
+			{
+				for (list<GPoint *>::iterator it=pClingByList->begin(); it!=pClingByList->end(); ++it)
+				{
+					(*it)->CallClingToMoved(bTry, moveActionID);
+				}
+			}
 			if (pBindWith)
 			{
-				if (GetAnchor()->getMoveActionID() != moveActionID && pBindWith->GetAnchor()->getMoveActionID() != moveActionID)
+				if (GetAnchor()->getMoveActionID() != moveActionID && pBindWith->GetAnchor()->getMoveActionID() != moveActionID && pBindWith->getMoveActionID() != moveActionID)
 				{
 					MathHelper * pmh = &MathHelper::getInstance();
 					PointF2D ptAnchor = this->GetAnchor()->GetPointF2D();
@@ -1018,11 +1054,21 @@ bool GHandlePoint::isIdenticalToAnchor()
 	return this->GetPointF2D().Equals(GetAnchor()->GetPointF2D());
 }
 
+bool GHandlePoint::Isolate()
+{
+	BindWith();
+	return true;
+}
+
 /************************************************************************/
 /* GClingInfo                                                           */
 /************************************************************************/
 bool GClingInfo::SetClingTo( GLine * pTo, float fVal, int nType/*=GCLING_PROPORTION*/ )
 {
+	if (fVal < M_SMALLFLOAT || fVal > 1-M_SMALLFLOAT)
+	{
+		return false;
+	}
 
 	if (pTo)
 	{

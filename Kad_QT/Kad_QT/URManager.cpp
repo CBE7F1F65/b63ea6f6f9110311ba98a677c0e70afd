@@ -102,3 +102,12 @@ bool URManager::CanReDo( int step/*=1*/ )
 	}
 	return index < stack.size()-step;
 }
+
+GBaseNode * URManager::GetLastBase()
+{
+	if (!CanUnDo())
+	{
+		return NULL;
+	}
+	return (GBaseNode *)stack[index]->getBase()->getChildren()->back();
+}

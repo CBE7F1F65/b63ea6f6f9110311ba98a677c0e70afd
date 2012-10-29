@@ -6,6 +6,7 @@ DXFWriter::DXFWriter(void)
 {
 	strbasename = "";
 	topy = -1;
+	fmul = 1.0f;
 }
 
 
@@ -14,7 +15,7 @@ DXFWriter::~DXFWriter(void)
 	SetBaseName();
 }
 
-bool DXFWriter::SetBaseName( const char * basename/*=NULL*/ )
+bool DXFWriter::SetBaseName( const char * basename/*=NULL*/, float mul/*=1.0f*/ )
 {
 	if (pdxf)
 	{
@@ -38,6 +39,7 @@ bool DXFWriter::SetBaseName( const char * basename/*=NULL*/ )
 		pdxf = NULL;
 		return false;
 	}
+	fmul = mul;
 
 	return true;
 }
@@ -79,7 +81,7 @@ bool DXFWriter::WriteEntitiesBegin()
 	return true;
 }
 
-bool DXFWriter::WriteLine( float x0, float y0, float x1, float y1, int layerID/*=0*/ )
+bool DXFWriter::WriteLine( float x0, float y0, float x1, float y1, int layerID/*=DXFLAYER_SEWLINE*/ )
 {
 	if (!pdxf)
 	{
@@ -90,8 +92,12 @@ bool DXFWriter::WriteLine( float x0, float y0, float x1, float y1, int layerID/*
 		y0 = topy - y0;
 		y1 = topy - y1;
 	}
+	x0 *= fmul;
+	y0 *= fmul;
+	x1 *= fmul;
+	y1 *= fmul;
 	QString qsline("0\nLINE\n");
-	qsline+="8\n"+QString::number(layerID+1)+"\n10\n"+QString::number(x0)+"\n20\n"+QString::number(y0)+"\n30\n0\n11\n"+QString::number(x1)+"\n21\n"+QString::number(y1)+"\n31\n0\n";
+	qsline+="8\n"+QString::number(layerID)+"\n10\n"+QString::number(x0)+"\n20\n"+QString::number(y0)+"\n30\n0\n11\n"+QString::number(x1)+"\n21\n"+QString::number(y1)+"\n31\n0\n";
 	QTextStream qts(pdxf);
 	qts<<qsline;
 	return true;
@@ -121,4 +127,14 @@ bool DXFWriter::WriteEOF()
 	qts<<qseof;
 	return true;
 
+}
+
+bool DXFWriter::WriteFrameAndGrain( float xl, float yt, float w, float h )
+{
+	WriteLine(xl, yt, xl+w, yt, DXFLAYER_BOUNDARY);
+	WriteLine(xl+w, yt, xl+w, yt+h, DXFLAYER_BOUNDARY);
+	WriteLine(xl+w, yt+h, xl, yt+h, DXFLAYER_BOUNDARY);
+	WriteLine(xl, yt, xl, yt+h, DXFLAYER_BOUNDARY);
+	WriteLine(xl+w, yt, xl+w, yt+h, DXFLAYER_GRAIN);
+	return true;
 }

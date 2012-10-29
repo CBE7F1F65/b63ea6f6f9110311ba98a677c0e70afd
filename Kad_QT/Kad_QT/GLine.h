@@ -112,6 +112,8 @@ public:
 	bool isClingBy(GPoint * pPoint);
 	list<GPoint *> * getClingBy(){return &clingByList;};
 
+	virtual bool Isolate();
+
 	/************************************************************************/
 	/* Members                                                              */
 	/************************************************************************/

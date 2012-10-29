@@ -138,7 +138,7 @@ void QTUI_NodeInfoFloating_ChangeClingTypeButton::SLT_ButtonClicked()
 /************************************************************************/
 QTUI_NodeInfoFloating_SwapBeginEndButton::QTUI_NodeInfoFloating_SwapBeginEndButton( GLine * _pLine )
 {
-	ASSERT(pLine);
+	ASSERT(_pLine);
 
 	pLine = _pLine;
 	this->setCheckable(false);
@@ -154,6 +154,32 @@ void QTUI_NodeInfoFloating_SwapBeginEndButton::SLT_ButtonClicked()
 	MainInterface::getInstance().OnCommandWithParam(
 		COMM_SWAPBEGINEND,
 		CCCWPARAM_I(pLine->getID()),
+		NULL
+		);
+}
+
+/************************************************************************/
+/* Isolate                                                              */
+/************************************************************************/
+
+QTUI_NodeInfoFloating_IsolateButton::QTUI_NodeInfoFloating_IsolateButton( GObject * _pObj )
+{
+	ASSERT(_pObj);
+	pObj = _pObj;
+
+	this->setCheckable(false);
+	this->setMaximumHeight(_UINIFTB_ICONSIZE);
+	this->setMinimumHeight(_UINIFTB_ICONSIZE);
+	connect(this, SIGNAL(clicked()), this, SLOT(SLT_ButtonClicked()));
+
+	this->setText(StringManager::getInstance().GetNodeInfoIsolateName());
+}
+
+void QTUI_NodeInfoFloating_IsolateButton::SLT_ButtonClicked()
+{
+	MainInterface::getInstance().OnCommandWithParam(
+		COMM_ISOLATE,
+		CCCWPARAM_I(pObj->getID()),
 		NULL
 		);
 }

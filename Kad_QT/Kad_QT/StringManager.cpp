@@ -97,7 +97,7 @@ void StringManager::FillSCInfo()
 	T	Trace
 	Y	Separate
 	U	Fullness
-	I	Mirror
+	I	Isolate	//	Mirror
 	O	Circle
 	P	Point
 	A	SeamAllowance
@@ -152,6 +152,11 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_MERGE,	"MERGE",	"",	"Merge With",	""	);
 	_BSET(	COMM_DEMERGE,	"DEMERGE",	"",	"Demerge From",	""	);
 	_BSET(	COMM_DELETEITEM,	"DELETE",	"DEL",	"Delete Item",	""	);
+	_BSET(	COMM_ISOLATE,	"ISOLATE",	"I",	"Isolate Item",	""	);
+
+	_BSET(	COMM_COPY,	"COPY",	"CO",	"Copy Item",	""	);
+	_BSET(	COMM_PASTE,	"PASTE",	"PA",	"Paste Item",	""	);
+
 	_BSET(	COMM_SETNODENAME,	"SETNODENAME",	"",	"Set Display Name",	""	);
 	_BSET(	COMM_DUPLICATE,	"DUPLICATE",	"DUP",	"Duplicate Item",	""	);
 	_BSET(	COMM_MOVENODE,	"MOVE",	"MOV",	"Move Node",	""	);

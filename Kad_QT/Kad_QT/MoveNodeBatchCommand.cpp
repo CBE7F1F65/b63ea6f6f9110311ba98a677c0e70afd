@@ -108,6 +108,7 @@ void MoveNodeBatchCommand::OnDoneCommand()
 
 	pgm->SetLockTreeChange();
 	int nMoveActionID = pgm->GetNextMoveActionID(GMMATYPE_MOVE);
+	pgm->SetWillSelfMoveList(&lobjs);
 	for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end();)
 	{
 		GObject * pMoveObj = *it;
@@ -122,6 +123,7 @@ void MoveNodeBatchCommand::OnDoneCommand()
 			++it;
 		}
 	}
+	pgm->SetWillSelfMoveList();
 
 	if (lobjs.empty())
 	{

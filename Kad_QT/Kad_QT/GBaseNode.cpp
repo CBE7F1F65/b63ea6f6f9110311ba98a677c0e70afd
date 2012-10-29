@@ -5,11 +5,26 @@
 GBaseNode::GBaseNode()
 {
 	setLineColor(ColorManager::getInstance().GetLayerLineColorSetByIndex());
+
+	savedactivelayer = -1;
+	savedlstselect.clear();
 }
 
 
 GBaseNode::~GBaseNode(void)
 {
+}
+
+bool GBaseNode::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelationship/* =true */ )
+{
+	if (super::CloneData(pClone, pNewParent, bNoRelationship))
+	{
+		GBaseNode * pBaseNode = (GBaseNode *)pClone;
+		pBaseNode->savedactivelayer = savedactivelayer;
+		pBaseNode->savedlstselect = savedlstselect;
+		return true;
+	}
+	return false;
 }
 
 void GBaseNode::CopyBaseTo( GBaseNodeCopyStack * pTo )
@@ -19,6 +34,7 @@ void GBaseNode::CopyBaseTo( GBaseNodeCopyStack * pTo )
 	if (!pNewBase)
 	{
 		DASSERT(false);
+		return;
 	}
 }
 
@@ -41,9 +57,39 @@ void GBaseNode::RestoreBaseFrom( GBaseNodeCopyStack * pFrom )
 			{
 				(*it)->CreateNewClone(this);
 			}
+
+			GObjectManager::getInstance().ReSelect(pOBase->savedlstselect, pOBase->savedactivelayer);
 		}
 	}
 }
+
+void GBaseNode::CallBaseUpdate()
+{
+	nUpdateMoveActionID = GObjectManager::getInstance().GetNextMoveActionID(GMMATYPE_MOVE);
+	CallUpdate();
+}
+
+void GBaseNode::SaveSelectState()
+{
+	savedactivelayer = -1;
+	savedlstselect.clear();
+
+	GObjectManager * pgm = &GObjectManager::getInstance();
+	list<GObject *> * plstselected = pgm->GetSelectedNodes(false);
+	if (!plstselected->empty())
+	{
+		for (list<GObject *>::iterator it=plstselected->begin(); it!=plstselected->end(); ++it)
+		{
+			savedlstselect.push_back((*it)->getID());
+		}
+	}
+
+	savedactivelayer = pgm->GetActiveLayer()->getID();
+}
+
+/************************************************************************/
+/* GMainBaseNode                                                        */
+/************************************************************************/
 
 GMainBaseNode::GMainBaseNode()
 {

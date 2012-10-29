@@ -198,6 +198,7 @@ void FlipNodeBatchCommand::OnDoneCommand()
 
 	pgm->SetLockTreeChange();
 	int moveActionID = pgm->GetNextMoveActionID(GMMATYPE_FLIP, angle);
+	pgm->SetWillSelfMoveList(&lobjs);
 	for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end();)
 	{
 		GObject * pMoveObj = *it;
@@ -212,6 +213,7 @@ void FlipNodeBatchCommand::OnDoneCommand()
 			++it;
 		}
 	}
+	pgm->SetWillSelfMoveList();
 
 	if (lobjs.empty())
 	{

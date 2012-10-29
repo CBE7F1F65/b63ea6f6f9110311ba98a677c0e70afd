@@ -693,7 +693,7 @@ void GObject::CallUpdate()
 {
 	if (canUpdate())
 	{
-		nUpdateMoveActionID = GObjectManager::getInstance().GetNextMoveActionID(GMMATYPE_MOVE);
+		nUpdateMoveActionID = getBase()->nUpdateMoveActionID;
 		OnUpdate();
 		if (!lstChildren.empty())
 		{
@@ -1000,4 +1000,19 @@ bool GObject::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelatio
 	}
 
 	return true;
+}
+
+bool GObject::CallRecCallBack( GObjRecCallBack cb, void * param )
+{
+	bool bRet = cb(this, param);
+
+	if (!lstChildren.empty())
+	{
+		FOREACH_GOBJ_CHILDREN_IT()
+		{
+			(*it)->CallRecCallBack(cb, param);
+		}
+	}
+
+	return bRet;
 }

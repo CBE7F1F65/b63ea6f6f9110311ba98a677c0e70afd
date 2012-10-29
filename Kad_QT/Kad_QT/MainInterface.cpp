@@ -51,7 +51,7 @@ MainInterface::MainInterface()
 
 	bLockLeftMouseDown = false;
 
-    nPrecision = 50;
+    nPrecision = 75;
 
 	printdpi = 96;
 	displaymul = 10.0f;
@@ -410,6 +410,10 @@ void MainInterface::CallChangeNode( GObject * pObj )
 
 void MainInterface::CallShowNodeInfo(GObject *pObj, bool bContext)
 {
+	if (pObj && pObj->isMidPoint())
+	{
+		pObj = pObj->getLine();
+	}
     QMainInterface::getInstance().GetPNodeInfoFloatingTree()->ShowNodeInfo(pObj, bContext);
 }
 
@@ -915,4 +919,9 @@ int MainInterface::GetPrintsize_H()
 int MainInterface::GetPrintMargin()
 {
 	return printdpi*printmargin;
+}
+
+void MainInterface::CallSelectAllNodes( bool bOnlyThisLayer/*=false*/ )
+{
+	MarqueeSelect::getInstance().SelectAll(bOnlyThisLayer);
 }

@@ -40,7 +40,11 @@ public:
 	void DeSelect(GObject * pObj);
 	void DeSelectAll();
 	void AddSelect(GObject * pObj, int level=-1);
+	void SelectAll(bool bOnlyThisLayer=false);
+	void AddRecSelect(GObject * pObj, int level);
+	static bool staticRecAddSelectCB(GObject * pObj, void * param_intLevel);
 
+	void OnSelectChanged();
 
 	void DoMovePoint(GPoint * pPoint, float movedx_c, float movedy_c, int nMoveActionID);
 	void DoMoveLine(GLine * pLine, float movedx_c, float movedy_c, int nMoveActionID);

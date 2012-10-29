@@ -105,6 +105,8 @@ public:
 	list<GPoint *> * getMergeWith(){return &mergeWithList;};
 	void CallClingToMoved( bool bTry, int moveActionID );
 
+	virtual bool Isolate();
+
 protected:
 	/************************************************************************/
 	/* Members                                                              */
@@ -213,6 +215,8 @@ public:
 	virtual bool isSlaveToLine(){return true;};
 	virtual bool canMove(){return false;};
 
+	virtual void OnRender(int iHighlightLevel/* =0 */);
+
 	virtual const char * getDisplayName();
 	virtual GObject * CreateNewClone(GObject * pNewParent=NULL, GObject * pBeforeObj=NULL);
 	/************************************************************************/
@@ -258,6 +262,8 @@ public:
     bool isBindWith(GHandlePoint * pHandle){return pBindWith==pHandle;};
 	bool BindWith(GHandlePoint * pHandle=NULL);
 	bool UnbindTo(GHandlePoint * pHandle);
+
+	virtual bool Isolate();
 	/************************************************************************/
 	/* Members                                                              */
 	/************************************************************************/

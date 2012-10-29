@@ -84,8 +84,12 @@ bool GLine::MoveTo( GObject * pCaller, float newx, float newy, bool bTry, int mo
 	*/
 //	ToggleTryMoveState(bTry);
 
-	plbegin->CallMoveByOffset(this, xoffset, yoffset, bTry, moveActionID);
-	plend->CallMoveByOffset(this, xoffset, yoffset, bTry, moveActionID);
+	if (pCaller)
+	{
+		plbegin->CallMoveByOffset(this, xoffset, yoffset, bTry, moveActionID);
+		plend->CallMoveByOffset(this, xoffset, yoffset, bTry, moveActionID);
+
+	}
 
 //	UpdateMidPoint();
 	return true;
@@ -101,6 +105,7 @@ bool GLine::CallMoveTo( GObject * pCaller, float newx, float newy, bool bTry, in
 	{
 		moveActionID = GObjectManager::getInstance().GetNextMoveActionID(GMMATYPE_MOVE);
 	}
+	/*
 	if (!clingByList.empty())
 	{
 		float xoffset = newx - getX();
@@ -110,6 +115,7 @@ bool GLine::CallMoveTo( GObject * pCaller, float newx, float newy, bool bTry, in
 			(*it)->CallMoveByOffset(pCaller, xoffset, yoffset, bTry, moveActionID);
 		}
 	}
+	*/
 	return MoveTo(pCaller, newx, newy, bTry, moveActionID);
 }
 
@@ -338,6 +344,14 @@ void GLine::AddSA( float xinner, float yinner, float fsa )
 	}
 	saInfo.SetSA(fsa, nSAFlag);
 	CallModify();
+}
+
+bool GLine::Isolate()
+{
+	DeclingByOther();
+	plbegin->Isolate();
+	plend->Isolate();
+	return true;
 }
 
 /************************************************************************/

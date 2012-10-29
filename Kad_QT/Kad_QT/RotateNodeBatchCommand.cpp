@@ -231,6 +231,7 @@ void RotateNodeBatchCommand::OnDoneCommand()
 	}
 
 	pgm->SetLockTreeChange();
+	pgm->SetWillSelfMoveList(&lobjs);
 	int moveActionID = pgm->GetNextMoveActionID(GMMATYPE_ROTATE, angle);
 	for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end();)
 	{
@@ -246,7 +247,7 @@ void RotateNodeBatchCommand::OnDoneCommand()
 			++it;
 		}
 	}
-
+	pgm->SetWillSelfMoveList();
 
 	if (lobjs.empty())
 	{

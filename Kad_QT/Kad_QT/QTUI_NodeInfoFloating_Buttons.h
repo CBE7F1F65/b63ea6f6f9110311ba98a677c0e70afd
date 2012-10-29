@@ -1,5 +1,4 @@
-#ifndef QTUI_NODEINFOFLOATING_BUTTONS_H
-#define QTUI_NODEINFOFLOATING_BUTTONS_H
+#pragma once
 
 #include <QPushButton>
 #include <QTreeWidget>
@@ -42,8 +41,6 @@ protected:
 	GLine * pLine;
 };
 
-#endif
-
 /************************************************************************/
 /* Cling                                                                */
 /************************************************************************/
@@ -65,4 +62,21 @@ protected:
 	QTreeWidgetItem * pItem;
 	bool bTo;
 	int nTextColumn;
+};
+
+/************************************************************************/
+/* Isolate                                                              */
+/************************************************************************/
+
+class QTUI_NodeInfoFloating_IsolateButton : public QPushButton
+{
+	Q_OBJECT
+public:
+	explicit QTUI_NodeInfoFloating_IsolateButton(GObject * pObj);
+
+private slots:
+	void SLT_ButtonClicked();
+
+protected:
+	GObject * pObj;
 };

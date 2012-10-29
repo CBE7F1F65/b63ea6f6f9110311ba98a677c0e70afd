@@ -59,3 +59,13 @@ using namespace std;
 #endif
 
 #endif
+
+#ifdef _DEBUG
+#define HNOPB(COND)	if(COND){
+#define HNOP	while(false){}
+#define HNOPE	}
+#else
+#define HNOPB(COND)
+#define HNOP
+#define HNOPE
+#endif

@@ -30,9 +30,21 @@ Kad_QT::Kad_QT(QWidget *parent, Qt::WFlags flags)
 	QShortcut * undoShortcut = new QShortcut(QKeySequence(tr("Ctrl+Z", "Edit|Undo")), this);
 	QShortcut * redoShortcut_1 = new QShortcut(QKeySequence(tr("Ctrl+Shift+Z", "Edit|Redo")), this);
 	QShortcut * redoShortcut_2 = new QShortcut(QKeySequence(tr("Ctrl+Y", "Edit|Redo")), this);
+
 	connect(undoShortcut, SIGNAL(activated()), this, SLOT(SLT_UndoShortcutActivated()));
 	connect(redoShortcut_1, SIGNAL(activated()), this, SLOT(SLT_RedoShortcutActivated()));
 	connect(redoShortcut_2, SIGNAL(activated()), this, SLOT(SLT_RedoShortcutActivated()));
+
+	QShortcut * copyShortcut = new QShortcut(QKeySequence(tr("Ctrl+C", "Select|Copy")), this);
+	QShortcut * pasteShortcut = new QShortcut(QKeySequence(tr("Ctrl+V", "Select|Paste")), this);
+	QShortcut * selectAllShortcut = new QShortcut(QKeySequence(tr("Ctrl+A", "Select|SelectAll")), this);
+	QShortcut * selectAllThisLayerShortcut = new QShortcut(QKeySequence(tr("Ctrl+Shift+A", "Select|SelectAllThisLayer")), this);
+
+	connect(copyShortcut, SIGNAL(activated()), this, SLOT(SLT_CopyShortcutActivated()));
+	connect(pasteShortcut, SIGNAL(activated()), this, SLOT(SLT_PasteShortcutActivated()));
+	connect(selectAllShortcut, SIGNAL(activated()), this, SLOT(SLT_SelectAllShortcutActivated()));
+	connect(selectAllThisLayerShortcut, SIGNAL(activated()), this, SLOT(SLT_SelectAllThisLayerShortcutActivated()));
+
 }
 
 Kad_QT::~Kad_QT()
@@ -89,4 +101,24 @@ void Kad_QT::on_action_SaveAs_triggered()
 void Kad_QT::on_action_Exit_triggered()
 {
 	MainInterface::getInstance().OnCommand(COMM_EXIT);
+}
+
+void Kad_QT::SLT_CopyShortcutActivated()
+{
+	MainInterface::getInstance().OnCommand(COMM_COPY);
+}
+
+void Kad_QT::SLT_PasteShortcutActivated()
+{
+	MainInterface::getInstance().OnCommand(COMM_PASTE);
+}
+
+void Kad_QT::SLT_SelectAllShortcutActivated()
+{
+	MainInterface::getInstance().CallSelectAllNodes(false);
+}
+
+void Kad_QT::SLT_SelectAllThisLayerShortcutActivated()
+{
+	MainInterface::getInstance().CallSelectAllNodes(true);
 }

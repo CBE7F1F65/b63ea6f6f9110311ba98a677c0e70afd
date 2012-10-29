@@ -302,6 +302,7 @@ public:
 	_SMNODEINFODEF(	ToBezier,	"To Bezier"	);
 	_SMNODEINFODEF(	ToStrightLine,	"To Straight Line"	);
 	_SMNODEINFODEF(	SwapBeginEnd,	"Swap Begin End Anchors"	);
+	_SMNODEINFODEF(	Isolate,	"Isolate"	);
 
 #undef _SMNODEINFODEF
 

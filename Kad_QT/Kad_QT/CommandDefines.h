@@ -53,10 +53,16 @@ enum{
 	// Node
 	COMM_DELETEITEM,
 	COMM_REPARENT,
+
 	COMM_CLING,
 	COMM_BINDHANDLE,
 	COMM_MERGE,
 	COMM_DEMERGE,
+	COMM_ISOLATE,
+
+	COMM_COPY,
+	COMM_PASTE,
+
 	COMM_SETNODENAME,
 	COMM_DUPLICATE,
 	COMM_MOVENODE,
@@ -251,6 +257,32 @@ enum{
 	CSI_DEMERGE_WANTFROMINDEX,
 	CSI_DEMERGE_WANTTOINDEX,
 };
+
+/************************************************************************/
+/* ISOLATE                                                              */
+/************************************************************************/
+
+enum{
+	CSP_ISOLATE_I_INDEX,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_ISOLATE_DUMMY=0,
+	CSI_ISOLATE_WANTINDEX,
+};
+
+/************************************************************************/
+/* COPY                                                                 */
+/************************************************************************/
+enum{
+	CSP_COPY_I_INDEXES,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_COPY_DUMMY,
+	CSI_COPY_WANTINDEXES,
+};
+
 /************************************************************************/
 /* DELETEITEM                                                           */
 /************************************************************************/

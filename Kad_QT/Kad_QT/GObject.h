@@ -67,6 +67,10 @@ class GPiece;
 
 class GNodeRelationshipGroup;
 
+class GObject;
+
+typedef bool (*GObjRecCallBack)(GObject * pThis, void * param);
+
 class GObject
 {
 public:
@@ -86,6 +90,8 @@ public:
 
 	virtual bool ReadXML(GObjectXMLNode * pnode);
 
+	bool CallRecCallBack(GObjRecCallBack cb, void * param);
+
 public:
 	virtual int AddChild(GObject * child);
 private:
@@ -98,6 +104,8 @@ public:
 	virtual int RemoveChild(GObject * child, bool bRelease);
 	virtual int RemoveFromParent(bool bRelease);
 	virtual void CallResetID(int beginindex=0);
+
+	virtual bool Isolate(){return false;};
 
 	virtual GNodeRelationshipGroup * CreateRelationshipGroup(bool bClingBy=true, bool bOneWay=false){return NULL;};
 

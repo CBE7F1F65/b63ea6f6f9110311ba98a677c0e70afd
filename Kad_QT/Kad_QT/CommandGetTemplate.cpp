@@ -31,6 +31,9 @@
 #include "OpenCommand.h"
 #include "AddSACommand.h"
 #include "DumpCommand.h"
+#include "IsolateCommand.h"
+#include "CopyCommand.h"
+#include "PasteCommand.h"
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 {
@@ -50,6 +53,14 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 		return &MergeCommand::getInstance();
 	case COMM_DEMERGE:
 		return &DemergeCommand::getInstance();
+	case COMM_ISOLATE:
+		return &IsolateCommand::getInstance();
+
+	case COMM_COPY:
+		return &CopyCommand::getInstance();
+	case COMM_PASTE:
+		return &PasteCommand::getInstance();
+
 	case COMM_DELETEITEM:
 		return &DeleteItemCommand::getInstance();
 	case COMM_SETNODENAME:

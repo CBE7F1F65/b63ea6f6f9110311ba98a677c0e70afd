@@ -339,7 +339,10 @@ void QTUI_NodeInfoFloating_Tree::UpdateNodeInfo(GObject *pObj, QTreeWidgetItem *
     QTreeWidgetItem * pInfoItem = NewItemWithText(pParent, psm->GetNodeInfoInfoName());
 
     str.sprintf("%s: %d", strID, pObj->getID());
-    NewItemWithText(pInfoItem, str);
+	QTreeWidgetItem * pIDItem = NewItemWithText(pInfoItem, str);
+
+	QPushButton * pButton=new QTUI_NodeInfoFloating_IsolateButton(pObj);
+	this->setItemWidget(pIDItem, _UINIFT_COLUMN_BUTTON, pButton);
 
     str.sprintf("%s: %s", strName, pObj->getDisplayName());
     NewItemWithText(pInfoItem, str);

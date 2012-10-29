@@ -73,6 +73,9 @@ public:
 	// To Command
 	void CallUnDoReDo(int step);
 
+	// To Nodes
+	void CallSelectAllNodes(bool bOnlyThisLayer=false);
+
 	// Do
 
 	void DoResizeWindow();

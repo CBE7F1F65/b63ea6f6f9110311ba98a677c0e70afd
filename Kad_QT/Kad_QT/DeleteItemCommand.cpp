@@ -106,6 +106,14 @@ void DeleteItemCommand::OnDoneCommand()
 	if (!lstObj.empty())
 	{
 		lstObj.sort();
+		int objcount = lstObj.size();
+		PushRevertibleBatch(
+			PUSHREVERTABLESTATE_BEGIN,
+			CCMake_C(COMM_I_COMMAND, 2+objcount, 1),
+			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
+			CCMake_C(COMM_DELETEITEM),
+			NULL
+			);
 		for (list<GObject *>::reverse_iterator it=lstObj.rbegin(); it!=lstObj.rend(); ++it)
 		{
 			GObject * pObj = *it;
@@ -123,13 +131,17 @@ void DeleteItemCommand::OnDoneCommand()
 			pObj->RemoveFromParent(true);
 //			pgm->MoveToUnDoList(pObj);
 
-			PushRevertible(
-				CCMake_C(COMM_I_COMMAND, 2, 0),
-				CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
-				CCMake_C(COMM_DELETEITEM),
-				CCMake_I(pObj->getID()),
+			PushRevertibleBatch(
+				PUSHREVERTABLESTATE_CONTINUE,
+				CCMake_I((*it)->getID()),
 				NULL
 				);
 		}
+		PushRevertibleBatch(
+			PUSHREVERTABLESTATE_END,
+			CCMake_I(-1),
+			CCMake_C(COMM_I_UNDO_PARAMFROMCOMMAND),
+			NULL
+			);
 	}
 }

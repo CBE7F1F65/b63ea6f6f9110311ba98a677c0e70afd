@@ -27,11 +27,26 @@ public:
 	GBaseNode(void);
 	virtual ~GBaseNode(void);
 
+	void SaveSelectState();
+
+	void CallBaseUpdate();
 	void RestoreBaseFrom( GBaseNodeCopyStack * pFrom );
     void CopyBaseTo( GBaseNodeCopyStack * pTo );
 
 public:
+	/************************************************************************/
+	/* Members                                                              */
+	/************************************************************************/
+	//////////////////////////////////////////////////////////////////////////
+	GOBJM_COPYABLES();
+	list<int> savedlstselect;
+	list<int> savedlstactive;
+	int savedactivelayer;
+	GOBJM_COPYABLESEND();
+
+public:
 	virtual GObject * CreateNewClone(GObject * pNewParent=NULL, GObject * pBeforeObj=NULL);
+	virtual bool CloneData(GObject * pClone, GObject * pNewParent, bool bNoRelationship=true);
 };
 
 class GMainBaseNode :

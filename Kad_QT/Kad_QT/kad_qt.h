@@ -22,6 +22,11 @@ private slots:
 	void SLT_UndoShortcutActivated();
 	void SLT_RedoShortcutActivated();
 
+	void SLT_CopyShortcutActivated();
+	void SLT_PasteShortcutActivated();
+	void SLT_SelectAllShortcutActivated();
+	void SLT_SelectAllThisLayerShortcutActivated();
+
     void on_action_New_triggered();
 
     void on_action_Open_triggered();

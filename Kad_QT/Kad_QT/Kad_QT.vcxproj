@@ -41,6 +41,8 @@
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(LibraryPath);$(VSInstallDir);$(VSInstallDir)lib;$(DXSDK_DIR)Lib\x86</LibraryPath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IncludePath);$(VCInstallDir)atlmfc\include;$(DXSDK_DIR)Include</IncludePath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(LibraryPath);$(VSInstallDir);$(VSInstallDir)lib;$(DXSDK_DIR)Lib\x86</LibraryPath>
+    <SourcePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(VCInstallDir)atlmfc\src\mfc;$(VCInstallDir)atlmfc\src\mfcm;$(VCInstallDir)atlmfc\src\atl;$(VCInstallDir)crt\src;$(QTDIR)\src;</SourcePath>
+    <SourcePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(VCInstallDir)atlmfc\src\mfc;$(VCInstallDir)atlmfc\src\mfcm;$(VCInstallDir)atlmfc\src\atl;$(VCInstallDir)crt\src;$(QTDIR)\src;</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -97,6 +99,7 @@
     <ClCompile Include="CommandMap.cpp" />
     <ClCompile Include="CommandSubState.cpp" />
     <ClCompile Include="CommandTemplate.cpp" />
+    <ClCompile Include="CopyCommand.cpp" />
     <ClCompile Include="DeleteItemCommand.cpp" />
     <ClCompile Include="DumpCommand.cpp" />
     <ClCompile Include="DuplicateCommand.cpp" />
@@ -248,6 +251,7 @@
     <ClCompile Include="IconManager.cpp" />
     <ClCompile Include="InitDllLoader.cpp" />
     <ClCompile Include="InitialCommand.cpp" />
+    <ClCompile Include="IsolateCommand.cpp" />
     <ClCompile Include="JoinLineCommand.cpp" />
     <ClCompile Include="kad_qt.cpp" />
     <ClCompile Include="LineCommand.cpp" />
@@ -266,6 +270,7 @@
     <ClCompile Include="NewLayerCommand.cpp" />
     <ClCompile Include="OpenCommand.cpp" />
     <ClCompile Include="OutputCommand.cpp" />
+    <ClCompile Include="PasteCommand.cpp" />
     <ClCompile Include="PickFilterTemplate.cpp" />
     <ClCompile Include="ProcessCommand.cpp" />
     <ClCompile Include="qkeystatemanager.cpp" />
@@ -323,6 +328,7 @@
     <ClInclude Include="CommandSubState.h" />
     <ClInclude Include="CommandTemplate.h" />
     <ClInclude Include="Const.h" />
+    <ClInclude Include="CopyCommand.h" />
     <ClInclude Include="DeleteItemCommand.h" />
     <ClInclude Include="DumpCommand.h" />
     <ClInclude Include="DuplicateCommand.h" />
@@ -353,6 +359,7 @@
     <ClInclude Include="GUICursor.h" />
     <ClInclude Include="IconManager.h" />
     <ClInclude Include="InitialCommand.h" />
+    <ClInclude Include="IsolateCommand.h" />
     <ClInclude Include="JoinLineCommand.h" />
     <ClInclude Include="LineCommand.h" />
     <ClInclude Include="LineTransformCommand.h" />
@@ -361,6 +368,7 @@
     <ClInclude Include="MarkingManager.h" />
     <ClInclude Include="MarkingObject.h" />
     <ClInclude Include="OpenCommand.h" />
+    <ClInclude Include="PasteCommand.h" />
     <ClInclude Include="PickFilterTemplate.h" />
     <CustomBuild Include="QTUI_NodeInfoFloating_Buttons.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

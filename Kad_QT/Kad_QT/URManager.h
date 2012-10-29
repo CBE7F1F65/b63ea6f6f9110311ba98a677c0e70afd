@@ -36,6 +36,8 @@ public:
 	bool UnDo(GBaseNode * pBase, int step=1);
 	bool ReDo(GBaseNode * pBase, int step=1);
 
+	GBaseNode * GetLastBase();
+
 	int ClearReDo();
 
 private:

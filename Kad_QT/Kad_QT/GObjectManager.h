@@ -56,6 +56,33 @@ private:
 	float yoffset;
 };
 
+enum{
+	GOBJCOPY_POINT,
+	GOBJCOPY_LINE,
+};
+class GObjectCopyInfo{
+
+	friend class GLine;
+public:
+	GObjectCopyInfo(GPoint * pPoint, float x, float y){pObj=pPoint; type=GOBJCOPY_POINT; xb=x; yb=y;};
+	GObjectCopyInfo(GLine * pLine, float _xb, float _yb, float _xe, float _ye)
+	{ pObj=pLine; type = GOBJCOPY_LINE; xb = _xb; yb = _yb; xe = _xe; ye = _ye; xbh = _xb; ybh = _yb; xeh = _xe; yeh = _ye;	};
+	GObjectCopyInfo(GLine * pLine, float _xb, float _yb, float _xe, float _ye, float _xbh, float _ybh, float _xeh, float _yeh)
+	{ pObj=pLine; type = GOBJCOPY_LINE; xb = _xb; yb = _yb; xe = _xe; ye = _ye; xbh = _xbh; ybh = _ybh; xeh = _xeh; yeh = _yeh;	};
+
+public:
+	int type;
+	GObject * pObj;
+	float xb;
+	float yb;
+	float xe;
+	float ye;
+	float xbh;
+	float ybh;
+	float xeh;
+	float yeh;
+};
+
 class GObjectManager
 {
 	friend class GObject;
@@ -122,6 +149,17 @@ public:
 
 	void SetLockTreeChange();
 
+	void SetWillSelfMoveList(list<GObject *> * pobjs=NULL);
+	bool WillSelfMove(GObject * pObj);
+
+	bool AddCopyNode(GObject * pObj);
+	void ClearCopiedNodes();
+	bool PasteNodes();
+	bool IsInCopyList(GObject * pObj);
+
+	void SaveSelectState();
+	void ReSelect(list<int> lstselect, int activelayerID);
+
 public:
 	GMainBaseNode * GetMainBaseNode(){return pBaseNode;};
 	GBaseNode * GetFakeBaseNode(){return &fakebasenode;};
@@ -140,6 +178,8 @@ private:
 	int stackedLayerIndex;
 	string defaultLayerName;
 
+	list<GObject *> * pwillselfmovelist;
+
 	GLayer * pActiveLayer;
 
 //	GLayer * pActiveLayer;
@@ -156,6 +196,8 @@ public:
 	GLayer * GetDragDroppedLayerNode();
 	GObject * GetDragDroppedAfterNode();
 //	list<GObject*> selectednodes;
+
+	list<GObjectCopyInfo> lstcopy;
 
 	int PushMoveNodeByOffsetForBatchCommand( GObject* pObj, float xoffset, float yoffset );
 	void DoMoveNodeByOffsetBatch();

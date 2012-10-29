@@ -6,6 +6,7 @@
 
 #define _GATTRPT_RENDER_A	5
 #define _GSUBSPT_RENDER_L	5
+#define _GMIDPT_RENDER_L	5
 
 RenderHelper::RenderHelper(void)
 {
@@ -43,7 +44,7 @@ void RenderHelper::TrueBaseRenderPoint_S( float x, float y, DWORD col )
 	{
 		hge->Gfx_RenderPoint(x, y, 0, col);
 	}
-	pdxfw->WriteLine(x, y, x, y, 13);
+	pdxfw->WriteLine(x, y, x, y);
 }
 
 void RenderHelper::TrueBaseRenderLine_S( float x1, float y1, float x2, float y2, DWORD col )
@@ -61,7 +62,7 @@ void RenderHelper::TrueBaseRenderLine_S( float x1, float y1, float x2, float y2,
 	{
 		hge->Gfx_RenderLine(x1, y1, x2, y2, col);
 	}
-	pdxfw->WriteLine(x1, y1, x2, y2, 13);
+	pdxfw->WriteLine(x1, y1, x2, y2);
 }
 
 void RenderHelper::BaseRenderPoint_S( float x, float y, DWORD col )
@@ -373,6 +374,28 @@ void RenderHelper::RenderSubstantivePoint_S( float x, float y, DWORD col )
 	RenderLine_S(x-_GSUBSPT_RENDER_L, y-_GSUBSPT_RENDER_L, x+_GSUBSPT_RENDER_L, y+_GSUBSPT_RENDER_L, col);
 	RenderLine_S(x+_GSUBSPT_RENDER_L, y-_GSUBSPT_RENDER_L, x-_GSUBSPT_RENDER_L, y+_GSUBSPT_RENDER_L, col);
 
+}
+
+void RenderHelper::RenderMidPoint_S( float x, float y, DWORD col )
+{
+	/*
+	RenderLine_S(x-_GMIDPT_RENDER_L, y+_GMIDPT_RENDER_L, x+_GMIDPT_RENDER_L, y+_GMIDPT_RENDER_L, col);
+	RenderLine_S(x-_GMIDPT_RENDER_L, y+_GMIDPT_RENDER_L, x, y-_GMIDPT_RENDER_L, col);
+	RenderLine_S(x+_GMIDPT_RENDER_L, y+_GMIDPT_RENDER_L, x, y-_GMIDPT_RENDER_L, col);
+	*/
+
+	float fmul=1.0f/3.0f;
+	RenderLine_S(x-_GSUBSPT_RENDER_L, y-_GSUBSPT_RENDER_L, x-_GSUBSPT_RENDER_L*fmul, y-_GSUBSPT_RENDER_L, col);
+	RenderLine_S(x+_GSUBSPT_RENDER_L*fmul, y-_GSUBSPT_RENDER_L, x+_GSUBSPT_RENDER_L, y-_GSUBSPT_RENDER_L, col);
+
+	RenderLine_S(x+_GSUBSPT_RENDER_L, y-_GSUBSPT_RENDER_L, x+_GSUBSPT_RENDER_L, y-_GSUBSPT_RENDER_L*fmul, col);
+	RenderLine_S(x+_GSUBSPT_RENDER_L, y+_GSUBSPT_RENDER_L*fmul, x+_GSUBSPT_RENDER_L, y+_GSUBSPT_RENDER_L, col);
+
+	RenderLine_S(x+_GSUBSPT_RENDER_L, y+_GSUBSPT_RENDER_L, x+_GSUBSPT_RENDER_L*fmul, y+_GSUBSPT_RENDER_L, col);
+	RenderLine_S(x-_GSUBSPT_RENDER_L*fmul, y+_GSUBSPT_RENDER_L, x-_GSUBSPT_RENDER_L, y+_GSUBSPT_RENDER_L, col);
+
+	RenderLine_S(x-_GSUBSPT_RENDER_L, y+_GSUBSPT_RENDER_L, x-_GSUBSPT_RENDER_L, y+_GSUBSPT_RENDER_L*fmul, col);
+	RenderLine_S(x-_GSUBSPT_RENDER_L, y-_GSUBSPT_RENDER_L*fmul, x-_GSUBSPT_RENDER_L, y-_GSUBSPT_RENDER_L, col);
 }
 
 void RenderHelper::RenderHandlePoint_S( float x, float y, DWORD col )

@@ -94,6 +94,7 @@ public:
 
 	void RenderAttributePoint_S(float x, float y, DWORD col);
 	void RenderSubstantivePoint_S(float x, float y, DWORD col);
+	void RenderMidPoint_S(float x, float y, DWORD col);
 	void RenderHandlePoint_S(float x, float y, DWORD col);
 	void RenderAttributePoint(float x, float y, DWORD col)
 	{
@@ -102,6 +103,10 @@ public:
 	void RenderSubstantivePoint(float x, float y, DWORD col)
 	{
 		RenderSubstantivePoint_S(_CTOSP(x, y), col);
+	};
+	void RenderMidPoint(float x, float y, DWORD col)
+	{
+		RenderMidPoint_S(_CTOSP(x, y), col);
 	};
 	void RenderHandlePoint( float x, float y, DWORD col )
 	{

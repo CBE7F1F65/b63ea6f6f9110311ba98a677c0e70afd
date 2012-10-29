@@ -180,6 +180,9 @@
     <Filter Include="Main\Helper\DXF">
       <UniqueIdentifier>{0cec8cda-7262-4411-a01f-55d34fafda38}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\Command\CopyPaste">
+      <UniqueIdentifier>{21551d42-f12d-4d4e-b111-44211497f7de}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_kad_qt.cpp">
@@ -587,6 +590,15 @@
     <ClCompile Include="DXFWriter.cpp">
       <Filter>Main\Helper\DXF</Filter>
     </ClCompile>
+    <ClCompile Include="IsolateCommand.cpp">
+      <Filter>Main\Command\Combination</Filter>
+    </ClCompile>
+    <ClCompile Include="CopyCommand.cpp">
+      <Filter>Main\Command\CopyPaste</Filter>
+    </ClCompile>
+    <ClCompile Include="PasteCommand.cpp">
+      <Filter>Main\Command\CopyPaste</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -831,6 +843,15 @@
     </ClInclude>
     <ClInclude Include="DXFWriter.h">
       <Filter>Main\Helper\DXF</Filter>
+    </ClInclude>
+    <ClInclude Include="IsolateCommand.h">
+      <Filter>Main\Command\Combination</Filter>
+    </ClInclude>
+    <ClInclude Include="CopyCommand.h">
+      <Filter>Main\Command\CopyPaste</Filter>
+    </ClInclude>
+    <ClInclude Include="PasteCommand.h">
+      <Filter>Main\Command\CopyPaste</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

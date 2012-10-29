@@ -66,6 +66,8 @@ void GObjectManager::Release()
 	bTryMove = false;
 	bTryMoveBlock = false;
 
+	pwillselfmovelist = NULL;
+
 	bCloning = false;
 	bManualCloning = false;
 	mapCloneList.clear();
@@ -73,7 +75,7 @@ void GObjectManager::Release()
 
 void GObjectManager::Update()
 {
-	pBaseNode->CallUpdate();
+	pBaseNode->CallBaseUpdate();
 	if (!pushedmovenodebyoffset.empty())
 	{
 		DoMoveNodeByOffsetBatch();
@@ -806,11 +808,11 @@ bool GObjectManager::Dump( list<GObject *>& lobjs )
 	GUICoordinate * pguic = &GUICoordinate::getInstance();
 	pguic->EnterPrintMode();
 
-
-	RenderHelper::getInstance().SetPrintMode(&path, pguic->CtoSx(-lside)+printmargin, pguic->CtoSy(-tside)+printmargin, fprintmul/pmain->GetDisplayMul());
+	float fdisplaymul = pmain->GetDisplayMul();
+	RenderHelper::getInstance().SetPrintMode(&path, pguic->CtoSx(-lside)+printmargin, pguic->CtoSy(-tside)+printmargin, fprintmul/fdisplaymul);
 
 	DXFWriter * pdxfw = &DXFWriter::getInstance();
-	pdxfw->SetBaseName(qsdumpbasename.toUtf8());
+	pdxfw->SetBaseName(qsdumpbasename.toUtf8(), 1.0f/(fdisplaymul*fdisplaymul));
 	pdxfw->SetTopY(canvasy);
 	pdxfw->WriteHeader();
 	pdxfw->WriteTables();
@@ -821,6 +823,7 @@ bool GObjectManager::Dump( list<GObject *>& lobjs )
 		(*it)->CallRender();
 	}
 
+	pdxfw->WriteFrameAndGrain(0, 0, canvasx, canvasy);
 	pdxfw->WriteEntitiesEnd();
 	pdxfw->WriteEOF();
 	pdxfw->SetBaseName();
@@ -874,4 +877,148 @@ bool GObjectManager::Dump( list<GObject *>& lobjs )
 	pixmap.save( qsdumpbasename+".png" );
 
 	return true;
+}
+
+void GObjectManager::SetWillSelfMoveList( list<GObject *> * pobjs )
+{
+	pwillselfmovelist = pobjs;
+}
+
+bool GObjectManager::WillSelfMove( GObject * pObj )
+{
+	if (!pwillselfmovelist)
+	{
+		return false;
+	}
+	for (list<GObject *>::iterator it=pwillselfmovelist->begin(); it!=pwillselfmovelist->end(); ++it)
+	{
+		if (pObj==*it || pObj->isDescendantOf(*it))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool GObjectManager::AddCopyNode( GObject * pObj )
+{
+	if (IsInCopyList(pObj))
+	{
+		return true;
+	}
+	GObjectCopyInfo * pci = NULL;
+	if (pObj->isRepresentablePoint())
+	{
+		GPoint * pPoint = (GPoint *) pObj;
+		GObjectCopyInfo _oci(pPoint, pPoint->getX(), pPoint->getY());
+		pci = &_oci;
+	}
+	else if (pObj->isRepresentableLine())
+	{
+		GLine * pLine = (GLine *) pObj;
+		GAnchorPoint * pBeginPoint = pLine->GetBeginPoint();
+		GAnchorPoint * pEndPoint = pLine->GetEndPoint();
+		if (pLine->isStraightLine())
+		{
+			GObjectCopyInfo _oci(pLine, pBeginPoint->getX(), pBeginPoint->getY(), pEndPoint->getX(), pEndPoint->getY());
+			pci = &_oci;
+		}
+		else
+		{
+			GHandlePoint * pBeginHandle = pBeginPoint->GetHandle();
+			GHandlePoint * pEndHandle = pEndPoint->GetHandle();
+			GObjectCopyInfo _oci(pLine, pBeginPoint->getX(), pBeginPoint->getY(), pEndPoint->getX(), pEndPoint->getY(), pBeginHandle->getX(), pBeginHandle->getY(), pEndHandle->getX(), pEndHandle->getY());
+			pci = &_oci;
+		}
+	}
+	if (!pci)
+	{
+		return false;
+	}
+	lstcopy.push_back(*pci);
+	return true;
+}
+
+void GObjectManager::ClearCopiedNodes()
+{
+	lstcopy.clear();
+}
+
+bool GObjectManager::PasteNodes()
+{
+	if (lstcopy.empty())
+	{
+		return false;
+	}
+	GLayer * pLayer = GetActiveLayer();
+	if (pLayer->isDisplayLocked())
+	{
+		return false;
+	}
+	SetLockTreeChange();
+	for (list<GObjectCopyInfo>::iterator it=lstcopy.begin(); it!=lstcopy.end(); ++it)
+	{
+		GObjectCopyInfo * pci = &(*it);
+
+		switch (pci->type)
+		{
+		case GOBJCOPY_POINT:
+			{
+				
+			}
+		case GOBJCOPY_LINE:
+			{
+				GBezierLine * pBezier = new GBezierLine(pLayer, PointF2D(pci->xb, pci->yb), PointF2D(pci->xbh, pci->ybh), PointF2D(pci->xeh, pci->yeh), PointF2D(pci->xe, pci->ye));
+				if (!pBezier)
+				{
+					return false;
+				}
+			}
+		}
+	}
+	return true;
+}
+
+bool GObjectManager::IsInCopyList( GObject * pObj )
+{
+	if (lstcopy.empty())
+	{
+		return false;
+	}
+	for (list<GObjectCopyInfo>::iterator it=lstcopy.begin(); it!=lstcopy.end(); ++it)
+	{
+		if (it->pObj == pObj)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void GObjectManager::SaveSelectState()
+{
+	GBaseNode * pLastBase = URManager::getInstance().GetLastBase();
+	if (pLastBase)
+	{
+		pLastBase->SaveSelectState();
+	}
+}
+
+void GObjectManager::ReSelect( list<int> lstselect, int activelayerID )
+{
+	if (!lstselect.empty())
+	{
+		for (list<int>::iterator it=lstselect.begin(); it!=lstselect.end(); ++it)
+		{
+			GObject * pObj = FindObjectByID(*it);
+			MarqueeSelect::getInstance().AddSelect(pObj);
+		}
+	}
+	if (activelayerID >= 0)
+	{
+		GObject * pObj = FindObjectByID(activelayerID);
+		ASSERT(pObj->isLayer());
+		GLayer * pLayer = (GLayer *)pObj;
+		SetActiveLayer_Internal(pLayer);
+	}
 }
