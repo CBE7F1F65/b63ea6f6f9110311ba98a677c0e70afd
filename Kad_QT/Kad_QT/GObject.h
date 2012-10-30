@@ -150,6 +150,7 @@ public:
 	virtual bool isHandlePoint(){return false;};
 	virtual bool isAnchorPoint(){return false;};
 	virtual bool isMidPoint(){return false;};
+	virtual bool isImageLine(){return false;};
 	virtual bool isPiece(){return false;};
 	virtual bool isRepresentablePoint(){return false;};		// A point represent the position
 	virtual bool isRepresentableLine(){return false;};

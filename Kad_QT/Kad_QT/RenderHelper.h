@@ -113,6 +113,12 @@ public:
 		RenderHandlePoint_S(_CTOSP(x, y), col);
 	}
 
+	void RenderImage(QImage * pImg, float x, float y, float w, float h, DWORD col)
+	{
+		RenderImage_S(pImg, _CTOSP(x, y), _CTOSS(w), _CTOSS(h), col);
+	};
+	void RenderImage_S(QImage * pImg, float x, float y, float w, float h, DWORD col);
+
 #undef _CTOSP
 
 	void TargetQuadRender_S(HTARGET tar, float x, float y, DWORD col);
@@ -131,6 +137,8 @@ private:
 	float printMul;
 
 	DXFWriter * pdxfw;
+
+	QPainter * pPainter;
 
 	HGE * hge;
 };

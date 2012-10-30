@@ -34,6 +34,7 @@
 #include "IsolateCommand.h"
 #include "CopyCommand.h"
 #include "PasteCommand.h"
+#include "ImageCommand.h"
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 {
@@ -102,6 +103,8 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 		return &BezierCommand::getInstance();
 	case COMM_CIRCLE:
 		return &CircleCommand::getInstance();
+	case COMM_IMAGE:
+		return &ImageCommand::getInstance();
 
 	case COMM_ADDSA:
 		return &AddSACommand::getInstance();

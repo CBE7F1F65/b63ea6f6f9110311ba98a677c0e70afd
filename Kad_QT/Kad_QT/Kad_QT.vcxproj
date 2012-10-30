@@ -249,6 +249,7 @@
     <ClCompile Include="GUICoordinate.cpp" />
     <ClCompile Include="GUICursor.cpp" />
     <ClCompile Include="IconManager.cpp" />
+    <ClCompile Include="ImageCommand.cpp" />
     <ClCompile Include="InitDllLoader.cpp" />
     <ClCompile Include="InitialCommand.cpp" />
     <ClCompile Include="IsolateCommand.cpp" />
@@ -358,6 +359,7 @@
     <ClInclude Include="GUICoordinate.h" />
     <ClInclude Include="GUICursor.h" />
     <ClInclude Include="IconManager.h" />
+    <ClInclude Include="ImageCommand.h" />
     <ClInclude Include="InitialCommand.h" />
     <ClInclude Include="IsolateCommand.h" />
     <ClInclude Include="JoinLineCommand.h" />

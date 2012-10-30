@@ -182,6 +182,7 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_LINE,	"LINE",	"L",	"Draw Line",	""	);
 	_BSET(	COMM_BEZIER,	"BEZIER",	"B",	"Draw Bezier Curve",	""	);
 	_BSET(	COMM_CIRCLE,	"CIRCLE",	"O",	"Draw Circle",	""	);
+	_BSET(	COMM_IMAGE,	"IMAGE",	"IM",	"Draw Iamge",	""	);
 
 	_BSET(	COMM_ADDSA,	"ADDSA",	"A",	"Add Seam Allowance",	""	);
 

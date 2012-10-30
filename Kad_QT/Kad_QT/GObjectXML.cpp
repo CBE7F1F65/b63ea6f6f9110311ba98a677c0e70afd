@@ -357,6 +357,11 @@ bool GObject::BuildXMLChildren( GObjectXMLNode * pnode )
 				GBezierLine * pBezier = new GBezierLine(this, PointF2D(), PointF2D());
 				pBezier->BuildXMLChildren(&(*it));
 			}
+			else if (it->name == GImageLine::getStaticTypeName())
+			{
+				GImageLine * pImageLine = new GImageLine(this, "", 0, 0);
+				pImageLine->BuildXMLChildren(&(*it));
+			}
 		}
 	}
 	return true;
@@ -832,6 +837,7 @@ _GXMLGETTYPENAME(GAnchorPoint);
 _GXMLGETTYPENAME(GHandlePoint);
 _GXMLGETTYPENAME(GLine);
 _GXMLGETTYPENAME(GBezierLine);
+_GXMLGETTYPENAME(GImageLine);
 _GXMLGETTYPENAME(GLayer);
 _GXMLGETTYPENAME(GBaseNode);
 _GXMLGETTYPENAME(GMainBaseNode);

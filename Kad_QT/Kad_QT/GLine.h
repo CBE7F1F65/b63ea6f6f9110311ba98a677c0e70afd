@@ -194,6 +194,7 @@ public:
 
 	virtual PointF2D GetTangentPointF2D(float fProp);
 };
+
 /************************************************************************/
 /* GBezierLine                                                          */
 /************************************************************************/
@@ -260,4 +261,46 @@ protected:
 	GOBJM_NONCOPYABLES();
 	BezierSublinesInfo bsinfo;
 	GOBJM_NONCOPYABLESEND();
+};
+
+
+/************************************************************************/
+/* GImageLine                                                           */
+/************************************************************************/
+
+class GImageLine : public GBezierLine
+{
+public:
+	typedef GBezierLine super;
+	virtual const char * getTypeName();		// Do not implement seperately
+	static const char * getStaticTypeName();		// Do not implement separately
+
+public:
+	GImageLine();
+	GImageLine(GObject * parent, const char * filename, float x, float y);
+	virtual ~GImageLine();
+
+	virtual bool isImageLine(){return true;};
+
+	virtual GObject * CreateNewClone(GObject * pNewParent=NULL, GObject * pBeforeObj=NULL);
+	virtual bool CloneData(GObject * pClone, GObject * pNewParent, bool bNoRelationship=true);
+
+	bool SetFile(const char * filename);
+	void SetDim(float fDimPercentage);
+
+	virtual void OnRender(int iHighlightLevel/* =0 */);
+
+	/************************************************************************/
+	/* Members                                                              */
+	/************************************************************************/
+protected:
+	//////////////////////////////////////////////////////////////////////////
+	GOBJM_COPYABLES();
+	string strfilename;
+	float fDim;
+	GOBJM_COPYABLESEND();
+
+	GOBJM_DONOTCOPY();
+	QImage * pImg;
+	GOBJM_DONOTCOPYEND();
 };

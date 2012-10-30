@@ -728,7 +728,7 @@ bool GBezierLine::GetBoundingBox( float *xl, float *yt, float *xr, float * yb )
 		if (!bsinfo.GetSubPointsCount())
 		{
 			bsinfo.ResetPoints(plbegin->GetPointF2D(), plbegin->GetHandle()->GetPointF2D(), plend->GetHandle()->GetPointF2D(), plend->GetPointF2D(), MainInterface::getInstance().GetPrecision());
-			DASSERT(false);
+//			DASSERT(false);
 			return false;
 		}
 		if (!bsinfo.GetBoundingBox(xl, yt, xr, yb))
@@ -1728,6 +1728,105 @@ float GBezierLine::GetSFromProportion( float fProp )
 
 	ASSERT(false);
 	return 0;
+}
+
+/************************************************************************/
+/* GImageLine                                                           */
+/************************************************************************/
+
+GImageLine::GImageLine()
+{
+	pImg = NULL;
+	fDim = 1.0f;
+}
+
+GImageLine::GImageLine( GObject * parent, const char * filename, float x, float y )
+{
+	ASSERT(parent!=NULL);
+
+	pImg = NULL;
+	fDim = 1.0f;
+
+	SetFile(filename);
+
+	float w = 10;
+	float h = 10;
+	if (pImg)
+	{
+		w = pImg->width();
+		h = pImg->height();
+	}
+
+	plbegin = new GAnchorPoint(this, x-w/2, y-h/2);
+	plend = new GAnchorPoint(this, x+w/2, y+h/2);
+	pmid = new GMidPoint(this);
+
+
+	parent->AddChild(this);
+	OnInit();
+}
+
+GImageLine::~GImageLine()
+{
+	if (pImg)
+	{
+		delete pImg;
+	}
+}
+
+bool GImageLine::SetFile( const char * filename )
+{
+	strfilename = filename;
+	CallRedrawModify();
+
+	return true;
+}
+
+GObject * GImageLine::CreateNewClone( GObject * pNewParent/*=NULL*/, GObject * pBeforeObj/*=NULL*/ )
+{
+	_GOBJ_CLONE_PRE(GImageLine);
+	_GOBJ_CLONE_POST();
+}
+
+bool GImageLine::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelationship/*=true*/ )
+{
+	if (super::CloneData(pClone, pNewParent, bNoRelationship))
+	{
+		GImageLine * pImageLine = (GImageLine *)pClone;
+
+		pImageLine->strfilename = strfilename;
+		return true;
+	}
+	return false;
+}
+
+void GImageLine::OnRender( int iHighlightLevel/* =0 */ )
+{
+	super::OnRender(iHighlightLevel);
+
+	if (!pImg && strfilename.length())
+	{
+		pImg = new QImage(strfilename.c_str());
+	}
+
+	if (pImg && !iHighlightLevel)
+	{
+		RenderHelper::getInstance().RenderImage(pImg, plbegin->getX(), plbegin->getY(), plend->getX()-plbegin->getX(), plend->getY()-plbegin->getY(), ARGB((0xff*fDim), 0xff, 0xff, 0xff));
+	}
+}
+
+void GImageLine::SetDim( float fDimPercentage )
+{
+	if (fDimPercentage < 0)
+	{
+		fDimPercentage = 0;
+	}
+	else if (fDimPercentage > 1)
+	{
+		fDimPercentage = 1;
+	}
+	fDim = fDimPercentage;
+	CallRedrawModify();
 }
 
 /************************************************************************/

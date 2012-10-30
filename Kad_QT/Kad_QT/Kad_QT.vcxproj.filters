@@ -599,6 +599,9 @@
     <ClCompile Include="PasteCommand.cpp">
       <Filter>Main\Command\CopyPaste</Filter>
     </ClCompile>
+    <ClCompile Include="ImageCommand.cpp">
+      <Filter>Main\Command\Draw</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -852,6 +855,9 @@
     </ClInclude>
     <ClInclude Include="PasteCommand.h">
       <Filter>Main\Command\CopyPaste</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageCommand.h">
+      <Filter>Main\Command\Draw</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

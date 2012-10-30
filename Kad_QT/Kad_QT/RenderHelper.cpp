@@ -4,6 +4,8 @@
 #include "MathHelper.h"
 #include "MainInterface.h"
 
+#include "qmaininterface.h"
+
 #define _GATTRPT_RENDER_A	5
 #define _GSUBSPT_RENDER_L	5
 #define _GMIDPT_RENDER_L	5
@@ -16,6 +18,8 @@ RenderHelper::RenderHelper(void)
 	style = 0;
 
 	ppath = NULL;
+
+	pPainter = NULL;
 }
 
 RenderHelper::~RenderHelper(void)
@@ -27,6 +31,11 @@ void RenderHelper::Release()
 	if (hge)
 	{
 		hge->Release();
+	}
+	if (pPainter)
+	{
+		delete pPainter;
+		pPainter = NULL;
 	}
 }
 
@@ -661,4 +670,20 @@ void RenderHelper::SetPrintMode( QPainterPath * path/*=NULL*/, float xoffset/*=0
 	printXOffset = xoffset;
 	printYOffset = yoffset;
 	printMul = mul;
+}
+
+void RenderHelper::RenderImage_S( QImage * pImg, float x, float y, float w, float h, DWORD col )
+{
+	if (!pImg)
+	{
+		return;
+	}
+	if (!pPainter)
+	{
+		pPainter = new QPainter();
+	}
+	pPainter->begin(QMainInterface::getInstance().GetPGLView());
+	QImage sImg = pImg->scaled(w, h);
+	pPainter->drawImage(x, y, sImg);
+	pPainter->end();
 }

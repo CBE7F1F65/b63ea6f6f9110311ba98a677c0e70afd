@@ -91,6 +91,7 @@ enum{
 	COMM_LINE,		// line
 	COMM_BEZIER,	// bezier curve
 	COMM_CIRCLE,	// circle
+	COMM_IMAGE,		// image line
 
 	// Seam
 	COMM_ADDSA,	// add seam
@@ -580,6 +581,19 @@ enum{
 	CSI_CIRCLE_WANTX,
 	CSI_CIRCLE_WANTY,
 	CSI_CIRCLE_WANTR,
+};
+
+/************************************************************************/
+/* IMAGE                                                                */
+/************************************************************************/
+
+enum{
+	CSP_IMAGE_S_FILENAME,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_IMAGE_DUMMY=0,
+	CSI_IMAGE_WANTFILENAME,
 };
 
 /************************************************************************/
