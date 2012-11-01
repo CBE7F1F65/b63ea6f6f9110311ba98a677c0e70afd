@@ -89,6 +89,35 @@ bool GPoint::MoveTo( GObject * pCaller, float newx, float newy, bool bTry, int m
 	return true;
 }
 
+void GPoint::DispatchPassiveMergeMove( GObject * pCaller, float newx, float newy, bool bTry, int moveActionID/*=-1*/ )
+{
+	if (pgm->IsIsolateMode())
+	{
+		return;
+	}
+	if (!mergeWithList.empty())
+	{
+		list<GPoint *> demergeList;
+		for (list<GPoint *>::iterator it=mergeWithList.begin(); it!=mergeWithList.end(); ++it)
+		{
+			if (!(*it)->MoveTo(pCaller, newx, newy, bTry, moveActionID))
+			{
+				demergeList.push_back(*it);
+			}
+		}
+		// TODO!!!!
+		// Push Revertible
+		if (!demergeList.empty())
+		{
+			for (list<GPoint *>::iterator it=demergeList.begin(); it!=demergeList.end(); ++it)
+			{
+				DemergeFrom(*it);
+			}
+		}
+	}
+}
+
+
 bool GPoint::CallMoveTo( GObject * pCaller, float newx, float newy, bool bTry, int moveActionID/*=-1*/ )
 {
 	if (!canMove())
@@ -97,31 +126,12 @@ bool GPoint::CallMoveTo( GObject * pCaller, float newx, float newy, bool bTry, i
 	}
 	if (moveActionID < 0)
 	{
-		moveActionID = GObjectManager::getInstance().GetNextMoveActionID(GMMATYPE_MOVE);
+		moveActionID = pgm->GetNextMoveActionID(GMMATYPE_MOVE);
 	}
 
 	if (pCaller)
 	{
-		if (!mergeWithList.empty())
-		{
-			list<GPoint *> demergeList;
-			for (list<GPoint *>::iterator it=mergeWithList.begin(); it!=mergeWithList.end(); ++it)
-			{
-				if (!(*it)->MoveTo(pCaller, newx, newy, bTry, moveActionID))
-				{
-					demergeList.push_back(*it);
-				}
-			}
-			// TODO!!!!
-			// Push Revertible
-			if (!demergeList.empty())
-			{
-				for (list<GPoint *>::iterator it=demergeList.begin(); it!=demergeList.end(); ++it)
-				{
-					DemergeFrom(*it);
-				}
-			}
-		}
+		DispatchPassiveMergeMove(pCaller, newx, newy, bTry, nMoveActionID);
 	}
 	return MoveTo(pCaller, newx, newy, bTry, moveActionID);
 }
@@ -134,7 +144,7 @@ bool GPoint::CallRotate( GObject * pCaller, float orix, float oriy, int angle, b
 	}
 	if (moveActionID < 0)
 	{
-		moveActionID = GObjectManager::getInstance().GetNextMoveActionID(GMMATYPE_ROTATE, angle);
+		moveActionID = pgm->GetNextMoveActionID(GMMATYPE_ROTATE, angle);
 	}
 	MathHelper * pmh = &MathHelper::getInstance();
 	PointF2D ptOri = PointF2D(orix, oriy);
@@ -161,7 +171,7 @@ bool GPoint::CallFlip( GObject * pCaller, float orix, float oriy, int angle, boo
 	}
 	if (moveActionID < 0)
 	{
-		moveActionID = GObjectManager::getInstance().GetNextMoveActionID(GMMATYPE_FLIP, angle);
+		moveActionID = pgm->GetNextMoveActionID(GMMATYPE_FLIP, angle);
 	}
 	MathHelper * pmh = &MathHelper::getInstance();
 	PointF2D ptOri = PointF2D(orix, oriy);
@@ -184,7 +194,7 @@ bool GPoint::CallScale( GObject * pCaller, float orix, float oriy, float fScaleX
 	}
 	if (moveActionID < 0)
 	{
-		moveActionID = GObjectManager::getInstance().GetNextMoveActionID(GMMATYPE_SCALE, 0, fScaleX, fScaleY);
+		moveActionID = pgm->GetNextMoveActionID(GMMATYPE_SCALE, 0, fScaleX, fScaleY);
 	}
 	MathHelper * pmh = &MathHelper::getInstance();
 
@@ -210,6 +220,28 @@ void GPoint::ClearClingTo()
 	*/
 }
 
+bool GPoint::staticCheckClingToCB( GObject * pThis, void * param )
+{
+	GLine * pLine = (GLine *)param;
+	if (pThis->isPoint())
+	{
+		GPoint * pPoint = (GPoint *)pThis;
+		if (pPoint->isClingTo(pLine))
+		{
+			return true;
+		}
+	}
+	list<GObject *> * pThisChildren = pThis->getChildren();
+	for (list<GObject *>::iterator it=pThisChildren->begin(); it!=pThisChildren->end(); ++it)
+	{
+		if ((*it)->CallRecCallBack(staticCheckClingToCB, pLine))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 bool GPoint::canClingTo( GLine * pLine )
 {
 	if (isDescendantOf(pLine))
@@ -219,6 +251,14 @@ bool GPoint::canClingTo( GLine * pLine )
 	GLine * pThisLine = this->getLine();
 	if (pThisLine)
 	{
+		if (pThisLine->CallRecCallBack(staticCheckClingToCB, (void *)pLine))
+		{
+			return false;
+		}
+		if (pThisLine->GetBeginPoint()->isClingTo(pLine) || pThisLine->GetEndPoint()->isClingTo(pLine))
+		{
+			return false;
+		}
 		list<GPoint *> * pThisLineClingBy = pThisLine->getClingBy();
 		if (!pThisLineClingBy->empty())
 		{
@@ -512,12 +552,16 @@ GPiece * GPoint::getPiece()
 
 void GPoint::CallClingToMoved( bool bTry, int moveActionID )
 {
+	if (pgm->IsIsolateMode())
+	{
+		return;
+	}
 	ASSERT(clInfo.GetClingTo());
 	
-	HNOPB(!bTry && nID==198);
+	HNOPB(!bTry && nID > 0);
 	HNOP;
 	HNOPE;
-	if (GObjectManager::getInstance().WillSelfMove(this))
+	if (pgm->WillSelfMove(this))
 	{
 		return;
 	}
@@ -612,7 +656,6 @@ bool GPoint::Isolate()
 	DeclingToOther();
 	return true;
 }
-
 /************************************************************************/
 /* GANCHORPOINT                                                         */
 /************************************************************************/
@@ -691,7 +734,7 @@ bool GAnchorPoint::MoveTo( GObject * pCaller, float newx, float newy, bool bTry,
 			int nMoveAngle;
 			float fXVal;
 			float fYVal;
-			int nMoveType = GObjectManager::getInstance().GetMoveTypeInfo(&nMoveAngle, &fXVal, &fYVal);
+			int nMoveType = pgm->GetMoveTypeInfo(&nMoveAngle, &fXVal, &fYVal);
 			if (nMoveType == GMMATYPE_ROTATE)
 			{
 				if (pHandle->getMoveActionID() != moveActionID)
@@ -863,7 +906,7 @@ void GHandlePoint::OnRender( int iHighlightLevel/* =0 */ )
 	GAnchorPoint * pAnchor = (GAnchorPoint*)GetAnchor();
 	if (!pAnchor->isHandleIdentical())
 	{
-		if (GObjectManager::getInstance().isHandleVisible() || iHighlightLevel)
+		if (pgm->isHandleVisible() || iHighlightLevel)
 		{
 			DWORD col = getLineColor(iHighlightLevel);
 			RenderHelper * prh = &RenderHelper::getInstance();
@@ -932,7 +975,7 @@ bool GHandlePoint::MoveTo( GObject * pCaller, float newx, float newy, bool bTry,
 	int nMoveAngle;
 	float fScaleX;
 	float fScaleY;
-	int nMoveType = GObjectManager::getInstance().GetMoveTypeInfo(&nMoveAngle, &fScaleX, &fScaleY);
+	int nMoveType = pgm->GetMoveTypeInfo(&nMoveAngle, &fScaleX, &fScaleY);
 	if (nMoveType == GMMATYPE_ROTATE)
 	{
 		if (nMoveAngle)

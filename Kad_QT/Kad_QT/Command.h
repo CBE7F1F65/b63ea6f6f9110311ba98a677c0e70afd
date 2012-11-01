@@ -289,6 +289,9 @@ private:
 	void LogFinishSubCommand(int subcommand);
 	void LogUnDo();
 	void LogReDo();
+public:
+	void LogTotalLength(list<GObject *> * pnodes);
+private:
 
 //	list<RevertibleCommand> undolist;
 //	list<RevertibleCommand> redolist;

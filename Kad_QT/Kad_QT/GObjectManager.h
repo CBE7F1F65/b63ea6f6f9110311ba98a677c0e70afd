@@ -147,6 +147,9 @@ public:
 	void SetManualCloning(bool bSet){bManualCloning=bSet;};
 	bool IsManualCloning(){return bManualCloning;};
 
+    void SetIsolateMode(bool bSet){bIsolateMode=bSet;};
+    bool IsIsolateMode(){return bIsolateMode;};
+
 	void SetLockTreeChange();
 
 	void SetWillSelfMoveList(list<GObject *> * pobjs=NULL);
@@ -159,6 +162,8 @@ public:
 
 	void SaveSelectState();
 	void ReSelect(list<int> lstselect, int activelayerID);
+
+	bool IsTreeLocked(){return nLockTreeChangeState;};
 
 public:
 	GMainBaseNode * GetMainBaseNode(){return pBaseNode;};
@@ -222,6 +227,7 @@ private:
 	bool bTryMoveBlock;
 
 	bool bManualCloning;
+    bool bIsolateMode;
 
 	int nMoveActionType;
 	int nMoveActionAngle;

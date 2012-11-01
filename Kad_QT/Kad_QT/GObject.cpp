@@ -9,6 +9,7 @@
 //#include "Command.h"
 
 GObject * GObject::pTreeBase=NULL;
+GObjectManager * GObject::pgm=&GObjectManager::getInstance();
 
 
 GObject::GObject(void)
@@ -141,7 +142,7 @@ list<GObject *>::iterator GObject::_ActualRemoveChild( list<GObject *>::iterator
 
 	// Add OnModify and OnTreeChanged after all operation done!!
 //	OnModify();
-//	GObjectManager::getInstance().OnTreeChanged(this);
+//	pgm->OnTreeChanged(this);
 
 	return it;
 }
@@ -211,7 +212,7 @@ int GObject::_RemoveChild( int _ID, bool bRelease )
 	}
 	CallModify();
 //	_CallTreeChanged(this, this);
-//	GObjectManager::getInstance().OnTreeChanged(this, this);
+//	pgm->OnTreeChanged(this, this);
 	return lstChildren.size();
 }
 
@@ -241,7 +242,7 @@ int GObject::_RemoveChild( GObject * child, bool bRelease )
 	}
 	CallModify();
 //	_CallTreeChanged(this, this);
-//	GObjectManager::getInstance().OnTreeChanged(this, this);
+//	pgm->OnTreeChanged(this, this);
 	return lstChildren.size();
 }
 int GObject::RemoveFromParent( bool bRelease )
@@ -282,7 +283,7 @@ int GObject::RemoveAllChildren( bool bRelease )
 	}
 	CallModify();
 	_CallTreeChanged(this, this);
-//	GObjectManager::getInstance().OnTreeChanged(this, this);
+//	pgm->OnTreeChanged(this, this);
 	return 0;
 }
 
@@ -318,7 +319,7 @@ void GObject::CallRelease()
 			(*it)->CallRelease();
 		}
 	}
-    GObjectManager::getInstance().AddNodeToDelete(this);
+    pgm->AddNodeToDelete(this);
 }
 
 void GObject::OnRelease()
@@ -374,13 +375,13 @@ void GObject::OnUpdate()
 		}
 		else if (nTryState == GOBJTRYSTATE_MOVE_AFTERUPDATE)
 		{
-			if (!GObjectManager::getInstance().IsTryMoving())
+			if (!pgm->IsTryMoving())
 			{
 				float tx = getX();
 				float ty = getY();
 				// Directly Move!!
 				MoveTo(NULL, fTryMove_bx, fTryMove_by, false, nUpdateMoveActionID);
-				GObjectManager::getInstance().PushMoveNodeByOffsetForBatchCommand(this, tx-fTryMove_bx, ty-fTryMove_by);
+				pgm->PushMoveNodeByOffsetForBatchCommand(this, tx-fTryMove_bx, ty-fTryMove_by);
 				nTryState = GOBJTRYSTATE_MOVE_NULL;
 			}
 		}
@@ -501,7 +502,7 @@ void GObject::setDisplayFold( bool toDisplayFold )
 	if (bDisplayFolded != toDisplayFold)
 	{
 		bDisplayFolded = toDisplayFold;
-//		GObjectManager::getInstance().OnTreeChanged(this);
+//		pgm->OnTreeChanged(this);
 	}
 }
 
@@ -745,7 +746,7 @@ void GObject::CallClearModify()
 
 void GObject::CallRedrawModify()
 {
-    GObjectManager::getInstance().SetRedraw();
+    pgm->SetRedraw();
 }
 
 GLayer * GObject::getLayer( bool bIncludingSelf/*=true*/ )
@@ -805,12 +806,12 @@ bool GObject::isRecDisplayFolded()
 
 void GObject::_CallTreeChanged( GObject * changebase, GObject * activenode )
 {
-	GObjectManager::getInstance().OnTreeChanged(changebase, activenode);
+	pgm->OnTreeChanged(changebase, activenode);
 }
 
 void GObject::_CallTreeWillChange()
 {
-	GObjectManager::getInstance().OnTreeWillChange();
+	pgm->OnTreeWillChange();
 }
 
 int GObject::_CallResetID( int resetbase )
@@ -979,7 +980,6 @@ bool GObject::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRelatio
 	pClone->bCloning = true;
 
 	//////////////////////////////////////////////////////////////////////////
-	GObjectManager * pgm = &GObjectManager::getInstance();
 	bool bIsManualCloning = pgm->IsManualCloning();
 	if (bIsManualCloning)
 	{

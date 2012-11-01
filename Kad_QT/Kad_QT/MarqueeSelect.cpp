@@ -237,6 +237,13 @@ void MarqueeSelect::Update()
             GObject * pPickedObj = pgp->GetPickedObj();
 			pgp->UnlockLockLine();
             MainInterface::getInstance().CallShowNodeInfo(pPickedObj, !baltdown);
+			if (!pPickedObj)
+			{
+				if (!selectednodes.empty())
+				{
+					pcommand->LogTotalLength(&selectednodes);
+				}
+			}
         }
         else
         {

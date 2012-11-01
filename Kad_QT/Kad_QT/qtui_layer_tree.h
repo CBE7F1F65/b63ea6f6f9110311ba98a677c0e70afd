@@ -27,6 +27,7 @@ public:
 public:
     void RebuildTree( GObject * changebase, GObject * activeitem );
     list<GObject *> * GetActiveNodes();
+	list<GObject *> lstLastSelectedNodes;
     GObject * GetHoveringNode();
     bool GetDragDroppedNodes( GLayer ** pLayerNode, GObject ** pAfterNode );
 

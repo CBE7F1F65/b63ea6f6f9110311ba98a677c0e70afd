@@ -88,6 +88,10 @@ void DuplicateCommand::OnDoneCommand()
 		i++;
 	}
 	
+	if (listobjs.empty())
+	{
+		return;
+	}
 	pgm->BeginClone();
 	for (list<GObject *>::iterator it=listobjs.begin(); it!=listobjs.end(); ++it)
 	{

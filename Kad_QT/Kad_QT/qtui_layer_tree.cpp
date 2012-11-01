@@ -466,6 +466,10 @@ void QTUI_Layer_Tree::SLT_UpdateSelectionNodes()
     {
         return;
     }
+	if (GObjectManager::getInstance().IsTreeLocked())
+	{
+		return;
+	}
     QList<QTreeWidgetItem *> lst = this->selectedItems();
     if (!lst.size())
     {
@@ -490,8 +494,11 @@ void QTUI_Layer_Tree::SLT_UpdateSelectionNodes()
         bool bLayer;
         if (selectednodes.empty())
         {
+			return;
+			/*
             pSelf = GetObjFromItem(lst.front());
             pParent = pSelf->getParent();
+			*/
         }
         else
         {
@@ -545,11 +552,21 @@ void QTUI_Layer_Tree::SLT_ItemDoubleClicked(QTreeWidgetItem *pItem, int column)
 
 void QTUI_Layer_Tree::OnFrameUpdate()
 {
-	DeselectButtons();
 	list <GObject *> * plstGUISelected = MarqueeSelect::getInstance().OnGetSelectedNodes();
+	if (*plstGUISelected == lstLastSelectedNodes)
+	{
+		return;
+	}
+	else
+	{
+		lstLastSelectedNodes = *plstGUISelected;
+	}
+	DeselectButtons();
 
 	if (!plstGUISelected->empty())
 	{
+		bool bCleared = false;
+		list<GObject *> lsttemp;
 		for (list<GObject *>::iterator it=plstGUISelected->begin(); it!=plstGUISelected->end(); ++it)
 		{
 			GObject * pObj = *it;
@@ -557,8 +574,32 @@ void QTUI_Layer_Tree::OnFrameUpdate()
 			if (pItem)
 			{
 				QTUI_Layer_SelectionButton * pSelectionButton = (QTUI_Layer_SelectionButton *)this->itemWidget(pItem, _UILT_COLUMN_SELECT);
-				pSelectionButton->UpdateGUISelection(pObj, true);
+				if (!pSelectionButton->isChecked())
+				{
+					pSelectionButton->UpdateGUISelection(pObj, true);
+					if (!bCleared)
+					{
+						selectednodes.clear();
+						if (!lsttemp.empty())
+						{
+							for (list<GObject *>::iterator jt=lsttemp.begin(); jt!=lsttemp.end(); ++jt)
+							{
+								selectednodes.push_back(*jt);
+							}
+						}
+						bCleared = true;
+					}
+					selectednodes.push_back(pObj);
+				}
+				else if (!bCleared)
+				{
+					lsttemp.push_back(pObj);
+				}
 			}
+		}
+		if (bCleared)
+		{
+			Reselect();
 		}
 	}
 }
@@ -593,6 +634,10 @@ void QTUI_Layer_Tree::OnButtonSelect( GObject * pObj, bool bSelected )
 	QTreeWidgetItem * pItem = FindItemByObj(pObj);
 	ASSERT(pItem);
 	ChangeChildrenButtonSelect(pItem, bSelected);
+
+	selectednodes.clear();
+	selectednodes.push_back(pObj);
+	Reselect();
 }
 
 void QTUI_Layer_Tree::ChangeChildrenButtonSelect( QTreeWidgetItem * pParent, bool bSelect )

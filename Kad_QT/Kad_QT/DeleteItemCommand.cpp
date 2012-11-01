@@ -105,6 +105,7 @@ void DeleteItemCommand::OnDoneCommand()
 
 	if (!lstObj.empty())
 	{
+		pgm->SetLockTreeChange();
 		lstObj.sort();
 		int objcount = lstObj.size();
 		PushRevertibleBatch(

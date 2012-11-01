@@ -217,6 +217,29 @@ void Command::LogReDo()
 	MainInterface::getInstance().CallAppendCommandLogText(strlog.c_str());
 }
 
+void Command::LogTotalLength( list<GObject *> * pnodes )
+{
+	if (!pnodes || pnodes->empty())
+	{
+		return;
+	}
+	QString strlog;
+	float fLength = 0;
+	for (list<GObject *>::iterator it=pnodes->begin(); it!=pnodes->end(); ++it)
+	{
+		if ((*it)->isLine())
+		{
+			GLine * pLine = (GLine *)(*it);
+			fLength += pLine->getLength();
+		}
+	}
+	strlog = StringManager::getInstance().GetCLTotalLengthName();
+	strlog += ": ";
+	strlog += QString::number(fLength);
+	MainInterface::getInstance().CallAppendCommandLogText(strlog.toUtf8());
+}
+
+
 int Command::CreateCommand( int comm, int iparam/*=1*/ )
 {
 	if (comm == COMM_UNDO)

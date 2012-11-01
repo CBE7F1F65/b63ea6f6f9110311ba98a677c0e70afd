@@ -58,14 +58,14 @@ void GBaseNode::RestoreBaseFrom( GBaseNodeCopyStack * pFrom )
 				(*it)->CreateNewClone(this);
 			}
 
-			GObjectManager::getInstance().ReSelect(pOBase->savedlstselect, pOBase->savedactivelayer);
+			pgm->ReSelect(pOBase->savedlstselect, pOBase->savedactivelayer);
 		}
 	}
 }
 
 void GBaseNode::CallBaseUpdate()
 {
-	nUpdateMoveActionID = GObjectManager::getInstance().GetNextMoveActionID(GMMATYPE_MOVE);
+	nUpdateMoveActionID = pgm->GetNextMoveActionID(GMMATYPE_MOVE);
 	CallUpdate();
 }
 
@@ -74,7 +74,6 @@ void GBaseNode::SaveSelectState()
 	savedactivelayer = -1;
 	savedlstselect.clear();
 
-	GObjectManager * pgm = &GObjectManager::getInstance();
 	list<GObject *> * plstselected = pgm->GetSelectedNodes(false);
 	if (!plstselected->empty())
 	{

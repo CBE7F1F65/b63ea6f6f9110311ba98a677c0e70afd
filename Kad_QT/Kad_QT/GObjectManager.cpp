@@ -48,10 +48,9 @@ void GObjectManager::Release()
 	if (pBaseNode)
 	{
 		pBaseNode->RemoveAllChildren(true);
+		fakebasenode.RemoveAllChildren(true);
+		OnTreeChanged(pBaseNode, pBaseNode, false);
 	}
-//	undobasenode.RemoveAllChildren(true);
-	fakebasenode.RemoveAllChildren(true);
-	OnTreeChanged(pBaseNode, pBaseNode, false);
 	Delete();
 	stackedLayerIndex = 0;
 	tarObjs = NULL;
@@ -70,6 +69,7 @@ void GObjectManager::Release()
 
 	bCloning = false;
 	bManualCloning = false;
+    bIsolateMode = true;
 	mapCloneList.clear();
 }
 
@@ -684,6 +684,7 @@ bool GObjectManager::BeginClone()
 		return false;
 	}
 	bCloning = true;
+	SetLockTreeChange();
 	return true;
 }
 
@@ -782,6 +783,12 @@ bool GObjectManager::Dump( list<GObject *>& lobjs )
 	}
 	QFileInfo qf(qsdumpbasename);
 	qsdumpbasename = qf.absolutePath()+"\\"+qf.completeBaseName();
+	if (!QDir(qsdumpbasename).exists())
+	{
+		QDir().mkdir(qsdumpbasename);
+	}
+	qsdumpbasename += "\\";
+	qsdumpbasename += qf.completeBaseName();
 
 	float fprintmul = pmain->GetPrintMul();
 	
@@ -870,10 +877,14 @@ bool GObjectManager::Dump( list<GObject *>& lobjs )
 				tpainter.drawLine(printw-printmargin, k*printmargin, printw-printmargin, (k+1)*printmargin);
 			}
 
-			pixtemp.save(qsdumpbasename+"_"+QString::number(i*xrow+j)+".png");
+			QString extname = "_";
+			extname += QString().sprintf("%04d", i*yrow+j)+".png";
+			tpainter.drawText(0, printh-printmargin, printw-printmargin/2, printmargin, Qt::AlignRight|Qt::AlignVCenter, qf.completeBaseName()+extname);
+			pixtemp.save(qsdumpbasename+extname);
 		}
 	}
 
+	painter.drawText(printmargin/2, 0, canvasx-printmargin, printmargin, Qt::AlignLeft|Qt::AlignVCenter, qf.completeBaseName());
 	pixmap.save( qsdumpbasename+".png" );
 
 	return true;

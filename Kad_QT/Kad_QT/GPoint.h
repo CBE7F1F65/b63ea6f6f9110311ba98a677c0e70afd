@@ -92,18 +92,19 @@ public:
 	bool ClingTo(GLine* pLine, float fVal, int nType=GCLING_PROPORTION);
 	bool ClingTo(GClingInfo &cl){return ClingTo(cl.GetClingTo(), cl.GetClingVal(), cl.GetClingType());};
 	bool canClingTo(GLine * pLine);
+	static bool staticCheckClingToCB(GObject * pThis, void * param);
 	void DeclingToOther();
 	bool isClingTo(GObject * pObj);
 	GClingInfo * getClingInfo(){return &clInfo;};
-//	GLine * getClingTo(){return pClingTo;};
-//	float getClingProportion(){return fClingToProportion;};
+	void CallClingToMoved( bool bTry, int moveActionID );
 
 	// Only Point To Point!
 	bool MergeWith(GPoint * pPoint, bool bNoBackward=false);
 	bool isMergeWith(GPoint * pPoint);
 	bool DemergeFrom(GPoint * pPoint=NULL, bool bNoBackward=false);
 	list<GPoint *> * getMergeWith(){return &mergeWithList;};
-	void CallClingToMoved( bool bTry, int moveActionID );
+	void DispatchPassiveMergeMove(GObject * pCaller, float newx, float newy, bool bTry, int moveActionID=-1);
+
 
 	virtual bool Isolate();
 

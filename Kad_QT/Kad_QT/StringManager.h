@@ -254,6 +254,7 @@ public:
 	_SMCLFDEF(	FinishSubCommand,	"Done"	);
 	_SMCLFDEF(	UnDo,	"Processing UnDo"	);
 	_SMCLFDEF(	ReDo,	"Processing ReDo"	);
+	_SMCLFDEF(	TotalLength,	"Total Length"	);
 
 #undef _SMCLFDEF
 

@@ -90,6 +90,11 @@ void QTUI_StatusBar::UpdateStatusBar()
     {
         ui->PBShowGrid->setChecked(pguic->isShowGrid());
     }
+
+    if (ui->PBIsolateMode->isChecked() != pgm->IsIsolateMode())
+    {
+        ui->PBIsolateMode->setChecked(pgm->IsIsolateMode());
+    }
 }
 
 void QTUI_StatusBar::SLT_PrecisionChanged(int value)
@@ -140,6 +145,11 @@ void QTUI_StatusBar::SLT_PBSnapVirtualCoordTriggered(bool bVal)
 void QTUI_StatusBar::SLT_PBSnapHandleOnlyTriggered(bool bVal)
 {
     GObjectPicker::getInstance().SetSnapTo(GOPSNAP_HANDLEONLY, bVal);
+}
+
+void QTUI_StatusBar::SLT_PBIsolateModeTriggered(bool bVal)
+{
+    GObjectManager::getInstance().SetIsolateMode(bVal);
 }
 
 void QTUI_StatusBar::resizeEvent(QResizeEvent *e)

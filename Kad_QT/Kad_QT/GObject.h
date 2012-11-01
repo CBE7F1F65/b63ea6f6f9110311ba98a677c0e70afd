@@ -69,6 +69,8 @@ class GNodeRelationshipGroup;
 
 class GObject;
 
+class GObjectManager;
+
 typedef bool (*GObjRecCallBack)(GObject * pThis, void * param);
 
 class GObject
@@ -308,6 +310,8 @@ protected:
 	/************************************************************************/
 private:
 	static GObject * pTreeBase;
+protected:
+	static GObjectManager * pgm;
 protected:
 	// Only by MainBaseNode
 	void setTreeBase(GObject * pObj){pTreeBase=pObj;};
