@@ -18,6 +18,8 @@
 #define GMLOCKTREESTATE_REQUIRELOCK		0x01
 #define GMLOCKTREESTATE_AFTERLOCK		0x02
 
+#define _GMDXFPIECEGROWTH	5
+
 GObjectManager::GObjectManager()
 {
 	// Put all to Release
@@ -725,7 +727,22 @@ void GObjectManager::EndClone()
 		}
 
 		mapCloneList.clear();
+    }
+}
+
+void GObjectManager::SetPreviewPrintMode(bool bSet)
+{
+	RenderHelper * prh = &RenderHelper::getInstance();
+	if (bSet != prh->IsPreviewPrintMode())
+	{
+		prh->SetPreviewPrintMode(bSet);
+		pBaseNode->CallRedrawModify();
 	}
+}
+
+bool GObjectManager::IsPreviewPrintMode()
+{
+    return RenderHelper::getInstance().IsPreviewPrintMode();
 }
 
 bool GObjectManager::ReadXML( QXmlStreamReader * pqsr )
@@ -746,12 +763,25 @@ bool GObjectManager::WriteXML( QXmlStreamWriter * pqsw )
 	return pBaseNode->CallWriteXML(*pqsw);
 }
 
-bool GObjectManager::Dump( list<GObject *>& lobjs )
+bool GObjectManager::Dump( list<GObject *>& lobjs, bool bImages )
 {
 	if (lobjs.empty())
 	{
 		return false;
 	}
+	for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end(); )
+	{
+		if (!(*it)->isDisplayVisible())
+		{
+			it = lobjs.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+
+	list<GPieceBoundaryInfo> lstpbi;
 
 	GObject * pfront = lobjs.front();
 	float lside, tside, rside, bside;
@@ -760,10 +790,15 @@ bool GObjectManager::Dump( list<GObject *>& lobjs )
 		ASSERT(false);
 		return false;
 	}
+
+	GPieceBoundaryInfo _pbi(pfront);
+	lstpbi.push_back(_pbi);
+	
 	float tlside, ttside, trside, tbside;
 	for (list<GObject *>::iterator it=++(lobjs.begin()); it!=lobjs.end(); ++it)
 	{
-		if (!(*it)->GetBoundingBox(&tlside, &ttside, &trside, &tbside))
+		GObject * pObj = *it;
+		if (!pObj->GetBoundingBox(&tlside, &ttside, &trside, &tbside))
 		{
 			ASSERT(false);
 			return false;
@@ -772,7 +807,26 @@ bool GObjectManager::Dump( list<GObject *>& lobjs )
 		tside = min(ttside, tside);
 		rside = max(trside, rside);
 		bside = max(tbside, bside);
+
+		bool bAdded = false;
+		for (list<GPieceBoundaryInfo>::iterator jt=lstpbi.begin(); jt!=lstpbi.end(); ++jt)
+		{
+			bAdded = (*jt).AddObj(pObj);
+			if (bAdded)
+			{
+				break;
+			}
+		}
+		if (!bAdded)
+		{
+			GPieceBoundaryInfo _tpbi(pObj);
+			lstpbi.push_back(_tpbi);
+		}
 	}
+
+	RenderHelper * prh = &RenderHelper::getInstance();
+	bool bOPreviewMode = prh->IsPreviewPrintMode();
+	prh->SetPreviewPrintMode(true);
 
 	MainInterface * pmain = &MainInterface::getInstance();
 
@@ -791,13 +845,17 @@ bool GObjectManager::Dump( list<GObject *>& lobjs )
 	qsdumpbasename += qf.completeBaseName();
 
 	float fprintmul = pmain->GetPrintMul();
-	
-	float canvasx = (rside-lside)*fprintmul;
-	float canvasy = (bside-tside)*fprintmul;
 
 	int printw = pmain->GetPrintsize_W();
 	int printh = pmain->GetPrintsize_H();
 	int printmargin = pmain->GetPrintMargin();
+	float fdisplaymul = pmain->GetDisplayMul();
+
+	float canvasx = (rside-lside)*fprintmul;
+	float canvasy = (bside-tside)*fprintmul;
+	float ocanvasx = canvasx*fdisplaymul/fprintmul;
+	float ocanvasy = canvasy*fdisplaymul/fprintmul;
+
 
 	int centerprintw = printw-printmargin*2;
 	int centerprinth = printh-printmargin*2;
@@ -808,87 +866,136 @@ bool GObjectManager::Dump( list<GObject *>& lobjs )
 	canvasx = xrow * printw;
 	canvasy = yrow * printh;
 
-	QPixmap pixmap(canvasx, canvasy);
-	pixmap.fill();
-	QPainterPath path;
+	QPixmap * ppixmap = NULL;
+	QPainterPath * ppath = NULL;
+
+	if (bImages)
+	{
+		ppixmap = new QPixmap(canvasx, canvasy);
+		ppixmap->fill();
+		ppath = new QPainterPath();
+	}
 
 	GUICoordinate * pguic = &GUICoordinate::getInstance();
 	pguic->EnterPrintMode();
 
-	float fdisplaymul = pmain->GetDisplayMul();
-	RenderHelper::getInstance().SetPrintMode(&path, pguic->CtoSx(-lside)+printmargin, pguic->CtoSy(-tside)+printmargin, fprintmul/fdisplaymul);
+	prh->SetPrintMode(ppath, pguic->CtoSx(-lside)+printmargin, pguic->CtoSy(-tside)+printmargin, fprintmul/fdisplaymul);
 
 	DXFWriter * pdxfw = &DXFWriter::getInstance();
 	pdxfw->SetBaseName(qsdumpbasename.toUtf8(), 1.0f/(fdisplaymul*fdisplaymul));
-	pdxfw->SetTopY(canvasy);
+	pdxfw->SetPieceInfo(ocanvasx, ocanvasy);
 	pdxfw->WriteHeader();
 	pdxfw->WriteTables();
-	pdxfw->WriteEntitiesBegin();
+	pdxfw->WriteBlocksBegin();
 
+	pdxfw->WriteFrame();
+	pdxfw->WriteGrain();
 	for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end(); ++it)
 	{
 		(*it)->CallRender();
 	}
 
-	pdxfw->WriteFrameAndGrain(0, 0, canvasx, canvasy);
-	pdxfw->WriteEntitiesEnd();
+	pdxfw->WriteBlocksEnd();
+	pdxfw->WriteEntities();
 	pdxfw->WriteEOF();
 	pdxfw->SetBaseName();
 
-	RenderHelper::getInstance().SetPrintMode();
+
+	for (list<GPieceBoundaryInfo>::iterator it=lstpbi.begin(); it!=lstpbi.end(); ++it)
+	{
+		GPieceBoundaryInfo * ppbi = &(*it);
+		QString tlayername = ppbi->GetLayer()->getDisplayName();
+		tlayername = tlayername.replace(' ', '_');
+		pdxfw->SetBaseName((qsdumpbasename+tlayername).toUtf8(), 1/fdisplaymul);
+		float xl;
+		float yt;
+		float xr;
+		float yb;
+		ppbi->GetBoundingBox(xl, yt, xr, yb);
+		pdxfw->SetPieceInfo(xr-xl, yb-yt);
+		pdxfw->WriteHeader();
+		pdxfw->WriteTables();
+		pdxfw->WriteBlocksBegin();
+		pdxfw->WriteGrain();
+		pdxfw->WriteFrame(_GMDXFPIECEGROWTH);
+
+		ppbi->WriteDXFLines(pdxfw, 1.0f/fdisplaymul);
+
+
+		pdxfw->WriteBlocksEnd();
+		pdxfw->WriteEntities();
+		pdxfw->WriteEOF();
+		pdxfw->SetBaseName();
+	}
+
+	prh->SetPrintMode();
 	pguic->ExitPrintMode();
 
 
-	QPainter painter( &pixmap );
-//	painter.setRenderHint( QPainter::Antialiasing );
-
-	painter.setPen( Qt::black );
-//	painter.setBrush( Qt::gray );
-
-	painter.drawPath( path );
-
-
-	for (int i=0; i<xrow; i++)
+	if (bImages && ppixmap && ppath)
 	{
-		for (int j=0; j<yrow; j++)
+		QPainter painter( ppixmap );
+	//	painter.setRenderHint( QPainter::Antialiasing );
+
+		painter.setPen( Qt::black );
+	//	painter.setBrush( Qt::gray );
+
+		painter.drawPath( *ppath );
+
+		for (int i=0; i<xrow; i++)
 		{
-			QPixmap pixtemp = pixmap.copy(i*centerprintw, j*centerprinth, printw, printh);
-
-			QPainter tpainter(&pixtemp);
-			tpainter.setPen(Qt::lightGray);
-			tpainter.drawRect(printmargin, printmargin, centerprintw, centerprinth);
-			tpainter.setPen(Qt::darkGray);
-			for (int k=0; k<printw/printmargin; k++)
+			for (int j=0; j<yrow; j++)
 			{
-				if (k&1)
-				{
-					continue;
-				}
-				tpainter.drawLine(k*printmargin, printmargin, (k+1)*printmargin, printmargin);
-				tpainter.drawLine(k*printmargin, printh-printmargin, (k+1)*printmargin, printh-printmargin);
-			}
-			for (int k=0; k<printh/printmargin; k++)
-			{
-				if (k&1)
-				{
-					continue;
-				}
-				tpainter.drawLine(printmargin, k*printmargin, printmargin, (k+1)*printmargin);
-				tpainter.drawLine(printw-printmargin, k*printmargin, printw-printmargin, (k+1)*printmargin);
-			}
+				QPixmap pixtemp = ppixmap->copy(i*centerprintw, j*centerprinth, printw, printh);
 
-			QString extname = "_";
-			extname += QString().sprintf("%04d", i*yrow+j)+".png";
-			tpainter.drawText(0, printh-printmargin, printw-printmargin/2, printmargin, Qt::AlignRight|Qt::AlignVCenter, qf.completeBaseName()+extname);
-			pixtemp.save(qsdumpbasename+extname);
+				QPainter tpainter(&pixtemp);
+				tpainter.setPen(Qt::lightGray);
+				tpainter.drawRect(printmargin, printmargin, centerprintw, centerprinth);
+				tpainter.setPen(Qt::darkGray);
+				for (int k=0; k<printw/printmargin; k++)
+				{
+					if (k&1)
+					{
+						continue;
+					}
+					tpainter.drawLine(k*printmargin, printmargin, (k+1)*printmargin, printmargin);
+					tpainter.drawLine(k*printmargin, printh-printmargin, (k+1)*printmargin, printh-printmargin);
+				}
+				for (int k=0; k<printh/printmargin; k++)
+				{
+					if (k&1)
+					{
+						continue;
+					}
+					tpainter.drawLine(printmargin, k*printmargin, printmargin, (k+1)*printmargin);
+					tpainter.drawLine(printw-printmargin, k*printmargin, printw-printmargin, (k+1)*printmargin);
+				}
+
+				QString extname = "_";
+				extname += QString().sprintf("%04d", i*yrow+j)+".png";
+				tpainter.drawText(0, printh-printmargin, printw-printmargin/2, printmargin, Qt::AlignRight|Qt::AlignVCenter, qf.completeBaseName()+extname);
+				pixtemp.save(qsdumpbasename+extname);
+			}
 		}
+
+		painter.drawText(printmargin/2, 0, canvasx-printmargin, printmargin, Qt::AlignLeft|Qt::AlignVCenter, qf.completeBaseName());
+		ppixmap->save( qsdumpbasename+".png" );
+
+	}
+	if (ppixmap)
+	{
+		delete ppixmap;
+	}
+	if (ppath)
+	{
+		delete ppath;
 	}
 
-	painter.drawText(printmargin/2, 0, canvasx-printmargin, printmargin, Qt::AlignLeft|Qt::AlignVCenter, qf.completeBaseName());
-	pixmap.save( qsdumpbasename+".png" );
+	prh->SetPreviewPrintMode(bOPreviewMode);
 
 	return true;
 }
+
 
 void GObjectManager::SetWillSelfMoveList( list<GObject *> * pobjs )
 {
@@ -1031,5 +1138,72 @@ void GObjectManager::ReSelect( list<int> lstselect, int activelayerID )
 		ASSERT(pObj->isLayer());
 		GLayer * pLayer = (GLayer *)pObj;
 		SetActiveLayer_Internal(pLayer);
+	}
+}
+
+bool GPieceBoundaryInfo::AddObj( GObject * pObj )
+{
+	if (!pObj->isDescendantOf(pLayer))
+	{
+		return false;
+	}
+	for (list<GObject *>::iterator it=lstObjs.begin(); it!=lstObjs.end(); ++it)
+	{
+		if (pObj == *it)
+		{
+			return true;
+		}
+	}
+	lstObjs.push_back(pObj);
+	float txl;
+	float txr;
+	float tyt;
+	float tyb;
+	pObj->GetBoundingBox(&txl, &tyt, &txr, &tyb);
+	xl = min(txl, xl);
+	yt = min(tyt, yt);
+	xr = max(txr, xr);
+	yb = max(tyb, yb);
+	return true;
+}
+
+GPieceBoundaryInfo::GPieceBoundaryInfo( GObject * pObj )
+{
+	pLayer = pObj->getLayer();
+	pObj->GetBoundingBox(&xl, &yt, &xr, &yb);
+	lstObjs.push_back(pObj);
+}
+
+void GPieceBoundaryInfo::WriteDXFLines( DXFWriter * pdxfw, float fmul/*=1.0f*/ )
+{
+	if (!pdxfw)
+	{
+		return;
+	}
+	int layerID=DXFLAYER_INTERNAL;
+	int qualityID=DXFLAYER_INTERNALQUALITYC;
+	for (list<GObject *>::iterator it=lstObjs.begin(); it!=lstObjs.end(); ++it)
+	{
+		GObject * pObj = *it;
+		if (pObj->isRepresentableLine())
+		{
+			GLine * pLine = (GLine *)pObj;
+			/*
+			if (pLine->GetSAInfo()->GetRawSA())
+			{
+				layerID = DXFLAYER_BOUNDARY;
+				qualityID = DXFLAYER_QUALITYVALIDATIONC;
+			}
+			*/
+			if (pLine->isStraightLine())
+			{
+				pdxfw->WriteLine(pLine->GetBeginPoint()->getX()-xl, pLine->GetBeginPoint()->getY()-yt, pLine->GetEndPoint()->getX()-xl, pLine->GetEndPoint()->getY()-yt, layerID, qualityID);
+			}
+			else
+			{
+				GBezierLine * pBezier = (GBezierLine *)pLine;
+				pdxfw->WriteBezier(*(pBezier->getBSInfo()), -xl, -yt, layerID, qualityID);
+			}
+		}
 	}
 }

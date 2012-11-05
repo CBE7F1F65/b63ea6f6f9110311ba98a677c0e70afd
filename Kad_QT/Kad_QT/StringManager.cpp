@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "StringManager.h"
 #include "GPoint.h"
+#include "GUICoordinate.h"
 
 StringManager::StringManager(void)
 {
@@ -72,6 +73,19 @@ const char * StringManager::GetRegistryGeometryName()
 const char * StringManager::GetRegistryWindowStateName()
 {
 	return "WindowState";
+}
+
+const char * StringManager::GetUnitName( int measuretype/*=-1*/ )
+{
+	if (measuretype < 0)
+	{
+		measuretype = GUICoordinate::getInstance().GetMeasureType();
+	}
+	if (measuretype == GUICG_IMPERIAL)
+	{
+		return "IMPERIAL";
+	}
+	return "ENGLISH";
 }
 
 const char * StringManager::GetLogFileName()
@@ -187,6 +201,7 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_ADDSA,	"ADDSA",	"A",	"Add Seam Allowance",	""	);
 
 	_BSET(	COMM_DUMP,	"DUMP",	"DU",	"Dump to Image File",	""	);
+	_BSET(	COMM_DUMPDXF,	"DUMPDXF",	"DUD",	"Dump to DXF File",	""	);
 
 	_BSET(	COMM_SAVE,	"SAVE",	"SAV",	"Save",	""	);
 	_BSET(	COMM_SAVEAS,	"SAVEAS",	"SAVA",	"Save as",	""	);

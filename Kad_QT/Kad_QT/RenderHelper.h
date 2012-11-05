@@ -128,7 +128,14 @@ public:
 	int getLineStyle(){return style;};
 
 	void SetPrintMode(QPainterPath * path=NULL, float xoffset=0, float yoffset=0, float mul=1.0f);
+
+    void SetPreviewPrintMode(bool bSet){bPreviewPrintMode=bSet;};
+    bool IsPreviewPrintMode(){return bPreviewPrintMode;};
+
 private:
+
+    int ResolveLineStyle(int tstyle, DWORD &col);
+
 	int style;
 
 	QPainterPath * ppath;
@@ -139,6 +146,8 @@ private:
 	DXFWriter * pdxfw;
 
 	QPainter * pPainter;
+
+    bool bPreviewPrintMode;
 
 	HGE * hge;
 };

@@ -83,6 +83,25 @@ public:
 	float yeh;
 };
 
+class DXFWriter;
+
+class GPieceBoundaryInfo 
+{
+public:
+	GPieceBoundaryInfo(GObject * pObj);
+	GLayer * GetLayer(){return pLayer;};
+	bool AddObj(GObject * pObj);
+	void GetBoundingBox(float &lx, float &ty, float &rx, float &by){lx=xl; ty=yt; rx=xr; by=yb;};
+	void WriteDXFLines(DXFWriter * pdxfw, float fmul=1.0f);
+private:
+	list<GObject *> lstObjs;
+	GLayer * pLayer;
+	float xl;
+	float yt;
+	float xr;
+	float yb;
+};
+
 class GObjectManager
 {
 	friend class GObject;
@@ -105,7 +124,7 @@ public:
 	void RenderIndication();
 	void Delete();
 
-	bool Dump(list<GObject *>& lobjs);
+	bool Dump(list<GObject *>& lobjs, bool bImages);
 
 	void OnTreeWillChange();
 	void OnTreeChanged(GObject * changingbase, GObject * activeitem, bool bSetActiveLayer=true);
@@ -150,6 +169,9 @@ public:
     void SetIsolateMode(bool bSet){bIsolateMode=bSet;};
     bool IsIsolateMode(){return bIsolateMode;};
 
+    void SetPreviewPrintMode(bool bSet);
+    bool IsPreviewPrintMode();
+
 	void SetLockTreeChange();
 
 	void SetWillSelfMoveList(list<GObject *> * pobjs=NULL);
@@ -169,6 +191,7 @@ public:
 	GMainBaseNode * GetMainBaseNode(){return pBaseNode;};
 	GBaseNode * GetFakeBaseNode(){return &fakebasenode;};
 private:
+
 	GMainBaseNode * pBaseNode;
 	GObject * pLastToSetActiveNode;
 	list<GObject*> nodetodelete;

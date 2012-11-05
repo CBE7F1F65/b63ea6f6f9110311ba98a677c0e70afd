@@ -98,6 +98,7 @@ enum{
 
 	// Dump
 	COMM_DUMP,	// dump to file
+	COMM_DUMPDXF,	// dump dxf only
 
 	// Other
 	COMM_RESTORETOSNAPSHOT,

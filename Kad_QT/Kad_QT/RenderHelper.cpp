@@ -10,6 +10,8 @@
 #define _GSUBSPT_RENDER_L	5
 #define _GMIDPT_RENDER_L	5
 
+#define _RHDIM_ALPHAAND 0xc0ffffff
+
 RenderHelper::RenderHelper(void)
 {
 	hge = hgeCreate(HGE_VERSION);
@@ -20,6 +22,8 @@ RenderHelper::RenderHelper(void)
 	ppath = NULL;
 
 	pPainter = NULL;
+
+    bPreviewPrintMode = false;
 }
 
 RenderHelper::~RenderHelper(void)
@@ -76,7 +80,7 @@ void RenderHelper::TrueBaseRenderLine_S( float x1, float y1, float x2, float y2,
 
 void RenderHelper::BaseRenderPoint_S( float x, float y, DWORD col )
 {
-	if (!ppath && !(x >= 0 && x <= pguic->GetScreenWidth_S() && y >= 0 && y <= pguic->GetScreenHeight_S()))
+	if (!ppath && !pdxfw->GetDXF() && !(x >= 0 && x <= pguic->GetScreenWidth_S() && y >= 0 && y <= pguic->GetScreenHeight_S()))
 	{
 		return;
 	}
@@ -85,13 +89,13 @@ void RenderHelper::BaseRenderPoint_S( float x, float y, DWORD col )
 
 void RenderHelper::BaseRenderLine_S( float x1, float y1, float x2, float y2, DWORD col )
 {
-	if (!ppath && !MathHelper::getInstance().LinePartialInRect(x1, y1, x2, y2, 0, 0, pguic->GetScreenWidth_S(), pguic->GetScreenHeight_S(), true))
+	if (!ppath && !pdxfw->GetDXF() && !MathHelper::getInstance().LinePartialInRect(x1, y1, x2, y2, 0, 0, pguic->GetScreenWidth_S(), pguic->GetScreenHeight_S(), true))
 	{
 		return;
-	}
+    }
 #define _RHDOTTEDLINE_SPACE	5
 #define _RHSLASHLINE_SPACE	10
-	switch (style)
+    switch (ResolveLineStyle(style, col))
 	{
 	case RHLINESTYLE_LINE:
 		TrueBaseRenderLine_S(x1, y1, x2, y2, col);
@@ -369,7 +373,7 @@ void RenderHelper::RenderBezier( PointF2D pb, PointF2D pbh, PointF2D peh, PointF
 
 void RenderHelper::SetLineStyle( int _style/*=0*/ )
 {
-	style = _style;
+    style = _style;
 }
 
 void RenderHelper::RenderAttributePoint_S( float x, float y, DWORD col )
@@ -428,7 +432,10 @@ void RenderHelper::RenderBezierByInfo( BezierSublinesInfo * bsinfo, DWORD col, f
 	}
 
 	int savedstyle = style;
-	style = RHLINESTYLE_LINE;
+	if (!bPreviewPrintMode)
+	{
+		style = RHLINESTYLE_LINE;
+	}
 
 	float xoffset = 0;
 	float yoffset = 0;
@@ -471,7 +478,7 @@ void RenderHelper::RenderBezierByInfo( BezierSublinesInfo * bsinfo, DWORD col, f
 			yoffset = ptNormal.y;
 		}
 
-		switch (savedstyle)
+        switch (ResolveLineStyle(savedstyle, col))
 		{
 		case RHLINESTYLE_LINE:
 			{
@@ -554,7 +561,7 @@ void RenderHelper::RenderArc_S( float x, float y, float r, int beginangle, int e
 	int savedstyle = style;
 	SetLineStyle();
 
-	switch (savedstyle)
+    switch (ResolveLineStyle(savedstyle, col))
 	{
 	case RHLINESTYLE_LINE:
 		{
@@ -669,7 +676,23 @@ void RenderHelper::SetPrintMode( QPainterPath * path/*=NULL*/, float xoffset/*=0
 	ppath = path;
 	printXOffset = xoffset;
 	printYOffset = yoffset;
-	printMul = mul;
+    printMul = mul;
+}
+
+int RenderHelper::ResolveLineStyle(int tstyle, DWORD &col)
+{
+    if (bPreviewPrintMode)
+    {
+        switch (tstyle)
+        {
+        case RHLINESTYLE_LINE:
+			col &= _RHDIM_ALPHAAND;
+            return RHLINESTYLE_LINE;
+        case RHLINESTYLE_SLASHLINE:
+            return RHLINESTYLE_LINE;
+        }
+    }
+    return tstyle;
 }
 
 void RenderHelper::RenderImage_S( QImage * pImg, float x, float y, float w, float h, DWORD col )

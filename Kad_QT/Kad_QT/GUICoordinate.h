@@ -88,6 +88,8 @@ public:
 	float GetCursorX_C(){return cursorx_c;};
 	float GetCursorY_C(){return cursory_c;};
 
+	int GetMeasureType(){return measuretype;};
+
 	struct GridInfo
 	{
 		float scrvalue;

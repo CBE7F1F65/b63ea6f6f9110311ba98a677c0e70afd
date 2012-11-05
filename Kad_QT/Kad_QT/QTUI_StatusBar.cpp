@@ -95,6 +95,11 @@ void QTUI_StatusBar::UpdateStatusBar()
     {
         ui->PBIsolateMode->setChecked(pgm->IsIsolateMode());
     }
+
+    if (ui->PBPreviewPrintMode->isChecked() != pgm->IsPreviewPrintMode())
+    {
+        ui->PBPreviewPrintMode->setChecked(pgm->IsPreviewPrintMode());
+    }
 }
 
 void QTUI_StatusBar::SLT_PrecisionChanged(int value)
@@ -150,6 +155,11 @@ void QTUI_StatusBar::SLT_PBSnapHandleOnlyTriggered(bool bVal)
 void QTUI_StatusBar::SLT_PBIsolateModeTriggered(bool bVal)
 {
     GObjectManager::getInstance().SetIsolateMode(bVal);
+}
+
+void QTUI_StatusBar::SLT_PBPreviewPrintModeTriggered(bool bVal)
+{
+    GObjectManager::getInstance().SetPreviewPrintMode(bVal);
 }
 
 void QTUI_StatusBar::resizeEvent(QResizeEvent *e)

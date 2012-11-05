@@ -353,7 +353,7 @@ bool RotateNodeBatchCommand::MIDCBAngle( MarkingUI * pmui, bool bAccept )
 			float x, y;
 			pcommand->GetParamXY(CSP_ROTATENODE_BATCH_F_XY_ANGLE_ORIGIN, &x, &y);
 			pgp->SetLockOrigin(x, y);
-			pgp->SetLockAngle(nLockedAngle);
+			pgp->SetLockAngle(nLockedAngle+relativeAngle);
 		}
 		else
 		{

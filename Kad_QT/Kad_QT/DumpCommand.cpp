@@ -101,14 +101,14 @@ void DumpCommand::OnDoneCommand()
 		return;
 	}
 
-	if (pgm->Dump(lobjs))
+	if (pgm->Dump(lobjs, comm==COMM_DUMP?true:false))
 	{
 		int objcount = lobjs.size();
 		PushRevertibleBatch(
 			PUSHREVERTABLESTATE_BEGIN,
 			CCMake_C(COMM_I_COMMAND, 2+objcount, 1),
 			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
-			CCMake_C(COMM_DUMP),
+			CCMake_C(comm),
 			NULL
 			);
 		for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end(); ++it)

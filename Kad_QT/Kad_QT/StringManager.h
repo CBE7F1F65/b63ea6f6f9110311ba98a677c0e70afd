@@ -115,6 +115,7 @@ public:
 	const char * GetRegistryWindowStateName();
 	const char * GetLogFileName();
 	const char * GetIniFileName();
+	const char * GetUnitName(int measuretype=-1);
 
 #define _SMXMLFDEF(STRNAME, VAL)	\
 	inline const char * GetXML##STRNAME##Name(){return VAL;}

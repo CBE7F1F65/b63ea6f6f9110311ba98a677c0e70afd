@@ -31,6 +31,7 @@ public slots:
     void SLT_PBSnapVirtualCoordTriggered(bool bVal);
     void SLT_PBSnapHandleOnlyTriggered(bool bVal);
     void SLT_PBIsolateModeTriggered(bool bVal);
+    void SLT_PBPreviewPrintModeTriggered(bool bVal);
     
 protected:
     virtual void resizeEvent(QResizeEvent *e);

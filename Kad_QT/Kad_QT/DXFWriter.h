@@ -24,6 +24,8 @@
 #define DXFLAYER_CUTOUTQUALITYC		86
 #define DXFLAYER_SEWLINEQUALITYC	87
 
+#include "GLine.h"
+
 class DXFWriter
 {
 public:
@@ -38,21 +40,28 @@ private:
 public:
 
 	bool SetBaseName(const char * basename=NULL,  float mul=1.0f);
-	void SetTopY(float y=-1){topy=y;};
+	void SetPieceInfo(float w, float h, const char * piecename=NULL);
 	bool WriteHeader();
 	bool WriteTables();
-	bool WriteEntitiesBegin();
-	bool WriteLine(float x0, float y0, float x1, float y1, int layerID=DXFLAYER_SEWLINE);
-	bool WriteFrameAndGrain(float xl, float yt, float w, float h);
-	bool WriteEntitiesEnd();
+	bool WriteBlocksBegin();
+	bool WriteLine(float x0, float y0, float x1, float y1, int layerID=DXFLAYER_INTERNAL, int qualityID=DXFLAYER_INTERNALQUALITYC);
+	bool WriteBezier(BezierSublinesInfo &bsinfo, float xoffset, float yoffset, int layerID=DXFLAYER_INTERNAL, int qualityID=DXFLAYER_INTERNALQUALITYC);
+	bool WriteFrame(float fgrowth=0.0f);
+	bool WriteGrain();
+	bool WriteBlocksEnd();
+	bool WriteEntities();
 	bool WriteEOF();
 
 	QFile * GetDXF(){return pdxf;};
 
 private:
+	inline void _LimitSmallNumbers(float &f){if (fabsf(f)<M_FLOATEPS){f=f<0?-M_FLOATEPS:M_FLOATEPS;}};
+
 	QString strbasename;
+	QString strpiecename;
 	QFile * pdxf;
-	float topy;
+	float fWidth;
+	float fHeight;
 	float fmul;
 };
 

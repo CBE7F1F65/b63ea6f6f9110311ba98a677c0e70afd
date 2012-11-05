@@ -110,6 +110,7 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 		return &AddSACommand::getInstance();
 
 	case COMM_DUMP:
+	case COMM_DUMPDXF:
 		return &DumpCommand::getInstance();
 
 	case COMM_RESTORETOSNAPSHOT:

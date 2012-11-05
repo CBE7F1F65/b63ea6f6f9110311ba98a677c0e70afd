@@ -190,7 +190,7 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="21">
+    <item row="0" column="22">
      <spacer name="horizontalSpacer_2">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -203,21 +203,21 @@
       </property>
      </spacer>
     </item>
-    <item row="0" column="22">
+    <item row="0" column="23">
      <widget class="QLabel" name="labelStatic_Precision">
       <property name="text">
        <string>精确度:  </string>
       </property>
      </widget>
     </item>
-    <item row="0" column="24">
+    <item row="0" column="25">
      <widget class="QLabel" name="labelFPS">
       <property name="text">
        <string>FPS</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="23">
+    <item row="0" column="24">
      <widget class="QSpinBox" name="spinPrecision">
       <property name="maximum">
        <number>100</number>
@@ -399,7 +399,7 @@
       </property>
      </spacer>
     </item>
-    <item row="0" column="15">
+    <item row="0" column="16">
      <spacer name="horizontalSpacer_6">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -415,7 +415,7 @@
       </property>
      </spacer>
     </item>
-    <item row="0" column="17">
+    <item row="0" column="18">
      <spacer name="horizontalSpacer_7">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -431,7 +431,7 @@
       </property>
      </spacer>
     </item>
-    <item row="0" column="19">
+    <item row="0" column="20">
      <widget class="QSpinBox" name="spinSnapRange">
       <property name="minimum">
        <number>1</number>
@@ -444,15 +444,46 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="18">
+    <item row="0" column="19">
      <widget class="QLabel" name="labelStatic_SnapRange">
       <property name="text">
        <string>捕捉范围:  </string>
       </property>
      </widget>
     </item>
-    <item row="0" column="16">
+    <item row="0" column="17">
      <widget class="QPushButton" name="PBIsolateMode">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>仅捕捉操控柄</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="15">
+     <widget class="QPushButton" name="PBPreviewPrintMode">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
         <horstretch>0</horstretch>
@@ -654,12 +685,28 @@
    <slot>SLT_PBIsolateModeTriggered(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>394</x>
-     <y>31</y>
+     <x>424</x>
+     <y>34</y>
     </hint>
     <hint type="destinationlabel">
-     <x>400</x>
-     <y>254</y>
+     <x>473</x>
+     <y>287</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PBPreviewPrintMode</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>QTUI_StatusBar</receiver>
+   <slot>SLT_PBPreviewPrintModeTriggered(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>367</x>
+     <y>24</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>392</x>
+     <y>262</y>
     </hint>
    </hints>
   </connection>
@@ -677,5 +724,6 @@
   <slot>SLT_PBSnapHandleOnlyTriggered(bool)</slot>
   <slot>SLT_SnapRangeChanged(int)</slot>
   <slot>SLT_PBIsolateModeTriggered(bool)</slot>
+  <slot>SLT_PBPreviewPrintModeTriggered(bool)</slot>
  </slots>
 </ui>
