@@ -472,7 +472,7 @@
        </size>
       </property>
       <property name="toolTip">
-       <string>仅捕捉操控柄</string>
+       <string>孤立模式</string>
       </property>
       <property name="text">
        <string/>
@@ -503,7 +503,7 @@
        </size>
       </property>
       <property name="toolTip">
-       <string>仅捕捉操控柄</string>
+       <string>打印预览</string>
       </property>
       <property name="text">
        <string/>

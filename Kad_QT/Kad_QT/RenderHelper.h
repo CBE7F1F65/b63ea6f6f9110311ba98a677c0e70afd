@@ -127,7 +127,7 @@ public:
 	void RenderLineMeasureMark( float x1, float y1, float x2, float y2, DWORD col );
 	int getLineStyle(){return style;};
 
-	void SetPrintMode(QPainterPath * path=NULL, float xoffset=0, float yoffset=0, float mul=1.0f);
+	void SetPrintMode(QPainter * painter=NULL, float xoffset=0, float yoffset=0, float mul=1.0f);
 
     void SetPreviewPrintMode(bool bSet){bPreviewPrintMode=bSet;};
     bool IsPreviewPrintMode(){return bPreviewPrintMode;};
@@ -138,7 +138,7 @@ private:
 
 	int style;
 
-	QPainterPath * ppath;
+	QPainter * ppainter;
 	float printXOffset;
 	float printYOffset;
 	float printMul;

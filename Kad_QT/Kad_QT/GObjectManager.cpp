@@ -85,14 +85,18 @@ void GObjectManager::Update()
 
 	bool tarupdated=false;
 	HTARGET tar = RenderTargetManager::getInstance().UpdateTarget(RTID_GOBJECTS, &tarupdated);
-    if (tar != tarObjs || tarupdated || pBaseNode->isModified() || bRedraw)
+    if (bRedraw || tar != tarObjs || tarupdated || pBaseNode->isModified())
 	{
-		tarObjs = tar;
-		RenderHelper::getInstance().BeginRenderTar(tar);
-		pBaseNode->CallRender();
-		RenderHelper::getInstance().EndRenderTar();
+		bRedraw = true;
+		if (!nLockTreeChangeState)
+		{
+			tarObjs = tar;
+			RenderHelper::getInstance().BeginRenderTar(tar);
+			pBaseNode->CallRender();
+			RenderHelper::getInstance().EndRenderTar();
+			bRedraw = false;
+		}
 	}
-    bRedraw = false;
 	pBaseNode->CallClearModify();
 
 	if (nLockTreeChangeState == GMLOCKTREESTATE_REQUIRELOCK)
@@ -223,15 +227,8 @@ void GObjectManager::OnTreeChanged( GObject * changingbase, GObject * activeitem
 			}
 			return;
 		}
-/*
-		if (activeitem)
-		{
-			if (!activeitem->isAttributeNode() && !activeitem->isRecDisplayFolded())
-			{*/
-				MainInterface::getInstance().OnRebuildLayerTree(changingbase, activeitem);
-/*
-			}
-		}*/
+		MainInterface::getInstance().OnRebuildLayerTree(changingbase, activeitem);
+		pLastToSetActiveNode = activeitem;
     }
 }
 
@@ -867,19 +864,20 @@ bool GObjectManager::Dump( list<GObject *>& lobjs, bool bImages )
 	canvasy = yrow * printh;
 
 	QPixmap * ppixmap = NULL;
-	QPainterPath * ppath = NULL;
+	QPainter * ppainter = NULL;
+//	QPainterPath * ppath = NULL;
 
 	if (bImages)
 	{
 		ppixmap = new QPixmap(canvasx, canvasy);
 		ppixmap->fill();
-		ppath = new QPainterPath();
+		ppainter = new QPainter(ppixmap);
+//		ppath = new QPainterPath();
 	}
 
 	GUICoordinate * pguic = &GUICoordinate::getInstance();
 	pguic->EnterPrintMode();
-
-	prh->SetPrintMode(ppath, pguic->CtoSx(-lside)+printmargin, pguic->CtoSy(-tside)+printmargin, fprintmul/fdisplaymul);
+	prh->SetPrintMode(ppainter, pguic->CtoSx(-lside)+printmargin, pguic->CtoSy(-tside)+printmargin, fprintmul/fdisplaymul);
 
 	DXFWriter * pdxfw = &DXFWriter::getInstance();
 	pdxfw->SetBaseName(qsdumpbasename.toUtf8(), 1.0f/(fdisplaymul*fdisplaymul));
@@ -932,16 +930,8 @@ bool GObjectManager::Dump( list<GObject *>& lobjs, bool bImages )
 	pguic->ExitPrintMode();
 
 
-	if (bImages && ppixmap && ppath)
+	if (bImages && ppixmap && ppainter)
 	{
-		QPainter painter( ppixmap );
-	//	painter.setRenderHint( QPainter::Antialiasing );
-
-		painter.setPen( Qt::black );
-	//	painter.setBrush( Qt::gray );
-
-		painter.drawPath( *ppath );
-
 		for (int i=0; i<xrow; i++)
 		{
 			for (int j=0; j<yrow; j++)
@@ -978,17 +968,17 @@ bool GObjectManager::Dump( list<GObject *>& lobjs, bool bImages )
 			}
 		}
 
-		painter.drawText(printmargin/2, 0, canvasx-printmargin, printmargin, Qt::AlignLeft|Qt::AlignVCenter, qf.completeBaseName());
+		ppainter->drawText(printmargin/2, 0, canvasx-printmargin, printmargin, Qt::AlignLeft|Qt::AlignVCenter, qf.completeBaseName());
 		ppixmap->save( qsdumpbasename+".png" );
 
+	}
+	if (ppainter)
+	{
+		delete ppainter;
 	}
 	if (ppixmap)
 	{
 		delete ppixmap;
-	}
-	if (ppath)
-	{
-		delete ppath;
 	}
 
 	prh->SetPreviewPrintMode(bOPreviewMode);

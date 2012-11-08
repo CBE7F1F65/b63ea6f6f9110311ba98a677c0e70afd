@@ -19,7 +19,7 @@ RenderHelper::RenderHelper(void)
 	pdxfw = &DXFWriter::getInstance();
 	style = 0;
 
-	ppath = NULL;
+	ppainter = NULL;
 
 	pPainter = NULL;
 
@@ -46,12 +46,19 @@ void RenderHelper::Release()
 
 void RenderHelper::TrueBaseRenderPoint_S( float x, float y, DWORD col )
 {
-	if (ppath)
+	if (ppainter)
 	{
 		float tx = (x+printXOffset)*printMul;
 		float ty = (y+printYOffset)*printMul;
-		ppath->moveTo(tx, ty);
-		ppath->lineTo(tx, ty);
+		if (GETA(col) >= 0xcf)
+		{
+			ppainter->setPen(Qt::black);
+		}
+		else
+		{
+			ppainter->setPen(Qt::darkGray);
+		}
+		ppainter->drawPoint(tx, ty);
 	}
 	else
 	{
@@ -62,14 +69,21 @@ void RenderHelper::TrueBaseRenderPoint_S( float x, float y, DWORD col )
 
 void RenderHelper::TrueBaseRenderLine_S( float x1, float y1, float x2, float y2, DWORD col )
 {
-	if (ppath)
+	if (ppainter)
 	{
 		float tx1 = (x1+printXOffset)*printMul;
 		float ty1 = (y1+printYOffset)*printMul;
 		float tx2 = (x2+printXOffset)*printMul;
 		float ty2 = (y2+printYOffset)*printMul;
-		ppath->moveTo(tx1, ty1);
-		ppath->lineTo(tx2, ty2);
+		if (GETA(col) >= 0xcf)
+		{
+			ppainter->setPen(Qt::black);
+		}
+		else
+		{
+			ppainter->setPen(Qt::darkGray);
+		}
+		ppainter->drawLine(tx1, ty1, tx2, ty2);
 	}
 	else
 	{
@@ -80,7 +94,7 @@ void RenderHelper::TrueBaseRenderLine_S( float x1, float y1, float x2, float y2,
 
 void RenderHelper::BaseRenderPoint_S( float x, float y, DWORD col )
 {
-	if (!ppath && !pdxfw->GetDXF() && !(x >= 0 && x <= pguic->GetScreenWidth_S() && y >= 0 && y <= pguic->GetScreenHeight_S()))
+	if (!ppainter && !pdxfw->GetDXF() && !(x >= 0 && x <= pguic->GetScreenWidth_S() && y >= 0 && y <= pguic->GetScreenHeight_S()))
 	{
 		return;
 	}
@@ -89,7 +103,7 @@ void RenderHelper::BaseRenderPoint_S( float x, float y, DWORD col )
 
 void RenderHelper::BaseRenderLine_S( float x1, float y1, float x2, float y2, DWORD col )
 {
-	if (!ppath && !pdxfw->GetDXF() && !MathHelper::getInstance().LinePartialInRect(x1, y1, x2, y2, 0, 0, pguic->GetScreenWidth_S(), pguic->GetScreenHeight_S(), true))
+	if (!ppainter && !pdxfw->GetDXF() && !MathHelper::getInstance().LinePartialInRect(x1, y1, x2, y2, 0, 0, pguic->GetScreenWidth_S(), pguic->GetScreenHeight_S(), true))
 	{
 		return;
     }
@@ -671,9 +685,9 @@ void RenderHelper::RenderLineMeasureMark( float x1, float y1, float x2, float y2
 	SetLineStyle(savedstyle);
 }
 
-void RenderHelper::SetPrintMode( QPainterPath * path/*=NULL*/, float xoffset/*=0*/, float yoffset/*=0*/, float mul/*=1.0f*/ )
+void RenderHelper::SetPrintMode( QPainter * painter/*=NULL*/, float xoffset/*=0*/, float yoffset/*=0*/, float mul/*=1.0f*/ )
 {
-	ppath = path;
+	ppainter = painter;
 	printXOffset = xoffset;
 	printYOffset = yoffset;
     printMul = mul;

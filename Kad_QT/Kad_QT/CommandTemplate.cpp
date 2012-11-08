@@ -551,6 +551,10 @@ bool CommandTemplate::MergeClingNewPoint( GPoint * pFrom, GObject * pTo, float f
 void CommandTemplate::ReAttachAfterMoveNode( GObject * pObj, bool bFindMerge/*=true*/, list<GObject *>* lObjs/*=0 */ )
 {
 	ASSERT(pObj);
+	if (pgm->IsIsolateMode())
+	{
+		pObj->Isolate();
+	}
 	if (!pObj->getChildren()->empty())
 	{
 		for (list<GObject *>::iterator it=pObj->getChildren()->begin(); it!=pObj->getChildren()->end(); ++it)
@@ -588,12 +592,16 @@ void CommandTemplate::ReAttachAfterMoveNode( GObject * pObj, bool bFindMerge/*=t
 			if (pAnotherObj->isPoint())
 			{
 				pAnotherPoint = (GPoint *)pAnotherObj;
+				if (pPoint->isMergeWith(pAnotherPoint))
+				{
+					return;
+				}
 			}
 			if (pPoint->isClingTo(pAnotherObj))
 			{
 				return;
 			}
-	}
+		}
 	}
 
 	float fProportion;

@@ -922,11 +922,14 @@ void Command::GrowParam( int index )
 	int size = ccomm.params.size();
 	if (size < index+1)
 	{
+		ccomm.params.resize((index+1)*2);
+		/*
 		for (int i=size; i<index+1; i++)
 		{
 			CommandParam _cp;
 			ccomm.params.push_back(_cp);
 		}
+		*/
 	}
 }
 

@@ -417,6 +417,7 @@ void MarqueeSelect::Update()
 		{
 			if (!selectednodes.empty())
 			{
+				GObjectManager::getInstance().SetLockTreeChange();
 				pmain->OnCommandWithParam(
 					COMM_DELETEITEM,
 					NULL);
@@ -919,7 +920,54 @@ void MarqueeSelect::BeginMove( float nowx, float nowy )
 
 void MarqueeSelect::EndMove()
 {
-	GObjectManager::getInstance().EndTryMove();
+	GObjectManager::getInstance().SetLockTreeChange();
+	GObjectManager::getInstance().CancelTryMove();
+
+	if (pMarkingOffset)
+	{
+		MarkingUI * pui = pMarkingOffset->getMarkingUI(MARKFLAG_XOFFSET);
+		float xoffset = 0;
+		float yoffset = 0;
+		bool bOk=false;
+		if (pui)
+		{
+			xoffset = pui->getFloat(&bOk);
+			if (!bOk)
+			{
+				ASSERT(false);
+				xoffset = 0;
+			}
+		}
+		pui = pMarkingOffset->getMarkingUI(MARKFLAG_YOFFSET);
+		if (pui)
+		{
+			yoffset = pui->getFloat(&bOk);
+			if (!bOk)
+			{
+				ASSERT(false);
+				yoffset = 0;
+			}
+		}
+		MainInterface * pmain = &MainInterface::getInstance();
+		if (!Command::getInstance().GetCurrentCommand())
+		{
+			if (!selectednodes.empty())
+			{
+				pmain->OnCommandWithParam(
+					COMM_MOVENODEBYOFFSET_BATCH,
+					NULL);
+				pmain->OnCommandSingleParamF(xoffset);
+				pmain->OnCommandSingleParamF(yoffset);
+				for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end(); ++it)
+				{
+					pmain->OnCommandSingleParamI((*it)->getID());
+				}
+				pmain->OnCommandSingleParamI(-1);
+			}
+		}
+	}
+
+
 	GObjectPicker * pgp = &GObjectPicker::getInstance();
 	if (pMarkingOffset)
 	{

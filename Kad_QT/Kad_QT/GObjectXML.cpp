@@ -532,44 +532,47 @@ bool GPoint::ReadXML( GObjectXMLNode * pnode )
 	float prop_x = pnode->GetValue(psm->GetXMLNodeXName(), strPrefix).toFloat();
 	float prop_y = pnode->GetValue(psm->GetXMLNodeYName(), strPrefix).toFloat();
 	this->SetPosition(prop_x, prop_y);
-	// ClingTo
-	QString strClingToPrefix = strPrefix+psm->GetXMLNodeClingInfoName();
-	strValue = pnode->GetValue(psm->GetXMLNodeClingToName(), strClingToPrefix);
-	if (strValue.length())
+	if (!pgm->IsIsolateMode())
 	{
-		int prop_clingto = strValue.toInt();
-		GObject * prop_pClingTo = pgm->FindObjectByID(prop_clingto);
-		ASSERT(prop_pClingTo->isLine());
-
-		int prop_clingtype = GCLING_PROPORTION;
-		strValue = pnode->GetValue(psm->GetXMLNodeClingTypeName(), strClingToPrefix);
+		// ClingTo
+		QString strClingToPrefix = strPrefix+psm->GetXMLNodeClingInfoName();
+		strValue = pnode->GetValue(psm->GetXMLNodeClingToName(), strClingToPrefix);
 		if (strValue.length())
 		{
-			prop_clingtype = strValue.toInt();
-		}
-		strValue = pnode->GetValue(psm->GetXMLNodeClingValName(), strClingToPrefix);
-		float prop_clingval = strValue.toFloat();
+			int prop_clingto = strValue.toInt();
+			GObject * prop_pClingTo = pgm->FindObjectByID(prop_clingto);
+			ASSERT(prop_pClingTo->isLine());
 
-		this->ClingTo((GLine *)prop_pClingTo, prop_clingval, prop_clingtype);
-	}
-	// MergeWith
-	QString strMergeWithPrefix = strPrefix+psm->GetXMLNodeMergeWithName();
-	int nMerge = 0;
-	while (true)
-	{
-		strValue = pnode->GetValue(QString::number(nMerge), strMergeWithPrefix);
-		if (strValue.length())
-		{
-			nMerge++;
-			int prop_mergeid = strValue.toInt();
-			GObject * prop_pMergeWith = pgm->FindObjectByID(prop_mergeid);
-			ASSERT(prop_pMergeWith->isPoint());
+			int prop_clingtype = GCLING_PROPORTION;
+			strValue = pnode->GetValue(psm->GetXMLNodeClingTypeName(), strClingToPrefix);
+			if (strValue.length())
+			{
+				prop_clingtype = strValue.toInt();
+			}
+			strValue = pnode->GetValue(psm->GetXMLNodeClingValName(), strClingToPrefix);
+			float prop_clingval = strValue.toFloat();
 
-			this->MergeWith((GPoint *)prop_pMergeWith);
+			this->ClingTo((GLine *)prop_pClingTo, prop_clingval, prop_clingtype);
 		}
-		else
+		// MergeWith
+		QString strMergeWithPrefix = strPrefix+psm->GetXMLNodeMergeWithName();
+		int nMerge = 0;
+		while (true)
 		{
-			break;
+			strValue = pnode->GetValue(QString::number(nMerge), strMergeWithPrefix);
+			if (strValue.length())
+			{
+				nMerge++;
+				int prop_mergeid = strValue.toInt();
+				GObject * prop_pMergeWith = pgm->FindObjectByID(prop_mergeid);
+				ASSERT(prop_pMergeWith->isPoint());
+
+				this->MergeWith((GPoint *)prop_pMergeWith);
+			}
+			else
+			{
+				break;
+			}
 		}
 	}
 
@@ -675,15 +678,18 @@ bool GHandlePoint::ReadXML( GObjectXMLNode * pnode )
 	QString strPrefix = getStaticTypeName();
 	QString strValue;
 
-	// BindWith
-	strValue = pnode->GetValue(psm->GetXMLNodeBindWithName(), strPrefix);
-	if (strValue.length())
+	if (pgm->IsIsolateMode())
 	{
-		int prop_bindid = strValue.toInt();
-		GObject * prop_pBindWith = pgm->FindObjectByID(prop_bindid);
-		ASSERT(prop_pBindWith->isHandlePoint());
+		// BindWith
+		strValue = pnode->GetValue(psm->GetXMLNodeBindWithName(), strPrefix);
+		if (strValue.length())
+		{
+			int prop_bindid = strValue.toInt();
+			GObject * prop_pBindWith = pgm->FindObjectByID(prop_bindid);
+			ASSERT(prop_pBindWith->isHandlePoint());
 
-		this->BindWith((GHandlePoint *)prop_pBindWith);
+			this->BindWith((GHandlePoint *)prop_pBindWith);
+		}
 	}
 
 	return true;

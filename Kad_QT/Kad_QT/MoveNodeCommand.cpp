@@ -97,9 +97,10 @@ void MoveNodeCommand::OnDoneCommand()
 		return;
 	}
 	
+//	pgm->SetLockTreeChange();
 	if (pObj->CallMoveTo(pObj, tox, toy, false))
 	{
-		pgm->OnTreeChanged(pObj->getParent(), pObj);
+//		pgm->OnTreeChanged(pObj->getParent(), pObj);
 //		MainInterface::getInstance().CallChangeNode(pObj);
 
 		PushRevertible(

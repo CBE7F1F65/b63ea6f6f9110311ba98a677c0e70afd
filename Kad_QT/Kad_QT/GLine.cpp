@@ -330,6 +330,7 @@ void GLine::AddSA( float xinner, float yinner, float fsa )
 	if (!fsa)
 	{
 		saInfo.ClearSA();
+		CallRedrawModify();
 		return;
 	}
 	bool bLeft = MathHelper::getInstance().IsPointInLeftOfLine(plbegin->GetPointF2D(), plend->GetPointF2D(), PointF2D(xinner, yinner));
@@ -343,7 +344,7 @@ void GLine::AddSA( float xinner, float yinner, float fsa )
 		nSAFlag |= GSA_LEFT;
 	}
 	saInfo.SetSA(fsa, nSAFlag);
-	CallModify();
+	CallRedrawModify();
 }
 
 bool GLine::Isolate()

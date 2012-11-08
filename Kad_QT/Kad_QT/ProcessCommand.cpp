@@ -169,9 +169,7 @@ void Command::ProcessCommand()
 {
 	while (true)
 	{
-		ProcessCommittedCommand();
-
-		if (!GetCurrentCommand())
+		if (!ProcessCommittedCommand())
 		{
 			return;
 		}

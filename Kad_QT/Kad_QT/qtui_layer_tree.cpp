@@ -45,6 +45,10 @@ QTUI_Layer_Tree::QTUI_Layer_Tree(QWidget *parent) :
 
 void QTUI_Layer_Tree::RebuildTree(GObject *changebase, GObject *activeitem)
 {
+	if (GObjectManager::getInstance().IsTreeLocked())
+	{
+		return;
+	}
     selectednodes.clear();
     QTreeWidgetItem * pBaseItem = FindItemByObj(changebase);
     if (!pBaseItem)
@@ -62,10 +66,24 @@ void QTUI_Layer_Tree::RebuildTree(GObject *changebase, GObject *activeitem)
         {
             pPreferredNextSelectItem = activeitem;
             this->setCurrentItem(pActive);
-            this->scrollToItem(pActive);
-            Reselect();
+			this->scrollToItem(pActive);
+			Reselect();
         }
-    }
+	}
+	else if (pPreferredNextSelectItem)
+	{
+		QTreeWidgetItem * pActive = FindItemByObj(pPreferredNextSelectItem);
+		if (pActive)
+		{
+			this->setCurrentItem(pActive);
+			this->scrollToItem(pActive);
+			Reselect();
+		}
+		else
+		{
+			pPreferredNextSelectItem = NULL;
+		}
+	}
 
     /*
     if (activeitem)
@@ -139,47 +157,57 @@ void QTUI_Layer_Tree::dropEvent(QDropEvent *e)
     QWidget * pWidget = e->source();
     if (pWidget == this)
     {
-//        DropIndicatorPosition dip = this->dropIndicatorPosition();
-        if (true)//(dip == QAbstractItemView::OnItem)
+		DropIndicatorPosition dip = this->dropIndicatorPosition();
+		QTreeWidgetItem * pItem = this->itemAt(e->pos());
+		if (!pItem || dip == QAbstractItemView::OnViewport)
+		{
+			pDragDropLayer = GObjectManager::getInstance().GetMainBaseNode();
+			pDragDropAfter = pDragDropLayer->getOldestChild();
+		}
+		else
         {
-            QTreeWidgetItem * pItem = this->itemAt(e->pos());
             GObject * pObj = GetObjFromItem(pItem);
             if (IsObjInSelection(pObj))
             {
                 e->ignore();
                 return;
             }
-            if (pObj->isLayer())
-            {
-                pDragDropLayer = (GLayer *)pObj;
-                pDragDropAfter = NULL;
-            }
-            else
-            {
-                pDragDropLayer = (GLayer *)pObj->getLayer();
-                pDragDropAfter = pObj;
-            }
-            MainInterface::getInstance().OnCommand(COMM_REPARENT);
-            e->acceptProposedAction();
-			Reselect();
-            return;
-        }
-    }
-    e->ignore();
+			if (dip == QAbstractItemView::OnItem)
+			{
+				if (pObj->isLayer())
+				{
+					pDragDropLayer = (GLayer *)pObj;
+					pDragDropAfter = NULL;
+				}
+				else
+				{
+					pDragDropLayer = pObj->getLayer();
+					pDragDropAfter = pObj;
+				}
+			}
+			else if (dip == QAbstractItemView::BelowItem)
+			{
+				pDragDropLayer = pObj->getLayer(false);
+				pDragDropAfter = pObj;
+			}
+			else if (dip == QAbstractItemView::AboveItem)
+			{
+				pDragDropLayer = pObj->getLayer(false);
+				pDragDropAfter = pObj->getYoungerSibling();
+			}
+		}
+		MainInterface::getInstance().OnCommand(COMM_REPARENT);
+		e->acceptProposedAction();
+		Reselect();
+	}
+	e->ignore();
 }
 
 void QTUI_Layer_Tree::dragMoveEvent(QDragMoveEvent *e)
 {
     QTreeWidget::dragMoveEvent(e);
     QTreeWidgetItem * pItem = this->itemAt(e->pos());
-    if (pItem && this->dropIndicatorPosition()==QAbstractItemView::OnItem)
-    {
-        e->acceptProposedAction();
-    }
-    else
-    {
-        e->ignore();
-    }
+	e->acceptProposedAction();
 }
 
 void QTUI_Layer_Tree::resizeEvent(QResizeEvent *e)

@@ -106,7 +106,7 @@ void MoveNodeBatchCommand::OnDoneCommand()
 		return;
 	}
 
-	pgm->SetLockTreeChange();
+//	pgm->SetLockTreeChange();
 	int nMoveActionID = pgm->GetNextMoveActionID(GMMATYPE_MOVE);
 	pgm->SetWillSelfMoveList(&lobjs);
 	for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end();)
@@ -118,7 +118,7 @@ void MoveNodeBatchCommand::OnDoneCommand()
 		}
 		else
 		{
-			pgm->OnTreeChanged(pMoveObj->getParent(), pMoveObj);
+//			pgm->OnTreeChanged(pMoveObj->getParent(), pMoveObj);
 //			MainInterface::getInstance().CallChangeNode(*it);
 			++it;
 		}

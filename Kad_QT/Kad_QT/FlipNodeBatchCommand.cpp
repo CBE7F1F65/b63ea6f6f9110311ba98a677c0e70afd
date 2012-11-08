@@ -196,7 +196,7 @@ void FlipNodeBatchCommand::OnDoneCommand()
 		return;
 	}
 
-	pgm->SetLockTreeChange();
+//	pgm->SetLockTreeChange();
 	int moveActionID = pgm->GetNextMoveActionID(GMMATYPE_FLIP, angle);
 	pgm->SetWillSelfMoveList(&lobjs);
 	for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end();)
@@ -209,7 +209,7 @@ void FlipNodeBatchCommand::OnDoneCommand()
 		}
 		else
 		{
-			pgm->OnTreeChanged(pMoveObj->getParent(), pMoveObj);
+//			pgm->OnTreeChanged(pMoveObj->getParent(), pMoveObj);
 			++it;
 		}
 	}
