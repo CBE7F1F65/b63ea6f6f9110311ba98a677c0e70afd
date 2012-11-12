@@ -141,7 +141,7 @@ void MarqueeSelect::AddSelect( GObject * pObj, int level )
 	}
 	*/
 	selectednodes.push_back(pObj);
-	OnSelectChanged();
+	OnSelectChanged(pObj);
 }
 
 void MarqueeSelect::AddRecSelect( GObject * pObj, int level )
@@ -168,8 +168,12 @@ void MarqueeSelect::SelectAll( bool bOnlyThisLayer/*=false*/ )
 	}
 }
 
-void MarqueeSelect::OnSelectChanged()
+void MarqueeSelect::OnSelectChanged(GObject * pChangedObj/*=NULL*/)
 {
+	if (pChangedObj)
+	{
+		GObjectManager::getInstance().SetActiveLayer_Internal(pChangedObj->getLayer());
+	}
 	GObjectManager::getInstance().SaveSelectState();
 }
 
@@ -417,7 +421,7 @@ void MarqueeSelect::Update()
 		{
 			if (!selectednodes.empty())
 			{
-				GObjectManager::getInstance().SetLockTreeChange();
+				GObjectManager::getInstance().SetLockTreeChange(selectednodes.size());
 				pmain->OnCommandWithParam(
 					COMM_DELETEITEM,
 					NULL);
@@ -920,7 +924,7 @@ void MarqueeSelect::BeginMove( float nowx, float nowy )
 
 void MarqueeSelect::EndMove()
 {
-//	GObjectManager::getInstance().SetLockTreeChange();
+	GObjectManager::getInstance().SetLockTreeChange(selectednodes.size());
 	GObjectManager::getInstance().CancelTryMove();
 
 	if (pMarkingOffset)

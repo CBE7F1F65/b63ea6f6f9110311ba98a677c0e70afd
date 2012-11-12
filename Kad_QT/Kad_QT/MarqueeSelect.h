@@ -44,7 +44,7 @@ public:
 	void AddRecSelect(GObject * pObj, int level);
 	static bool staticRecAddSelectCB(GObject * pObj, void * param_intLevel);
 
-	void OnSelectChanged();
+	void OnSelectChanged(GObject * pChangedObj=NULL);
 
 	void DoMovePoint(GPoint * pPoint, float movedx_c, float movedy_c, int nMoveActionID);
 	void DoMoveLine(GLine * pLine, float movedx_c, float movedy_c, int nMoveActionID);

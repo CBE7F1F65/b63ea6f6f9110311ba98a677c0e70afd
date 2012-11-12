@@ -13,13 +13,13 @@
 void Command::EnterUnDo()
 {
 	undoredoflag = CUNDOREDO_UNDOING;
-	GObjectManager::getInstance().SetLockTreeChange();
+	GObjectManager::getInstance().SetLockTreeChange(-1);
 }
 
 void Command::EnterReDo()
 {
 	undoredoflag = CUNDOREDO_REDOING;
-	GObjectManager::getInstance().SetLockTreeChange();
+	GObjectManager::getInstance().SetLockTreeChange(-1);
 }
 
 void Command::ExitUnDo()

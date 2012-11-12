@@ -347,6 +347,22 @@ void GLine::AddSA( float xinner, float yinner, float fsa )
 	CallRedrawModify();
 }
 
+void GLine::SetSA( GSAInfo * psainfo )
+{
+	if (psainfo)
+	{
+		float fsa = saInfo.GetRawSA();
+		int nflag = saInfo.GetFlag();
+		float ftosa = psainfo->GetRawSA();
+		float ntoflag = psainfo->GetFlag();
+		if (fsa!=ftosa || nflag!=ntoflag)
+		{
+			saInfo.SetSA(psainfo->GetRawSA(), psainfo->GetFlag());
+			CallRedrawModify();
+		}
+	}
+}
+
 bool GLine::Isolate()
 {
 	DeclingByOther();

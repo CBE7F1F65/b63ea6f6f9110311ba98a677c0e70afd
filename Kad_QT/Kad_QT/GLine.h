@@ -85,6 +85,7 @@ public:
 	virtual bool Extend(float tBegin, float tEnd) = 0;
 
 	virtual void AddSA(float xinner, float yinner, float fsa);
+	virtual void SetSA(GSAInfo * psainfo);
 	virtual GSAInfo * GetSAInfo(){return &saInfo;};
 
 	virtual void SetLineRenderStyle(int nStyle){nLineRenderStyle = nStyle;};

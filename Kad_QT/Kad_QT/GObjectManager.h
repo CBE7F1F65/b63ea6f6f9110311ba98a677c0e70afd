@@ -65,10 +65,10 @@ class GObjectCopyInfo{
 	friend class GLine;
 public:
 	GObjectCopyInfo(GPoint * pPoint, float x, float y){pObj=pPoint; type=GOBJCOPY_POINT; xb=x; yb=y;};
-	GObjectCopyInfo(GLine * pLine, float _xb, float _yb, float _xe, float _ye)
-	{ pObj=pLine; type = GOBJCOPY_LINE; xb = _xb; yb = _yb; xe = _xe; ye = _ye; xbh = _xb; ybh = _yb; xeh = _xe; yeh = _ye;	};
-	GObjectCopyInfo(GLine * pLine, float _xb, float _yb, float _xe, float _ye, float _xbh, float _ybh, float _xeh, float _yeh)
-	{ pObj=pLine; type = GOBJCOPY_LINE; xb = _xb; yb = _yb; xe = _xe; ye = _ye; xbh = _xbh; ybh = _ybh; xeh = _xeh; yeh = _yeh;	};
+	GObjectCopyInfo(GLine * pLine, float _xb, float _yb, float _xe, float _ye, GSAInfo * psainfo=NULL)
+	{ pObj=pLine; type = GOBJCOPY_LINE; xb = _xb; yb = _yb; xe = _xe; ye = _ye; xbh = _xb; ybh = _yb; xeh = _xe; yeh = _ye; if (psainfo){sainfo=*psainfo;};	};
+	GObjectCopyInfo(GLine * pLine, float _xb, float _yb, float _xe, float _ye, float _xbh, float _ybh, float _xeh, float _yeh, GSAInfo * psainfo=NULL)
+	{ pObj=pLine; type = GOBJCOPY_LINE; xb = _xb; yb = _yb; xe = _xe; ye = _ye; xbh = _xbh; ybh = _ybh; xeh = _xeh; yeh = _yeh; if (psainfo){sainfo=*psainfo;};	};
 
 public:
 	int type;
@@ -81,6 +81,7 @@ public:
 	float ybh;
 	float xeh;
 	float yeh;
+	GSAInfo sainfo;
 };
 
 class DXFWriter;
@@ -172,7 +173,7 @@ public:
     void SetPreviewPrintMode(bool bSet);
     bool IsPreviewPrintMode();
 
-	void SetLockTreeChange();
+	void SetLockTreeChange(int count);
 
 	void SetWillSelfMoveList(list<GObject *> * pobjs=NULL);
 	bool WillSelfMove(GObject * pObj);

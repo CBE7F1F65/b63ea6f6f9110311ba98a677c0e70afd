@@ -289,7 +289,7 @@ void ScaleNodeBatchCommand::OnDoneCommand()
 		return;
 	}
 
-//	pgm->SetLockTreeChange();
+	pgm->SetLockTreeChange(lobjs.size());
 	pgm->SetWillSelfMoveList(&lobjs);
 	int moveActionID = pgm->GetNextMoveActionID(GMMATYPE_SCALE, 0, fScaleX, fScaleY);
 	for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end();)

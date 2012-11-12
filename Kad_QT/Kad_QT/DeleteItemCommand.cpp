@@ -105,9 +105,9 @@ void DeleteItemCommand::OnDoneCommand()
 
 	if (!lstObj.empty())
 	{
-		pgm->SetLockTreeChange();
-		lstObj.sort();
 		int objcount = lstObj.size();
+		pgm->SetLockTreeChange(objcount);
+		lstObj.sort();
 		PushRevertibleBatch(
 			PUSHREVERTABLESTATE_BEGIN,
 			CCMake_C(COMM_I_COMMAND, 2+objcount, 1),

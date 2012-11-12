@@ -188,7 +188,7 @@ void ReparentCommand::OnDoneCommand()
 		return;
 	}
 
-	pgm->SetLockTreeChange();
+	pgm->SetLockTreeChange(listobjs.size());
 	for (list<GObject *>::iterator it=listobjs.begin(); it!=listobjs.end(); ++it)
 	{
 		GObject * pObj = *it;

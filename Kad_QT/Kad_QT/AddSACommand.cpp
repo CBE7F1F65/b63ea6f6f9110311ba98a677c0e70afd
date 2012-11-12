@@ -140,7 +140,7 @@ void AddSACommand::OnDoneCommand()
 		return;
 	}
 
-	pgm->SetLockTreeChange();
+	pgm->SetLockTreeChange(lobjs.size());
 	for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end();)
 	{
 		GObject * pAddSAObj = *it;

@@ -20,6 +20,9 @@
 
 #define _GMDXFPIECEGROWTH	5
 
+
+#define _GMLOCKTREENODECOUNT	10
+
 GObjectManager::GObjectManager()
 {
 	// Put all to Release
@@ -496,9 +499,12 @@ GObject * GObjectManager::GetDragDroppedAfterNode()
 	return NULL;
 }
 
-void GObjectManager::SetLockTreeChange()
+void GObjectManager::SetLockTreeChange(int count)
 {
-	nLockTreeChangeState = GMLOCKTREESTATE_REQUIRELOCK;
+	if (count > _GMLOCKTREENODECOUNT || count < 0)
+	{
+		nLockTreeChangeState = GMLOCKTREESTATE_REQUIRELOCK;
+	}
 }
 
 int GObjectManager::PushMoveNodeByOffsetForBatchCommand( GObject* pObj, float xoffset, float yoffset )
@@ -1028,15 +1034,18 @@ bool GObjectManager::AddCopyNode( GObject * pObj )
 		GAnchorPoint * pEndPoint = pLine->GetEndPoint();
 		if (pLine->isStraightLine())
 		{
-			GObjectCopyInfo _oci(pLine, pBeginPoint->getX(), pBeginPoint->getY(), pEndPoint->getX(), pEndPoint->getY());
+			GObjectCopyInfo _oci(pLine, pBeginPoint->getX(), pBeginPoint->getY(), pEndPoint->getX(), pEndPoint->getY(), pLine->GetSAInfo());
 			pci = &_oci;
 		}
 		else
 		{
 			GHandlePoint * pBeginHandle = pBeginPoint->GetHandle();
 			GHandlePoint * pEndHandle = pEndPoint->GetHandle();
-			GObjectCopyInfo _oci(pLine, pBeginPoint->getX(), pBeginPoint->getY(), pEndPoint->getX(), pEndPoint->getY(), pBeginHandle->getX(), pBeginHandle->getY(), pEndHandle->getX(), pEndHandle->getY());
+			GObjectCopyInfo _oci(pLine, pBeginPoint->getX(), pBeginPoint->getY(), pEndPoint->getX(), pEndPoint->getY(), pBeginHandle->getX(), pBeginHandle->getY(), pEndHandle->getX(), pEndHandle->getY(), pLine->GetSAInfo());
 			pci = &_oci;
+		}
+		if (pLine->GetSAInfo())
+		{
 		}
 	}
 	if (!pci)
@@ -1063,7 +1072,7 @@ bool GObjectManager::PasteNodes()
 	{
 		return false;
 	}
-//	SetLockTreeChange();
+	SetLockTreeChange(lstcopy.size());
 	for (list<GObjectCopyInfo>::iterator it=lstcopy.begin(); it!=lstcopy.end(); ++it)
 	{
 		GObjectCopyInfo * pci = &(*it);
@@ -1081,6 +1090,7 @@ bool GObjectManager::PasteNodes()
 				{
 					return false;
 				}
+				pBezier->SetSA(&(pci->sainfo));
 			}
 		}
 	}
