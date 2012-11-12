@@ -381,7 +381,7 @@ void GObject::OnUpdate()
 				float ty = getY();
 				// Directly Move!!
 				MoveTo(NULL, fTryMove_bx, fTryMove_by, false, nUpdateMoveActionID);
-				pgm->PushMoveNodeByOffsetForBatchCommand(this, tx-fTryMove_bx, ty-fTryMove_by);
+//				pgm->PushMoveNodeByOffsetForBatchCommand(this, tx-fTryMove_bx, ty-fTryMove_by);
 				nTryState = GOBJTRYSTATE_MOVE_NULL;
 			}
 		}

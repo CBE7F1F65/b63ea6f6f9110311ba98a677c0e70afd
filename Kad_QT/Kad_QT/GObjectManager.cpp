@@ -683,7 +683,7 @@ bool GObjectManager::BeginClone()
 		return false;
 	}
 	bCloning = true;
-	SetLockTreeChange();
+//	SetLockTreeChange();
 	return true;
 }
 
@@ -1063,7 +1063,7 @@ bool GObjectManager::PasteNodes()
 	{
 		return false;
 	}
-	SetLockTreeChange();
+//	SetLockTreeChange();
 	for (list<GObjectCopyInfo>::iterator it=lstcopy.begin(); it!=lstcopy.end(); ++it)
 	{
 		GObjectCopyInfo * pci = &(*it);

@@ -920,7 +920,7 @@ void MarqueeSelect::BeginMove( float nowx, float nowy )
 
 void MarqueeSelect::EndMove()
 {
-	GObjectManager::getInstance().SetLockTreeChange();
+//	GObjectManager::getInstance().SetLockTreeChange();
 	GObjectManager::getInstance().CancelTryMove();
 
 	if (pMarkingOffset)

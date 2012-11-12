@@ -23,6 +23,8 @@ public:
 	void DeselectButtons(QTreeWidgetItem * pParent=NULL);
 	void OnButtonSelect(GObject * pObj, bool bSelected);
 	void ChangeChildrenButtonSelect(QTreeWidgetItem * pParent, bool bSelect);
+	bool AddButtonsToItem(QTreeWidgetItem * pItem, GObject * pObj);
+	void AddChildrenButtonsToItem(QTreeWidgetItem * pItem);
 
 public:
     void RebuildTree( GObject * changebase, GObject * activeitem );

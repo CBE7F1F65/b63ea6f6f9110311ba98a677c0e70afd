@@ -39,9 +39,9 @@
 
 
 #if IF_FRAMWORK(HFRAMEWORK_QT)
- #include <qgl.h>
- #include <QGLFunctions>
- #include <QGLFramebufferObject>
+ #include <Qt\qgl.h>
+ #include <QtOpenGL\QGLFunctions>
+ #include <QtOpenGL\QGLFramebufferObject>
 #endif
 
 #if IF_PLATFORM(HPLATFORM_WIN)
