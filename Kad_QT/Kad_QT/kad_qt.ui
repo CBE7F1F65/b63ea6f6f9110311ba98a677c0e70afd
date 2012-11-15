@@ -21,6 +21,36 @@
     <property name="spacing">
      <number>0</number>
     </property>
+    <item row="0" column="0">
+     <widget class="QTUI_GLView" name="GLView" native="true">
+      <property name="mouseTracking">
+       <bool>true</bool>
+      </property>
+      <widget class="QTUI_CommandFloating_Widget" name="FLT_Command" native="true">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>240</y>
+         <width>111</width>
+         <height>31</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QTUI_NodeInfoFloating_Widget" name="FLT_NodeInfo" native="true">
+       <property name="geometry">
+        <rect>
+         <x>740</x>
+         <y>380</y>
+         <width>120</width>
+         <height>80</height>
+        </rect>
+       </property>
+      </widget>
+      <zorder>FLT_Command</zorder>
+      <zorder>FLT_NodeInfo</zorder>
+      <zorder>widget</zorder>
+     </widget>
+    </item>
     <item row="1" column="0">
      <widget class="QScrollBar" name="horizontalScrollBar">
       <property name="maximum">
@@ -53,33 +83,6 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="0">
-     <widget class="QTUI_GLView" name="GLView" native="true">
-      <property name="mouseTracking">
-       <bool>true</bool>
-      </property>
-      <widget class="QTUI_CommandFloating_Widget" name="FLT_Command" native="true">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>240</y>
-         <width>111</width>
-         <height>31</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QTUI_NodeInfoFloating_Widget" name="FLT_NodeInfo" native="true">
-       <property name="geometry">
-        <rect>
-         <x>740</x>
-         <y>380</y>
-         <width>120</width>
-         <height>80</height>
-        </rect>
-       </property>
-      </widget>
-     </widget>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -88,7 +91,7 @@
      <x>0</x>
      <y>0</y>
      <width>1257</width>
-     <height>21</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="MainMenu_File">
@@ -185,24 +188,6 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QTUI_History_DockablePane" name="HistoryPanel_Dockable">
-   <property name="floating">
-    <bool>true</bool>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>2</number>
-   </attribute>
-   <widget class="QWidget" name="HistoryDockableWidget"/>
-  </widget>
-  <widget class="QTUI_Layer_DockablePane" name="LayerPanel_Dockable">
-   <property name="floating">
-    <bool>true</bool>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>2</number>
-   </attribute>
-   <widget class="QWidget" name="LayerDockableWidget"/>
-  </widget>
   <widget class="QTUI_StatusBar" name="statusBar">
    <property name="minimumSize">
     <size>
@@ -216,6 +201,24 @@
      <height>24</height>
     </size>
    </property>
+  </widget>
+  <widget class="QTUI_History_DockablePane" name="HistoryPanel_Dockable">
+   <property name="floating">
+    <bool>true</bool>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="HistoryDockableWidget"/>
+  </widget>
+  <widget class="QTUI_Layer_DockablePane" name="LayerPanel_Dockable">
+   <property name="floating">
+    <bool>true</bool>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="LayerDockableWidget"/>
   </widget>
   <action name="action_Command_Line">
    <property name="text">
@@ -338,22 +341,6 @@
  <resources/>
  <connections>
   <connection>
-   <sender>HistoryPanel_Dockable</sender>
-   <signal>visibilityChanged(bool)</signal>
-   <receiver>MMView_HistoryWindow</receiver>
-   <slot>setChecked(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1244</x>
-     <y>309</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>CommandPanel_Dockable</sender>
    <signal>visibilityChanged(bool)</signal>
    <receiver>MMView_CommandWindow</receiver>
@@ -382,6 +369,54 @@
     <hint type="destinationlabel">
      <x>622</x>
      <y>675</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalScrollBar</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>GLView</receiver>
+   <slot>SLT_HScrollValueChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>558</x>
+     <y>601</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>520</x>
+     <y>445</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>verticalScrollBar</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>GLView</receiver>
+   <slot>SLT_VScrollValueChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1161</x>
+     <y>385</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1107</x>
+     <y>399</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>HistoryPanel_Dockable</sender>
+   <signal>visibilityChanged(bool)</signal>
+   <receiver>MMView_HistoryWindow</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1244</x>
+     <y>309</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
     </hint>
    </hints>
   </connection>
@@ -430,38 +465,6 @@
     <hint type="destinationlabel">
      <x>-1</x>
      <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>horizontalScrollBar</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>GLView</receiver>
-   <slot>SLT_HScrollValueChanged(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>558</x>
-     <y>601</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>520</x>
-     <y>445</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>verticalScrollBar</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>GLView</receiver>
-   <slot>SLT_VScrollValueChanged(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1161</x>
-     <y>385</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1107</x>
-     <y>399</y>
     </hint>
    </hints>
   </connection>

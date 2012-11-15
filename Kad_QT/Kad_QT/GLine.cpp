@@ -146,6 +146,7 @@ bool GLine::CallFlip( GObject * pCaller, float orix, float oriy, int angle, bool
 	}
 	plbegin->CallFlip(pCaller, orix, oriy, angle, bTry, moveActionID);
 	plend->CallFlip(pCaller, orix, oriy, angle, bTry, moveActionID);
+	saInfo.SwapSA();
 	return true;
 }
 bool GLine::CallScale( GObject * pCaller, float orix, float oriy, float fScaleX, float fScaleY, bool bTry, int moveActionID/*=-1*/ )
@@ -1480,6 +1481,7 @@ bool GBezierLine::SwapBeginEnd()
 			}
 		}
 	}
+	saInfo.SwapSA();
 	return true;
 }
 
@@ -1883,4 +1885,9 @@ int GSAInfo::GetFlag()
 float GSAInfo::GetRawSA()
 {
 	return fSA;
+}
+
+void GSAInfo::SwapSA()
+{
+	nSAFlag ^= (GSA_RIGHT|GSA_LEFT);
 }

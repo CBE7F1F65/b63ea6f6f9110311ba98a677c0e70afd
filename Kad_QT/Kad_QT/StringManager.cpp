@@ -151,8 +151,8 @@ void StringManager::FillSCInfo()
 #endif // DEBUGTEST
 
 	_BSET(	COMM_PAN,	"PAN",	"",	"Pan",	""	);
-	_BSET(	COMM_ZOOMIN,	"ZOOMIN",	"",	"Zone Zoom",	""	);
-	_BSET(	COMM_DOZOOM,	"ZOOM",	"",	"Instant Zoom",	""	);
+	_BSET(	COMM_DOZOOM,	"ZOOM",	"ZO",	"Instant Zoom",	""	);
+	_BSET(	COMM_DOZOOMMUL,	"ZOOMMUL",	"ZOM",	"Zoom",	""	);
 	_BSET(	COMM_OUTPUT,	"OUTPUT",	"OP",	"Output",	""	);
 
 	_BSET(	COMM_INITIAL,	"INITIAL",	"",	"Initialization",	""	);

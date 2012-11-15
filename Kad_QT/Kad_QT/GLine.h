@@ -8,7 +8,7 @@
 /************************************************************************/
 
 #define GSA_LEFT			0x0000
-#define GSA_RIGHT	0x0001
+#define GSA_RIGHT			0x0001
 #define GSA_SQUAREBEGIN			0x0010
 #define GSA_SQUAREBYBEGIN		0x0020
 #define GSA_SQUAREEND			0x0040
@@ -27,6 +27,8 @@ public:
 	float GetMulSA();
 	float GetRawSA();
 	int GetFlag();
+
+	void SwapSA();
 
 private:
 	float fSA;

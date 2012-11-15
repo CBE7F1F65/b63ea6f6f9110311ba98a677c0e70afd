@@ -173,14 +173,15 @@ void Command::ProcessCommand()
 		{
 			return;
 		}
-
-		switch (GetCurrentCommand())
+		int comm = GetCurrentCommand();
+		switch (comm)
 		{
 		case COMM_PAN:
 			GUICoordinate::getInstance().OnProcessPanCommand();
 			break;
 		case COMM_DOZOOM:
-			GUICoordinate::getInstance().OnProcessZoomCommand();
+		case COMM_DOZOOMMUL:
+			GUICoordinate::getInstance().OnProcessZoomCommand(comm==COMM_DOZOOMMUL?true:false);
 			break;
 		default:
 			CommandTemplate * pct = CommandTemplate::GetTemplateByCommand(GetCurrentCommand());

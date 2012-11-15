@@ -28,8 +28,8 @@ public:
 	void DoPan(float xoffset_s, float yoffset_s);
 	void DoScroll(bool horz, int pos, int range);
 
-	void OnProcessZoomCommand();
-	void DoZoom(float cx_s, float cy_s, float scale);
+	void OnProcessZoomCommand(bool bMul);
+	void DoZoom(float cx_s, float cy_s, float scale, bool bMul);
 
 	void RenderGrid();
 	void RenderGridReDraw();

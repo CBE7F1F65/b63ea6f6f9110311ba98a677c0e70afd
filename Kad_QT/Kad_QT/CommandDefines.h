@@ -16,7 +16,6 @@ enum{
 
 	// Push
 	COMM_PAN,		// enter pan mode
-	COMM_ZOOMIN,	// rect zoom
 
 	COMM_NEW,		// new file
 	COMM_SAVE,		// save
@@ -26,7 +25,8 @@ enum{
 
 	_COMM_NOLOGCOMMANDBEGIN,
 	// No log
-	COMM_DOZOOM,	// mouse wheel
+	COMM_DOZOOM,	// set zoom
+	COMM_DOZOOMMUL,	// mouse wheel
 
 	_COMM_NOLOGCOMMANDEND,
 

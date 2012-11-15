@@ -146,13 +146,31 @@ void GUICoordinate::SetGrid( int _measuretype, float _originxpos, float _originy
 //	DoZoom(0, 0, _scale);
 }
 
-void GUICoordinate::OnProcessZoomCommand()
+void GUICoordinate::OnProcessZoomCommand( bool bMul )
 {
 	Command * pcommand = &(Command::getInstance());
 	float x, y, _scale;
-	pcommand->GetParamXY(CSP_DOZOOM_XY_F_C_SCALE, &x, &y);
-	_scale = pcommand->GetParamF(CSP_DOZOOM_XY_F_C_SCALE);
-	DoZoom(x, y, _scale);
+	if (!bMul)
+	{
+		x = cursorx_c;
+		y = cursory_c;
+		MainInterface * pmain = &MainInterface::getInstance();
+		float _s = pmain->GetScreenDPI()/pmain->GetDisplayMul();
+		if (scale == _s)
+		{
+			_scale = 12.8f;
+		}
+		else
+		{
+			_scale = _s;
+		}
+	}
+	else
+	{
+		pcommand->GetParamXY(CSP_DOZOOM_XY_F_C_SCALE, &x, &y);
+		_scale = pcommand->GetParamF(CSP_DOZOOM_XY_F_C_SCALE);
+	}
+	DoZoom(x, y, _scale, bMul);
 	pcommand->FinishCommand();
 }
 
@@ -216,10 +234,18 @@ void GUICoordinate::OnProcessPanCommand()
 	}
 }
 
-void GUICoordinate::DoZoom(float cx_s, float cy_s, float _scale )
+void GUICoordinate::DoZoom( float cx_s, float cy_s, float _scale, bool bMul )
 {
 	float oldscale = scale;
-	scale *= _scale;
+	if (bMul)
+	{
+		scale *= _scale;
+	}
+	else
+	{
+		scale = _scale;
+	}
+	CheckScale();
 	if (scale > _GUIC_SCALEMAX)
 	{
 		scale = _GUIC_SCALEMAX;

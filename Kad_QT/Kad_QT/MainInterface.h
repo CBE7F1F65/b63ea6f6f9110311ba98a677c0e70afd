@@ -139,6 +139,7 @@ public:
 	float GetPrintMul();
 	int GetPrintDPI(){return printdpi;};
 	float GetDisplayMul(){return displaymul;};
+	int GetScreenDPI();
 	int GetPrintsize_W();
 	int GetPrintsize_H();
 	int GetPrintMargin();

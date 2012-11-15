@@ -139,6 +139,7 @@ void GObjectPicker::AdjustPositionToLocks()
 		SetPickObj(pLine);
 
 		bSplitMarkingInUse = true;
+		pickSection[nOnLine] = isec;
 		nOnLine = GOPONLINE_MAX;
 
 	}

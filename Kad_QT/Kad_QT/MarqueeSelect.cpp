@@ -918,7 +918,12 @@ void MarqueeSelect::BeginMove( float nowx, float nowy )
 		}
 
 	}
-
+	if (pBeginObj->isHandlePoint())
+	{
+		GHandlePoint * pHandle = (GHandlePoint *) pBeginObj;
+		GAnchorPoint * pAnchor = (GAnchorPoint *) pHandle->GetAnchor();
+		GObjectPicker::getInstance().PushInterestPoint(pAnchor->getX(), pAnchor->getY(), true, MathHelper::getInstance().GetLineAngle(PointF2D(beginx_c, beginy_c), pAnchor->GetPointF2D()));
+	}
 	pMarkingOffset->SetNowPos(nowx, nowy);
 }
 

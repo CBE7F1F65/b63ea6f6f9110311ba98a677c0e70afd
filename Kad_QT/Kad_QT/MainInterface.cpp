@@ -29,6 +29,8 @@
 #define MI_FILESTATUS_OPENED	0x10
 #define MI_FILESTATUS_MODIFIED	0x20
 
+#define MI_WORKINGFILELOCATION	"../WorkingFiles"
+
 MainInterface::MainInterface()
 {
 	hge = hgeCreate(HGE_VERSION);
@@ -221,7 +223,7 @@ bool MainInterface::Frame()
 		pcommand->SetParamY(CSP_DOZOOM_XY_F_C_SCALE, mousey);
 		pcommand->SetParamF(CSP_DOZOOM_XY_F_C_SCALE, powf(wheelscalefactor, mousevwheel-lastmousevwheel));
 		*/
-		GUICoordinate::getInstance().DoZoom(mousex, mousey, powf(wheelscalefactor, mousevwheel-lastmousevwheel));
+		GUICoordinate::getInstance().DoZoom(mousex, mousey, powf(wheelscalefactor, mousevwheel-lastmousevwheel), true);
 	}
 
 	if (hge->Input_GetDIKey(DIK_SPACE, DIKEY_DOWN) && IsMainViewActive())
@@ -773,7 +775,7 @@ bool MainInterface::OpenFile()
 	{
 		// Save File?
 	}
-	QString qsfilename = QFileDialog::getOpenFileName(NULL, QString(), QString(), QString("*.xml"));
+	QString qsfilename = QFileDialog::getOpenFileName(NULL, QString(), QString(MI_WORKINGFILELOCATION), QString("*.xml"));
 	if (qsfilename.length())
 	{
 		return OpenFile(qsfilename.toUtf8());
@@ -844,7 +846,7 @@ bool MainInterface::SaveFile( bool bSaveAs/*=false*/ )
 {
 	if (bSaveAs || (nFileStatus & MI_FILESTATUS_NEW))
 	{
-		QString qsfilename = QFileDialog::getSaveFileName(NULL, QString(), QString(), QString("*.xml"));
+		QString qsfilename = QFileDialog::getSaveFileName(NULL, QString(), QString(MI_WORKINGFILELOCATION), QString("*.xml"));
 		if (qsfilename.length())
 		{
 			savefilename = qsfilename.toStdString();
@@ -924,4 +926,14 @@ int MainInterface::GetPrintMargin()
 void MainInterface::CallSelectAllNodes( bool bOnlyThisLayer/*=false*/ )
 {
 	MarqueeSelect::getInstance().SelectAll(bOnlyThisLayer);
+}
+
+int MainInterface::GetScreenDPI()
+{
+	QDesktopWidget * pDesktop = QApplication::desktop();
+	if (pDesktop)
+	{
+		return pDesktop->physicalDpiX();
+	}
+	return 96;
 }

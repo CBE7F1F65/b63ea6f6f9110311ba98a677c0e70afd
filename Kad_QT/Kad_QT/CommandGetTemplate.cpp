@@ -130,8 +130,8 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 #endif //DEBUGTEST
 
 	case COMM_PAN:
-	case COMM_ZOOMIN:
 	case COMM_DOZOOM:
+	case COMM_DOZOOMMUL:
 		break;
 	default:
 		ASSERT(false);

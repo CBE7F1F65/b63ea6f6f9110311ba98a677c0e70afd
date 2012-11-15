@@ -197,7 +197,7 @@ int GObjectPicker::UpdatePickPoint()
 		UnlockSplitLine();
 		UnlockLockLine();
 	}
-	if (pmain->hge->Input_GetDIKey(DIK_HOME, DIKEY_UP))
+	if (pmain->hge->Input_GetDIKey(DIK_HOME, DIKEY_UP) || pmain->hge->Input_GetDIKey(DIK_INSERT, DIKEY_UP))
 	{
 		if (pLockedLine)
 		{
