@@ -357,6 +357,11 @@ bool GObject::BuildXMLChildren( GObjectXMLNode * pnode )
 				GBezierLine * pBezier = new GBezierLine(this, PointF2D(), PointF2D());
 				pBezier->BuildXMLChildren(&(*it));
 			}
+			else if (it->name == GNotch::getStaticTypeName())
+			{
+				GNotch * pNotch = new GNotch(this, NULL);
+				pNotch->BuildXMLChildren(&(*it));
+			}
 			else if (it->name == GImageLine::getStaticTypeName())
 			{
 				GImageLine * pImageLine = new GImageLine(this, "", 0, 0);
@@ -532,7 +537,7 @@ bool GPoint::ReadXML( GObjectXMLNode * pnode )
 	float prop_x = pnode->GetValue(psm->GetXMLNodeXName(), strPrefix).toFloat();
 	float prop_y = pnode->GetValue(psm->GetXMLNodeYName(), strPrefix).toFloat();
 	this->SetPosition(prop_x, prop_y);
-	if (!pgm->IsIsolateMode())
+	if (!pgm->IsIsolateMode()/* || isNotch()*/)
 	{
 		// ClingTo
 		QString strClingToPrefix = strPrefix+psm->GetXMLNodeClingInfoName();
@@ -554,26 +559,29 @@ bool GPoint::ReadXML( GObjectXMLNode * pnode )
 
 			this->ClingTo((GLine *)prop_pClingTo, prop_clingval, prop_clingtype);
 		}
-		// MergeWith
-		QString strMergeWithPrefix = strPrefix+psm->GetXMLNodeMergeWithName();
-		int nMerge = 0;
-		while (true)
-		{
-			strValue = pnode->GetValue(QString::number(nMerge), strMergeWithPrefix);
-			if (strValue.length())
+		/*if (!pgm->IsIsolateMode())
+		{*/
+			// MergeWith
+			QString strMergeWithPrefix = strPrefix+psm->GetXMLNodeMergeWithName();
+			int nMerge = 0;
+			while (true)
 			{
-				nMerge++;
-				int prop_mergeid = strValue.toInt();
-				GObject * prop_pMergeWith = pgm->FindObjectByID(prop_mergeid);
-				ASSERT(prop_pMergeWith->isPoint());
+				strValue = pnode->GetValue(QString::number(nMerge), strMergeWithPrefix);
+				if (strValue.length())
+				{
+					nMerge++;
+					int prop_mergeid = strValue.toInt();
+					GObject * prop_pMergeWith = pgm->FindObjectByID(prop_mergeid);
+					ASSERT(prop_pMergeWith->isPoint());
 
-				this->MergeWith((GPoint *)prop_pMergeWith);
+					this->MergeWith((GPoint *)prop_pMergeWith);
+				}
+				else
+				{
+					break;
+				}
 			}
-			else
-			{
-				break;
-			}
-		}
+		/*}*/
 	}
 
 
@@ -678,7 +686,7 @@ bool GHandlePoint::ReadXML( GObjectXMLNode * pnode )
 	QString strPrefix = getStaticTypeName();
 	QString strValue;
 
-	if (pgm->IsIsolateMode())
+	if (!pgm->IsIsolateMode())
 	{
 		// BindWith
 		strValue = pnode->GetValue(psm->GetXMLNodeBindWithName(), strPrefix);
@@ -707,6 +715,28 @@ bool GHandlePoint::WriteXML(QXmlStreamWriter &qsw)
 	if (pBindWith)
 	{
 		qsw.writeTextElement(QString(GOBJXML_PROPPREFIX)+psm->GetXMLNodeHandleName(), QString::number(pBindWith->getID()));
+	}
+	return true;
+}
+
+/************************************************************************/
+/* GNotch                                                               */
+/************************************************************************/
+
+bool GNotch::ReadXML( GObjectXMLNode * pnode )
+{
+	if (!super::ReadXML(pnode))
+	{
+		return false;
+	}
+	return true;
+}
+
+bool GNotch::WriteXML(QXmlStreamWriter &qsw)
+{
+	if (!super::WriteXML(qsw))
+	{
+		return false;
 	}
 	return true;
 }
@@ -841,6 +871,7 @@ _GXMLGETTYPENAME(GPoint);
 _GXMLGETTYPENAME(GMidPoint);
 _GXMLGETTYPENAME(GAnchorPoint);
 _GXMLGETTYPENAME(GHandlePoint);
+_GXMLGETTYPENAME(GNotch);
 _GXMLGETTYPENAME(GLine);
 _GXMLGETTYPENAME(GBezierLine);
 _GXMLGETTYPENAME(GImageLine);

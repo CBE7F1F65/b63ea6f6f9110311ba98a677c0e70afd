@@ -35,6 +35,7 @@
 #include "CopyCommand.h"
 #include "PasteCommand.h"
 #include "ImageCommand.h"
+#include "NotchCommand.h"
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 {
@@ -105,6 +106,9 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 		return &CircleCommand::getInstance();
 	case COMM_IMAGE:
 		return &ImageCommand::getInstance();
+
+	case COMM_NOTCH:
+		return &NotchCommand::getInstance();
 
 	case COMM_ADDSA:
 		return &AddSACommand::getInstance();

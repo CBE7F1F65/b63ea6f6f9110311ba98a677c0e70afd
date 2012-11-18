@@ -271,6 +271,7 @@ public:
 	_SMNNFDEF(	AnchorPoint,	"Anchor"	);
     _SMNNFDEF(	MidPoint,	"MidPoint"	);
 	_SMNNFDEF(	HandlePoint,	"Handle"	);
+	_SMNNFDEF(	Notch,	"Notch"	);
 
 #undef _SMNNFDEF
 

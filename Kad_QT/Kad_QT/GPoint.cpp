@@ -244,7 +244,7 @@ bool GPoint::staticCheckClingToCB( GObject * pThis, void * param )
 
 bool GPoint::canClingTo( GLine * pLine )
 {
-	if (isDescendantOf(pLine))
+	if (isDescendantOf(pLine)/* && !isNotch()*/)
 	{
 		return false;
 	}
@@ -298,9 +298,9 @@ bool GPoint::ClingTo( GLine* pLine, float fVal, int nType/*=GCLING_PROPORTION*/ 
 	{
 		clInfo.GetClingTo()->DeclingByOther(this);
 	}
-	if (!canClingTo(pLine) || !clInfo.SetClingTo(pLine, fVal, nType))
+	if (!canClingTo(pLine) || !clInfo.SetClingTo(pLine, fVal, GetClingAllowance(), nType))
 	{
-		clInfo.SetClingTo(ocli.GetClingTo(), ocli.GetClingVal(), ocli.GetClingType());
+		clInfo.SetClingTo(ocli.GetClingTo(), ocli.GetClingVal(), GetClingAllowance(), ocli.GetClingType());
 		return false;
 	}
 	pLine->AddClingBy(this);
@@ -552,7 +552,7 @@ GPiece * GPoint::getPiece()
 
 void GPoint::CallClingToMoved( bool bTry, int moveActionID )
 {
-	if (pgm->IsIsolateMode())
+	if (pgm->IsIsolateMode() && !isNotch())
 	{
 		return;
 	}
@@ -570,7 +570,7 @@ void GPoint::CallClingToMoved( bool bTry, int moveActionID )
 	PointF2D ptCling;
 	float fProp;
 	clInfo.GetClingPosition(&ptCling, NULL, NULL, &fProp);
-	if (fProp > M_FLOATEXTREMEEPS && fProp < 1-M_FLOATEXTREMEEPS)
+	if (isNotch() || fProp > M_FLOATEXTREMEEPS && fProp < 1-M_FLOATEXTREMEEPS)
 	{
 		if (!CallMoveTo(this, ptCling.x, ptCling.y, bTry, moveActionID))
 		{
@@ -860,6 +860,16 @@ void GAttributePoint::OnRender( int iHighlightLevel/*=0*/ )
 /************************************************************************/
 /* GSubstantivePoint                                                    */
 /************************************************************************/
+GSubstantivePoint::GSubstantivePoint()
+{
+
+}
+
+GSubstantivePoint::~GSubstantivePoint()
+{
+
+}
+
 void GSubstantivePoint::OnRender( int iHighlightLevel/*=0*/ )
 {
 	DWORD col = getLineColor(iHighlightLevel);
@@ -1104,11 +1114,115 @@ bool GHandlePoint::Isolate()
 }
 
 /************************************************************************/
+/* GNotch                                                               */
+/************************************************************************/
+
+GNotch::GNotch()
+{
+
+}
+
+GNotch::GNotch(GObject * parent, GClingInfo * pClingInfo)
+{
+	ASSERT(parent);
+	if (pClingInfo)
+	{
+		PointF2D ptPos;
+		pClingInfo->GetClingPosition(&ptPos);
+		SetPosition(ptPos.x, ptPos.y);
+		ClingTo(*pClingInfo);
+	}
+	parent->AddChild(this);
+	OnInit();
+}
+
+GNotch::~GNotch()
+{
+
+}
+
+GObject * GNotch::CreateNewClone( GObject * pNewParent/*=NULL*/, GObject * pBeforeObj/*=NULL*/ )
+{
+	_GOBJ_CLONE_PRE(GNotch);
+	_GOBJ_CLONE_POST();
+}
+
+const char * GNotch::getDisplayName()
+{
+	if (strDisplayName.length())
+	{
+		return strDisplayName.c_str();
+	}
+	return StringManager::getInstance().GetNNNotchName();
+}
+
+void GNotch::OnRender( int iHighlightLevel/*=0*/ )
+{
+	DWORD col = getLineColor(iHighlightLevel);
+	RenderHelper * prh = &RenderHelper::getInstance();
+
+	int nSavedLineStyle = prh->getLineStyle();
+	GLine * pLine = getLine();
+	if (pLine)
+	{
+		prh->SetLineStyle(pLine->GetLineRenderStyle());
+		GSAInfo * pSAInfo = pLine->GetSAInfo();
+		if (pSAInfo)
+		{
+			PointF2D ptPerp = this->GetPointF2D();
+			float fProp=0;
+			bool bOk = clInfo.CalculateClingProportion(&fProp);
+			float fmulsa = pSAInfo->GetMulSA();
+			bool bBothway = false;
+			if (!fmulsa)
+			{
+				fmulsa = MainInterface::getInstance().GetDisplayMul()*0.5f;
+				bBothway = true;
+			}
+			if (bOk)
+			{
+				ptPerp = pLine->GetTangentPointF2D(fProp);
+				ptPerp = ptPerp.Normalize()*fmulsa;
+				ptPerp = PointF2D(-ptPerp.y+x, ptPerp.x+y);
+			}
+
+			if (!bBothway)
+			{
+				prh->RenderLine(x, y, ptPerp.x, ptPerp.y, col);
+			}
+			else
+			{
+				prh->RenderLine(x*2-ptPerp.x, y*2-ptPerp.y, ptPerp.x, ptPerp.y, col);
+			}
+		}
+		prh->SetLineStyle(nSavedLineStyle);
+	}
+}
+
+bool GNotch::OnUpdate()
+{
+	if (!super::OnUpdate())
+	{
+		return false;
+	}
+	if (!clInfo.GetClingTo())
+	{
+		RemoveFromParent(true);
+		return false;
+	}
+	return true;
+}
+
+/************************************************************************/
 /* GClingInfo                                                           */
 /************************************************************************/
-bool GClingInfo::SetClingTo( GLine * pTo, float fVal, int nType/*=GCLING_PROPORTION*/ )
+bool GClingInfo::SetClingTo( GLine * pTo, float fVal, float fa, int nType/*=GCLING_PROPORTION*/ )
 {
-	if (fVal < M_SMALLFLOAT || fVal > 1-M_SMALLFLOAT)
+	if (fa >= 0)
+	{
+		fAllowance = fa;
+	}
+	if (fVal < fAllowance || fVal > 1-fAllowance)
 	{
 		return false;
 	}
@@ -1136,9 +1250,12 @@ bool GClingInfo::SetClingTo( GLine * pTo, float fVal, int nType/*=GCLING_PROPORT
 			ASSERT(false);
 			return false;
 		}
-		if (fProp > 1-M_FLOATEXTREMEEPS || fProp < M_FLOATEXTREMEEPS)
+		if (fAllowance > 0)
 		{
-			return false;
+			if (fProp > 1-M_FLOATEXTREMEEPS || fProp < M_FLOATEXTREMEEPS)
+			{
+				return false;
+			}
 		}
 	}
 
@@ -1154,6 +1271,7 @@ void GClingInfo::ClearClingTo()
 	pClingTo = NULL;
 	fClingVal = 0;
 	nClingType = GCLING_PROPORTION;
+	fAllowance = M_SMALLFLOAT;
 }
 
 bool GClingInfo::GetClingPosition( PointF2D * pptPos, int * isec/*=NULL*/, QuadBezierPointF2D * pQuadHandles/*=NULL*/, float * pProp/*=NULL*/ )
@@ -1233,7 +1351,7 @@ bool GClingInfo::isClingTo( GObject * pObj )
 	return false;
 }
 
-bool GClingInfo::ApplyChange( GLine * pLine, float fProportion )
+bool GClingInfo::ApplyChange( GLine * pLine, float fProportion, float fa )
 {
 	if (!pLine)
 	{
@@ -1257,7 +1375,7 @@ bool GClingInfo::ApplyChange( GLine * pLine, float fProportion )
 	}
 	if (!isClingTo(pLine) || fabs(fVal-fClingVal) >= M_FLOATEPS)
 	{
-		return SetClingTo(pLine, fVal, nClingType);
+		return SetClingTo(pLine, fVal, fa, nClingType);
 	}
 	return false;
 }
@@ -1288,7 +1406,7 @@ bool GClingInfo::ApplyTypeChange( int nType )
 		case GCLING_ENDOFFSET:
 			fVal = (1.0f-fProportion) * pClingTo->getLength();
 		}
-		return SetClingTo(pClingTo, fVal, nType);
+		return SetClingTo(pClingTo, fVal, fAllowance, nType);
 	}
 	return false;
 }

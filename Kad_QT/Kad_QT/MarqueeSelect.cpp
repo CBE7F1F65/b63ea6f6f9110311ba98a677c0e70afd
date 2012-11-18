@@ -630,7 +630,7 @@ bool MarqueeSelect::CheckObjInSelection( GObject * pTestObj, bool bFindAncestor/
 		{
 			if (pItPoint)
 			{
-				if (pItPoint->getLine() == pTestObj)
+				if (pItPoint->getLine() == pTestObj && !pItPoint->isNotch())
 				{
 					return true;
 				}

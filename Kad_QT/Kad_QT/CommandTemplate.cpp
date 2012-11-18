@@ -606,9 +606,26 @@ void CommandTemplate::ReAttachAfterMoveNode( GObject * pObj, bool bFindMerge/*=t
 
 	float fProportion;
 	GObject * pTestPickedObj = TestPickObjSingleFilter(pObj, pObj, &fProportion);
-	
+
+
 	if (pTestPickedObj)
 	{
+		if (pPoint->isNotch())
+		{
+			if (pTestPickedObj->isAnchorPoint())
+			{
+				GLine * pTestLine = pTestPickedObj->getLine();
+				if (pTestPickedObj == pTestLine->GetBeginPoint())
+				{
+					fProportion = 0.0f;
+				}
+				else
+				{
+					fProportion = 1.0f;
+				}
+				pTestPickedObj = pTestLine;
+			}
+		}
 		if (pTestPickedObj->isMidPoint())
 		{
 			pTestPickedObj = pTestPickedObj->getLine();
@@ -620,12 +637,14 @@ void CommandTemplate::ReAttachAfterMoveNode( GObject * pObj, bool bFindMerge/*=t
 		}
 	}
 
+
 	if (!pTestPickedObj || pTestPickedObj->canBeClingTo())
 	{
-		if (fProportion >= M_FLOATEXTREMEEPS && fProportion <= 1-M_FLOATEXTREMEEPS)
+		float fAllowance = pPoint->GetClingAllowance();
+		if (fAllowance <= 0 || (fProportion >= M_FLOATEXTREMEEPS && fProportion <= 1-M_FLOATEXTREMEEPS))
 		{
 			GClingInfo tcli = *pPoint->getClingInfo();
-			if (tcli.ApplyChange((GLine *)pTestPickedObj, fProportion))
+			if (tcli.ApplyChange((GLine *)pTestPickedObj, fProportion, fAllowance))
 			{
 				if (pPoint->ClingTo(tcli))
 				{

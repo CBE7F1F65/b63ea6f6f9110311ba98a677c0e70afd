@@ -183,6 +183,9 @@
     <Filter Include="Main\Command\CopyPaste">
       <UniqueIdentifier>{21551d42-f12d-4d4e-b111-44211497f7de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\Command\Notch">
+      <UniqueIdentifier>{4716c1e3-e58e-40ce-89f7-e240fa58493e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_kad_qt.cpp">
@@ -602,6 +605,9 @@
     <ClCompile Include="ImageCommand.cpp">
       <Filter>Main\Command\Draw</Filter>
     </ClCompile>
+    <ClCompile Include="NotchCommand.cpp">
+      <Filter>Main\Command\Notch</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -858,6 +864,9 @@
     </ClInclude>
     <ClInclude Include="ImageCommand.h">
       <Filter>Main\Command\Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchCommand.h">
+      <Filter>Main\Command\Notch</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

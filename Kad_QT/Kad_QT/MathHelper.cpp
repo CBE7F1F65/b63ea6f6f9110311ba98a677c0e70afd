@@ -390,7 +390,7 @@ void MathHelper::GetPerpendicularPointForLine( const PointF2D &pt1, const PointF
 	int angle = GetLineAngle(pt1, pt2);
 	angle += ANGLEBASE_90;
 	RestrictAngle(&angle);
-	if (angle >= 0)
+	if (bUpward && angle >= 0)
 	{
 		angle += ANGLEBASE_180;
 	}

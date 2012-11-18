@@ -198,6 +198,8 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_CIRCLE,	"CIRCLE",	"O",	"Draw Circle",	""	);
 	_BSET(	COMM_IMAGE,	"IMAGE",	"IM",	"Draw Iamge",	""	);
 
+	_BSET(	COMM_NOTCH,	"NOTCH",	"N",	"Add Notch",	""	);
+
 	_BSET(	COMM_ADDSA,	"ADDSA",	"A",	"Add Seam Allowance",	""	);
 
 	_BSET(	COMM_DUMP,	"DUMP",	"DU",	"Dump to Image File",	""	);

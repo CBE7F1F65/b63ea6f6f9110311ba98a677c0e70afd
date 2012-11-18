@@ -152,6 +152,7 @@ public:
 	virtual bool isHandlePoint(){return false;};
 	virtual bool isAnchorPoint(){return false;};
 	virtual bool isMidPoint(){return false;};
+	virtual bool isNotch(){return false;};
 	virtual bool isImageLine(){return false;};
 	virtual bool isPiece(){return false;};
 	virtual bool isRepresentablePoint(){return false;};		// A point represent the position
@@ -191,7 +192,7 @@ protected:
 	virtual void OnModify();
 	virtual void OnClearModify();	// Post-Update
 	virtual void OnCancelTryMove();
-	virtual void OnUpdate();
+	virtual bool OnUpdate();
     virtual void OnRender(int iHighlightLevel=0);
 	virtual void OnParentToggleDisplayVisible(bool toDisplayVisible);
 	virtual void OnParentToggleDisplayLocked(bool toDisplayLock);
@@ -205,7 +206,7 @@ public:
 	virtual void CallModify();
     virtual void CallClearModify();
     virtual void CallRedrawModify();
-	virtual void CallUpdate();
+	virtual bool CallUpdate();
 	virtual void CallRender(int iHighlightLevel=0);
 	virtual void CallCancelTryMove();
 	virtual void CallIndepend();

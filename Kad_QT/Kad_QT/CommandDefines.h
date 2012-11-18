@@ -93,6 +93,9 @@ enum{
 	COMM_CIRCLE,	// circle
 	COMM_IMAGE,		// image line
 
+	// Notch
+	COMM_NOTCH,		// notch
+
 	// Seam
 	COMM_ADDSA,	// add seam
 
@@ -595,6 +598,20 @@ enum{
 enum{
 	CSI_IMAGE_DUMMY=0,
 	CSI_IMAGE_WANTFILENAME,
+};
+
+/************************************************************************/
+/* NOTCH                                                                */
+/************************************************************************/
+
+enum{
+	CSP_NOTCH_I_F_INDEX_PROPORTION,
+};
+//////////////////////////////////////////////////////////////////////////
+enum{
+	CSI_NOTCH_DUMMY=0,
+	CSI_NOTCH_WANTINDEX,
+	CSI_NOTCH_WANTPROPORTION,
 };
 
 /************************************************************************/

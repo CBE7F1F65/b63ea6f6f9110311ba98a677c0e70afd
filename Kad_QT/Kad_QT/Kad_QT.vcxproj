@@ -269,6 +269,7 @@
     <ClCompile Include="MoveNodeBatchCommand.cpp" />
     <ClCompile Include="MoveNodeCommand.cpp" />
     <ClCompile Include="NewLayerCommand.cpp" />
+    <ClCompile Include="NotchCommand.cpp" />
     <ClCompile Include="OpenCommand.cpp" />
     <ClCompile Include="OutputCommand.cpp" />
     <ClCompile Include="PasteCommand.cpp" />
@@ -369,6 +370,7 @@
     <ClInclude Include="MainDependency.h" />
     <ClInclude Include="MarkingManager.h" />
     <ClInclude Include="MarkingObject.h" />
+    <ClInclude Include="NotchCommand.h" />
     <ClInclude Include="OpenCommand.h" />
     <ClInclude Include="PasteCommand.h" />
     <ClInclude Include="PickFilterTemplate.h" />

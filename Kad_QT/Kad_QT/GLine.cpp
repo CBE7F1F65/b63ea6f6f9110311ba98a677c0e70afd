@@ -218,13 +218,22 @@ bool GLine::AddClingBy( GPoint * pPoint )
 	return true;
 }
 
-void GLine::DeclingByOther( GPoint * pPoint/*=NULL*/ )
+void GLine::DeclingByOther( GPoint * pPoint/*=NULL*/, bool bIgnoreNotch/*=false*/ )
 {
 	if (!pPoint)
 	{
-		while (!clingByList.empty())
+		for (list<GPoint *>::iterator it=clingByList.begin(); it!=clingByList.end();)
 		{
-			DeclingByOther(clingByList.front());
+			pPoint = *it;
+			if (pPoint && !(bIgnoreNotch && pPoint->isNotch()))
+			{
+				pPoint->ClearClingTo();
+				it = clingByList.erase(it);
+			}
+			else
+			{
+				++it;
+			}
 		}
 	}
 	else
@@ -366,7 +375,7 @@ void GLine::SetSA( GSAInfo * psainfo )
 
 bool GLine::Isolate()
 {
-	DeclingByOther();
+	DeclingByOther(NULL, true);
 	plbegin->Isolate();
 	plend->Isolate();
 	return true;
@@ -1213,7 +1222,7 @@ GLine * GBezierLine::Clip( float fClipProportion )
 				{
 					float fNewProp = fCP/fClipProportion;
 					ASSERT(fNewProp > 0 && fNewProp <= 1);
-					pcli->ApplyChange(this, fNewProp);
+					pcli->ApplyChange(this, fNewProp, pClingByPoint->GetClingAllowance());
 					pClingByPoint->ClingTo(*pcli);
 				}
 				else if (fCP > fClipProportion)
@@ -1221,7 +1230,7 @@ GLine * GBezierLine::Clip( float fClipProportion )
 					float fNewProp = (fCP-fClipProportion)/(1-fClipProportion);
 					ASSERT(fNewProp > 0 && fNewProp <= 1);
 					int nType = pcli->GetClingType();
-					pcli->SetClingTo(pClonedLine, fNewProp);
+					pcli->SetClingTo(pClonedLine, fNewProp, GCLING_PROPORTION, pClingByPoint->GetClingAllowance());
 					pcli->ApplyTypeChange(nType);
 					pClingByPoint->ClingTo(*pcli);
 				}
@@ -1356,7 +1365,7 @@ bool GBezierLine::JoinLine( GLine * pLine )
 			{
 				fCP *= fCombinePointCP;
 				pcli->ApplyTypeChange(GCLING_PROPORTION);
-				pcli->ApplyChange(this, fCP);
+				pcli->ApplyChange(this, fCP, pClingByPoint->GetClingAllowance());
 				pClingByPoint->ClingTo(*pcli);
 			}
 		}
@@ -1373,7 +1382,7 @@ bool GBezierLine::JoinLine( GLine * pLine )
 			{
 				fCP = fCP*(1-fCombinePointCP)+fCombinePointCP;
 				pcli->ApplyTypeChange(GCLING_PROPORTION);
-				pcli->ApplyChange(this, fCP);
+				pcli->ApplyChange(this, fCP, pClingByPoint->GetClingAllowance());
 				pClingByPoint->ClingTo(*pcli);
 			}
 		}
@@ -1476,7 +1485,7 @@ bool GBezierLine::SwapBeginEnd()
 				{
 					pcli->ApplyTypeChange(GCLING_BEGINOFFSET);
 				}
-				pcli->ApplyChange(this, fCP);
+				pcli->ApplyChange(this, fCP, pClingByPoint->GetClingAllowance());
 				pClingByPoint->ClingTo(*pcli);
 			}
 		}
@@ -1600,7 +1609,7 @@ bool GBezierLine::Extend( float tBegin, float tEnd )
 			if (pcli->CalculateClingProportion(&fCP, fOLength))
 			{
 				fCP = (tBegin+fCP)*tTotalInv;
-				pcli->ApplyChange(this, fCP);
+				pcli->ApplyChange(this, fCP, pClingByPoint->GetClingAllowance());
 				pClingByPoint->ClingTo(*pcli);
 			}
 		}

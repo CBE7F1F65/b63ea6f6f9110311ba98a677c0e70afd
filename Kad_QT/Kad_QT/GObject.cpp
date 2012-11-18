@@ -364,9 +364,8 @@ void GObject::OnPrecisionChanged(float fPrecision)
 {
 }
 
-void GObject::OnUpdate()
+bool GObject::OnUpdate()
 {
-
 	if (nTryState)
 	{
 		if (nTryState == GOBJTRYSTATE_MOVE_REQUIREUPDATE)
@@ -386,7 +385,7 @@ void GObject::OnUpdate()
 			}
 		}
 	}
-
+	return true;
 }
 
 void GObject::OnCancelTryMove()
@@ -690,20 +689,27 @@ void GObject::CallRender( int iHighlightLevel/*=0*/ )
 	}
 }
 
-void GObject::CallUpdate()
+bool GObject::CallUpdate()
 {
 	if (canUpdate())
 	{
 		nUpdateMoveActionID = getBase()->nUpdateMoveActionID;
-		OnUpdate();
-		if (!lstChildren.empty())
+		if (OnUpdate())
 		{
-			FOREACH_GOBJ_CHILDREN_IT()
+			if (!lstChildren.empty())
 			{
-				(*it)->CallUpdate();
+				for(list<GObject *>::iterator it=lstChildren.begin(); it!=lstChildren.end();)
+				{
+					list<GObject *>::iterator itnext = it;
+					++itnext;
+					(*it)->CallUpdate();
+					it = itnext;
+				}
 			}
+			return true;
 		}
 	}
+	return false;
 }
 void GObject::CallPrecisionChanged(float fPrecision)
 {

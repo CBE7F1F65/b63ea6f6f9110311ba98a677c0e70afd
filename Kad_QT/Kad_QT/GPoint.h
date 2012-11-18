@@ -17,7 +17,7 @@ public:
 	GClingInfo(){ClearClingTo();};
 	virtual ~GClingInfo(){};
 
-	bool SetClingTo(GLine * pTo, float fVal, int nType=GCLING_PROPORTION);
+	bool SetClingTo(GLine * pTo, float fVal, float fa, int nType=GCLING_PROPORTION);
 	void ClearClingTo();
 
 	bool CalculateClingProportion(float * pProp, float fLengthBase=-1);
@@ -29,7 +29,7 @@ public:
 
 	bool isClingTo(GObject * pObj);
 	//////////////////////////////////////////////////////////////////////////
-	bool ApplyChange( GLine * pLine, float fProportion );
+	bool ApplyChange( GLine * pLine, float fProportion, float fa );
 	bool ApplyTypeChange(int nType);
 	//////////////////////////////////////////////////////////////////////////
 
@@ -37,6 +37,7 @@ private:
 	GLine * pClingTo;
 	float fClingVal;
 	int nClingType;
+	float fAllowance;
 };
 
 /************************************************************************/
@@ -88,6 +89,8 @@ public:
 	virtual void OnIndepend();
 
 	// Only Point To Line!
+	virtual float GetClingAllowance(){return M_SMALLFLOAT;};
+
 	void ClearClingTo();
 	bool ClingTo(GLine* pLine, float fVal, int nType=GCLING_PROPORTION);
 	bool ClingTo(GClingInfo &cl){return ClingTo(cl.GetClingTo(), cl.GetClingVal(), cl.GetClingType());};
@@ -207,8 +210,6 @@ public:
 	GMidPoint(GObject * parent);
 	virtual ~GMidPoint();
 
-	virtual bool canBeMergedWith(){return true;};
-
 	virtual GObject * getEntity(){return (GObject *)getLine();};
 
 	virtual bool isMidPoint(){return true;};
@@ -227,10 +228,10 @@ public:
 /************************************************************************/
 /* GHandlePoint                                                         */
 /************************************************************************/
-class GHandlePoint : public GAttributePoint
+class GHandlePoint : public GSubstantivePoint
 {
 public:
-	typedef GAttributePoint super;
+	typedef GSubstantivePoint super;
 	virtual const char * getTypeName();		// Do not implement separately
 	static const char * getStaticTypeName();		// Do not implement separately
 public:
@@ -313,4 +314,40 @@ protected:
 	GOBJM_CHILDPOINTERS();
 	GHandlePoint * pHandle;
 	GOBJM_CHILDPOINTERSEND();
+};
+
+/************************************************************************/
+/* GNotch                                                               */
+/************************************************************************/
+
+class GNotch : public GAttributePoint
+{
+public:
+	typedef GAttributePoint super;
+	virtual const char * getTypeName();		// Do not implement separately
+	static const char * getStaticTypeName();		// Do not implement separately
+
+public:
+	GNotch();
+	GNotch(GObject * pParent, GClingInfo * pClingInfo);
+	virtual ~GNotch();
+
+	virtual bool OnUpdate();
+
+	virtual bool ReadXML( GObjectXMLNode * pnode );	// Do not implement separately
+	virtual bool WriteXML(QXmlStreamWriter &qsw);	// Do not implement separately
+
+	virtual float GetClingAllowance(){return 0;};
+	virtual GObject * CreateNewClone(GObject * pNewParent=NULL, GObject * pBeforeObj=NULL);
+
+	virtual bool isAttributeNode(){return false;};
+
+	virtual bool canAttach(){return true;};
+	virtual GObject * getEntity(){return this;};
+
+	virtual void OnRender(int iHighlightLevel/* =0 */);
+
+	virtual GLine * getLine(){return clInfo.GetClingTo();};
+	virtual const char * getDisplayName();
+	virtual bool isNotch(){return true;};
 };

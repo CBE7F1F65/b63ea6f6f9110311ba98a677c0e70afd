@@ -112,7 +112,7 @@ public:
 	virtual void OnIndepend();
 
 	bool AddClingBy(GPoint * pPoint);
-	void DeclingByOther(GPoint * pPoint=NULL);
+	void DeclingByOther(GPoint * pPoint=NULL, bool bIngoreNotch=false);
 	bool isClingBy(GPoint * pPoint);
 	list<GPoint *> * getClingBy(){return &clingByList;};
 
