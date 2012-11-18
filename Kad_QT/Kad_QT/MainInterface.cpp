@@ -371,7 +371,7 @@ bool MainInterface::OnInit(void * parent, int w, int h)
 	//
 	
 	Command::getInstance().OnInit();
-	GUICoordinate::getInstance().SetGrid(GUICG_METRIC, 0, 0);
+    GUICoordinate::getInstance().SetGrid(GUICG_IMPERIAL, 0, 0);
 	GObjectManager::getInstance().Init();
 	GObjectPicker::getInstance().Init();
 	

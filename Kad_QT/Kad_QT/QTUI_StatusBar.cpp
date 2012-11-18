@@ -91,6 +91,11 @@ void QTUI_StatusBar::UpdateStatusBar()
         ui->PBShowGrid->setChecked(pguic->isShowGrid());
     }
 
+    if (ui->PBShowActualGrid->isChecked() != pguic->isShowActualGrid())
+    {
+        ui->PBShowActualGrid->setChecked(pguic->isShowActualGrid());
+    }
+
     if (ui->PBIsolateMode->isChecked() != pgm->IsIsolateMode())
     {
         ui->PBIsolateMode->setChecked(pgm->IsIsolateMode());
@@ -135,6 +140,11 @@ void QTUI_StatusBar::SLT_PBSnapContinuityTriggered(bool bVal)
 void QTUI_StatusBar::SLT_PBShowGridTriggered(bool bVal)
 {
     GUICoordinate::getInstance().SetShowGrid(bVal);
+}
+
+void QTUI_StatusBar::SLT_PBShowActualGridTriggered(bool bVal)
+{
+    GUICoordinate::getInstance().SetShowActualGrid(bVal);
 }
 
 void QTUI_StatusBar::SLT_PBSnapGeometryCoordTriggered(bool bVal)

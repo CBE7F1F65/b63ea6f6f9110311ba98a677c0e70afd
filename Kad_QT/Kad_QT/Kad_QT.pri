@@ -406,7 +406,8 @@ HEADERS += ./Const.h \
     CircleCommand.h \
     BindHandleCommand.h \
     BezierCommand.h \
-    AddSACommand.h
+    AddSACommand.h \
+    NotchCommand.h
 SOURCES += ./InitDllLoader.cpp \
     ./kad_qt.cpp \
     ./main.cpp \
@@ -814,7 +815,8 @@ SOURCES += ./InitDllLoader.cpp \
     CircleCommand.cpp \
     BindHandleCommand.cpp \
     BezierCommand.cpp \
-    AddSACommand.cpp
+    AddSACommand.cpp \
+    NotchCommand.cpp
 FORMS += ./kad_qt.ui \
     qtui_commanddockable.ui \
     qtui_commandfloating_widget.ui \

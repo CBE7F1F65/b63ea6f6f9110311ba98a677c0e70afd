@@ -31,6 +31,7 @@ GUICoordinate::GUICoordinate()
 	savedoriginy_s = 0;
 
     SetShowGrid(true);
+    SetShowActualGrid(false);
 }
 
 GUICoordinate::~GUICoordinate()
@@ -278,21 +279,30 @@ void GUICoordinate::UpdateScreenMeasure()
 #define _SCALESPACE	2.0f
 #define _SCALESUBSCRMIN	12.0f
 
-	if (scale > _SCALEB_L1T)
-	{
-		subgridspace_c = nsubgrid;
-		subgridspace_s = subgridspace_c*scale;
-	}
-	else
-	{
-		subgridspace_c = _SCALESPACE*nsubgrid;
-		subgridspace_s = subgridspace_c*scale;
-		while (subgridspace_s < _SCALESUBSCRMIN)
-		{
-			subgridspace_c *= _SCALESPACE;
-			subgridspace_s *= _SCALESPACE;
-		}
-	}
+	float fDisplayMul = MainInterface::getInstance().GetDisplayMul();
+    if (bShowActualGrid)
+    {
+        subgridspace_c = fDisplayMul/nsubgrid;
+        subgridspace_s = subgridspace_c*scale;
+    }
+    else
+    {
+        if (scale > _SCALEB_L1T)
+        {
+            subgridspace_c = fDisplayMul/nsubgrid/_SCALESPACE;
+            subgridspace_s = subgridspace_c*scale;
+        }
+        else
+        {
+            subgridspace_c = fDisplayMul/nsubgrid/_SCALESPACE;
+            subgridspace_s = subgridspace_c*scale;
+            while (subgridspace_s < _SCALESUBSCRMIN)
+            {
+                subgridspace_c *= _SCALESPACE;
+                subgridspace_s *= _SCALESPACE;
+            }
+        }
+    }
 
 	gridxs_s.clear();
 	gridys_s.clear();
@@ -384,6 +394,15 @@ void GUICoordinate::UpdateScreenMeasure()
         RenderHelper::getInstance().EndRenderTar();
     }
     RenderTargetManager::getInstance().SetNeedUpdate();
+}
+
+void GUICoordinate::SetShowActualGrid(bool bSet)
+{
+    if (bShowActualGrid != bSet)
+    {
+        bShowActualGrid = bSet;
+        UpdateScreenMeasure();
+    }
 }
 
 void GUICoordinate::SetCursorPosition( float x_s, float y_s )

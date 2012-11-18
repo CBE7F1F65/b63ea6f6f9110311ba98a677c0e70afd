@@ -45,9 +45,12 @@ public:
 
 private:
     bool bShowGrid;
+    bool bShowActualGrid;
 public:
     bool isShowGrid(){return bShowGrid;};
     void SetShowGrid(bool bSet){bShowGrid=bSet;};
+    bool isShowActualGrid(){return bShowActualGrid;};
+    void SetShowActualGrid(bool bSet);
 
 private:
 	int measuretype;
