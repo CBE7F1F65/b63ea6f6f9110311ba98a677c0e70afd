@@ -1014,7 +1014,7 @@ bool GObjectManager::WillSelfMove( GObject * pObj )
 	return false;
 }
 
-bool GObjectManager::AddCopyNode( GObject * pObj )
+bool GObjectManager::AddCopyNode( GObject * pObj, int relid/*=-1*/ )
 {
 	if (IsInCopyList(pObj))
 	{
@@ -1023,9 +1023,12 @@ bool GObjectManager::AddCopyNode( GObject * pObj )
 	GObjectCopyInfo * pci = NULL;
 	if (pObj->isRepresentablePoint())
 	{
-		GPoint * pPoint = (GPoint *) pObj;
-		GObjectCopyInfo _oci(pPoint, pPoint->getX(), pPoint->getY());
-		pci = &_oci;
+		if (pObj->isNotch())
+		{
+			GNotch * pNotch = (GNotch *) pObj;
+			GObjectCopyInfo _oci(pNotch, *pNotch->getClingInfo(), pNotch->getX(), pNotch->getY(), relid);
+			pci = &_oci;
+		}
 	}
 	else if (pObj->isRepresentableLine())
 	{
@@ -1047,12 +1050,31 @@ bool GObjectManager::AddCopyNode( GObject * pObj )
 		if (pLine->GetSAInfo())
 		{
 		}
+
 	}
 	if (!pci)
 	{
 		return false;
 	}
 	lstcopy.push_back(*pci);
+
+	if (pObj->isLine())
+	{
+		GLine * pLine = (GLine *)pObj;
+		list<GPoint *> * pClingByList = pLine->getClingBy();
+		if (pClingByList && !pClingByList->empty())
+		{
+			int relid = lstcopy.size();
+			for (list<GPoint *>::iterator it=pClingByList->begin(); it!=pClingByList->end(); ++it)
+			{
+				GPoint * pClingByPoint = *it;
+				if (pClingByPoint->isNotch())
+				{
+					AddCopyNode(pClingByPoint, relid-1);
+				}
+			}
+		}
+	}
 	return true;
 }
 
@@ -1081,7 +1103,34 @@ bool GObjectManager::PasteNodes()
 		{
 		case GOBJCOPY_POINT:
 			{
-				
+				break;
+			}
+		case GOBJCOPY_NOTCH:
+			{
+				GObject * pNewRel = NULL;
+				int nowrelid = 0;
+				for (list<GObjectCopyInfo>::iterator jt=lstcopy.begin(); jt!=lstcopy.end(); ++jt)
+				{
+					if (nowrelid == pci->relid)
+					{
+						pNewRel = jt->pNewRel;
+						break;
+					}
+					nowrelid++;
+				}
+				if (!pNewRel || !pNewRel->isLine())
+				{
+					ASSERT(false);
+					return false;
+				}
+				pci->clinfo.SetClingTo((GLine *)pNewRel, pci->clinfo.GetClingVal(), 0, pci->clinfo.GetClingType());
+				GNotch * pNotch = new GNotch(pLayer, &(pci->clinfo));
+				if (!pNotch)
+				{
+					return false;
+				}
+				pci->SetNewRel(pNotch);
+				break;
 			}
 		case GOBJCOPY_LINE:
 			{
@@ -1091,6 +1140,8 @@ bool GObjectManager::PasteNodes()
 					return false;
 				}
 				pBezier->SetSA(&(pci->sainfo));
+				pci->SetNewRel(pBezier);
+				break;
 			}
 		}
 	}

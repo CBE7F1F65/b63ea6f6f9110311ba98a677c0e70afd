@@ -58,6 +58,7 @@ private:
 
 enum{
 	GOBJCOPY_POINT,
+	GOBJCOPY_NOTCH,
 	GOBJCOPY_LINE,
 };
 class GObjectCopyInfo{
@@ -65,10 +66,13 @@ class GObjectCopyInfo{
 	friend class GLine;
 public:
 	GObjectCopyInfo(GPoint * pPoint, float x, float y){pObj=pPoint; type=GOBJCOPY_POINT; xb=x; yb=y;};
+	GObjectCopyInfo(GNotch * pNotch, GClingInfo &oclinfo, float x, float y, int _relid){pObj=pNotch; type=GOBJCOPY_NOTCH; clinfo=oclinfo; xb=x; yb=y; relid=_relid;};
 	GObjectCopyInfo(GLine * pLine, float _xb, float _yb, float _xe, float _ye, GSAInfo * psainfo=NULL)
 	{ pObj=pLine; type = GOBJCOPY_LINE; xb = _xb; yb = _yb; xe = _xe; ye = _ye; xbh = _xb; ybh = _yb; xeh = _xe; yeh = _ye; if (psainfo){sainfo=*psainfo;};	};
 	GObjectCopyInfo(GLine * pLine, float _xb, float _yb, float _xe, float _ye, float _xbh, float _ybh, float _xeh, float _yeh, GSAInfo * psainfo=NULL)
 	{ pObj=pLine; type = GOBJCOPY_LINE; xb = _xb; yb = _yb; xe = _xe; ye = _ye; xbh = _xbh; ybh = _ybh; xeh = _xeh; yeh = _yeh; if (psainfo){sainfo=*psainfo;};	};
+
+	void SetNewRel(GObject * pObj){pNewRel=pObj;};
 
 public:
 	int type;
@@ -81,7 +85,10 @@ public:
 	float ybh;
 	float xeh;
 	float yeh;
+	int relid;
 	GSAInfo sainfo;
+	GClingInfo clinfo;
+	GObject * pNewRel;
 };
 
 class DXFWriter;
@@ -178,7 +185,7 @@ public:
 	void SetWillSelfMoveList(list<GObject *> * pobjs=NULL);
 	bool WillSelfMove(GObject * pObj);
 
-	bool AddCopyNode(GObject * pObj);
+	bool AddCopyNode(GObject * pObj, int relid=-1);
 	void ClearCopiedNodes();
 	bool PasteNodes();
 	bool IsInCopyList(GObject * pObj);

@@ -537,7 +537,7 @@ bool GPoint::ReadXML( GObjectXMLNode * pnode )
 	float prop_x = pnode->GetValue(psm->GetXMLNodeXName(), strPrefix).toFloat();
 	float prop_y = pnode->GetValue(psm->GetXMLNodeYName(), strPrefix).toFloat();
 	this->SetPosition(prop_x, prop_y);
-	if (!pgm->IsIsolateMode()/* || isNotch()*/)
+	if (!pgm->IsIsolateMode() || isNotch())
 	{
 		// ClingTo
 		QString strClingToPrefix = strPrefix+psm->GetXMLNodeClingInfoName();
@@ -559,8 +559,8 @@ bool GPoint::ReadXML( GObjectXMLNode * pnode )
 
 			this->ClingTo((GLine *)prop_pClingTo, prop_clingval, prop_clingtype);
 		}
-		/*if (!pgm->IsIsolateMode())
-		{*/
+		if (!pgm->IsIsolateMode())
+		{
 			// MergeWith
 			QString strMergeWithPrefix = strPrefix+psm->GetXMLNodeMergeWithName();
 			int nMerge = 0;
@@ -581,7 +581,7 @@ bool GPoint::ReadXML( GObjectXMLNode * pnode )
 					break;
 				}
 			}
-		/*}*/
+		}
 	}
 
 

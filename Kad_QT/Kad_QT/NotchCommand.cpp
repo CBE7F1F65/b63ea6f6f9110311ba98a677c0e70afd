@@ -59,10 +59,19 @@ void NotchCommand::OnProcessCommand()
 						{
 							pObj = pObj->getLine();
 						}
+						if (pObj->isAnchorPoint() && (fProportion == 0.0f || fProportion == 1.0f))
+						{
+							pObj = pObj->getLine();
+						}
 						if (pObj->isPoint())
 						{
 							GPoint * pPoint = (GPoint *)pObj;
 							pObj = pPoint->getClingInfo()->GetClingTo();
+						}
+						if (!pObj)
+						{
+							Terminal();
+							return;
 						}
 						int index = pObj->getID();
 
@@ -127,7 +136,7 @@ bool NotchCommand::PickFilterFunc( GObject * pObj )
 			return false;
 		}
 	}
-	if (pObj->isLine() || pObj->isMidPoint())
+	if (pObj->isLine() || pObj->isMidPoint() || pObj->isAnchorPoint())
 	{
 		return true;
 	}

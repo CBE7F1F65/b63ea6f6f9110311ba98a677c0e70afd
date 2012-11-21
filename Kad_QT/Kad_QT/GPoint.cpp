@@ -778,7 +778,16 @@ bool GAnchorPoint::MoveTo( GObject * pCaller, float newx, float newy, bool bTry,
 				{
 					for (list<GPoint *>::iterator it=pClingByList->begin(); it!=pClingByList->end(); ++it)
 					{
-						(*it)->CallClingToMoved(bTry, bTry?moveActionID:-1);
+						GPoint * pClingByPoint = *it;
+						if (!bTry)
+						{
+							pClingByPoint->CallMoveByOffset(pCaller, 0, 0, bTry, moveActionID);
+						}
+						(*it)->CallClingToMoved(bTry, bTry?moveActionID:0);
+						if (!bTry)
+						{
+							pClingByPoint->CallMoveByOffset(pCaller, 0, 0, bTry, moveActionID);
+						}
 					}
 				}
 			}
