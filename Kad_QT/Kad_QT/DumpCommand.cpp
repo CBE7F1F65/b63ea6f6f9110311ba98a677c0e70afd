@@ -90,6 +90,22 @@ void DumpCommand::OnDoneCommand()
 		if (pObj)
 		{
 			lobjs.push_back(pObj);
+			if (pObj->isLine())
+			{
+				GLine * pLine = (GLine *)pObj;
+				list<GPoint *> * pClingByList = pLine->getClingBy();
+				if (pClingByList && !pClingByList->empty())
+				{
+					for (list<GPoint *>::iterator it=pClingByList->begin(); it!=pClingByList->end(); ++it)
+					{
+						GPoint * pClingByPoint = *it;
+						if (pClingByPoint->isNotch())
+						{
+							lobjs.push_back(pClingByPoint);
+						}
+					}
+				}
+			}
 		}
 		i++;
 		index = pcommand->GetParamI(CSP_DUMP_I_INDEXES+i);

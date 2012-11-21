@@ -211,6 +211,13 @@ void MarqueeSelect::Update()
 		beginy_c = pgp->GetPickY_C();//pguic->GetCursorY_C();
 
 		pBeginObj = pgp->GetPickedObj();
+		if (pBeginObj && pBeginObj->isNotch())
+		{
+			if (selectednodes.size() > 1 || !selectednodes.empty()&&selectednodes.front()!=pBeginObj)
+			{
+				pBeginObj = pBeginObj->getLine();
+			}
+		}
 
 		marqueestate = MARQSTATE_LEFTKEYDOWN;
 	}
@@ -577,6 +584,11 @@ bool MarqueeSelect::CheckObjInSelection( GObject * pTestObj, bool bFindAncestor/
 	else if (pTestObj->isSlaveToPiece())
 	{
 		pTestObj = pTestObj->getPiece();
+	}
+
+	if (pTestObj->isNotch() && (selectednodes.size() > 1 || !selectednodes.empty()&&pTestObj!=selectednodes.front()))
+	{
+		pTestObj = pTestObj->getLine();
 	}
 
 	if (!plstObj)

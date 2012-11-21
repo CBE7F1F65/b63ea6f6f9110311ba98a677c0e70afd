@@ -170,11 +170,12 @@ void AddSACommand::OnDoneCommand()
 		int objcount = lobjs.size();
 		PushRevertibleBatch(
 			PUSHREVERTABLESTATE_BEGIN,
-			CCMake_C(COMM_I_COMMAND, 4+objcount, 1),
+			CCMake_C(COMM_I_COMMAND, 5+objcount, 1),
 			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
 			CCMake_C(COMM_ADDSA),
 			CCMake_F(orix),
 			CCMake_F(oriy),
+			CCMake_F(fsa),
 			NULL
 			);
 		for (list<GObject *>::iterator it=lobjs.begin(); it!=lobjs.end(); ++it)

@@ -776,17 +776,21 @@ bool GAnchorPoint::MoveTo( GObject * pCaller, float newx, float newy, bool bTry,
 				list<GPoint *> * pClingByList = pLine->getClingBy();
 				if (!pClingByList->empty())
 				{
+					bool bIsolateMode = GObjectManager::getInstance().IsIsolateMode();
 					for (list<GPoint *>::iterator it=pClingByList->begin(); it!=pClingByList->end(); ++it)
 					{
 						GPoint * pClingByPoint = *it;
-						if (!bTry)
+						if (!bIsolateMode || pClingByPoint->isNotch())
 						{
-							pClingByPoint->CallMoveByOffset(pCaller, 0, 0, bTry, moveActionID);
-						}
-						(*it)->CallClingToMoved(bTry, bTry?moveActionID:0);
-						if (!bTry)
-						{
-							pClingByPoint->CallMoveByOffset(pCaller, 0, 0, bTry, moveActionID);
+							if (!bTry)
+							{
+								pClingByPoint->CallMoveByOffset(pCaller, 0, 0, bTry, moveActionID);
+							}
+							(*it)->CallClingToMoved(bTry, bTry?moveActionID:0);
+							if (!bTry)
+							{
+								pClingByPoint->CallMoveByOffset(pCaller, 0, 0, bTry, moveActionID);
+							}
 						}
 					}
 				}
