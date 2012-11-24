@@ -63,6 +63,10 @@ MainInterface::MainInterface()
 	printmargin = 0.5f;
 
 	nFileStatus = MI_FILESTATUS_NEW|MI_FILESTATUS_OPENED;
+
+	autosavesecond = 5;
+	autosavelasttime = QTime::currentTime();
+	autosavelasttime.start();
 }
 
 MainInterface::~MainInterface()
@@ -268,6 +272,12 @@ bool MainInterface::Frame()
 	}
 
 	parentview->OnFrameEnd();
+
+	if (autosavelasttime.elapsed() > autosavesecond*1000)
+	{
+		AutoSaveFile();
+		autosavelasttime.restart();
+	}
 
 	return false;
 }
@@ -775,7 +785,7 @@ bool MainInterface::OpenFile()
 	{
 		// Save File?
 	}
-	QString qsfilename = QFileDialog::getOpenFileName(NULL, QString(), QString(MI_WORKINGFILELOCATION), QString("*.xml"));
+	QString qsfilename = QFileDialog::getOpenFileName(NULL, QString(), QString(MI_WORKINGFILELOCATION), QString("*" MI_SAVEFILEEXTENSION));
 	if (qsfilename.length())
 	{
 		return OpenFile(qsfilename.toUtf8());
@@ -846,7 +856,7 @@ bool MainInterface::SaveFile( bool bSaveAs/*=false*/ )
 {
 	if (bSaveAs || (nFileStatus & MI_FILESTATUS_NEW))
 	{
-		QString qsfilename = QFileDialog::getSaveFileName(NULL, QString(), QString(MI_WORKINGFILELOCATION), QString("*.xml"));
+		QString qsfilename = QFileDialog::getSaveFileName(NULL, QString(), QString(MI_WORKINGFILELOCATION), QString("*" MI_SAVEFILEEXTENSION));
 		if (qsfilename.length())
 		{
 			savefilename = qsfilename.toStdString();
@@ -859,7 +869,7 @@ bool MainInterface::SaveFile( bool bSaveAs/*=false*/ )
 	return SaveFile(savefilename.c_str());
 }
 
-bool MainInterface::SaveFile( const char * filename )
+bool MainInterface::SaveFile( const char * filename, bool bAutosave/*=false*/ )
 {
 	QFile qsavefile(filename);
 	/*
@@ -873,7 +883,10 @@ bool MainInterface::SaveFile( const char * filename )
 		return false;
 	}
 
-	savefilename = filename;
+	if (!bAutosave)
+	{
+		savefilename = filename;
+	}
 	
 	QXmlStreamWriter qsw(&qsavefile);
 	qsw.setAutoFormatting(true);
@@ -894,13 +907,43 @@ bool MainInterface::SaveFile( const char * filename )
 
 	qsavefile.close();
 
-	if (bdone)
+	if (bdone && !bAutosave)
 	{
 		nFileStatus &= ~(MI_FILESTATUS_NEW|MI_FILESTATUS_MODIFIED);
 		QMainInterface::getInstance().GetPGLView()->window()->setWindowTitle(savefilename.c_str());
 	}
 
 	return bdone;
+}
+
+bool MainInterface::AutoSaveFile()
+{
+	QString qsavefilename = savefilename.c_str();
+	bool bSaveProtect = false;
+	if (!qsavefilename.length())
+	{
+		qsavefilename = MI_WORKINGFILELOCATION "/";
+		qsavefilename += "AutoSave" MI_SAVEFILEEXTENSION;
+		bSaveProtect = true;
+	}
+	qsavefilename += MI_AUTOSAVE_POSTFIX;
+	bool bRet = SaveFile(qsavefilename.toUtf8(), true);
+	if (bRet && bSaveProtect)
+	{
+		qsavefilename;
+		QFile tf;
+		for (int i=0; ;i++)
+		{
+			QString tstr = qsavefilename + QString().sprintf("_%04d.%s%s", i, MI_SAVEFILEEXTENSION, MI_AUTOSAVE_POSTFIX);
+			if (!tf.exists(tstr))
+			{
+				qsavefilename = tstr;
+				break;
+			}
+		}
+		bRet = SaveFile(qsavefilename.toUtf8(), true);
+	}
+	return bRet;
 }
 
 float MainInterface::GetPrintMul()

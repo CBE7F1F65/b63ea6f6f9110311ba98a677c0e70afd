@@ -201,7 +201,6 @@ public:
 private:
 
 	GMainBaseNode * pBaseNode;
-	GObject * pLastToSetActiveNode;
 	list<GObject*> nodetodelete;
 
 	bool bCloning;

@@ -38,6 +38,7 @@ MarqueeSelect::~MarqueeSelect(void)
 
 void MarqueeSelect::DeSelect( GObject * pObj )
 {
+	OnSelectWillChange(pObj);
 	for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end();)
 	{
 		if (*it == pObj)
@@ -54,6 +55,7 @@ void MarqueeSelect::DeSelect( GObject * pObj )
 
 void MarqueeSelect::DeSelectAll()
 {
+	OnSelectWillChange();
 	selectednodes.clear();
 	OnSelectChanged();
 }
@@ -140,6 +142,7 @@ void MarqueeSelect::AddSelect( GObject * pObj, int level )
 		return;
 	}
 	*/
+	OnSelectWillChange(pObj);
 	selectednodes.push_back(pObj);
 	OnSelectChanged(pObj);
 }
@@ -168,13 +171,24 @@ void MarqueeSelect::SelectAll( bool bOnlyThisLayer/*=false*/ )
 	}
 }
 
+void MarqueeSelect::OnSelectWillChange(GObject * pWillChangObj/*=NULL*/)
+{
+	if (!selectednodes.empty())
+	{
+		GObjectManager::getInstance().SaveSelectState();
+	}
+}
+
 void MarqueeSelect::OnSelectChanged(GObject * pChangedObj/*=NULL*/)
 {
 	if (pChangedObj)
 	{
 		GObjectManager::getInstance().SetActiveLayer_Internal(pChangedObj->getLayer());
 	}
-	GObjectManager::getInstance().SaveSelectState();
+	if (!selectednodes.empty())
+	{
+		GObjectManager::getInstance().SaveSelectState();
+	}
 }
 
 void MarqueeSelect::Update()

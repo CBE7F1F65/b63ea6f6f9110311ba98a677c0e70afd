@@ -285,6 +285,7 @@ int Command::FinishCommand()
 			++it;
 		}
 	}
+
 	if (IsCommandPush(GetCurrentCommand()))
 	{
 		return PullCommand();

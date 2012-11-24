@@ -799,6 +799,10 @@ GObject * GObject::getNonAttributeParentObj()
 bool GObject::isRecDisplayFolded()
 {
 	GObject * pobj = this;
+	if (bDisplayFolded)
+	{
+		return true;
+	}
 	while (pobj->pParent)
 	{
 		pobj = pobj->pParent;

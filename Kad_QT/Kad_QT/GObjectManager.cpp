@@ -206,10 +206,12 @@ void GObjectManager::OnTreeChanged( GObject * changingbase, GObject * activeitem
 	{
 		pBaseNode->CallResetID();
 //		ASSERT(activeitem != NULL);
+		/*
 		if (!activeitem || activeitem == pBaseNode)
 		{
 			activeitem = pLastToSetActiveNode;
 		}
+		*/
 //		ASSERT(activeitem);
 		if (bSetActiveLayer)
 		{
@@ -221,17 +223,10 @@ void GObjectManager::OnTreeChanged( GObject * changingbase, GObject * activeitem
 		}
 		if (nLockTreeChangeState)
 		{
-			if (activeitem)
-			{
-				if (!activeitem->isAttributeNode() && !activeitem->isRecDisplayFolded())
-				{
-					pLastToSetActiveNode = activeitem;
-				}
-			}
 			return;
 		}
 		MainInterface::getInstance().OnRebuildLayerTree(changingbase, activeitem);
-		pLastToSetActiveNode = activeitem;
+		pActiveLayer = GetActiveLayerFromUI();
     }
 }
 
@@ -305,6 +300,12 @@ GLayer * GObjectManager::GetActiveLayer()
 	}
 //	ASSERT(pActiveLayer);
 	*/
+	GLayer * pUIActiveLayer = GetActiveLayerFromUI();
+	if (pUIActiveLayer)
+	{
+		SetActiveLayer_Internal(pUIActiveLayer, false);
+		return pActiveLayer;
+	}
 	ASSERT(pActiveLayer);
 	return pActiveLayer;
 }
@@ -599,10 +600,6 @@ void GObjectManager::DoMoveNodeByOffsetBatch()
 
 void GObjectManager::OnDeleteNode( GObject * pDeletedObj )
 {
-	if (pLastToSetActiveNode == pDeletedObj)
-	{
-		pLastToSetActiveNode = NULL;
-	}
 	if (pushedmovenodebyoffset.empty())
 	{
 		return;

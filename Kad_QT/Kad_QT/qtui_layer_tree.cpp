@@ -40,16 +40,19 @@ QTUI_Layer_Tree::QTUI_Layer_Tree(QWidget *parent) :
     pDragDropAfter = NULL;
 
     bInternalSelecting = false;
+	bInternalExpanding = false;
 
 	this->setDragEnabled(true);
+	pSavedSelectedLayer = NULL;
 
 //    this->setItemDelegate(new UILT_EditDelegate(this));
 
     AdjustSize();
 }
 
-void QTUI_Layer_Tree::RebuildTree(GObject *changebase, GObject *activeitem)
+ void QTUI_Layer_Tree::RebuildTree( GObject * changebase, GObject * activeitem )
 {
+	pSavedSelectedLayer = NULL;
 	if (GObjectManager::getInstance().IsTreeLocked())
 	{
 		return;
@@ -67,17 +70,27 @@ void QTUI_Layer_Tree::RebuildTree(GObject *changebase, GObject *activeitem)
     if (activeitem)
     {
         QTreeWidgetItem *pActive = FindItemByObj(activeitem, pBaseItem);
+		if (!pActive)
+		{
+			pActive = FindItemByObj(activeitem->getLayer(), pBaseItem);
+		}
         if (pActive)
         {
-            pPreferredNextSelectItem = activeitem;
+            pSavedSelectedLayer = activeitem->getLayer();
             this->setCurrentItem(pActive);
 			this->scrollToItem(pActive);
 			Reselect();
         }
 	}
+
+	/*
 	else if (pPreferredNextSelectItem)
 	{
 		QTreeWidgetItem * pActive = FindItemByObj(pPreferredNextSelectItem);
+		if (!pActive)
+		{
+			pActive = FindItemByObj(pPreferredNextSelectItem->getLayer(), pBaseItem);
+		}
 		if (pActive)
 		{
 			this->setCurrentItem(pActive);
@@ -89,6 +102,7 @@ void QTUI_Layer_Tree::RebuildTree(GObject *changebase, GObject *activeitem)
 			pPreferredNextSelectItem = NULL;
 		}
 	}
+	*/
 
     /*
     if (activeitem)
@@ -118,14 +132,14 @@ list<GObject *> * QTUI_Layer_Tree::GetActiveNodes()
     if (selectednodes.empty() && this->topLevelItem(0))
     {
         GObject * pObj = NULL;
-        if (pPreferredNextSelectItem && FindItemByObj(pPreferredNextSelectItem))
+        if (pSavedSelectedLayer && FindItemByObj(pSavedSelectedLayer))
         {
-            pObj = pPreferredNextSelectItem;
+            pObj = pSavedSelectedLayer;
         }
         else
         {
             pObj = GetObjFromItem(this->topLevelItem(0));
-            pPreferredNextSelectItem = pObj;
+            pSavedSelectedLayer = pObj->getLayer();
         }
         Q_ASSERT(pObj);
         selectednodes.push_back(pObj);
@@ -192,12 +206,12 @@ void QTUI_Layer_Tree::dropEvent(QDropEvent *e)
 			}
 			else if (dip == QAbstractItemView::BelowItem)
 			{
-				pDragDropLayer = pObj->getLayer(false);
+				pDragDropLayer = pObj->getContainerLayer();
 				pDragDropAfter = pObj;
 			}
 			else if (dip == QAbstractItemView::AboveItem)
 			{
-				pDragDropLayer = pObj->getLayer(false);
+				pDragDropLayer = pObj->getContainerLayer();
 				pDragDropAfter = pObj->getYoungerSibling();
 			}
 		}
@@ -414,13 +428,51 @@ void QTUI_Layer_Tree::Reselect()
 
     list<GObject *> lst = selectednodes;
     this->selectionModel()->clearSelection();
+	GObject * pSelectedNode = NULL;
     for (list<GObject *>::iterator it=lst.begin(); it!= lst.end(); ++it)
     {
-        QTreeWidgetItem * pItem = FindItemByObj(*it);
-        this->selectionModel()->select(
-                    this->indexFromItem(pItem, _UILT_COLUMN_TREE),
-                    QItemSelectionModel::Select);
+		GObject * pObj = *it;
+		if (pObj->isLayer() || !pObj->isDisplayFolded())
+		{
+			QTreeWidgetItem * pItem = FindItemByObj(pObj);
+			if (pItem)
+			{
+				this->selectionModel()->select(
+					this->indexFromItem(pItem, _UILT_COLUMN_TREE),
+					QItemSelectionModel::Select);
+				pSavedSelectedLayer = pObj->getLayer();
+			}
+		}
+		else
+		{
+			pSelectedNode = *it;
+		}
     }
+	if (pSelectedNode && this->selectionModel()->selection().empty())
+	{
+		while (pSelectedNode)
+		{
+			pSelectedNode = pSelectedNode->getParent();
+			QTreeWidgetItem * pItem = FindItemByObj(pSelectedNode);
+			if (pItem)
+			{
+				selectionModel()->select(this->indexFromItem(pItem, _UILT_COLUMN_TREE), QItemSelectionModel::Select);
+				pSavedSelectedLayer = pSelectedNode->getLayer();
+				break;
+			}
+		}
+	}
+	if (pSavedSelectedLayer)
+	{
+		QTreeWidgetItem * pItem = FindItemByObj(pSavedSelectedLayer);
+		if (pItem)
+		{
+			if (pSavedSelectedLayer->isDisplayFolded())
+			{
+				this->expand(this->indexFromItem(pItem, _UILT_COLUMN_TREE));
+			}
+		}
+	}
 
     bInternalSelecting = false;
 }
@@ -507,6 +559,38 @@ void QTUI_Layer_Tree::SLT_ItemCollapsed(QTreeWidgetItem *pItem)
 
 void QTUI_Layer_Tree::SLT_ItemExpanded(QTreeWidgetItem *pItem)
 {
+	if (!bInternalExpanding)
+	{
+		bInternalExpanding = true;
+		GObject * pObj = GetObjFromItem(pItem);
+		if (pObj)
+		{
+			GObject * pParent = pObj->getContainerLayer();
+			if (pParent)
+			{
+				list<GObject *> * pChildren = pParent->getChildren();
+				if (pChildren && !pChildren->empty())
+				{
+					for (list<GObject *>::iterator it=pChildren->begin(); it!=pChildren->end(); ++it)
+					{
+						GObject * pIt = *it;
+						if (pIt->isLayer() && !pIt->isDisplayFolded())
+						{
+							QTreeWidgetItem * pOtherExpanded = FindItemByObj(pIt);
+							if (pOtherExpanded)
+							{
+								collapse(indexFromItem(pOtherExpanded));
+							}
+						}
+					}
+				}
+			}
+		}
+//		this->collapseAll();
+		this->expand(indexFromItem(pItem, _UILT_COLUMN_TREE));
+		bInternalExpanding = false;
+	}
+
     GObject * pObj = GetObjFromItem(pItem);
     pObj->setDisplayFold(false);
 	AddChildrenButtonsToItem(pItem);
@@ -534,7 +618,7 @@ void QTUI_Layer_Tree::SLT_DeleteItems()
     {
         return;
     }
-    pPreferredNextSelectItem = selectednodes.front()->getLayer(false);
+    pSavedSelectedLayer = selectednodes.front()->getContainerLayer();
     MainInterface::getInstance().OnCommand(COMM_DELETEITEM);
     /*
     selectednodes.clear();
@@ -649,7 +733,30 @@ void QTUI_Layer_Tree::SLT_ItemDoubleClicked(QTreeWidgetItem *pItem, int column)
 
 void QTUI_Layer_Tree::OnFrameUpdate()
 {
+//	bool bCleared = false;
 	list <GObject *> * plstGUISelected = MarqueeSelect::getInstance().OnGetSelectedNodes();
+	if (*plstGUISelected == selectednodes && !selectednodes.empty())
+	{
+		return;
+	}
+	else
+	{
+		if (!plstGUISelected->empty())
+		{
+			selectednodes = *plstGUISelected;
+			Reselect();
+		}
+		else if (selectednodes.empty())
+		{
+			QTreeWidgetItem * pItem = FindItemByObj(pSavedSelectedLayer);
+			if (pItem)
+			{
+				selectednodes.push_back(pSavedSelectedLayer);
+				Reselect();
+			}
+		}
+	}
+	/*
 	if (*plstGUISelected == lstLastSelectedNodes)
 	{
 		return;
@@ -657,12 +764,12 @@ void QTUI_Layer_Tree::OnFrameUpdate()
 	else
 	{
 		lstLastSelectedNodes = *plstGUISelected;
+		bCleared = true;
 	}
 	DeselectButtons();
 
 	if (!plstGUISelected->empty())
 	{
-		bool bCleared = false;
 		list<GObject *> lsttemp;
 		for (list<GObject *>::iterator it=plstGUISelected->begin(); it!=plstGUISelected->end(); ++it)
 		{
@@ -697,11 +804,13 @@ void QTUI_Layer_Tree::OnFrameUpdate()
 				}
 			}
 		}
-		if (bCleared)
-		{
-			Reselect();
-		}
 	}
+	if (bCleared)
+	{
+		selectednodes = *plstGUISelected;
+		Reselect();
+	}
+	*/
 }
 
 void QTUI_Layer_Tree::DeselectButtons( QTreeWidgetItem * pParent/*=NULL*/ )

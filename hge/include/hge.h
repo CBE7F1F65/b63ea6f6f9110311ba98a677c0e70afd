@@ -39,7 +39,7 @@
 
 
 #if IF_FRAMWORK(HFRAMEWORK_QT)
- #include <Qt\qgl.h>
+ #include <qgl.h>
  #include <QtOpenGL\QGLFunctions>
  #include <QtOpenGL\QGLFramebufferObject>
 #endif

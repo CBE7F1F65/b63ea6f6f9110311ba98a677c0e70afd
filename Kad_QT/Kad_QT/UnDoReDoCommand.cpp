@@ -13,6 +13,7 @@
 void Command::EnterUnDo()
 {
 	undoredoflag = CUNDOREDO_UNDOING;
+	GObjectManager::getInstance().SaveSelectState();
 	GObjectManager::getInstance().SetLockTreeChange(-1);
 }
 

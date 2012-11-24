@@ -236,6 +236,7 @@
     <slot>SLT_DeleteItems()</slot>
     <slot>SLT_UpdateSelectionNodes()</slot>
     <slot>SLT_ItemDoubleClicked(QTreeWidgetItem*,int)</slot>
+    <slot>SLT_Collapsed(QModelIndex)</slot>
    </slots>
   </customwidget>
  </customwidgets>

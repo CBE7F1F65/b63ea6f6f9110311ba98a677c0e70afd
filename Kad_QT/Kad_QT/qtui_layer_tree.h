@@ -27,9 +27,8 @@ public:
 	void AddChildrenButtonsToItem(QTreeWidgetItem * pItem);
 
 public:
-    void RebuildTree( GObject * changebase, GObject * activeitem );
+	void RebuildTree( GObject * changebase, GObject * activeitem );
     list<GObject *> * GetActiveNodes();
-	list<GObject *> lstLastSelectedNodes;
     GObject * GetHoveringNode();
     bool GetDragDroppedNodes( GLayer ** pLayerNode, GObject ** pAfterNode );
 
@@ -61,9 +60,10 @@ private:
     list<GObject *> selectednodes;
     GLayer * pDragDropLayer;
     GObject * pDragDropAfter;
-    GObject * pPreferredNextSelectItem;
+    GLayer * pSavedSelectedLayer;
 
     bool bInternalSelecting;
+	bool bInternalExpanding;
 
     
 public slots:

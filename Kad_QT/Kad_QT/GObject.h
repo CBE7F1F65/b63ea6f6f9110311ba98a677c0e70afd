@@ -240,7 +240,7 @@ public:
 
 	bool isRecDisplayFolded();
 	
-	bool isDisplayFolded(){return bDisplayFolded;};
+	bool isDisplayFolded(){return isRecDisplayFolded();};
 	void setDisplayFold(bool toDisplayFold);
 
 	bool isDisplayVisible();

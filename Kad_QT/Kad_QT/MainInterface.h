@@ -5,6 +5,9 @@
 #define MVINACTIVEREASON_POPUP				1
 #define MVINACTIVEREASON_FLOATINGCOMMAND	2
 
+#define MI_AUTOSAVE_POSTFIX	"~"
+#define MI_SAVEFILEEXTENSION	".xml"
+
 // MFC
 #include "Command.h"
 #include "GLayer.h"
@@ -87,7 +90,8 @@ public:
 	bool OpenFile();
 	bool OpenFile(const char * filename);
 	bool SaveFile(bool bSaveAs=false);
-	bool SaveFile(const char * filename);
+	bool SaveFile(const char * filename, bool bAutosave=false);
+	bool AutoSaveFile();
 
 	bool HGEThreadFunc();
 
@@ -175,4 +179,7 @@ private:
 	bool bLockLeftMouseDown;
 
 	QTUI_GLView * parentview;
+
+	QTime autosavelasttime;
+	int autosavesecond;
 };

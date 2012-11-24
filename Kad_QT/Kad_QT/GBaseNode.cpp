@@ -71,10 +71,15 @@ void GBaseNode::CallBaseUpdate()
 
 void GBaseNode::SaveSelectState()
 {
+	list<GObject *> * plstselected = pgm->GetSelectedNodes(false);
+	if (plstselected->empty())
+	{
+		return;
+	}
+
 	savedactivelayer = -1;
 	savedlstselect.clear();
 
-	list<GObject *> * plstselected = pgm->GetSelectedNodes(false);
 	if (!plstselected->empty())
 	{
 		for (list<GObject *>::iterator it=plstselected->begin(); it!=plstselected->end(); ++it)
