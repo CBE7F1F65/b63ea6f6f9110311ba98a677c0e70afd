@@ -88,6 +88,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AddSACommand.cpp" />
+    <ClCompile Include="AttachCommand.cpp" />
     <ClCompile Include="BezierCommand.cpp" />
     <ClCompile Include="BindHandleCommand.cpp" />
     <ClCompile Include="CircleCommand.cpp" />
@@ -318,6 +319,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddSACommand.h" />
+    <ClInclude Include="AttachCommand.h" />
     <ClInclude Include="BezierCommand.h" />
     <ClInclude Include="BindHandleCommand.h" />
     <ClInclude Include="CircleCommand.h" />

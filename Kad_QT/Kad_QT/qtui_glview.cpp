@@ -99,6 +99,23 @@ void QTUI_GLView::mouseMoveEvent( QMouseEvent *e )
         hge->Input_SetMousePos(e->x(), e->y());
 	}
 }
+void QTUI_GLView::mouseDoubleClickEvent( QMouseEvent *e )
+{
+	MainInterface * pmain = &MainInterface::getInstance();
+	switch (e->button())
+	{
+	case Qt::LeftButton:
+		pmain->SetLeftDoubleClick();
+		break;
+	case Qt::RightButton:
+		pmain->SetRightDoubleClick();
+		break;
+	case Qt::MiddleButton:
+		pmain->SetMiddleDoubleClick();
+		break;
+	}
+}
+
 /*
 void QTUI_GLView::mousePressEvent( QMouseEvent *e )
 {

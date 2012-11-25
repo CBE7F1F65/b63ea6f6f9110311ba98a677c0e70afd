@@ -167,6 +167,7 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_DEMERGE,	"DEMERGE",	"",	"Demerge From",	""	);
 	_BSET(	COMM_DELETEITEM,	"DELETE",	"DEL",	"Delete Item",	""	);
 	_BSET(	COMM_ISOLATE,	"ISOLATE",	"I",	"Isolate Item",	""	);
+	_BSET(	COMM_ATTACH,	"ATTACH",	"AT",	"Attach Item",	"");
 
 	_BSET(	COMM_COPY,	"COPY",	"CO",	"Copy Item",	""	);
 	_BSET(	COMM_PASTE,	"PASTE",	"PA",	"Paste Item",	""	);

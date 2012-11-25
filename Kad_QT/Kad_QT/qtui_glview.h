@@ -20,6 +20,7 @@ protected:
     virtual void mousePressEvent(QMouseEvent *e);
     virtual void mouseReleaseEvent(QMouseEvent *e);
 	*/
+	virtual void mouseDoubleClickEvent(QMouseEvent *e);
     virtual void wheelEvent(QWheelEvent *e);
     virtual void enterEvent(QEvent *e);
     virtual void leaveEvent(QEvent *e);

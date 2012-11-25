@@ -36,6 +36,7 @@
 #include "PasteCommand.h"
 #include "ImageCommand.h"
 #include "NotchCommand.h"
+#include "AttachCommand.h"
 
 CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 {
@@ -57,6 +58,8 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 		return &DemergeCommand::getInstance();
 	case COMM_ISOLATE:
 		return &IsolateCommand::getInstance();
+	case COMM_ATTACH:
+		return &AttachCommand::getInstance();
 
 	case COMM_COPY:
 		return &CopyCommand::getInstance();

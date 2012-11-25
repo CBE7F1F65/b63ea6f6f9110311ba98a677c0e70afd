@@ -534,7 +534,7 @@
        </size>
       </property>
       <property name="toolTip">
-       <string>显示网格</string>
+       <string>显示实际网格</string>
       </property>
       <property name="text">
        <string/>

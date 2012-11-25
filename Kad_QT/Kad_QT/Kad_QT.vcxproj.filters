@@ -608,6 +608,9 @@
     <ClCompile Include="NotchCommand.cpp">
       <Filter>Main\Command\Notch</Filter>
     </ClCompile>
+    <ClCompile Include="AttachCommand.cpp">
+      <Filter>Main\Command\Combination</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
@@ -867,6 +870,9 @@
     </ClInclude>
     <ClInclude Include="NotchCommand.h">
       <Filter>Main\Command\Notch</Filter>
+    </ClInclude>
+    <ClInclude Include="AttachCommand.h">
+      <Filter>Main\Command\Combination</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

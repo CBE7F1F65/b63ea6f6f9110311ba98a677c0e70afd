@@ -427,19 +427,35 @@ void QTUI_Layer_Tree::Reselect()
     bInternalSelecting = true;
 
     list<GObject *> lst = selectednodes;
-    this->selectionModel()->clearSelection();
+	ClearSelection();
 	GObject * pSelectedNode = NULL;
+	bool bExpanded = false;
     for (list<GObject *>::iterator it=lst.begin(); it!= lst.end(); ++it)
     {
 		GObject * pObj = *it;
-		if (pObj->isLayer() || !pObj->isDisplayFolded())
+		QTreeWidgetItem * pItem = FindItemByObj(pObj);
+		if (pObj->isDisplayFolded() && !bExpanded)
 		{
-			QTreeWidgetItem * pItem = FindItemByObj(pObj);
+			GLayer * pLayer = pObj->getLayer();
+			if (pLayer)
+			{
+				QTreeWidgetItem * pLayerItem = FindItemByObj(pLayer);
+				if (pLayerItem)
+				{
+					expand(indexFromItem(pLayerItem));
+					bExpanded = true;
+				}
+			}
+		}
+		if (!pObj->isDisplayFolded())
+		{
 			if (pItem)
 			{
-				this->selectionModel()->select(
-					this->indexFromItem(pItem, _UILT_COLUMN_TREE),
-					QItemSelectionModel::Select);
+				SelectItem(pItem);
+				if (!pObj->isLayer())
+				{
+					UpdateSelectButton(pItem, true);
+				}
 				pSavedSelectedLayer = pObj->getLayer();
 			}
 		}
@@ -448,18 +464,24 @@ void QTUI_Layer_Tree::Reselect()
 			pSelectedNode = *it;
 		}
     }
-	if (pSelectedNode && this->selectionModel()->selection().empty())
+	if (pSelectedNode && IsSelectionEmpty())
 	{
+		bool bToSelect=true;
 		while (pSelectedNode)
 		{
-			pSelectedNode = pSelectedNode->getParent();
 			QTreeWidgetItem * pItem = FindItemByObj(pSelectedNode);
 			if (pItem)
 			{
-				selectionModel()->select(this->indexFromItem(pItem, _UILT_COLUMN_TREE), QItemSelectionModel::Select);
+				SelectItem(pItem);
+				if (bToSelect)
+				{
+					UpdateSelectButton(pItem, true);
+				}
 				pSavedSelectedLayer = pSelectedNode->getLayer();
 				break;
 			}
+			pSelectedNode = pSelectedNode->getParent();
+			bToSelect = false;
 		}
 	}
 	if (pSavedSelectedLayer)
@@ -577,7 +599,7 @@ void QTUI_Layer_Tree::SLT_ItemExpanded(QTreeWidgetItem *pItem)
 						if (pIt->isLayer() && !pIt->isDisplayFolded())
 						{
 							QTreeWidgetItem * pOtherExpanded = FindItemByObj(pIt);
-							if (pOtherExpanded)
+							if (pOtherExpanded && pOtherExpanded != pItem)
 							{
 								collapse(indexFromItem(pOtherExpanded));
 							}
@@ -586,8 +608,6 @@ void QTUI_Layer_Tree::SLT_ItemExpanded(QTreeWidgetItem *pItem)
 				}
 			}
 		}
-//		this->collapseAll();
-		this->expand(indexFromItem(pItem, _UILT_COLUMN_TREE));
 		bInternalExpanding = false;
 	}
 
@@ -746,13 +766,20 @@ void QTUI_Layer_Tree::OnFrameUpdate()
 			selectednodes = *plstGUISelected;
 			Reselect();
 		}
-		else if (selectednodes.empty())
+		else
 		{
-			QTreeWidgetItem * pItem = FindItemByObj(pSavedSelectedLayer);
-			if (pItem)
+			if (selectednodes.empty())
 			{
-				selectednodes.push_back(pSavedSelectedLayer);
-				Reselect();
+				QTreeWidgetItem * pItem = FindItemByObj(pSavedSelectedLayer);
+				if (pItem)
+				{
+					selectednodes.push_back(pSavedSelectedLayer);
+					Reselect();
+				}
+			}
+			else
+			{
+				DeselectButtons();
 			}
 		}
 	}
@@ -848,10 +875,43 @@ void QTUI_Layer_Tree::OnButtonSelect( GObject * pObj, bool bSelected )
 	ASSERT(pItem);
 	AddChildrenButtonsToItem(pItem);
 	ChangeChildrenButtonSelect(pItem, bSelected);
-
-	selectednodes.clear();
-	selectednodes.push_back(pObj);
+	/*
+	bool bDone = false;
+	for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end();)
+	{
+		if (*it == pObj)
+		{
+			if (bSelected)
+			{
+				bDone = true;
+				break;
+			}
+			else
+			{
+				it = selectednodes.erase(it);
+				bDone = true;
+				break;
+			}
+		}
+		else
+		{
+			++it;
+		}
+	}
+	if (!bDone)
+	{
+		if (bSelected)
+		{
+			selectednodes.push_back(pObj);
+		}
+		else
+		{
+			selectednodes.remove(pObj);
+		}
+	}
 	Reselect();
+	*/
+	OnFrameUpdate();
 }
 
 void QTUI_Layer_Tree::ChangeChildrenButtonSelect( QTreeWidgetItem * pParent, bool bSelect )
@@ -867,15 +927,38 @@ void QTUI_Layer_Tree::ChangeChildrenButtonSelect( QTreeWidgetItem * pParent, boo
 		QTreeWidgetItem *pItem = pParent->child(i);
 		if (pItem)
 		{
-			QTUI_Layer_SelectionButton * pSelectionButton = ((QTUI_Layer_SelectionButton *)this->itemWidget(pItem, _UILT_COLUMN_SELECT));
-			if (pSelectionButton)
-			{
-				if (pSelectionButton->isChecked() != bSelect)
-				{
-					pSelectionButton->click();
-				}
-			}
+			UpdateSelectButton(pItem, bSelect);
 			ChangeChildrenButtonSelect(pItem, bSelect);
+		}
+	}
+}
+
+void QTUI_Layer_Tree::SelectItem( QTreeWidgetItem * pItem )
+{
+	QModelIndex qmi = indexFromItem(pItem, _UILT_COLUMN_TREE);
+	selectionModel()->select(qmi, QItemSelectionModel::Select);
+	scrollTo(qmi);
+}
+
+void QTUI_Layer_Tree::ClearSelection()
+{
+	selectionModel()->clearSelection();
+	DeselectButtons();
+}
+
+bool QTUI_Layer_Tree::IsSelectionEmpty()
+{
+	return selectionModel()->selection().empty();
+}
+
+void QTUI_Layer_Tree::UpdateSelectButton( QTreeWidgetItem * pItem, bool bSelect )
+{
+	QTUI_Layer_SelectionButton * pSelectionButton = ((QTUI_Layer_SelectionButton *)itemWidget(pItem, _UILT_COLUMN_SELECT));
+	if (pSelectionButton)
+	{
+		if (pSelectionButton->isChecked() != bSelect)
+		{
+			pSelectionButton->click();
 		}
 	}
 }

@@ -130,6 +130,13 @@ private:
 	float lastmousey;
 public:
 
+	void SetLeftDoubleClick(){bLeftDoubleClick=true;};
+	bool CheckLeftDoubleClick(){bool bt = bLeftDoubleClick; bLeftDoubleClick = false; return bt;};
+	void SetRightDoubleClick(){bRightDoubleClick=true;};
+	bool CheckRightDoubleClick(){bool bt = bRightDoubleClick; bRightDoubleClick = false; return bt;};
+	void SetMiddleDoubleClick(){bMiddleDoubleClick=true;};
+	bool CheckMiddleDoubleClick(){bool bt = bMiddleDoubleClick; bMiddleDoubleClick = false; return bt;};
+
 	float GetMouseXForCoord(){return mousex;};
 	float GetMouseYForCoord(){return mousey;};
 	float GetLastMouseXForCoord(){return lastmousex;};
@@ -154,6 +161,10 @@ private:
 
 	int nFileStatus;
 	string savefilename;
+
+	bool bLeftDoubleClick;
+	bool bRightDoubleClick;
+	bool bMiddleDoubleClick;
 
 	int lastmousevwheel;
 	int mousevwheel;

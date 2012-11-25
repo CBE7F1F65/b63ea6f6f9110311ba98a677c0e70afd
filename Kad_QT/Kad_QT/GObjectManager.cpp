@@ -1086,6 +1086,10 @@ bool GObjectManager::PasteNodes()
 	{
 		return false;
 	}
+
+	MarqueeSelect * pmarq = &MarqueeSelect::getInstance();
+	pmarq->DeSelectAll();
+
 	GLayer * pLayer = GetActiveLayer();
 	if (pLayer->isDisplayLocked())
 	{
@@ -1138,6 +1142,7 @@ bool GObjectManager::PasteNodes()
 				}
 				pBezier->SetSA(&(pci->sainfo));
 				pci->SetNewRel(pBezier);
+				pmarq->AddSelect(pBezier);
 				break;
 			}
 		}

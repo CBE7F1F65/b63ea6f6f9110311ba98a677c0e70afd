@@ -194,6 +194,8 @@ void MarqueeSelect::OnSelectChanged(GObject * pChangedObj/*=NULL*/)
 void MarqueeSelect::Update()
 {
 	CheckValid();
+	MainInterface * pmain = &MainInterface::getInstance();
+	bool bDoubleClick = pmain->CheckLeftDoubleClick();
 
 	Command * pcommand = &Command::getInstance();
 	int comm = pcommand->GetCurrentCommand();
@@ -204,7 +206,6 @@ void MarqueeSelect::Update()
 		return;
 	}
 
-	MainInterface * pmain = &MainInterface::getInstance();
 	GObjectPicker * pgp = &GObjectPicker::getInstance();
 	GUICoordinate * pguic = &GUICoordinate::getInstance();
 
@@ -215,6 +216,27 @@ void MarqueeSelect::Update()
 	bool mlkeynotpressed = !pmain->hge->Input_GetDIMouseKey(pmain->GetLeftKeyIndex());
 	bool bctrldown = pmain->hge->Input_GetDIKey(DIK_LCONTROL) || pmain->hge->Input_GetDIKey(DIK_RCONTROL);
 	bool baltdown = pmain->hge->Input_GetDIKey(DIK_LMENU) || pmain->hge->Input_GetDIKey(DIK_RMENU);
+
+
+	if (bDoubleClick)
+	{
+		GObject * pObj = pgp->GetPickedObj();
+		if (pObj)
+		{
+			if (pObj->isSlaveToLine())
+			{
+				pObj = pObj->getLine();
+			}
+			if (pObj->isSlaveToPiece())
+			{
+				pObj = pObj->getPiece();
+			}
+			pmain->OnCommandWithParam(
+				COMM_ATTACH,
+				CCCWPARAM_I(pObj->getID()),
+				NULL);
+		}
+	}
 
 	if (mlkeydown)
 	{

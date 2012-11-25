@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "CopyCommand.h"
+#include "MarqueeSelect.h"
 
 
 CopyCommand::CopyCommand(void)
@@ -132,5 +133,8 @@ void CopyCommand::OnDoneCommand()
 			CCMake_C(COMM_I_UNDO_PARAMFROMCOMMAND),
 			NULL
 			);
+
+		MarqueeSelect::getInstance().DeSelectAll();
 	}
+
 }

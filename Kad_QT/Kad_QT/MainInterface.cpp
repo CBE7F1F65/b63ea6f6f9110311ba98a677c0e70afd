@@ -64,9 +64,13 @@ MainInterface::MainInterface()
 
 	nFileStatus = MI_FILESTATUS_NEW|MI_FILESTATUS_OPENED;
 
-	autosavesecond = 5;
+	autosavesecond = 30;
 	autosavelasttime = QTime::currentTime();
 	autosavelasttime.start();
+
+	bLeftDoubleClick = false;
+	bRightDoubleClick = false;
+	bMiddleDoubleClick = false;
 }
 
 MainInterface::~MainInterface()
@@ -215,6 +219,12 @@ bool MainInterface::Frame()
 	{
 		hge->Input_SetDIMouseKey(cursorleftkeyindex);
 	}
+
+	GObjectPicker * pgp = &GObjectPicker::getInstance();
+	if (hge->Input_GetDIKey(DIK_F11, DIKEY_UP))
+	{
+		pgp->SetSnapTo(GOPSNAP_GEOMETRYCOORD, !pgp->isSnapToGeometryCoord());
+	}
 	
 	Command * pcommand = &Command::getInstance();
 
@@ -273,7 +283,7 @@ bool MainInterface::Frame()
 
 	parentview->OnFrameEnd();
 
-	if (autosavelasttime.elapsed() > autosavesecond*1000)
+	if (autosavelasttime.elapsed() > autosavesecond*1000 && !pcommand->GetCurrentCommand())
 	{
 		AutoSaveFile();
 		autosavelasttime.restart();
@@ -924,7 +934,7 @@ bool MainInterface::AutoSaveFile()
 	{
 		qsavefilename = MI_WORKINGFILELOCATION "/";
 		qsavefilename += "AutoSave" MI_SAVEFILEEXTENSION;
-		bSaveProtect = true;
+//		bSaveProtect = true;
 	}
 	qsavefilename += MI_AUTOSAVE_POSTFIX;
 	bool bRet = SaveFile(qsavefilename.toUtf8(), true);

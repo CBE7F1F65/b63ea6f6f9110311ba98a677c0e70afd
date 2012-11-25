@@ -638,7 +638,7 @@ void CommandTemplate::ReAttachAfterMoveNode( GObject * pObj, bool bFindMerge/*=t
 	}
 
 
-	if (!pTestPickedObj || pTestPickedObj->canBeClingTo())
+	if ((!pTestPickedObj || pTestPickedObj->canBeClingTo()) && !pPoint->isHandlePoint())
 	{
 		float fAllowance = pPoint->GetClingAllowance();
 		if (fAllowance <= 0 || (fProportion >= M_FLOATEXTREMEEPS && fProportion <= 1-M_FLOATEXTREMEEPS))

@@ -57,6 +57,11 @@ private:
     void SetItemLineSelect(QTreeWidgetItem * pItem, bool bSelected, GObject * pObj);
     void SetItemFrameColor(QTreeWidgetItem * pItem, DWORD dwFrameColor, GObject * pObj);
 
+	void SelectItem(QTreeWidgetItem * pItem);
+	void ClearSelection();
+	bool IsSelectionEmpty();
+	void UpdateSelectButton(QTreeWidgetItem * pItem, bool bSelect);
+
     list<GObject *> selectednodes;
     GLayer * pDragDropLayer;
     GObject * pDragDropAfter;
