@@ -1,4 +1,23 @@
 <RCC>
-    <qresource prefix="Kad_QT">
+    <qresource prefix="/Kad_QT">
+        <file>Resources/StatusBarICO_ShowActualGrid.png</file>
+        <file>Resources/StatusBarICO_ShowGrid.png</file>
+        <file>Resources/StatusBarICO_ShowActualGrid.png</file>
+        <file>Resources/StatusBarICO_ShowGrid.png</file>
+        <file>Resources/StatusBarICO_SnapContinuity.png</file>
+        <file>Resources/StatusBarICO_SnapCoord.png</file>
+        <file>Resources/StatusBarICO_SnapGeometry.png</file>
+        <file>Resources/StatusBarICO_SnapGeometryCoord.png</file>
+        <file>Resources/StatusBarICO_SnapGrid.png</file>
+        <file>Resources/StatusBarICO_SnapVirtualCoord.png</file>
+        <file>Resources/StatusBarICO_IsolateMode.png</file>
+        <file>Resources/StatusBarICO_PrintPreview.png</file>
+        <file>Resources/StatusBarICO_SnapHandleOnly.png</file>
+        <file>Resources/HistoryPanelICO_DeleteSnapshot.png</file>
+        <file>Resources/HistoryPanelICO_Snapshot.png</file>
+        <file>Resources/LayerPanelICO_Copy.png</file>
+        <file>Resources/LayerPanelICO_Delete.png</file>
+        <file>Resources/LayerPanelICO_NewLayer.png</file>
+        <file>Resources/LayerPanelICO_NewSubLayer.png</file>
     </qresource>
 </RCC>

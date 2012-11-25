@@ -66,6 +66,10 @@
       <property name="text">
        <string/>
       </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/LayerPanelICO_NewLayer.png</normaloff>:/Kad_QT/Resources/LayerPanelICO_NewLayer.png</iconset>
+      </property>
      </widget>
     </item>
     <item row="1" column="2">
@@ -93,6 +97,10 @@
       </property>
       <property name="text">
        <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/LayerPanelICO_NewSubLayer.png</normaloff>:/Kad_QT/Resources/LayerPanelICO_NewSubLayer.png</iconset>
       </property>
      </widget>
     </item>
@@ -122,6 +130,10 @@
       <property name="text">
        <string/>
       </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/LayerPanelICO_Copy.png</normaloff>:/Kad_QT/Resources/LayerPanelICO_Copy.png</iconset>
+      </property>
      </widget>
     </item>
     <item row="1" column="4">
@@ -149,6 +161,10 @@
       </property>
       <property name="text">
        <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/LayerPanelICO_Delete.png</normaloff>:/Kad_QT/Resources/LayerPanelICO_Delete.png</iconset>
       </property>
      </widget>
     </item>
@@ -240,7 +256,9 @@
    </slots>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="kad_qt.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>treeWidget</sender>

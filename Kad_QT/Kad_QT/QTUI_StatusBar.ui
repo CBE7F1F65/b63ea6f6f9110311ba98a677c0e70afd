@@ -55,6 +55,10 @@
       <property name="text">
        <string/>
       </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/StatusBarICO_SnapGeometryCoord.png</normaloff>:/Kad_QT/Resources/StatusBarICO_SnapGeometryCoord.png</iconset>
+      </property>
       <property name="checkable">
        <bool>true</bool>
       </property>
@@ -85,6 +89,10 @@
       </property>
       <property name="text">
        <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/StatusBarICO_IsolateMode.png</normaloff>:/Kad_QT/Resources/StatusBarICO_IsolateMode.png</iconset>
       </property>
       <property name="checkable">
        <bool>true</bool>
@@ -154,6 +162,10 @@
       <property name="text">
        <string/>
       </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/StatusBarICO_ShowGrid.png</normaloff>:/Kad_QT/Resources/StatusBarICO_ShowGrid.png</iconset>
+      </property>
       <property name="checkable">
        <bool>true</bool>
       </property>
@@ -184,6 +196,10 @@
       </property>
       <property name="text">
        <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/StatusBarICO_SnapGrid.png</normaloff>:/Kad_QT/Resources/StatusBarICO_SnapGrid.png</iconset>
       </property>
       <property name="checkable">
        <bool>true</bool>
@@ -216,6 +232,10 @@
       <property name="text">
        <string/>
       </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/StatusBarICO_SnapGeometry.png</normaloff>:/Kad_QT/Resources/StatusBarICO_SnapGeometry.png</iconset>
+      </property>
       <property name="checkable">
        <bool>true</bool>
       </property>
@@ -246,6 +266,10 @@
       </property>
       <property name="text">
        <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/StatusBarICO_SnapContinuity.png</normaloff>:/Kad_QT/Resources/StatusBarICO_SnapContinuity.png</iconset>
       </property>
       <property name="checkable">
        <bool>true</bool>
@@ -331,6 +355,10 @@
       <property name="text">
        <string/>
       </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/StatusBarICO_SnapCoord.png</normaloff>:/Kad_QT/Resources/StatusBarICO_SnapCoord.png</iconset>
+      </property>
       <property name="checkable">
        <bool>true</bool>
       </property>
@@ -362,6 +390,10 @@
       <property name="text">
        <string/>
       </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/StatusBarICO_SnapVirtualCoord.png</normaloff>:/Kad_QT/Resources/StatusBarICO_SnapVirtualCoord.png</iconset>
+      </property>
       <property name="checkable">
        <bool>true</bool>
       </property>
@@ -392,6 +424,10 @@
       </property>
       <property name="text">
        <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/StatusBarICO_SnapHandleOnly.png</normaloff>:/Kad_QT/Resources/StatusBarICO_SnapHandleOnly.png</iconset>
       </property>
       <property name="checkable">
        <bool>true</bool>
@@ -508,6 +544,10 @@
       <property name="text">
        <string/>
       </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/StatusBarICO_PrintPreview.png</normaloff>:/Kad_QT/Resources/StatusBarICO_PrintPreview.png</iconset>
+      </property>
       <property name="checkable">
        <bool>true</bool>
       </property>
@@ -539,6 +579,10 @@
       <property name="text">
        <string/>
       </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/StatusBarICO_ShowActualGrid.png</normaloff>:/Kad_QT/Resources/StatusBarICO_ShowActualGrid.png</iconset>
+      </property>
       <property name="checkable">
        <bool>true</bool>
       </property>
@@ -547,7 +591,9 @@
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="kad_qt.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>spinPrecision</sender>
