@@ -1223,14 +1223,14 @@ GLine * GBezierLine::Clip( float fClipProportion )
 				if (fCP < fClipProportion)
 				{
 					float fNewProp = fCP/fClipProportion;
-					ASSERT(fNewProp > 0 && fNewProp <= 1);
+					ASSERT(fNewProp >= 0 && fNewProp <= 1);
 					pcli->ApplyChange(this, fNewProp, pClingByPoint->GetClingAllowance());
 					pClingByPoint->ClingTo(*pcli);
 				}
 				else if (fCP > fClipProportion)
 				{
 					float fNewProp = (fCP-fClipProportion)/(1-fClipProportion);
-					ASSERT(fNewProp > 0 && fNewProp <= 1);
+					ASSERT(fNewProp >= 0 && fNewProp <= 1);
 					int nType = pcli->GetClingType();
 					pcli->SetClingTo(pClonedLine, fNewProp, GCLING_PROPORTION, pClingByPoint->GetClingAllowance());
 					pcli->ApplyTypeChange(nType);
