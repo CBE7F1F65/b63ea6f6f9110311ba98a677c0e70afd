@@ -4,9 +4,12 @@
 #include "GObjectManager.h"
 #include "StringManager.h"
 #include "ColorManager.h"
+#include "RenderHelper.h"
 
 //#include "MainInterface.h"
 //#include "Command.h"
+
+#define _GOBJFONTSIZE	20
 
 GObject * GObject::pTreeBase=NULL;
 GObjectManager * GObject::pgm=&GObjectManager::getInstance();
@@ -400,6 +403,11 @@ void GObject::OnCancelTryMove()
 
 void GObject::OnRender( int iHighlightLevel/*=0*/ )
 {
+	if (!isLayer() && strDisplayName.length())
+	{
+		DWORD col = getLineColor(iHighlightLevel);
+		RenderHelper::getInstance().RenderString(strDisplayName.c_str(), getX(), getY(), _GOBJFONTSIZE, col);
+	}
 }
 
 void GObject::OnModify()
@@ -1025,4 +1033,17 @@ bool GObject::CallRecCallBack( GObjRecCallBack cb, void * param )
 	}
 
 	return bRet;
+}
+
+void GObject::setDisplayName( const char * str )
+{
+	if (strlen(str))
+	{
+		if (strDisplayName != str)
+		{
+			strDisplayName=str;
+			CallRedrawModify();
+		}
+	}
+
 }

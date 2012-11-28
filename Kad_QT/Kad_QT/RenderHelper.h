@@ -119,6 +119,13 @@ public:
 	};
 	void RenderImage_S(QImage * pImg, float x, float y, float w, float h, DWORD col);
 
+	float RenderCharacter(int ch, float x, float y, float size_s, DWORD col)
+	{
+		return RenderCharacter_S(ch, _CTOSP(x, y), size_s, col);
+	};
+	float RenderCharacter_S(int ch, float x, float y, float size, DWORD col);
+	void RenderString(const char * str, float x, float y, float size, DWORD col);
+
 #undef _CTOSP
 
 	void TargetQuadRender_S(HTARGET tar, float x, float y, DWORD col);

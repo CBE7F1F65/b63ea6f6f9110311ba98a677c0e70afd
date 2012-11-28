@@ -263,7 +263,7 @@ public:
 	virtual void clearLineColor();
 
 	virtual const char * getDisplayName();
-	void setDisplayName(const char * str) { if (strlen(str)) { strDisplayName=str; } };
+	void setDisplayName(const char * str);
 
 	int getMoveActionID(){return nMoveActionID;};
 

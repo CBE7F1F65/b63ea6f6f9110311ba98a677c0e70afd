@@ -860,6 +860,7 @@ void GMidPoint::OnRender( int iHighlightLevel/* =0 */ )
 {
 	DWORD col = getLineColor(iHighlightLevel);
 	RenderHelper::getInstance().RenderMidPoint(x, y, col);
+	GObject::OnRender(iHighlightLevel);
 }
 
 /************************************************************************/
@@ -869,6 +870,7 @@ void GAttributePoint::OnRender( int iHighlightLevel/*=0*/ )
 {
 	DWORD col = getLineColor(iHighlightLevel);
 	RenderHelper::getInstance().RenderAttributePoint(x, y, col);
+	GObject::OnRender(iHighlightLevel);
 }
 /************************************************************************/
 /* GSubstantivePoint                                                    */
@@ -887,6 +889,7 @@ void GSubstantivePoint::OnRender( int iHighlightLevel/*=0*/ )
 {
 	DWORD col = getLineColor(iHighlightLevel);
 	RenderHelper::getInstance().RenderSubstantivePoint(x, y, col);
+	GObject::OnRender(iHighlightLevel);
 }
 /************************************************************************/
 /* GHANDLEPOINT                                                         */
@@ -941,6 +944,7 @@ void GHandlePoint::OnRender( int iHighlightLevel/* =0 */ )
 			prh->SetLineStyle(nSavedLineStyle);
 		}
 	}
+	GObject::OnRender(iHighlightLevel);
 }
 
 bool GHandlePoint::BindWith( GHandlePoint * pHandle/*=NULL*/ )
@@ -1210,6 +1214,7 @@ void GNotch::OnRender( int iHighlightLevel/*=0*/ )
 		}
 		prh->SetLineStyle(nSavedLineStyle);
 	}
+	GObject::OnRender(iHighlightLevel);
 }
 
 bool GNotch::OnUpdate()

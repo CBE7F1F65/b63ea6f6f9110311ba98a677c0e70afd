@@ -427,6 +427,7 @@ void GStraightLine::OnRender( int iHighlightLevel/*=0*/ )
 		}
 	}
 	prh->SetLineStyle(nSavedLineStyle);
+	GObject::OnRender(iHighlightLevel);
 }
 
 bool GStraightLine::CheckNearTo( float px, float py, float r, float *plx, float *ply, int *isec/*=NULL*/ )
@@ -648,6 +649,7 @@ void GBezierLine::OnRender( int iHighlightLevel/*=0*/ )
 
 		prh->SetLineStyle(nSavedLineStyle);
 	}
+	GObject::OnRender(iHighlightLevel);
 }
 
 bool GBezierLine::CheckNearTo( float px, float py, float r, float *plx, float *ply, int * isec/*=NULL*/ )
@@ -1830,8 +1832,6 @@ bool GImageLine::CloneData( GObject * pClone, GObject * pNewParent, bool bNoRela
 
 void GImageLine::OnRender( int iHighlightLevel/* =0 */ )
 {
-	super::OnRender(iHighlightLevel);
-
 	if (!pImg && strfilename.length())
 	{
 		pImg = new QImage(strfilename.c_str());
@@ -1841,6 +1841,7 @@ void GImageLine::OnRender( int iHighlightLevel/* =0 */ )
 	{
 		RenderHelper::getInstance().RenderImage(pImg, plbegin->getX(), plbegin->getY(), plend->getX()-plbegin->getX(), plend->getY()-plbegin->getY(), ARGB((0xff*fDim), 0xff, 0xff, 0xff));
 	}
+	super::OnRender(iHighlightLevel);
 }
 
 void GImageLine::SetDim( float fDimPercentage )
