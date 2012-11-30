@@ -161,6 +161,7 @@
             <NODE_GLayer>
                 <PROP_ID>20</PROP_ID>
                 <PROP_DisplayName>Collar Copy</PROP_DisplayName>
+                <PROP_Folded>1</PROP_Folded>
                 <ATTR_GLayer>
                     <PROP_LayerID>0</PROP_LayerID>
                 </ATTR_GLayer>
@@ -968,6 +969,7 @@
             <NODE_GLayer>
                 <PROP_ID>120</PROP_ID>
                 <PROP_DisplayName>Collar</PROP_DisplayName>
+                <PROP_Folded>1</PROP_Folded>
                 <ATTR_GLayer>
                     <PROP_LayerID>0</PROP_LayerID>
                 </ATTR_GLayer>
@@ -4652,7 +4654,6 @@
             <NODE_GLayer>
                 <PROP_ID>567</PROP_ID>
                 <PROP_DisplayName>SLV</PROP_DisplayName>
-                <PROP_Folded>1</PROP_Folded>
                 <ATTR_GLayer>
                     <PROP_LayerID>0</PROP_LayerID>
                 </ATTR_GLayer>
@@ -4670,21 +4671,24 @@
                                 <PROP_ID>569</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>141.9</PROP_X>
-                                    <PROP_Y>721.513</PROP_Y>
+                                    <PROP_Y>722.196</PROP_Y>
                                 </ATTR_GPoint>
                             </NODE_GMidPoint>
                             <NODE_GAnchorPoint>
                                 <PROP_ID>570</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>139.858</PROP_X>
-                                    <PROP_Y>739.886</PROP_Y>
+                                    <PROP_Y>740.569</PROP_Y>
+                                    <PRPS_MergeWith>
+                                        <PROP_0>601</PROP_0>
+                                    </PRPS_MergeWith>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>571</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>139.858</PROP_X>
-                                            <PROP_Y>739.886</PROP_Y>
+                                            <PROP_Y>740.569</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -4693,14 +4697,17 @@
                                 <PROP_ID>572</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>143.941</PROP_X>
-                                    <PROP_Y>703.141</PROP_Y>
+                                    <PROP_Y>703.824</PROP_Y>
+                                    <PRPS_MergeWith>
+                                        <PROP_0>577</PROP_0>
+                                    </PRPS_MergeWith>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>573</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>143.941</PROP_X>
-                                            <PROP_Y>703.141</PROP_Y>
+                                            <PROP_Y>703.824</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -4720,21 +4727,24 @@
                                 <PROP_ID>575</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>148.818</PROP_X>
-                                    <PROP_Y>661.891</PROP_Y>
+                                    <PROP_Y>662.574</PROP_Y>
                                 </ATTR_GPoint>
                             </NODE_GMidPoint>
                             <NODE_GAnchorPoint>
                                 <PROP_ID>576</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>143.941</PROP_X>
-                                    <PROP_Y>703.141</PROP_Y>
+                                    <PROP_Y>703.824</PROP_Y>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>577</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>143.941</PROP_X>
-                                            <PROP_Y>703.141</PROP_Y>
+                                            <PROP_Y>703.824</PROP_Y>
+                                            <PRPS_MergeWith>
+                                                <PROP_0>572</PROP_0>
+                                            </PRPS_MergeWith>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -4743,14 +4753,17 @@
                                 <PROP_ID>578</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>153.696</PROP_X>
-                                    <PROP_Y>620.641</PROP_Y>
+                                    <PROP_Y>621.324</PROP_Y>
+                                    <PRPS_MergeWith>
+                                        <PROP_0>665</PROP_0>
+                                    </PRPS_MergeWith>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>579</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>153.696</PROP_X>
-                                            <PROP_Y>620.641</PROP_Y>
+                                            <PROP_Y>621.324</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -4770,21 +4783,24 @@
                                 <PROP_ID>581</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>16.1262</PROP_X>
-                                    <PROP_Y>722.806</PROP_Y>
+                                    <PROP_Y>723.489</PROP_Y>
                                 </ATTR_GPoint>
                             </NODE_GMidPoint>
                             <NODE_GAnchorPoint>
                                 <PROP_ID>582</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>18.3112</PROP_X>
-                                    <PROP_Y>742.471</PROP_Y>
+                                    <PROP_Y>743.154</PROP_Y>
+                                    <PRPS_MergeWith>
+                                        <PROP_0>603</PROP_0>
+                                    </PRPS_MergeWith>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>583</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>18.3112</PROP_X>
-                                            <PROP_Y>742.471</PROP_Y>
+                                            <PROP_Y>743.154</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -4793,14 +4809,17 @@
                                 <PROP_ID>584</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>13.9412</PROP_X>
-                                    <PROP_Y>703.141</PROP_Y>
+                                    <PROP_Y>703.824</PROP_Y>
+                                    <PRPS_MergeWith>
+                                        <PROP_0>589</PROP_0>
+                                    </PRPS_MergeWith>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>585</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>13.9412</PROP_X>
-                                            <PROP_Y>703.141</PROP_Y>
+                                            <PROP_Y>703.824</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -4820,21 +4839,24 @@
                                 <PROP_ID>587</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>11.1927</PROP_X>
-                                    <PROP_Y>661.891</PROP_Y>
+                                    <PROP_Y>662.574</PROP_Y>
                                 </ATTR_GPoint>
                             </NODE_GMidPoint>
                             <NODE_GAnchorPoint>
                                 <PROP_ID>588</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>13.9412</PROP_X>
-                                    <PROP_Y>703.141</PROP_Y>
+                                    <PROP_Y>703.824</PROP_Y>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>589</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>13.9412</PROP_X>
-                                            <PROP_Y>703.141</PROP_Y>
+                                            <PROP_Y>703.824</PROP_Y>
+                                            <PRPS_MergeWith>
+                                                <PROP_0>584</PROP_0>
+                                            </PRPS_MergeWith>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -4843,14 +4865,14 @@
                                 <PROP_ID>590</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>8.44414</PROP_X>
-                                    <PROP_Y>620.641</PROP_Y>
+                                    <PROP_Y>621.324</PROP_Y>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>591</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>8.44414</PROP_X>
-                                            <PROP_Y>620.641</PROP_Y>
+                                            <PROP_Y>621.324</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -4861,7 +4883,7 @@
                         <PROP_ID>592</PROP_ID>
                         <ATTR_GPoint>
                             <PROP_X>47.5138</PROP_X>
-                            <PROP_Y>740.272</PROP_Y>
+                            <PROP_Y>740.954</PROP_Y>
                             <PRPS_ClingInfo>
                                 <PROP_ClingTo>599</PROP_ClingTo>
                                 <PROP_ClingVal>0.239498</PROP_ClingVal>
@@ -4871,8 +4893,8 @@
                     <NODE_GNotch>
                         <PROP_ID>593</PROP_ID>
                         <ATTR_GPoint>
-                            <PROP_X>71.2524</PROP_X>
-                            <PROP_Y>741.807</PROP_Y>
+                            <PROP_X>71.2523</PROP_X>
+                            <PROP_Y>742.489</PROP_Y>
                             <PRPS_ClingInfo>
                                 <PROP_ClingTo>599</PROP_ClingTo>
                                 <PROP_ClingVal>0.433956</PROP_ClingVal>
@@ -4882,8 +4904,8 @@
                     <NODE_GNotch>
                         <PROP_ID>594</PROP_ID>
                         <ATTR_GPoint>
-                            <PROP_X>81.2528</PROP_X>
-                            <PROP_Y>743.033</PROP_Y>
+                            <PROP_X>81.2527</PROP_X>
+                            <PROP_Y>743.716</PROP_Y>
                             <PRPS_ClingInfo>
                                 <PROP_ClingTo>599</PROP_ClingTo>
                                 <PROP_ClingVal>0.516274</PROP_ClingVal>
@@ -4893,8 +4915,8 @@
                     <NODE_GNotch>
                         <PROP_ID>595</PROP_ID>
                         <ATTR_GPoint>
-                            <PROP_X>86.2522</PROP_X>
-                            <PROP_Y>743.645</PROP_Y>
+                            <PROP_X>86.252</PROP_X>
+                            <PROP_Y>744.327</PROP_Y>
                             <PRPS_ClingInfo>
                                 <PROP_ClingTo>599</PROP_ClingTo>
                                 <PROP_ClingVal>0.557424</PROP_ClingVal>
@@ -4904,8 +4926,8 @@
                     <NODE_GNotch>
                         <PROP_ID>596</PROP_ID>
                         <ATTR_GPoint>
-                            <PROP_X>96.2463</PROP_X>
-                            <PROP_Y>744.629</PROP_Y>
+                            <PROP_X>96.2461</PROP_X>
+                            <PROP_Y>745.312</PROP_Y>
                             <PRPS_ClingInfo>
                                 <PROP_ClingTo>599</PROP_ClingTo>
                                 <PROP_ClingVal>0.63948</PROP_ClingVal>
@@ -4915,8 +4937,8 @@
                     <NODE_GNotch>
                         <PROP_ID>597</PROP_ID>
                         <ATTR_GPoint>
-                            <PROP_X>103.74</PROP_X>
-                            <PROP_Y>744.981</PROP_Y>
+                            <PROP_X>103.739</PROP_X>
+                            <PROP_Y>745.664</PROP_Y>
                             <PRPS_ClingInfo>
                                 <PROP_ClingTo>599</PROP_ClingTo>
                                 <PROP_ClingVal>0.700776</PROP_ClingVal>
@@ -4927,7 +4949,7 @@
                         <PROP_ID>598</PROP_ID>
                         <ATTR_GPoint>
                             <PROP_X>108.733</PROP_X>
-                            <PROP_Y>744.967</PROP_Y>
+                            <PROP_Y>745.649</PROP_Y>
                             <PRPS_ClingInfo>
                                 <PROP_ClingTo>599</PROP_ClingTo>
                                 <PROP_ClingVal>0.741577</PROP_ClingVal>
@@ -4947,21 +4969,24 @@
                                 <PROP_ID>600</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>79.2764</PROP_X>
-                                    <PROP_Y>742.784</PROP_Y>
+                                    <PROP_Y>743.467</PROP_Y>
                                 </ATTR_GPoint>
                             </NODE_GMidPoint>
                             <NODE_GAnchorPoint>
                                 <PROP_ID>601</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>139.858</PROP_X>
-                                    <PROP_Y>739.886</PROP_Y>
+                                    <PROP_Y>740.569</PROP_Y>
+                                    <PRPS_MergeWith>
+                                        <PROP_0>570</PROP_0>
+                                    </PRPS_MergeWith>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>602</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>92.4332</PROP_X>
-                                            <PROP_Y>753.804</PROP_Y>
+                                            <PROP_Y>754.487</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -4970,14 +4995,17 @@
                                 <PROP_ID>603</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>18.3112</PROP_X>
-                                    <PROP_Y>742.471</PROP_Y>
+                                    <PROP_Y>743.154</PROP_Y>
+                                    <PRPS_MergeWith>
+                                        <PROP_0>582</PROP_0>
+                                    </PRPS_MergeWith>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>604</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>75.3082</PROP_X>
-                                            <PROP_Y>733.973</PROP_Y>
+                                            <PROP_Y>734.656</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -4992,21 +5020,24 @@
                                 <PROP_ID>606</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>104.988</PROP_X>
-                                    <PROP_Y>707.446</PROP_Y>
+                                    <PROP_Y>708.129</PROP_Y>
                                 </ATTR_GPoint>
                             </NODE_GMidPoint>
                             <NODE_GAnchorPoint>
                                 <PROP_ID>607</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>103.739</PROP_X>
-                                    <PROP_Y>704.946</PROP_Y>
+                                    <PROP_Y>705.629</PROP_Y>
+                                    <PRPS_MergeWith>
+                                        <PROP_0>622</PROP_0>
+                                    </PRPS_MergeWith>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>608</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>103.739</PROP_X>
-                                            <PROP_Y>704.946</PROP_Y>
+                                            <PROP_Y>705.629</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5015,14 +5046,17 @@
                                 <PROP_ID>609</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>106.238</PROP_X>
-                                    <PROP_Y>709.946</PROP_Y>
+                                    <PROP_Y>710.629</PROP_Y>
+                                    <PRPS_MergeWith>
+                                        <PROP_0>616</PROP_0>
+                                    </PRPS_MergeWith>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>610</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>106.238</PROP_X>
-                                            <PROP_Y>709.946</PROP_Y>
+                                            <PROP_Y>710.629</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5037,21 +5071,24 @@
                                 <PROP_ID>612</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>107.488</PROP_X>
-                                    <PROP_Y>707.446</PROP_Y>
+                                    <PROP_Y>708.129</PROP_Y>
                                 </ATTR_GPoint>
                             </NODE_GMidPoint>
                             <NODE_GAnchorPoint>
                                 <PROP_ID>613</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>108.738</PROP_X>
-                                    <PROP_Y>704.946</PROP_Y>
+                                    <PROP_Y>705.629</PROP_Y>
+                                    <PRPS_MergeWith>
+                                        <PROP_0>634</PROP_0>
+                                    </PRPS_MergeWith>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>614</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>108.738</PROP_X>
-                                            <PROP_Y>704.946</PROP_Y>
+                                            <PROP_Y>705.629</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5060,14 +5097,17 @@
                                 <PROP_ID>615</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>106.238</PROP_X>
-                                    <PROP_Y>709.946</PROP_Y>
+                                    <PROP_Y>710.629</PROP_Y>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>616</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>106.238</PROP_X>
-                                            <PROP_Y>709.946</PROP_Y>
+                                            <PROP_Y>710.629</PROP_Y>
+                                            <PRPS_MergeWith>
+                                                <PROP_0>609</PROP_0>
+                                            </PRPS_MergeWith>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5082,21 +5122,24 @@
                                 <PROP_ID>618</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>104.988</PROP_X>
-                                    <PROP_Y>704.946</PROP_Y>
+                                    <PROP_Y>705.629</PROP_Y>
                                 </ATTR_GPoint>
                             </NODE_GMidPoint>
                             <NODE_GAnchorPoint>
                                 <PROP_ID>619</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>106.238</PROP_X>
-                                    <PROP_Y>704.946</PROP_Y>
+                                    <PROP_Y>705.629</PROP_Y>
+                                    <PRPS_MergeWith>
+                                        <PROP_0>640</PROP_0>
+                                    </PRPS_MergeWith>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>620</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>106.238</PROP_X>
-                                            <PROP_Y>704.946</PROP_Y>
+                                            <PROP_Y>705.629</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5105,14 +5148,17 @@
                                 <PROP_ID>621</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>103.739</PROP_X>
-                                    <PROP_Y>704.946</PROP_Y>
+                                    <PROP_Y>705.629</PROP_Y>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>622</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>103.739</PROP_X>
-                                            <PROP_Y>704.946</PROP_Y>
+                                            <PROP_Y>705.629</PROP_Y>
+                                            <PRPS_MergeWith>
+                                                <PROP_0>607</PROP_0>
+                                            </PRPS_MergeWith>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5127,21 +5173,21 @@
                                 <PROP_ID>624</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>103.739</PROP_X>
-                                    <PROP_Y>724.964</PROP_Y>
+                                    <PROP_Y>725.646</PROP_Y>
                                 </ATTR_GPoint>
                             </NODE_GMidPoint>
                             <NODE_GAnchorPoint>
                                 <PROP_ID>625</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>103.739</PROP_X>
-                                    <PROP_Y>704.946</PROP_Y>
+                                    <PROP_Y>705.629</PROP_Y>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>626</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>103.739</PROP_X>
-                                            <PROP_Y>704.946</PROP_Y>
+                                            <PROP_Y>705.629</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5150,14 +5196,14 @@
                                 <PROP_ID>627</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>103.739</PROP_X>
-                                    <PROP_Y>744.981</PROP_Y>
+                                    <PROP_Y>745.664</PROP_Y>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>628</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>103.739</PROP_X>
-                                            <PROP_Y>744.981</PROP_Y>
+                                            <PROP_Y>745.664</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5172,21 +5218,21 @@
                                 <PROP_ID>630</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>108.738</PROP_X>
-                                    <PROP_Y>724.951</PROP_Y>
+                                    <PROP_Y>725.633</PROP_Y>
                                 </ATTR_GPoint>
                             </NODE_GMidPoint>
                             <NODE_GAnchorPoint>
                                 <PROP_ID>631</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>108.738</PROP_X>
-                                    <PROP_Y>744.955</PROP_Y>
+                                    <PROP_Y>745.638</PROP_Y>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>632</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>108.738</PROP_X>
-                                            <PROP_Y>744.955</PROP_Y>
+                                            <PROP_Y>745.638</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5195,14 +5241,17 @@
                                 <PROP_ID>633</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>108.738</PROP_X>
-                                    <PROP_Y>704.946</PROP_Y>
+                                    <PROP_Y>705.629</PROP_Y>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>634</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>108.738</PROP_X>
-                                            <PROP_Y>704.946</PROP_Y>
+                                            <PROP_Y>705.629</PROP_Y>
+                                            <PRPS_MergeWith>
+                                                <PROP_0>613</PROP_0>
+                                            </PRPS_MergeWith>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5217,21 +5266,21 @@
                                 <PROP_ID>636</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>107.488</PROP_X>
-                                    <PROP_Y>704.946</PROP_Y>
+                                    <PROP_Y>705.629</PROP_Y>
                                 </ATTR_GPoint>
                             </NODE_GMidPoint>
                             <NODE_GAnchorPoint>
                                 <PROP_ID>637</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>108.738</PROP_X>
-                                    <PROP_Y>704.946</PROP_Y>
+                                    <PROP_Y>705.629</PROP_Y>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>638</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>108.738</PROP_X>
-                                            <PROP_Y>704.946</PROP_Y>
+                                            <PROP_Y>705.629</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5240,14 +5289,17 @@
                                 <PROP_ID>639</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>106.238</PROP_X>
-                                    <PROP_Y>704.946</PROP_Y>
+                                    <PROP_Y>705.629</PROP_Y>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>640</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>106.238</PROP_X>
-                                            <PROP_Y>704.946</PROP_Y>
+                                            <PROP_Y>705.629</PROP_Y>
+                                            <PRPS_MergeWith>
+                                                <PROP_0>619</PROP_0>
+                                            </PRPS_MergeWith>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5262,21 +5314,21 @@
                                 <PROP_ID>642</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>106.238</PROP_X>
-                                    <PROP_Y>724.971</PROP_Y>
+                                    <PROP_Y>725.654</PROP_Y>
                                 </ATTR_GPoint>
                             </NODE_GMidPoint>
                             <NODE_GAnchorPoint>
                                 <PROP_ID>643</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>106.238</PROP_X>
-                                    <PROP_Y>704.946</PROP_Y>
+                                    <PROP_Y>705.629</PROP_Y>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>644</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>106.238</PROP_X>
-                                            <PROP_Y>704.946</PROP_Y>
+                                            <PROP_Y>705.629</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5285,14 +5337,14 @@
                                 <PROP_ID>645</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>106.238</PROP_X>
-                                    <PROP_Y>744.996</PROP_Y>
+                                    <PROP_Y>745.679</PROP_Y>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>646</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>106.238</PROP_X>
-                                            <PROP_Y>744.996</PROP_Y>
+                                            <PROP_Y>745.679</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5312,21 +5364,24 @@
                                 <PROP_ID>648</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>90.1427</PROP_X>
-                                    <PROP_Y>575.444</PROP_Y>
+                                    <PROP_Y>573.627</PROP_Y>
                                 </ATTR_GPoint>
                             </NODE_GMidPoint>
                             <NODE_GAnchorPoint>
                                 <PROP_ID>649</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>78.9401</PROP_X>
-                                    <PROP_Y>573.141</PROP_Y>
+                                    <PROP_Y>571.324</PROP_Y>
+                                    <PRPS_MergeWith>
+                                        <PROP_0>669</PROP_0>
+                                    </PRPS_MergeWith>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>650</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>86.2791</PROP_X>
-                                            <PROP_Y>573.141</PROP_Y>
+                                            <PROP_Y>571.324</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5335,14 +5390,17 @@
                                 <PROP_ID>651</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>100.25</PROP_X>
-                                    <PROP_Y>580.892</PROP_Y>
+                                    <PROP_Y>579.075</PROP_Y>
+                                    <PRPS_MergeWith>
+                                        <PROP_0>656</PROP_0>
+                                    </PRPS_MergeWith>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>652</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>93.3381</PROP_X>
-                                            <PROP_Y>576.244</PROP_Y>
+                                            <PROP_Y>574.427</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5352,8 +5410,8 @@
                     <NODE_GNotch>
                         <PROP_ID>653</PROP_ID>
                         <ATTR_GPoint>
-                            <PROP_X>124.779</PROP_X>
-                            <PROP_Y>601.898</PROP_Y>
+                            <PROP_X>124.746</PROP_X>
+                            <PROP_Y>602.529</PROP_Y>
                             <PRPS_ClingInfo>
                                 <PROP_ClingTo>654</PROP_ClingTo>
                                 <PROP_ClingVal>0.0346594</PROP_ClingVal>
@@ -5372,22 +5430,25 @@
                             <NODE_GMidPoint>
                                 <PROP_ID>655</PROP_ID>
                                 <ATTR_GPoint>
-                                    <PROP_X>113.306</PROP_X>
-                                    <PROP_Y>591.353</PROP_Y>
+                                    <PROP_X>113.311</PROP_X>
+                                    <PROP_Y>590.813</PROP_Y>
                                 </ATTR_GPoint>
                             </NODE_GMidPoint>
                             <NODE_GAnchorPoint>
                                 <PROP_ID>656</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>100.25</PROP_X>
-                                    <PROP_Y>580.892</PROP_Y>
+                                    <PROP_Y>579.075</PROP_Y>
+                                    <PRPS_MergeWith>
+                                        <PROP_0>651</PROP_0>
+                                    </PRPS_MergeWith>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>657</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>109.227</PROP_X>
-                                            <PROP_Y>586.93</PROP_Y>
+                                            <PROP_Y>585.113</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5396,14 +5457,17 @@
                                 <PROP_ID>658</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>125.639</PROP_X>
-                                    <PROP_Y>602.677</PROP_Y>
+                                    <PROP_Y>603.36</PROP_Y>
+                                    <PRPS_MergeWith>
+                                        <PROP_0>663</PROP_0>
+                                    </PRPS_MergeWith>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>659</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>117.23</PROP_X>
-                                            <PROP_Y>595.129</PROP_Y>
+                                            <PROP_Y>595.812</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5414,10 +5478,10 @@
                         <PROP_ID>660</PROP_ID>
                         <ATTR_GPoint>
                             <PROP_X>128.397</PROP_X>
-                            <PROP_Y>605.348</PROP_Y>
+                            <PROP_Y>606.03</PROP_Y>
                             <PRPS_ClingInfo>
                                 <PROP_ClingTo>661</PROP_ClingTo>
-                                <PROP_ClingVal>0.886548</PROP_ClingVal>
+                                <PROP_ClingVal>0.886554</PROP_ClingVal>
                             </PRPS_ClingInfo>
                         </ATTR_GPoint>
                     </NODE_GNotch>
@@ -5434,21 +5498,24 @@
                                 <PROP_ID>662</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>138.31</PROP_X>
-                                    <PROP_Y>613.856</PROP_Y>
+                                    <PROP_Y>614.539</PROP_Y>
                                 </ATTR_GPoint>
                             </NODE_GMidPoint>
                             <NODE_GAnchorPoint>
                                 <PROP_ID>663</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>125.639</PROP_X>
-                                    <PROP_Y>602.677</PROP_Y>
+                                    <PROP_Y>603.36</PROP_Y>
+                                    <PRPS_MergeWith>
+                                        <PROP_0>658</PROP_0>
+                                    </PRPS_MergeWith>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>664</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>132.738</PROP_X>
-                                            <PROP_Y>609.448</PROP_Y>
+                                            <PROP_Y>610.131</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5457,14 +5524,17 @@
                                 <PROP_ID>665</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>153.696</PROP_X>
-                                    <PROP_Y>620.641</PROP_Y>
+                                    <PROP_Y>621.324</PROP_Y>
+                                    <PRPS_MergeWith>
+                                        <PROP_0>578</PROP_0>
+                                    </PRPS_MergeWith>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>666</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>139.592</PROP_X>
-                                            <PROP_Y>617.346</PROP_Y>
+                                            <PROP_Y>618.029</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5484,21 +5554,24 @@
                                 <PROP_ID>668</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>68.2517</PROP_X>
-                                    <PROP_Y>575.641</PROP_Y>
+                                    <PROP_Y>573.824</PROP_Y>
                                 </ATTR_GPoint>
                             </NODE_GMidPoint>
                             <NODE_GAnchorPoint>
                                 <PROP_ID>669</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>78.9401</PROP_X>
-                                    <PROP_Y>573.141</PROP_Y>
+                                    <PROP_Y>571.324</PROP_Y>
+                                    <PRPS_MergeWith>
+                                        <PROP_0>649</PROP_0>
+                                    </PRPS_MergeWith>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>670</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>72.4412</PROP_X>
-                                            <PROP_Y>573.141</PROP_Y>
+                                            <PROP_Y>571.324</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5507,14 +5580,17 @@
                                 <PROP_ID>671</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>58.6221</PROP_X>
-                                    <PROP_Y>581.018</PROP_Y>
+                                    <PROP_Y>579.201</PROP_Y>
+                                    <PRPS_MergeWith>
+                                        <PROP_0>676</PROP_0>
+                                    </PRPS_MergeWith>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>672</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>65.0311</PROP_X>
-                                            <PROP_Y>576.591</PROP_Y>
+                                            <PROP_Y>574.774</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5524,11 +5600,11 @@
                     <NODE_GNotch>
                         <PROP_ID>673</PROP_ID>
                         <ATTR_GPoint>
-                            <PROP_X>33.1687</PROP_X>
-                            <PROP_Y>605</PROP_Y>
+                            <PROP_X>33.1689</PROP_X>
+                            <PROP_Y>603.182</PROP_Y>
                             <PRPS_ClingInfo>
                                 <PROP_ClingTo>674</PROP_ClingTo>
-                                <PROP_ClingVal>0.46115</PROP_ClingVal>
+                                <PROP_ClingVal>0.461154</PROP_ClingVal>
                             </PRPS_ClingInfo>
                         </ATTR_GPoint>
                     </NODE_GNotch>
@@ -5545,21 +5621,24 @@
                                 <PROP_ID>675</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>34.8852</PROP_X>
-                                    <PROP_Y>603.144</PROP_Y>
+                                    <PROP_Y>601.327</PROP_Y>
                                 </ATTR_GPoint>
                             </NODE_GMidPoint>
                             <NODE_GAnchorPoint>
                                 <PROP_ID>676</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>58.6221</PROP_X>
-                                    <PROP_Y>581.018</PROP_Y>
+                                    <PROP_Y>579.201</PROP_Y>
+                                    <PRPS_MergeWith>
+                                        <PROP_0>671</PROP_0>
+                                    </PRPS_MergeWith>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>677</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>35.6481</PROP_X>
-                                            <PROP_Y>596.891</PROP_Y>
+                                            <PROP_Y>595.074</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5568,14 +5647,14 @@
                                 <PROP_ID>678</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>8.44414</PROP_X>
-                                    <PROP_Y>620.641</PROP_Y>
+                                    <PROP_Y>618.824</PROP_Y>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>679</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>27.4481</PROP_X>
-                                            <PROP_Y>619.098</PROP_Y>
+                                            <PROP_Y>617.281</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5590,21 +5669,21 @@
                                 <PROP_ID>681</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>78.9401</PROP_X>
-                                    <PROP_Y>657.942</PROP_Y>
+                                    <PROP_Y>657.374</PROP_Y>
                                 </ATTR_GPoint>
                             </NODE_GMidPoint>
                             <NODE_GAnchorPoint>
                                 <PROP_ID>682</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>78.9401</PROP_X>
-                                    <PROP_Y>742.742</PROP_Y>
+                                    <PROP_Y>743.425</PROP_Y>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>683</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>78.9401</PROP_X>
-                                            <PROP_Y>742.742</PROP_Y>
+                                            <PROP_Y>743.425</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
@@ -5613,14 +5692,14 @@
                                 <PROP_ID>684</PROP_ID>
                                 <ATTR_GPoint>
                                     <PROP_X>78.9401</PROP_X>
-                                    <PROP_Y>573.141</PROP_Y>
+                                    <PROP_Y>571.324</PROP_Y>
                                 </ATTR_GPoint>
                                 <PRPS_Children>
                                     <NODE_GHandlePoint>
                                         <PROP_ID>685</PROP_ID>
                                         <ATTR_GPoint>
                                             <PROP_X>78.9401</PROP_X>
-                                            <PROP_Y>573.141</PROP_Y>
+                                            <PROP_Y>571.324</PROP_Y>
                                         </ATTR_GPoint>
                                     </NODE_GHandlePoint>
                                 </PRPS_Children>
