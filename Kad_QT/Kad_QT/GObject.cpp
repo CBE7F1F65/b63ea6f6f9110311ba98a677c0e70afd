@@ -829,16 +829,22 @@ void GObject::_CallTreeChanged( GObject * changebase, GObject * activenode )
 
 void GObject::_CallTreeWillChange()
 {
-	pgm->OnTreeWillChange();
+	if (getBase() == pTreeBase)
+	{
+		pgm->OnTreeWillChange();
+	}
 }
 
 int GObject::_CallResetID( int resetbase )
 {
-	_SetID(resetbase);
-	resetbase++;
-	FOREACH_GOBJ_CHILDREN_IT()
+	if (getBase() == pTreeBase)
 	{
-		resetbase = (*it)->_CallResetID(resetbase);
+		_SetID(resetbase);
+		resetbase++;
+		FOREACH_GOBJ_CHILDREN_IT()
+		{
+			resetbase = (*it)->_CallResetID(resetbase);
+		}
 	}
 	return resetbase;
 }

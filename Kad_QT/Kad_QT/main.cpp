@@ -1,9 +1,8 @@
-
-
-
 #include "stdafx.h"
+//#include "vld.h"
 
 // Necessary includes and defines for memory leak detection:
+#ifdef _SELFCRTLEAKDETECT
 #ifdef _MSC_VER
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
@@ -59,6 +58,7 @@ int customReportHook(int /* reportType */, char* message, int* /* returnValue */
 }
 
 #endif
+#endif
 
 
 
@@ -67,10 +67,12 @@ int customReportHook(int /* reportType */, char* message, int* /* returnValue */
 
 
 int main(int argc, char *argv[]) {
+#ifdef _SELFCRTLEAKDETECT
 #if defined(_MSC_VER)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	prevHook = _CrtSetReportHook(customReportHook);
     //_CrtSetBreakAlloc(18416); // Use this line to break at the nth memory allocation
+#endif
 #endif
 
 	QApplication* app = new QApplication(argc, argv);
@@ -80,11 +82,13 @@ int main(int argc, char *argv[]) {
 	delete w;
 	delete app;
 
+#ifdef _SELFCRTLEAKDETECT
 #if defined(_MSC_VER)
 	// Once the app has finished running and has been deleted,
 	// we run this command to view the memory leaks:
 	_CrtDumpMemoryLeaks();
 #endif 
+#endif
 
 	return appError;
 }

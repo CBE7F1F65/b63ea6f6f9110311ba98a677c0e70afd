@@ -97,7 +97,11 @@ void GBaseNode::SaveSelectState()
 
 GMainBaseNode::GMainBaseNode()
 {
-	setTreeBase(this);
+	if (!getTreeBase())
+	{
+		setTreeBase(this);
+	}
+//	setTreeBase(this);
 }
 
 GMainBaseNode::~GMainBaseNode()
@@ -109,7 +113,6 @@ GObject * GMainBaseNode::CreateNewClone( GObject * pNewParent/*=NULL*/, GObject 
 {
 	_GOBJ_CLONE_PRE(GMainBaseNode);
 	_GOBJ_CLONE_POST();
-	setTreeBase(this);
 }
 
 GHistoryBaseNode::GHistoryBaseNode()

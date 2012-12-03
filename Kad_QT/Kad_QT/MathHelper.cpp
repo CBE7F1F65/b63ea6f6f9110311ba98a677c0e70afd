@@ -1083,7 +1083,30 @@ BezierSublinesInfo& BezierSublinesInfo::operator=(const BezierSublinesInfo &that
 
 	if (that.nPoints)
 	{
-		ResetPoints(that.ptPoints[0], that.ptBeginHandle, that.ptEndHandle, that.ptPoints[that.nPoints-1], that.fSavedPrecision);
+		nPoints = that.nPoints;
+		ptPoints = new PointF2D[nPoints];
+		for (int i=0; i<nPoints; i++)
+		{
+			ptPoints[i] = that.ptPoints[i];
+		}
+		if (that.fLengths)
+		{
+			fLengths = new float[nPoints-1];
+			for (int i=0; i<nPoints-1; i++)
+			{
+				fLengths[i] = that.fLengths[i];
+			}
+		}
+
+		ptBeginHandle = that.ptBeginHandle;
+		ptEndHandle = that.ptEndHandle;
+		fSavedPrecision = that.fSavedPrecision;
+
+		fBoundingLX = that.fBoundingLX;
+		fBoundingTY = that.fBoundingTY;
+		fBoundingRX = that.fBoundingRX;
+		fBoundingBY = that.fBoundingBY;
+//		ResetPoints(that.ptPoints[0], that.ptBeginHandle, that.ptEndHandle, that.ptPoints[that.nPoints-1], that.fSavedPrecision);
 	}
 
 	return *this;

@@ -42,8 +42,7 @@ private:
     void AdjustSize();
     QTreeWidgetItem * FindItemByObj(GObject * pObj, QTreeWidgetItem * pParent=NULL);
     GObject * GetObjFromItem(QTreeWidgetItem * pItem);
-    void DeleteItemsUnderWidget(QTreeWidgetItem * pItem);
-    void BuildChildren(QTreeWidgetItem * pItem, GObject * pObjParent);
+    void RestructChildren(QTreeWidgetItem * pItem, GObject * pObjParent);
 
     bool IsObjInSelection(GObject * pObj);
     void Reselect();

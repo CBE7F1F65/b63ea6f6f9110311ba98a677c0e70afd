@@ -13,8 +13,7 @@
 
 QTUI_Layer_SelectionButton::QTUI_Layer_SelectionButton( GObject * _pObj )
 {
-	ASSERT(_pObj);
-	pObj = _pObj;
+	SetObj(_pObj);
 
 	this->setMaximumWidth(_UILTB_ICONSIZE);
 	this->setMinimumWidth(_UILTB_ICONSIZE);
@@ -54,8 +53,7 @@ void QTUI_Layer_SelectionButton::UpdateGUISelection( GObject * _pObj, bool bChec
 
 QTUI_Layer_VisibleButton::QTUI_Layer_VisibleButton( GObject * _pObj )
 {
-	ASSERT(_pObj);
-	pObj = _pObj;
+	SetObj(_pObj);
 
 	this->setMaximumWidth(_UILTB_ICONSIZE);
 	this->setMinimumWidth(_UILTB_ICONSIZE);
@@ -85,8 +83,7 @@ void QTUI_Layer_VisibleButton::SLT_ButtonClicked( bool bChecked )
 
 QTUI_Layer_LockButton::QTUI_Layer_LockButton( GObject * _pObj )
 {
-	ASSERT(_pObj);
-	pObj = _pObj;
+	SetObj(_pObj);
 
 	this->setMaximumWidth(_UILTB_ICONSIZE);
 	this->setMinimumWidth(_UILTB_ICONSIZE);

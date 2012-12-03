@@ -20,7 +20,7 @@
 	bool bSelfCloning = pgm->BeginClone();	\
 	TNAME * _node = new TNAME();	\
 	_node->SetCloning(true); \
-	GBaseNode tempHoldingPlace;	\
+	GTempHoldingPlace tempHoldingPlace;	\
 	CloneData(_node, &tempHoldingPlace);	\
 	pgm->PushClone(this, _node);
 

@@ -16,6 +16,19 @@ public:
 	virtual GObject * CreateNewClone(GObject * pNewParent=NULL, GObject * pBeforeObj=NULL) {ASSERT(false); return NULL;};
 };
 
+class GTempHoldingPlace : public GObject
+{
+public:
+	typedef GObject super;
+	virtual const char * getTypeName();		// Do not implement separately
+	static const char * getStaticTypeName();		// Do not implement separately
+public:
+	GTempHoldingPlace(){};
+	virtual ~GTempHoldingPlace(){};
+public:
+	virtual GObject * CreateNewClone(GObject * pNewParent=NULL, GObject * pBeforeObj=NULL) {ASSERT(false); return NULL;};
+};
+
 class GBaseNode :
 	public GLayer
 {

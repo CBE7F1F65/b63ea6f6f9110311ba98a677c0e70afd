@@ -63,9 +63,7 @@ QTUI_Layer_Tree::QTUI_Layer_Tree(QWidget *parent) :
     {
         pBaseItem = this->invisibleRootItem();
     }
-    DeleteItemsUnderWidget(pBaseItem);
-
-    BuildChildren(pBaseItem, changebase);
+    RestructChildren(pBaseItem, changebase);
 
     if (activeitem)
     {
@@ -308,49 +306,52 @@ GObject *QTUI_Layer_Tree::GetObjFromItem(QTreeWidgetItem *pItem)
     return NULL;
 }
 
-void QTUI_Layer_Tree::DeleteItemsUnderWidget(QTreeWidgetItem *pItem)
-{
-    if (!pItem)
-    {
-        return;
-    }
-
-    int nCount = pItem->childCount();
-    for (int i=0; i<nCount; i++)
-    {
-        delete pItem->child(0);
-    }
-}
-
-void QTUI_Layer_Tree::BuildChildren(QTreeWidgetItem *pItem, GObject *pObjParent)
+void QTUI_Layer_Tree::RestructChildren(QTreeWidgetItem *pItem, GObject *pObjParent)
 {
     if (!pObjParent || !pObjParent->getNonAttributeChildrenCount())
     {
         return;
     }
+
+	int nItemCount = pItem->childCount();
+	int nChildCount = pObjParent->getChildrenCount();
+	if (nItemCount > nChildCount)
+	{
+		for (int i=nChildCount; i<nItemCount; i++)
+		{
+			pItem->removeChild(pItem->child(0));
+		}
+	}
+	else if (nItemCount < nChildCount)
+	{
+		for (int i=nItemCount; i<nChildCount; i++)
+		{
+			QTreeWidgetItem * pNewItem = new QTreeWidgetItem(pItem);
+		}
+	}
+
+	int nChildIndex = 0;
     for (list<GObject *>::iterator it=pObjParent->getChildren()->begin(); it!=pObjParent->getChildren()->end(); ++it)
     {
         GObject * pObj = *it;
-        bool bFolded = pObj->isDisplayFolded();
 
-		QTreeWidgetItem * pNowItem = new QTreeWidgetItem(pItem);
+		QTreeWidgetItem * pNowItem = pItem->child(nChildIndex);
+//		QTreeWidgetItem * pNowItem = new QTreeWidgetItem(pItem);
 //        pNowItem->setFlags(Qt::ItemIsEditable|pNowItem->flags());
-		
+		/*
 		pNowItem->setData(_UILT_COLUMN_SELECT, Qt::UserRole, _UILT_BUTTONFLAG_NULL);
 		pNowItem->setData(_UILT_COLUMN_VISIBLE, Qt::UserRole, _UILT_BUTTONFLAG_NULL);
 		pNowItem->setData(_UILT_COLUMN_LOCK, Qt::UserRole, _UILT_BUTTONFLAG_NULL);
-
+		*/
 		bool bUpdate = false;
 		if (!pObjParent->isDisplayFolded())
 		{
 			bUpdate = AddButtonsToItem(pNowItem, pObj);
 		}
-		if (!bUpdate)
-		{
-			UpdateNodeInfo(pNowItem, pObj);
-		}
+		UpdateNodeInfo(pNowItem, pObj);
 
-        BuildChildren(pNowItem, pObj);
+        RestructChildren(pNowItem, pObj);
+		nChildIndex++;
     }
     pItem->setExpanded(!pObjParent->isDisplayFolded());
 }
@@ -367,6 +368,14 @@ bool QTUI_Layer_Tree::AddButtonsToItem( QTreeWidgetItem * pItem, GObject * pObj 
 		pItem->setData(_UILT_COLUMN_SELECT, Qt::UserRole, buttonflag|_UILT_BUTTONFLAG_ADDED);
 		bUpdate = true;
 	}
+	else
+	{
+		QTUI_Layer_SelectionButton * pSelectionButton = (QTUI_Layer_SelectionButton *)this->itemWidget(pItem, _UILT_COLUMN_SELECT);
+		if (pSelectionButton)
+		{
+			pSelectionButton->SetObj(pObj);
+		}
+	}
 
 	buttonflag = pItem->data(_UILT_COLUMN_VISIBLE, Qt::UserRole).toInt(&bOk);
 	if (!bOk || !(buttonflag & _UILT_BUTTONFLAG_ADDED))
@@ -375,6 +384,14 @@ bool QTUI_Layer_Tree::AddButtonsToItem( QTreeWidgetItem * pItem, GObject * pObj 
 		this->setItemWidget(pItem, _UILT_COLUMN_VISIBLE, pVisibleButton);
 		pItem->setData(_UILT_COLUMN_VISIBLE, Qt::UserRole, buttonflag|_UILT_BUTTONFLAG_ADDED);
 		bUpdate = true;
+	}
+	else
+	{
+		QTUI_Layer_VisibleButton * pSelectionButton = (QTUI_Layer_VisibleButton *)this->itemWidget(pItem, _UILT_COLUMN_VISIBLE);
+		if (pSelectionButton)
+		{
+			pSelectionButton->SetObj(pObj);
+		}
 	}
 
 	buttonflag = pItem->data(_UILT_COLUMN_LOCK, Qt::UserRole).toInt(&bOk);
@@ -385,6 +402,15 @@ bool QTUI_Layer_Tree::AddButtonsToItem( QTreeWidgetItem * pItem, GObject * pObj 
 		pItem->setData(_UILT_COLUMN_LOCK, Qt::UserRole, buttonflag|_UILT_BUTTONFLAG_ADDED);
 		bUpdate = true;
 	}
+	else
+	{
+		QTUI_Layer_LockButton * pSelectionButton = (QTUI_Layer_LockButton *)this->itemWidget(pItem, _UILT_COLUMN_LOCK);
+		if (pSelectionButton)
+		{
+			pSelectionButton->SetObj(pObj);
+		}
+	}
+
 	if (bUpdate)
 	{
 		UpdateNodeInfo(pItem, pObj);
