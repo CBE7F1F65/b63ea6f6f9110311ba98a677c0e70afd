@@ -126,3 +126,11 @@ void QMainInterface::ResolveMarkingOverlapping()
 	}
 
 }
+
+void QMainInterface::OnDeleteNode( GObject * pDeletedObj )
+{
+	if (pLayerTree)
+	{
+		pLayerTree->OnDeleteNode(pDeletedObj);
+	}
+}

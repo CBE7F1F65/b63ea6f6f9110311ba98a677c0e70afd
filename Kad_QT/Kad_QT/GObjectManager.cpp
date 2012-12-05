@@ -11,6 +11,7 @@
 #include "Command.h"
 #include "MarkingManager.h"
 #include "DXFWriter.h"
+#include "qmaininterface.h"
 
 #include "URManager.h"
 
@@ -169,6 +170,7 @@ void GObjectManager::AddNodeToDelete( GObject * pDeletedObj )
 		MarqueeSelect::getInstance().OnDeleteNode(pDeletedObj);
 		GObjectPicker::getInstance().OnDeleteNode(pDeletedObj);
 		MarkingManager::getInstance().OnDeleteNode(pDeletedObj);
+		QMainInterface::getInstance().OnDeleteNode(pDeletedObj);
 	}
 }
 /*

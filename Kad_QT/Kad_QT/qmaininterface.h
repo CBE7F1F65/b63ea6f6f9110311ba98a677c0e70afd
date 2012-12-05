@@ -36,6 +36,8 @@ public:
 	bool UnregisterPMarkingWidget(QTUI_MarkingFloating_Widget * pWidget=NULL);
 	void ResolveMarkingOverlapping();
 
+	void OnDeleteNode(GObject * pDeletedObj);
+
     /*
     Kad_QT * pMainWindow;
     void SetPMainWindow(Kad_QT * p)

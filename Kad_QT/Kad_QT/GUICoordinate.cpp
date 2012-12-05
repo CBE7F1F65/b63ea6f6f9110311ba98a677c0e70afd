@@ -159,7 +159,7 @@ void GUICoordinate::OnProcessZoomCommand( bool bMul )
 		float _s = pmain->GetScreenDPI()/pmain->GetDisplayMul();
 		if (scale == _s)
 		{
-			_scale = 12.8f;
+			_scale = 9.88;
 		}
 		else
 		{

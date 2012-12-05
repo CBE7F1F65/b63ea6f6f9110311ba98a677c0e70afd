@@ -299,21 +299,30 @@ GObject *QTUI_Layer_Tree::GetObjFromItem(QTreeWidgetItem *pItem)
     {
         bool bOk = false;
         GObject * pObj = (GObject *)(pItem->data(_UILT_COLUMN_TREE, Qt::UserRole).toUInt(&bOk));
-        Q_ASSERT(bOk);
+        if (!bOk)
+        {
+			return NULL;
+        }
         return pObj;
     }
-    Q_ASSERT(false);
     return NULL;
 }
 
 void QTUI_Layer_Tree::RestructChildren(QTreeWidgetItem *pItem, GObject *pObjParent)
 {
+	int nItemCount = pItem->childCount();
     if (!pObjParent || !pObjParent->getNonAttributeChildrenCount())
-    {
+	{
+		if (nItemCount)
+		{
+			for (int i=0; i<nItemCount; i++)
+			{
+				pItem->removeChild(pItem->child(0));
+			}
+		}
         return;
     }
 
-	int nItemCount = pItem->childCount();
 	int nChildCount = pObjParent->getChildrenCount();
 	if (nItemCount > nChildCount)
 	{
@@ -986,5 +995,31 @@ void QTUI_Layer_Tree::UpdateSelectButton( QTreeWidgetItem * pItem, bool bSelect 
 		{
 			pSelectionButton->click();
 		}
+	}
+}
+
+void QTUI_Layer_Tree::OnDeleteNode( GObject * pDeletedObj )
+{
+	bool bReselect = false;
+	for (list<GObject *>::iterator it=selectednodes.begin(); it!=selectednodes.end();)
+	{
+		GObject * pObj = *it;
+		if (pObj == pDeletedObj)
+		{
+			it = selectednodes.erase(it);
+			bReselect = true;
+			if (pSavedSelectedLayer == pObj || pSavedSelectedLayer->isAncestorOf(pDeletedObj))
+			{
+				pSavedSelectedLayer = NULL;
+			}
+		}
+		else
+		{
+			++it;
+		}
+	}
+	if (bReselect)
+	{
+		Reselect();
 	}
 }

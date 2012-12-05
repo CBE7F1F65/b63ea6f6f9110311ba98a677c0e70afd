@@ -26,6 +26,8 @@ public:
 	bool AddButtonsToItem(QTreeWidgetItem * pItem, GObject * pObj);
 	void AddChildrenButtonsToItem(QTreeWidgetItem * pItem);
 
+	void OnDeleteNode(GObject * pDeletedObj);
+
 public:
 	void RebuildTree( GObject * changebase, GObject * activeitem );
     list<GObject *> * GetActiveNodes();
