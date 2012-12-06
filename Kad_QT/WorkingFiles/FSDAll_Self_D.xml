@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<KadXML Signature="h5nc" Version="0.1">
+    <NODE_GMainBaseNode>
+        <PROP_ID>0</PROP_ID>
+        <PRPS_LineColors>
+            <PROP_0>4294967295</PROP_0>
+            <PROP_1>4294922063</PROP_1>
+            <PROP_2>4283432783</PROP_2>
+            <PROP_3>4294940928</PROP_3>
+            <PROP_4>4294967119</PROP_4>
+        </PRPS_LineColors>
+        <ATTR_GLayer>
+            <PROP_LayerID>0</PROP_LayerID>
+        </ATTR_GLayer>
+        <PRPS_Children>
+            <NODE_GLayer>
+                <PROP_ID>1</PROP_ID>
+                <PROP_DisplayName>Layer 1</PROP_DisplayName>
+                <ATTR_GLayer>
+                    <PROP_LayerID>0</PROP_LayerID>
+                </ATTR_GLayer>
+            </NODE_GLayer>
+        </PRPS_Children>
+    </NODE_GMainBaseNode>
+</KadXML>
