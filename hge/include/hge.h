@@ -39,9 +39,12 @@
 
 
 #if IF_FRAMWORK(HFRAMEWORK_QT)
+
  #include <qgl.h>
+ #include <QtOpenGL>
  #include <QtOpenGL\QGLFunctions>
  #include <QtOpenGL\QGLFramebufferObject>
+ 
 #endif
 
 #if IF_PLATFORM(HPLATFORM_WIN)
@@ -131,10 +134,12 @@
 */
 #ifndef M_PI
  #define M_PI	3.14159265358979323846f
- #define M_PI_2	1.57079632679489661923f
- #define M_PI_4	0.785398163397448309616f
- #define M_1_PI	0.318309886183790671538f
- #define M_2_PI	0.636619772367581343076f
+#endif
+#ifndef M_PI_2
+#define M_PI_2	1.57079632679489661923f
+#define M_PI_4	0.785398163397448309616f
+#define M_1_PI	0.318309886183790671538f
+#define M_2_PI	0.636619772367581343076f
 #endif
 
 /************************************************************************/

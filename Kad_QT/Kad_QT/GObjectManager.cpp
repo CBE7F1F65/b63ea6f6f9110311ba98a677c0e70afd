@@ -24,6 +24,8 @@
 
 #define _GMLOCKTREENODECOUNT	10
 
+list<GObjectCopyInfo::GCopyLayerInfo> GObjectCopyInfo::staticLayers;
+
 GObjectManager::GObjectManager()
 {
 	// Put all to Release
@@ -96,6 +98,18 @@ void GObjectManager::Update()
 		{
 			tarObjs = tar;
 			RenderHelper::getInstance().BeginRenderTar(tar);
+			//
+			/*
+			static HGE * hge = MainInterface::getInstance().hge;
+			static HTEXTURE tex = hge->Texture_Load("c:/Users/h5nc/Desktop/Galliano/Pattern-54.jpg");
+			static hgeSprite sp(tex, 0, 0, -1, -1);
+			GUICoordinate * pguic = &GUICoordinate::getInstance();
+			float tox = pguic->CtoSx(0);
+			float toy = pguic->CtoSy(0);
+			sp.SetColor(0xcfc0c0c0);
+			sp.RenderStretch(tox, toy, pguic->CtoSx(hge->Texture_GetWidth(tex)/15.0f), pguic->CtoSy(hge->Texture_GetHeight(tex)/15.0f));
+			*/
+			//
 			pBaseNode->CallRender();
 			RenderHelper::getInstance().EndRenderTar();
 			bRedraw = false;
@@ -1013,7 +1027,7 @@ bool GObjectManager::WillSelfMove( GObject * pObj )
 	return false;
 }
 
-bool GObjectManager::AddCopyNode( GObject * pObj, int relid/*=-1*/ )
+bool GObjectManager::AddCopyNode( GObject * pObj, int relid/*=-1*/, bool bWithLayer/*=false*/ )
 {
 	if (IsInCopyList(pObj))
 	{
@@ -1055,6 +1069,8 @@ bool GObjectManager::AddCopyNode( GObject * pObj, int relid/*=-1*/ )
 	{
 		return false;
 	}
+	pci->SetRecordLayer(bWithLayer);
+	pci->SetName();
 	lstcopy.push_back(*pci);
 
 	if (pObj->isLine())
@@ -1069,7 +1085,7 @@ bool GObjectManager::AddCopyNode( GObject * pObj, int relid/*=-1*/ )
 				GPoint * pClingByPoint = *it;
 				if (pClingByPoint->isNotch())
 				{
-					AddCopyNode(pClingByPoint, relid-1);
+					AddCopyNode(pClingByPoint, relid-1, bWithLayer);
 				}
 			}
 		}
@@ -1080,6 +1096,7 @@ bool GObjectManager::AddCopyNode( GObject * pObj, int relid/*=-1*/ )
 void GObjectManager::ClearCopiedNodes()
 {
 	lstcopy.clear();
+	GObjectCopyInfo::staticLayers.clear();
 }
 
 bool GObjectManager::PasteNodes()
@@ -1093,6 +1110,7 @@ bool GObjectManager::PasteNodes()
 	pmarq->DeSelectAll();
 
 	GLayer * pLayer = GetActiveLayer();
+
 	if (pLayer->isDisplayLocked())
 	{
 		return false;
@@ -1101,6 +1119,41 @@ bool GObjectManager::PasteNodes()
 	for (list<GObjectCopyInfo>::iterator it=lstcopy.begin(); it!=lstcopy.end(); ++it)
 	{
 		GObjectCopyInfo * pci = &(*it);
+
+		if (pci->layerIndexID >= 0)
+		{
+			int ti = 0;
+			GObjectCopyInfo::GCopyLayerInfo * pCLInfo = NULL;
+			for (list<GObjectCopyInfo::GCopyLayerInfo>::iterator jt=pci->staticLayers.begin(); jt!=pci->staticLayers.end(); ++jt)
+			{
+				if (ti == pci->layerIndexID)
+				{
+					pCLInfo = &(*jt);
+					break;
+				}
+				ti++;
+			}
+			if (pCLInfo)
+			{
+				if (pCLInfo->pCreatedLayer)
+				{
+					GLayer * ptLayer = pCLInfo->pCreatedLayer;
+					if (ptLayer->isLayer())
+					{
+						pLayer = ptLayer;
+					}
+				}
+				else
+				{
+					GLayer * pNewLayer = NewLayer(pLayer, pCLInfo->lName.c_str());
+					if (pNewLayer)
+					{
+						pCLInfo->pCreatedLayer = pNewLayer;
+						pLayer = pNewLayer;
+					}
+				}
+			}
+		}
 
 		switch (pci->type)
 		{
@@ -1132,6 +1185,13 @@ bool GObjectManager::PasteNodes()
 				{
 					return false;
 				}
+				if (pci->strName.length())
+				{
+					if (pci->strName != StringManager::getInstance().GetNNNotchName())
+					{
+						pNotch->setDisplayName(pci->strName.c_str());
+					}
+				}
 				pci->SetNewRel(pNotch);
 				break;
 			}
@@ -1144,6 +1204,13 @@ bool GObjectManager::PasteNodes()
 				}
 				pBezier->SetSA(&(pci->sainfo));
 				pci->SetNewRel(pBezier);
+				if (pci->strName.length())
+				{
+					if (pci->strName != StringManager::getInstance().GetNNLineName())
+					{
+						pBezier->setDisplayName(pci->strName.c_str());
+					}
+				}
 				pmarq->AddSelect(pBezier);
 				break;
 			}
@@ -1261,4 +1328,43 @@ void GPieceBoundaryInfo::WriteDXFLines( DXFWriter * pdxfw, float fmul/*=1.0f*/ )
 			}
 		}
 	}
+}
+/************************************************************************/
+/* GObjectCopyInfo                                                      */
+/************************************************************************/
+void GObjectCopyInfo::SetRecordLayer( bool bRecord )
+{
+	if (bRecord)
+	{
+		GLayer * pLayer = pObj->getLayer();
+		if (pLayer)
+		{
+			layerID = pLayer->getID();
+			if (layerID >= 0)
+			{
+				int i=0;
+				if (!staticLayers.empty())
+				{
+					for (list<GCopyLayerInfo>::iterator it=staticLayers.begin(); it!=staticLayers.end(); ++it)
+					{
+						if (layerID == (*it).lID)
+						{
+							layerIndexID = i;
+							return;
+						}
+						i++;
+					}
+				}
+				GCopyLayerInfo _slinfo;
+				_slinfo.pCreatedLayer = NULL;
+				_slinfo.lID = layerID;
+				_slinfo.lName = pLayer->getDisplayName();
+				staticLayers.push_back(_slinfo);
+				layerIndexID = i;
+				return;
+			}
+		}
+	}
+	layerID = -1;
+	layerIndexID = -1;
 }

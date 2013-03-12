@@ -658,9 +658,6 @@
     <ClInclude Include="MainDependency.h">
       <Filter>Main\Core</Filter>
     </ClInclude>
-    <ClInclude Include="GObject.h">
-      <Filter>Main\GObject\GObject</Filter>
-    </ClInclude>
     <ClInclude Include="GObjectManager.h">
       <Filter>Main\GObject\GObjectManager</Filter>
     </ClInclude>
@@ -965,6 +962,9 @@
     </CustomBuild>
     <CustomBuild Include="QTUI_Layer_Buttons.h">
       <Filter>QT\Layer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GObject.h">
+      <Filter>Main\GObject\GObject</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

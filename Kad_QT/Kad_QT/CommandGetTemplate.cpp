@@ -62,6 +62,7 @@ CommandTemplate * CommandTemplate::GetTemplateByCommand( int comm )
 		return &AttachCommand::getInstance();
 
 	case COMM_COPY:
+	case COMM_COPYLAYER:
 		return &CopyCommand::getInstance();
 	case COMM_PASTE:
 		return &PasteCommand::getInstance();

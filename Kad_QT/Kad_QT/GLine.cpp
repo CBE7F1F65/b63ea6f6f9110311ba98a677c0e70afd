@@ -1781,12 +1781,17 @@ GImageLine::GImageLine( GObject * parent, const char * filename, float x, float 
 
 	float w = 10;
 	float h = 10;
+	/*
+	if (!pImg && strfilename.length())
+	{
+		pImg = new QImage(strfilename.c_str());
+	}
 	if (pImg)
 	{
 		w = pImg->width();
 		h = pImg->height();
 	}
-
+	*/
 	plbegin = new GAnchorPoint(this, x-w/2, y-h/2);
 	plend = new GAnchorPoint(this, x+w/2, y+h/2);
 	pmid = new GMidPoint(this);

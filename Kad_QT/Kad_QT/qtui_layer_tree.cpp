@@ -171,7 +171,7 @@ bool QTUI_Layer_Tree::GetDragDroppedNodes(GLayer **pLayerNode, GObject **pAfterN
 
 void QTUI_Layer_Tree::dropEvent(QDropEvent *e)
 {
-    QWidget * pWidget = e->source();
+    QWidget * pWidget = (QWidget *)e->source();
     if (pWidget == this)
     {
 		DropIndicatorPosition dip = this->dropIndicatorPosition();

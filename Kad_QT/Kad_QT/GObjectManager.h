@@ -73,6 +73,8 @@ public:
 	{ pObj=pLine; type = GOBJCOPY_LINE; xb = _xb; yb = _yb; xe = _xe; ye = _ye; xbh = _xbh; ybh = _ybh; xeh = _xeh; yeh = _yeh; if (psainfo){sainfo=*psainfo;};	};
 
 	void SetNewRel(GObject * pObj){pNewRel=pObj;};
+	void SetRecordLayer(bool bRecord);
+	void SetName(){strName=pObj->getDisplayName();};
 
 public:
 	int type;
@@ -88,7 +90,18 @@ public:
 	int relid;
 	GSAInfo sainfo;
 	GClingInfo clinfo;
+	string strName;
 	GObject * pNewRel;
+	int layerID;
+	int layerIndexID;
+
+	static struct GCopyLayerInfo{
+		GLayer * pCreatedLayer;
+		int lID;
+		string lName;
+	}lInfo;
+
+	static list<GCopyLayerInfo> staticLayers;
 };
 
 class DXFWriter;
@@ -185,7 +198,7 @@ public:
 	void SetWillSelfMoveList(list<GObject *> * pobjs=NULL);
 	bool WillSelfMove(GObject * pObj);
 
-	bool AddCopyNode(GObject * pObj, int relid=-1);
+	bool AddCopyNode(GObject * pObj, int relid=-1, bool bWithLayer=false);
 	void ClearCopiedNodes();
 	bool PasteNodes();
 	bool IsInCopyList(GObject * pObj);

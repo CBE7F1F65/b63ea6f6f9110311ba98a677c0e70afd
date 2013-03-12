@@ -170,6 +170,7 @@ void StringManager::FillSCInfo()
 	_BSET(	COMM_ATTACH,	"ATTACH",	"AT",	"Attach Item",	"");
 
 	_BSET(	COMM_COPY,	"COPY",	"CO",	"Copy Item",	""	);
+	_BSET(	COMM_COPYLAYER,	"COPYLAYER",	"CL",	"Copy With Layer",	""	);
 	_BSET(	COMM_PASTE,	"PASTE",	"PA",	"Paste Item",	""	);
 
 	_BSET(	COMM_SETNODENAME,	"SETNODENAME",	"",	"Set Display Name",	""	);

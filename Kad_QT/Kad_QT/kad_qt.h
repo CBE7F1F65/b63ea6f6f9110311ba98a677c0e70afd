@@ -1,7 +1,7 @@
 #ifndef KAD_QT_H
 #define KAD_QT_H
 
-#include <QtGui/QMainWindow>
+#include <QMainWindow>
 #include "ui_kad_qt.h"
 
 class Kad_QT : public QMainWindow
@@ -9,7 +9,7 @@ class Kad_QT : public QMainWindow
 	Q_OBJECT
 
 public:
-	Kad_QT(QWidget *parent = 0, Qt::WFlags flags = 0);
+    Kad_QT(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	~Kad_QT();
 
 protected:
@@ -23,6 +23,7 @@ private slots:
 	void SLT_RedoShortcutActivated();
 
 	void SLT_CopyShortcutActivated();
+	void SLT_CopyLayerShortcutActivated();
 	void SLT_PasteShortcutActivated();
 	void SLT_SelectAllShortcutActivated();
 	void SLT_SelectAllThisLayerShortcutActivated();

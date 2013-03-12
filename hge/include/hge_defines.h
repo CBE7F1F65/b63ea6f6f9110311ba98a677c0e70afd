@@ -10,6 +10,8 @@
 //typedef unsigned __int64	QWORD;
 //typedef __int64			LONGLONG;
 
+#define GL_GLEXT_PROTOTYPES
+
 #if IF_PLATFORM(HPLATFORM_PSP)
  #include <psptypes.h>
  #include <pspgu.h>

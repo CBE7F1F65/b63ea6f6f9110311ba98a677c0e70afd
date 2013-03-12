@@ -115,12 +115,12 @@ void CopyCommand::OnDoneCommand()
 			PUSHREVERTABLESTATE_BEGIN,
 			CCMake_C(COMM_I_COMMAND, 2+objcount, 1),
 			CCMake_C(COMM_I_COMM_WORKINGLAYER, workinglayerID),
-			CCMake_C(COMM_COPY),
+			CCMake_C(comm),
 			NULL
 			);
 		for (list<GObject *>::iterator it=lstObj.begin(); it!=lstObj.end(); ++it)
 		{
-			pgm->AddCopyNode(*it);
+			pgm->AddCopyNode(*it, -1, comm==COMM_COPYLAYER);
 			PushRevertibleBatch(
 				PUSHREVERTABLESTATE_CONTINUE,
 				CCMake_I((*it)->getID()),

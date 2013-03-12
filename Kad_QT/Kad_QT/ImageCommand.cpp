@@ -24,7 +24,7 @@ void ImageCommand::OnProcessCommand()
 	{
 		pcommand->StepTo(
 			CSI_IMAGE_WANTFILENAME,
-			CWP_INDEX);
+			CWP_NAME);
 	}
 	else if (step == CSI_IMAGE_WANTFILENAME)
 	{

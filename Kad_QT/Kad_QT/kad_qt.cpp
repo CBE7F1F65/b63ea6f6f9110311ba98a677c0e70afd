@@ -12,8 +12,8 @@
 #define _UISCROLL_LINE	10
 #define _UISCROLL_RANGE	1000
 
-Kad_QT::Kad_QT(QWidget *parent, Qt::WFlags flags)
-	: QMainWindow(parent, flags)
+Kad_QT::Kad_QT(QWidget *parent, Qt::WindowFlags flags)
+    : QMainWindow(parent, flags)
 {
     QMainInterface::getInstance().SetPMainWindow(this);
 
@@ -36,11 +36,13 @@ Kad_QT::Kad_QT(QWidget *parent, Qt::WFlags flags)
 	connect(redoShortcut_2, SIGNAL(activated()), this, SLOT(SLT_RedoShortcutActivated()));
 
 	QShortcut * copyShortcut = new QShortcut(QKeySequence(tr("Ctrl+C", "Select|Copy")), this);
+	QShortcut * copyLayerShortcut = new QShortcut(QKeySequence(tr("Ctrl+Shift+C", "Select|CopyLayer")), this);
 	QShortcut * pasteShortcut = new QShortcut(QKeySequence(tr("Ctrl+V", "Select|Paste")), this);
 	QShortcut * selectAllShortcut = new QShortcut(QKeySequence(tr("Ctrl+A", "Select|SelectAll")), this);
 	QShortcut * selectAllThisLayerShortcut = new QShortcut(QKeySequence(tr("Ctrl+Shift+A", "Select|SelectAllThisLayer")), this);
 
 	connect(copyShortcut, SIGNAL(activated()), this, SLOT(SLT_CopyShortcutActivated()));
+	connect(copyLayerShortcut, SIGNAL(activated()), this, SLOT(SLT_CopyLayerShortcutActivated()));
 	connect(pasteShortcut, SIGNAL(activated()), this, SLOT(SLT_PasteShortcutActivated()));
 	connect(selectAllShortcut, SIGNAL(activated()), this, SLOT(SLT_SelectAllShortcutActivated()));
 	connect(selectAllThisLayerShortcut, SIGNAL(activated()), this, SLOT(SLT_SelectAllThisLayerShortcutActivated()));
@@ -106,6 +108,11 @@ void Kad_QT::on_action_Exit_triggered()
 void Kad_QT::SLT_CopyShortcutActivated()
 {
 	MainInterface::getInstance().OnCommand(COMM_COPY);
+}
+
+void Kad_QT::SLT_CopyLayerShortcutActivated()
+{
+	MainInterface::getInstance().OnCommand(COMM_COPYLAYER);
 }
 
 void Kad_QT::SLT_PasteShortcutActivated()

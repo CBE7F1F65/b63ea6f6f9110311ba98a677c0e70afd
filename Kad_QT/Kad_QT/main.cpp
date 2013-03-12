@@ -63,7 +63,7 @@ int customReportHook(int /* reportType */, char* message, int* /* returnValue */
 
 
 #include "kad_qt.h"
-#include <QtGui/QApplication>
+#include <QApplication>
 
 
 int main(int argc, char *argv[]) {
