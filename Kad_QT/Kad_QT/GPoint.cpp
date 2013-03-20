@@ -1173,6 +1173,31 @@ const char * GNotch::getDisplayName()
 	return StringManager::getInstance().GetNNNotchName();
 }
 
+int GNotch::GetAngle()
+{
+	float fProp=0;
+	bool bOk = clInfo.CalculateClingProportion(&fProp);
+	if (bOk)
+	{
+		PointF2D ptPerp = this->GetPointF2D();
+		ptPerp = getLine()->GetTangentPointF2D(fProp);
+		int angle = ptPerp.GetAngle();
+
+		GSAInfo * pSAInfo = getLine()->GetSAInfo();
+		if (pSAInfo)
+		{
+			float fmulsa = pSAInfo->GetMulSA();
+			if (fmulsa < 0)
+			{
+				angle -= ANGLEBASE_180;
+			}
+		}
+
+		return angle + ANGLEBASE_90;
+	}
+	return 0;
+}
+
 void GNotch::OnRender( int iHighlightLevel/*=0*/ )
 {
 	DWORD col = getLineColor(iHighlightLevel);

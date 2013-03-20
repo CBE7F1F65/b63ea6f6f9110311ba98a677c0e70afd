@@ -32,7 +32,8 @@ signals:
     void SIG_OnChar(QString);
     
 public slots:
-    void SLT_OnUpdate();
+	void SLT_OnUpdate();
+	void SLT_OnGLUpdate();
     void SLT_HScrollValueChanged(int val);
     void SLT_VScrollValueChanged(int val);
 
@@ -46,6 +47,7 @@ public:
 
 private:
 	QTimer * updatetimer;
+	QTimer * glupdatetimer;
 };
 
 #endif // QTUI_GLVIEW_H

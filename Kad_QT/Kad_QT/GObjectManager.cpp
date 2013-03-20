@@ -929,12 +929,12 @@ bool GObjectManager::Dump( list<GObject *>& lobjs, bool bImages )
 		float xr;
 		float yb;
 		ppbi->GetBoundingBox(xl, yt, xr, yb);
-		pdxfw->SetPieceInfo(xr-xl, yb-yt);
+		pdxfw->SetPieceInfo(xr-xl, yb-yt, (qf.baseName()+tlayername).toUtf8());
 		pdxfw->WriteHeader();
 		pdxfw->WriteTables();
 		pdxfw->WriteBlocksBegin();
 		pdxfw->WriteGrain();
-		pdxfw->WriteFrame(_GMDXFPIECEGROWTH);
+//		pdxfw->WriteFrame(_GMDXFPIECEGROWTH);
 
 		ppbi->WriteDXFLines(pdxfw, 1.0f/fdisplaymul);
 
@@ -1310,22 +1310,26 @@ void GPieceBoundaryInfo::WriteDXFLines( DXFWriter * pdxfw, float fmul/*=1.0f*/ )
 		if (pObj->isRepresentableLine())
 		{
 			GLine * pLine = (GLine *)pObj;
-			/*
+			
 			if (pLine->GetSAInfo()->GetRawSA())
 			{
-				layerID = DXFLAYER_BOUNDARY;
-				qualityID = DXFLAYER_QUALITYVALIDATIONC;
+				pdxfw->WriteGLine(pLine, -xl, -yt, DXFLAYER_BOUNDARY, DXFLAYER_QUALITYVALIDATIONC);
 			}
-			*/
-			if (pLine->isStraightLine())
+			
+		}
+	}
+	for (list<GObject *>::iterator it=lstObjs.begin(); it!=lstObjs.end(); ++it)
+	{
+		GObject * pObj = *it;
+		if (pObj->isRepresentableLine())
+		{
+			GLine * pLine = (GLine *)pObj;
+
+			if (!pLine->GetSAInfo()->GetRawSA())
 			{
-				pdxfw->WriteLine(pLine->GetBeginPoint()->getX()-xl, pLine->GetBeginPoint()->getY()-yt, pLine->GetEndPoint()->getX()-xl, pLine->GetEndPoint()->getY()-yt, layerID, qualityID);
+				pdxfw->WriteGLine(pLine, -xl, -yt, DXFLAYER_INTERNAL, DXFLAYER_INTERNALQUALITYC);
 			}
-			else
-			{
-				GBezierLine * pBezier = (GBezierLine *)pLine;
-				pdxfw->WriteBezier(*(pBezier->getBSInfo()), -xl, -yt, layerID, qualityID);
-			}
+
 		}
 	}
 }

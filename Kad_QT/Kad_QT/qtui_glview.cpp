@@ -6,7 +6,8 @@
 
 using namespace Qt;
 
-#define GLVIEW_UPDATEINTERVAL	4
+#define GLVIEW_UPDATEINTERVAL	1
+//#define GLVIEW_GLUPDATEINTERVAL	4
 
 HGE * hge=MainInterface::getInstance().hge;
 
@@ -16,6 +17,7 @@ QTUI_GLView::QTUI_GLView(QWidget *parent)
     QMainInterface::getInstance().SetPGLView(this);
 
     updatetimer = NULL;
+	glupdatetimer = NULL;
 
     this->installEventFilter(this);
 }
@@ -26,25 +28,37 @@ QTUI_GLView::~QTUI_GLView()
 	{
 		delete updatetimer;
 	}
+	if (glupdatetimer)
+	{
+		delete glupdatetimer;
+	}
 	MainInterface::getInstance().Exit();
 }
 
 void QTUI_GLView::initializeGL()
 {
-    QGLWidget::initializeGL();
+	QGLWidget::initializeGL();
 	MainInterface::getInstance().hge->Gfx_ResolveGLFuncs(this->context());
 }
 
 void QTUI_GLView::OnMainFrameSetupUIDone()
 {
     MainInterface::getInstance().OnPreInit();
-    MainInterface::getInstance().OnInit(this, this->width(), this->height());
-    if (!updatetimer)
-    {
-        updatetimer = new QTimer(this);
-        connect( updatetimer, SIGNAL(timeout()), SLOT(SLT_OnUpdate()) );
-        updatetimer->start( GLVIEW_UPDATEINTERVAL );
-    }
+	MainInterface::getInstance().OnInit(this, this->width(), this->height());
+	if (!updatetimer)
+	{
+		updatetimer = new QTimer(this);
+		connect( updatetimer, SIGNAL(timeout()), SLOT(SLT_OnUpdate()) );
+		updatetimer->start( GLVIEW_UPDATEINTERVAL );
+	}
+	/*
+	if (!glupdatetimer)
+	{
+		glupdatetimer = new QTimer(this);
+		connect( glupdatetimer, SIGNAL(timeout()), SLOT(SLT_OnGLUpdate()) );
+		updatetimer->start( GLVIEW_GLUPDATEINTERVAL );
+	}
+	*/
 }
 
 void QTUI_GLView::resizeGL( int w, int h )
@@ -61,12 +75,19 @@ void QTUI_GLView::paintGL()
 
 void QTUI_GLView::SLT_OnUpdate()
 {
+	updatetimer->stop();
 	updateGL();
 
 	MainInterface::getInstance().OnUpdateTimer();
 
-    QMainInterface::getInstance().GetPStatusBar()->UpdateStatusBar();
-    //	ClearKeyState();
+	QMainInterface::getInstance().GetPStatusBar()->UpdateStatusBar();
+	updatetimer->start(GLVIEW_UPDATEINTERVAL);
+	//	ClearKeyState();
+}
+
+void QTUI_GLView::SLT_OnGLUpdate()
+{
+	updateGL();
 }
 
 void QTUI_GLView::SLT_HScrollValueChanged(int val)

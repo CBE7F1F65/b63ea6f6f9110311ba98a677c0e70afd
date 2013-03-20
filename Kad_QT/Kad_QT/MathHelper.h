@@ -50,6 +50,11 @@ public:
 		return *this;
 	};
 
+	int GetAngle()
+	{
+		return ANGLE(atan2f(y, x));
+	};
+
 public:
 
 	float x;

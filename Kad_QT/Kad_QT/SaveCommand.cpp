@@ -20,16 +20,7 @@ void SaveCommand::OnDoneCommand()
 {
 	MainInterface::getInstance().SaveFile(comm==COMM_SAVEAS?true:false);
 	/*
-	list<GObject *> lstObj = *(pgm->GetSelectedNodes(false));
-	lstObj.sort();
-	if (!lstObj.empty())
-	{
-		int i=0;
-		for (list<GObject *>::reverse_iterator it=lstObj.rbegin(); it!=lstObj.rend(); ++it, i++)
-		{
-			pcommand->SetParamI(CSP_DUMP_I_INDEXES+i, (*it)->getID(), CWP_INDEX);
-		}
-	}
+	list<GObject *> lstObj;
 	
 	for (int j=1; j<4011; j++)
 	{

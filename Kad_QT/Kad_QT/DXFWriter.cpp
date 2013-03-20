@@ -85,14 +85,14 @@ bool DXFWriter::WriteBlocksBegin()
 		return false;
 	}
 	float fhc = fHeight/2*fmul;
-	QString qsbb = QString("  0\nSECTION\n  2\nBLOCKS\n  0\nBLOCK\n  8\n0\n  2\n%1\n 70\n64\n 10\n0.0000\n 20\n0.0000\n  0\nTEXT\n  8\n1\n 10\n%2\n 20\n%3\n 40\n.25\n 50\n0.0000\n  1\nPiece Name: %1\n  7\nSTANDARD\n  0\nTEXT\n  8\n1\n 10\n%2\n 20\n%4\n 40\n.25\n 50\n0.0000\n  1\nQuantity: 0,1\n  7\nSTANDARD\n  0\nTEXT\n  8\n1\n 10\n%2\n 20\n%5\n 40\n.25\n 50\n0.0000\n  1\nANNOTATION: CUT\n  7\nSTANDARD\n  0\nTEXT\n  8\n1\n 10\n%2\n 20\n%6\n 40\n.25\n 50\n0.0000\n  1\nCATEGORY: SIZE\n  7\nSTANDARD\n  0\nTEXT\n  8\n1\n 10\n%2\n 20\n%7\n 40\n.25\n 50\n0.0000\n  1\nSIZE: NONE\n  7\nSTANDARD\n")
+	QString qsbb = QString("  0\nSECTION\n  2\nBLOCKS\n  0\nBLOCK\n  8\n0\n  2\n%1\n 70\n64\n 10\n0.0000\n 20\n0.0000\n  0\nTEXT\n  8\n1\n 10\n%2\n 20\n%3\n 40\n.25\n 50\n0.0000\n  1\nPiece Name: %1\n  7\nSTANDARD\n  0\nTEXT\n  8\n1\n 10\n%2\n 20\n%4\n 40\n.25\n 50\n0.0000\n  1\nQuantity: 0,1\n  7\nSTANDARD\n  0\nTEXT\n  8\n1\n 10\n%2\n 20\n%5\n 40\n.25\n 50\n0.0000\n  1\nANNOTATION: CUT 1\n  7\nSTANDARD\n  0\nTEXT\n  8\n1\n 10\n%2\n 20\n%6\n 40\n.25\n 50\n0.0000\n  1\nCATEGORY: SIZE 6\n  7\nSTANDARD\n  0\nTEXT\n  8\n1\n 10\n%2\n 20\n%7\n 40\n.25\n 50\n0.0000\n  1\nSIZE: 6\n  7\nSTANDARD\n")
 		.arg(strpiecename).arg(fWidth/2*fmul).arg(fhc).arg(fhc+_DXFTEXTYOFFSET).arg(fhc+_DXFTEXTYOFFSET*2).arg(fhc+_DXFTEXTYOFFSET*3).arg(fhc+_DXFTEXTYOFFSET*4);
 	QTextStream qts(pdxf);
 	qts<<qsbb;
 	return true;
 }
 
-bool DXFWriter::WriteLine( float x0, float y0, float x1, float y1, int layerID/*=DXFLAYER_INTERNAL*/, int qualityID/*=DXFLAYER_INTERNALQUALITYC*/ )
+bool DXFWriter::WriteDirectLine( float x0, float y0, float x1, float y1, int layerID/*=DXFLAYER_INTERNAL*/, int qualityID/*=DXFLAYER_INTERNALQUALITYC*/ )
 {
 	if (!pdxf)
 	{
@@ -119,6 +119,7 @@ bool DXFWriter::WriteLine( float x0, float y0, float x1, float y1, int layerID/*
 	QString qsline("0\nLINE\n");
 	qsline+="8\n"+QString::number(layerID)+"\n10\n"+QString::number(x0)+"\n20\n"+QString::number(y0)+"\n30\n0\n11\n"+QString::number(x1)+"\n21\n"+QString::number(y1)+"\n31\n0\n";
 	*/
+
 	QString qsline = QString("  0\nPOLYLINE\n  8\n%1\n 66\n1\n 70\n0\n  0\nVERTEX\n  8\n%1\n 10\n%4\n 20\n%5\n  0\nVERTEX\n  8\n%1\n 10\n%6\n 20\n%7\n  0\nSEQEND\n  8\n%1\n  0\nPOLYLINE\n  8\n%2\n 66\n1\n 70\n0\n  0\nVERTEX\n  8\n%2\n 10\n%4\n 20\n%5\n  0\nVERTEX\n  8\n%2\n 10\n%6\n 20\n%7\n  0\nSEQEND\n  8\n%2\n  0\nPOINT\n  8\n%3\n 10\n%4\n 20\n%5\n  0\nPOINT\n  8\n%3\n 10\n%6\n 20\n%7\n")
 		.arg(layerID).arg(qualityID).arg(DXFLAYER_TURNPOINT).arg(x0).arg(y0).arg(x1).arg(y1);
 	QTextStream qts(pdxf);
@@ -127,56 +128,125 @@ bool DXFWriter::WriteLine( float x0, float y0, float x1, float y1, int layerID/*
 
 }
 
-bool DXFWriter::WriteBezier( BezierSublinesInfo &bsinfo, float xoffset, float yoffset, int layerID/*=DXFLAYER_INTERNAL*/, int qualityID/*=DXFLAYER_INTERNALQUALITYC*/ )
+bool DXFWriter::WriteGLine( GLine * pLine, float xoffset, float yoffset, int layerID/*=DXFLAYER_INTERNAL*/, int qualityID/*=DXFLAYER_INTERNALQUALITYC*/ )
 {
 	if (!pdxf)
 	{
 		return false;
 	}
-	int nsub = bsinfo.GetSubPointsCount();
-	if (nsub < 2)
+
+	list<DXFVertex> lstvertexes;
+
+	GBezierLine * pBezier = NULL;
+	if (!pLine->isStraightLine())
 	{
-		return false;
+		pBezier = (GBezierLine *)pLine;
 	}
 
-	float * xvals = (float *)malloc(sizeof(float)*nsub);
-	float * yvals = (float *)malloc(sizeof(float)*nsub);
-
-	for (int i=0; i<nsub; i++)
+	float beginx = 0;
+	float beginy = 0;
+	float endx = 0;
+	float endy = 0;
+	if (pBezier)
 	{
-		float tempx = (bsinfo.GetX(i)+xoffset)*fmul;
-		float tempy = (bsinfo.GetY(i)+yoffset)*fmul;
-		swap(tempx, tempy);
-		_LimitSmallNumbers(tempx);
-		_LimitSmallNumbers(tempy);
-		xvals[i] = tempx;
-		yvals[i] = tempy;
+		BezierSublinesInfo * pbsi = pBezier->getBSInfo();
+		int nsub = pbsi->GetSubPointsCount();
+		if (nsub < 2)
+		{
+			return false;
+		}
+		for (int i=0; i<nsub; i++)
+		{
+			float fProp = pBezier->CalculateProportion(pbsi->GetX(i), pbsi->GetY(i), i);
+			float tempx = (pbsi->GetX(i)+xoffset)*fmul;
+			float tempy = (pbsi->GetY(i)+yoffset)*fmul;
+			swap(tempx, tempy);
+			_LimitSmallNumbers(tempx);
+			_LimitSmallNumbers(tempy);
+			lstvertexes.push_back(DXFVertex(tempx, tempy, fProp));
+		}
 	}
+	else
+	{
+		float tx0 = (pLine->GetBeginPoint()->getX()+xoffset)*fmul;
+		float ty0 = (pLine->GetBeginPoint()->getY()+yoffset)*fmul;
+		float tx1 = (pLine->GetEndPoint()->getX()+xoffset)*fmul;
+		float ty1 = (pLine->GetEndPoint()->getY()+yoffset)*fmul;
+		swap(tx0, ty0);
+		swap(tx1, ty1);
+		_LimitSmallNumbers(tx0);
+		_LimitSmallNumbers(ty0);
+		_LimitSmallNumbers(tx1);
+		_LimitSmallNumbers(ty1);
+		lstvertexes.push_back(DXFVertex(tx0, ty0, 0));
+		lstvertexes.push_back(DXFVertex(tx1, ty1, 1));
+	}
+	beginx = lstvertexes.front().x;
+	beginy = lstvertexes.front().y;
+	endx = lstvertexes.back().x;
+	endy = lstvertexes.back().x;
+
+	list<GPoint *> * plstclingby = pLine->getClingBy();
+	for (list<GPoint *>::iterator it=plstclingby->begin(); it!=plstclingby->end(); ++it)
+	{
+		if ((*it)->isNotch())
+		{
+			GNotch * pNotch = (GNotch *)(*it);
+			GClingInfo * pcli = pNotch->getClingInfo();
+			float fProp;
+			pcli->CalculateClingProportion(&fProp);
+
+			float tempx = (pNotch->getX()+xoffset)*fmul;
+			float tempy = (pNotch->getY()+yoffset)*fmul;
+			swap(tempx, tempy);
+			_LimitSmallNumbers(tempx);
+			_LimitSmallNumbers(tempy);
+
+			int nAngle = pNotch->GetAngle();
+
+			lstvertexes.push_back(DXFVertex(tempx, tempy, fProp, nAngle));
+		}
+	}
+
+	lstvertexes.sort();
 
 	QString qslinedef = QString("  0\nPOLYLINE\n  8\n%1\n 66\n1\n 70\n0\n").arg(layerID);
 	QString qslinevertexs;
-	for (int i=0; i<nsub; i++)
+
+	for (list<DXFVertex>::iterator it=lstvertexes.begin(); it!=lstvertexes.end(); ++it)
 	{
-		qslinevertexs += QString("  0\nVERTEX\n  8\n%1\n 10\n%2\n 20\n%3\n").arg(layerID).arg(xvals[i]).arg(yvals[i]);
+		qslinevertexs += QString("  0\nVERTEX\n  8\n%1\n 10\n%2\n 20\n%3\n").arg(layerID).arg(it->x).arg(it->y);
 	}
 	qslinevertexs += QString("  0\nSEQEND\n");
 
 	QString qslinequality = QString("  0\nPOLYLINE\n  8\n%1\n 66\n1\n 70\n0\n").arg(qualityID);
 
-	for (int i=0; i<nsub; i++)
+
+	for (list<DXFVertex>::iterator it=lstvertexes.begin(); it!=lstvertexes.end(); ++it)
 	{
-		qslinequality += QString("  0\nVERTEX\n  8\n%1\n 10\n%2\n 20\n%3\n").arg(qualityID).arg(xvals[i]).arg(yvals[i]);
+		qslinequality += QString("  0\nVERTEX\n  8\n%1\n 10\n%2\n 20\n%3\n").arg(qualityID).arg(it->x).arg(it->y);
 	}
 	qslinequality += QString("  0\nSEQEND\n");
-	
-	QString qspointbegin = QString("  0\nPOINT\n  8\n%1\n 10\n%2\n 20\n%3\n").arg(DXFLAYER_TURNPOINT).arg(xvals[0]).arg(yvals[0]);
+
+	QString qspointbegin = QString("  0\nPOINT\n  8\n%1\n 10\n%2\n 20\n%3\n").arg(DXFLAYER_TURNPOINT).arg(beginx).arg(beginy);
 	QString qslinecurvepoint;
-	for (int i=1; i<nsub-1; i++)
+	for (list<DXFVertex>::iterator it=++lstvertexes.begin(); it!=--lstvertexes.end(); ++it)
 	{
-		qslinecurvepoint += QString("  0\nPOINT\n  8\n%1\n 10\n%2\n 20\n%3\n").arg(DXFLAYER_CURVEPOINT).arg(xvals[i]).arg(yvals[i]);
+		int tlayerid = DXFLAYER_CURVEPOINT;
+		if (it->fProp == 0 || it->fProp == 1)
+		{
+			tlayerid = DXFLAYER_TURNPOINT;
+		}
+		qslinecurvepoint += QString("  0\nPOINT\n  8\n%1\n 10\n%2\n 20\n%3\n").arg(tlayerid).arg(it->x).arg(it->y);
+		if (it->nAngle != INT_MAX)
+		{
+			qslinecurvepoint += QString("  0\nPOINT\n  8\n%1\n 10\n%2\n 20\n%3\n").arg(DXFLAYER_NOTCH).arg(it->x).arg(it->y);
+		}
 	}
 
-	QString qspointend = QString("  0\nPOINT\n  8\n%1\n 10\n%2\n 20\n%3\n").arg(DXFLAYER_TURNPOINT).arg(xvals[nsub-1]).arg(yvals[nsub-1]);
+	QString qspointend = QString("  0\nPOINT\n  8\n%1\n 10\n%2\n 20\n%3\n").arg(DXFLAYER_TURNPOINT).arg(endx).arg(endy);
+
+
 
 	QTextStream qts(pdxf);
 	qts<<qslinedef;
@@ -186,7 +256,128 @@ bool DXFWriter::WriteBezier( BezierSublinesInfo &bsinfo, float xoffset, float yo
 	qts<<qslinecurvepoint;
 	qts<<qspointend;
 	return true;
+
 }
+
+/*
+bool DXFWriter::WriteBezier( GBezierLine * pBezier, float xoffset, float yoffset, int layerID/ *=DXFLAYER_INTERNAL* /, int qualityID/ *=DXFLAYER_INTERNALQUALITYC* / )
+{
+	if (!pdxf)
+	{
+		return false;
+	}
+	BezierSublinesInfo * pbsi = pBezier->getBSInfo();
+	int nsub = pbsi->GetSubPointsCount();
+	if (nsub < 2)
+	{
+		return false;
+	}
+
+	list<DXFVertex> lstvertexes;
+
+	list<GPoint *> * plstclingby = pBezier->getClingBy();
+	for (list<GPoint *>::iterator it=plstclingby->begin(); it!=plstclingby->end(); ++it)
+	{
+		if ((*it)->isNotch())
+		{
+			GNotch * pNotch = (GNotch *)(*it);
+			GClingInfo * pcli = pNotch->getClingInfo();
+			float fProp;
+			pcli->CalculateClingProportion(&fProp);
+
+			float tempx = (pNotch->getX()+xoffset)*fmul;
+			float tempy = (pNotch->getY()+yoffset)*fmul;
+			swap(tempx, tempy);
+			_LimitSmallNumbers(tempx);
+			_LimitSmallNumbers(tempy);
+
+			int nAngle = pNotch->GetAngle();
+
+			lstvertexes.push_back(DXFVertex(tempx, tempy, fProp, nAngle));
+		}
+	}
+	for (int i=0; i<nsub; i++)
+	{
+		float fProp = pBezier->CalculateProportion(pbsi->GetX(i), pbsi->GetY(i), i);
+		float tempx = (pbsi->GetX(i)+xoffset)*fmul;
+		float tempy = (pbsi->GetY(i)+yoffset)*fmul;
+		swap(tempx, tempy);
+		_LimitSmallNumbers(tempx);
+		_LimitSmallNumbers(tempy);
+		lstvertexes.push_back(DXFVertex(tempx, tempy, fProp));
+	}
+
+	lstvertexes.sort();
+	/ *
+	float * xvals = (float *)malloc(sizeof(float)*nsub);
+	float * yvals = (float *)malloc(sizeof(float)*nsub);
+
+	for (int i=0; i<nsub; i++)
+	{
+		float tempx = (pbsi->GetX(i)+xoffset)*fmul;
+		float tempy = (pbsi->GetY(i)+yoffset)*fmul;
+		swap(tempx, tempy);
+		_LimitSmallNumbers(tempx);
+		_LimitSmallNumbers(tempy);
+		xvals[i] = tempx;
+		yvals[i] = tempy;
+	}
+	* /
+
+	QString qslinedef = QString("  0\nPOLYLINE\n  8\n%1\n 66\n1\n 70\n0\n").arg(layerID);
+	QString qslinevertexs;
+	/ *
+	for (int i=0; i<nsub; i++)
+	{
+		qslinevertexs += QString("  0\nVERTEX\n  8\n%1\n 10\n%2\n 20\n%3\n").arg(layerID).arg(xvals[i]).arg(yvals[i]);
+	}
+	* /
+	for (list<DXFVertex>::iterator it=lstvertexes.begin(); it!=lstvertexes.end(); ++it)
+	{
+		qslinevertexs += QString("  0\nVERTEX\n  8\n%1\n 10\n%2\n 20\n%3\n").arg(layerID).arg(it->x).arg(it->y);
+	}
+	qslinevertexs += QString("  0\nSEQEND\n");
+
+	QString qslinequality = QString("  0\nPOLYLINE\n  8\n%1\n 66\n1\n 70\n0\n").arg(qualityID);
+
+	/ *for (int i=0; i<nsub; i++)
+	{
+		qslinequality += QString("  0\nVERTEX\n  8\n%1\n 10\n%2\n 20\n%3\n").arg(qualityID).arg(xvals[i]).arg(yvals[i]);
+	}* /
+	for (list<DXFVertex>::iterator it=lstvertexes.begin(); it!=lstvertexes.end(); ++it)
+	{
+		qslinequality += QString("  0\nVERTEX\n  8\n%1\n 10\n%2\n 20\n%3\n").arg(qualityID).arg(it->x).arg(it->y);
+	}
+	qslinequality += QString("  0\nSEQEND\n");
+	
+//	QString qspointbegin = QString("  0\nPOINT\n  8\n%1\n 10\n%2\n 20\n%3\n").arg(DXFLAYER_TURNPOINT).arg(xvals[0]).arg(yvals[0]);
+	QString qslinecurvepoint;
+	/ *
+	for (int i=0; i<nsub; i++)
+	{
+		qslinecurvepoint += QString("  0\nPOINT\n  8\n%1\n 10\n%2\n 20\n%3\n").arg(DXFLAYER_CURVEPOINT).arg(xvals[i]).arg(yvals[i]);
+	}
+	* /
+	for (list<DXFVertex>::iterator it=lstvertexes.begin(); it!=lstvertexes.end(); ++it)
+	{
+		qslinecurvepoint += QString("  0\nPOINT\n  8\n%1\n 10\n%2\n 20\n%3\n").arg(DXFLAYER_CURVEPOINT).arg(it->x).arg(it->y);
+		if (it->nAngle != INT_MAX)
+		{
+			qslinecurvepoint += QString("  0\nPOINT\n  8\n%1\n 10\n%2\n 20\n%3\n").arg(DXFLAYER_NOTCH).arg(it->x).arg(it->y);
+		}
+	}
+
+//	QString qspointend = QString("  0\nPOINT\n  8\n%1\n 10\n%2\n 20\n%3\n").arg(DXFLAYER_TURNPOINT).arg(xvals[nsub-1]).arg(yvals[nsub-1]);
+
+	QTextStream qts(pdxf);
+	qts<<qslinedef;
+	qts<<qslinevertexs;
+	qts<<qslinequality;
+//	qts<<qspointbegin;
+	qts<<qslinecurvepoint;
+//	qts<<qspointend;
+	return true;
+}*/
 
 bool DXFWriter::WriteBlocksEnd()
 {
@@ -229,16 +420,16 @@ bool DXFWriter::WriteEOF()
 
 bool DXFWriter::WriteFrame(float fgrowth/*=0.0f*/)
 {
-	WriteLine(-fgrowth, -fgrowth, fWidth+fgrowth, -fgrowth, DXFLAYER_BOUNDARY, DXFLAYER_QUALITYVALIDATIONC);
-	WriteLine(fWidth+fgrowth, -fgrowth, fWidth+fgrowth, fHeight+fgrowth, DXFLAYER_BOUNDARY, DXFLAYER_QUALITYVALIDATIONC);
-	WriteLine(fWidth+fgrowth, fHeight+fgrowth, -fgrowth, fHeight+fgrowth, DXFLAYER_BOUNDARY, DXFLAYER_QUALITYVALIDATIONC);
-	WriteLine(-fgrowth, fHeight+fgrowth, -fgrowth, -fgrowth, DXFLAYER_BOUNDARY, DXFLAYER_QUALITYVALIDATIONC);
+	WriteDirectLine(-fgrowth, -fgrowth, fWidth+fgrowth, -fgrowth, DXFLAYER_BOUNDARY, DXFLAYER_QUALITYVALIDATIONC);
+	WriteDirectLine(fWidth+fgrowth, -fgrowth, fWidth+fgrowth, fHeight+fgrowth, DXFLAYER_BOUNDARY, DXFLAYER_QUALITYVALIDATIONC);
+	WriteDirectLine(fWidth+fgrowth, fHeight+fgrowth, -fgrowth, fHeight+fgrowth, DXFLAYER_BOUNDARY, DXFLAYER_QUALITYVALIDATIONC);
+	WriteDirectLine(-fgrowth, fHeight+fgrowth, -fgrowth, -fgrowth, DXFLAYER_BOUNDARY, DXFLAYER_QUALITYVALIDATIONC);
 	return true;
 }
 
 bool DXFWriter::WriteGrain()
 {
-	WriteLine(fWidth, 0, fWidth, fHeight, DXFLAYER_GRAIN, DXFLAYER_GRADEREF);
+	WriteDirectLine(fWidth/2, fHeight/4, fWidth/2, fHeight*3/4, DXFLAYER_GRAIN, DXFLAYER_GRADEREF);
 	return true;
 }
 

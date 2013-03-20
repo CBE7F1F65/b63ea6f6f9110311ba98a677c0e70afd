@@ -345,6 +345,7 @@ public:
 	virtual bool canAttach(){return true;};
 	virtual GObject * getEntity(){return this;};
 
+	virtual int GetAngle();
 	virtual void OnRender(int iHighlightLevel/* =0 */);
 
 	virtual GLine * getLine(){return clInfo.GetClingTo();};

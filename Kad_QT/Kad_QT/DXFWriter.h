@@ -44,8 +44,9 @@ public:
 	bool WriteHeader();
 	bool WriteTables();
 	bool WriteBlocksBegin();
-	bool WriteLine(float x0, float y0, float x1, float y1, int layerID=DXFLAYER_INTERNAL, int qualityID=DXFLAYER_INTERNALQUALITYC);
-	bool WriteBezier(BezierSublinesInfo &bsinfo, float xoffset, float yoffset, int layerID=DXFLAYER_INTERNAL, int qualityID=DXFLAYER_INTERNALQUALITYC);
+	bool WriteDirectLine(float x0, float y0, float x1, float y1, int layerID=DXFLAYER_INTERNAL, int qualityID=DXFLAYER_INTERNALQUALITYC);
+	bool WriteGLine(GLine * pLine, float xoffset, float yoffset, int layerID=DXFLAYER_INTERNAL, int qualityID=DXFLAYER_INTERNALQUALITYC);
+//	bool WriteBezier(GBezierLine * pBezier, float xoffset, float yoffset, int layerID=DXFLAYER_INTERNAL, int qualityID=DXFLAYER_INTERNALQUALITYC);
 	bool WriteFrame(float fgrowth=0.0f);
 	bool WriteGrain();
 	bool WriteBlocksEnd();
@@ -65,3 +66,16 @@ private:
 	float fmul;
 };
 
+class DXFVertex
+{
+public:
+	DXFVertex(float _x, float _y, float _fProp, int _nAngle=INT_MAX){x=_x; y=_y; fProp=_fProp; nAngle=_nAngle;};
+	~DXFVertex(){};
+
+	bool operator < (const DXFVertex &right){return fProp < right.fProp;};
+
+	float x;
+	float y;
+	float fProp;
+	int nAngle;
+};
