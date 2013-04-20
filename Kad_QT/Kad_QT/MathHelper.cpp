@@ -1142,7 +1142,7 @@ int BezierSublinesInfo::ResetPoints( PointF2D pb, PointF2D pbh, PointF2D peh, Po
 
 	MathHelper * pmh = &MathHelper::getInstance();
 
-	float l23 = pmh->LineSegmentLengthPow2(pbh, peh);
+	float l23 = pmh->LineSegmentLengthPow2(pb, pe);
 	float l12 = pmh->LineSegmentLengthPow2(pb, pbh);
 	float l34 = pmh->LineSegmentLengthPow2(peh, pe);
 

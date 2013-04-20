@@ -15,7 +15,16 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>1</number>
+    </property>
+    <property name="topMargin">
+     <number>1</number>
+    </property>
+    <property name="rightMargin">
+     <number>1</number>
+    </property>
+    <property name="bottomMargin">
      <number>1</number>
     </property>
     <property name="spacing">
@@ -46,9 +55,6 @@
         </rect>
        </property>
       </widget>
-      <zorder>FLT_Command</zorder>
-      <zorder>FLT_NodeInfo</zorder>
-      <zorder>widget</zorder>
      </widget>
     </item>
     <item row="1" column="0">
@@ -96,7 +102,7 @@
    </property>
    <widget class="QMenu" name="MainMenu_File">
     <property name="title">
-     <string> 文件(&amp;F)</string>
+     <string> File(&amp;F)</string>
     </property>
     <addaction name="action_New"/>
     <addaction name="action_Open"/>
@@ -108,12 +114,12 @@
    </widget>
    <widget class="QMenu" name="MainMenu_Edit">
     <property name="title">
-     <string>编辑(&amp;E)</string>
+     <string>Edit(&amp;E)</string>
     </property>
    </widget>
    <widget class="QMenu" name="MainMenu_View">
     <property name="title">
-     <string>视图(&amp;V)</string>
+     <string>View(&amp;V)</string>
     </property>
     <addaction name="MMView_CommandWindow"/>
     <addaction name="MMView_HistoryWindow"/>
@@ -121,29 +127,50 @@
    </widget>
    <widget class="QMenu" name="menu_D">
     <property name="title">
-     <string>绘图(&amp;D)</string>
+     <string>Draw(&amp;D)</string>
     </property>
     <addaction name="action_Command_Line"/>
+   </widget>
+   <widget class="QMenu" name="menuSeam_S">
+    <property name="title">
+     <string>Seam(&amp;S)</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuNotch_N">
+    <property name="title">
+     <string>Notch(&amp;N)</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuPiece_P">
+    <property name="title">
+     <string>Piece(&amp;P)</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuOutput_O">
+    <property name="title">
+     <string>Output(&amp;O)</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuWindow_W">
+    <property name="title">
+     <string>Window(&amp;W)</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuHelp_H">
+    <property name="title">
+     <string>Help(&amp;H)</string>
+    </property>
    </widget>
    <addaction name="MainMenu_File"/>
    <addaction name="MainMenu_Edit"/>
    <addaction name="MainMenu_View"/>
    <addaction name="menu_D"/>
-  </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="action_New"/>
-   <addaction name="action_Open"/>
-   <addaction name="action_Save"/>
-   <addaction name="action_SaveAs"/>
-   <addaction name="action_Exit"/>
-   <addaction name="separator"/>
-   <addaction name="action_Command_Line"/>
+   <addaction name="menuSeam_S"/>
+   <addaction name="menuNotch_N"/>
+   <addaction name="menuPiece_P"/>
+   <addaction name="menuOutput_O"/>
+   <addaction name="menuWindow_W"/>
+   <addaction name="menuHelp_H"/>
   </widget>
   <widget class="QDockWidget" name="CommandPanel_Dockable">
    <property name="sizePolicy">
@@ -166,7 +193,16 @@
      <property name="spacing">
       <number>0</number>
      </property>
-     <property name="margin">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
       <number>0</number>
      </property>
      <item>

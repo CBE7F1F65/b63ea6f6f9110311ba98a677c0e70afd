@@ -101,7 +101,7 @@ void GObjectManager::Update()
 			//
 			/*
 			static HGE * hge = MainInterface::getInstance().hge;
-			static HTEXTURE tex = hge->Texture_Load("c:/Users/h5nc/Desktop/Galliano/Pattern-54.jpg");
+			static HTEXTURE tex = hge->Texture_Load("c:/Users/h5nc/Desktop/Galliano/Pattern-22.jpg");
 			static hgeSprite sp(tex, 0, 0, -1, -1);
 			GUICoordinate * pguic = &GUICoordinate::getInstance();
 			float tox = pguic->CtoSx(0);

@@ -23,7 +23,16 @@
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>1</number>
+    </property>
+    <property name="topMargin">
+     <number>1</number>
+    </property>
+    <property name="rightMargin">
+     <number>1</number>
+    </property>
+    <property name="bottomMargin">
      <number>1</number>
     </property>
     <property name="spacing">
@@ -292,7 +301,7 @@
     <item row="0" column="24">
      <widget class="QLabel" name="labelStatic_Precision">
       <property name="text">
-       <string>精确度:  </string>
+       <string>Precision:  </string>
       </property>
      </widget>
     </item>
@@ -514,7 +523,7 @@
     <item row="0" column="20">
      <widget class="QLabel" name="labelStatic_SnapRange">
       <property name="text">
-       <string>捕捉范围:  </string>
+       <string>Snap Range</string>
       </property>
      </widget>
     </item>
