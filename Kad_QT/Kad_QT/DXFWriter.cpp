@@ -85,8 +85,8 @@ bool DXFWriter::WriteBlocksBegin()
 		return false;
 	}
 	float fhc = fHeight/2*fmul;
-	QString qsbb = QString("  0\nSECTION\n  2\nBLOCKS\n  0\nBLOCK\n  8\n0\n  2\n%1\n 70\n64\n 10\n0.0000\n 20\n0.0000\n  0\nTEXT\n  8\n1\n 10\n%2\n 20\n%3\n 40\n.25\n 50\n0.0000\n  1\nPiece Name: %1\n  7\nSTANDARD\n  0\nTEXT\n  8\n1\n 10\n%2\n 20\n%4\n 40\n.25\n 50\n0.0000\n  1\nQuantity: 0,1\n  7\nSTANDARD\n  0\nTEXT\n  8\n1\n 10\n%2\n 20\n%5\n 40\n.25\n 50\n0.0000\n  1\nANNOTATION: CUT 1\n  7\nSTANDARD\n  0\nTEXT\n  8\n1\n 10\n%2\n 20\n%6\n 40\n.25\n 50\n0.0000\n  1\nCATEGORY: SIZE 6\n  7\nSTANDARD\n  0\nTEXT\n  8\n1\n 10\n%2\n 20\n%7\n 40\n.25\n 50\n0.0000\n  1\nSIZE: 6\n  7\nSTANDARD\n")
-		.arg(strpiecename).arg(fWidth/2*fmul).arg(fhc).arg(fhc+_DXFTEXTYOFFSET).arg(fhc+_DXFTEXTYOFFSET*2).arg(fhc+_DXFTEXTYOFFSET*3).arg(fhc+_DXFTEXTYOFFSET*4);
+	QString qsbb = QString("  0\nSECTION\n  2\nBLOCKS\n  0\nBLOCK\n  8\n0\n  2\n%1\n 70\n64\n 10\n0.0000\n 20\n0.0000\n  0\nTEXT\n  8\n1\n 10\n%2\n 20\n%3\n 40\n.25\n 50\n0.0000\n  1\nPiece Name: %1\n  7\nSTANDARD\n  0\nTEXT\n  8\n1\n 10\n%2\n 20\n%4\n 40\n.25\n 50\n0.0000\n  1\nQuantity: 0,1\n  7\nSTANDARD\n  0\nTEXT\n  8\n1\n 10\n%2\n 20\n%5\n 40\n.25\n 50\n0.0000\n  1\nANNOTATION: NONE\n  7\nSTANDARD\n  0\nTEXT\n  8\n1\n 10\n%2\n 20\n%6\n 40\n.25\n 50\n0.0000\n  1\nCATEGORY: %8\n  7\nSTANDARD\n  0\nTEXT\n  8\n1\n 10\n%2\n 20\n%7\n 40\n.25\n 50\n0.0000\n  1\nSIZE: 6\n  7\nSTANDARD\n")
+		.arg(strpiecename).arg(fWidth/2*fmul).arg(fhc).arg(fhc+_DXFTEXTYOFFSET).arg(fhc+_DXFTEXTYOFFSET*2).arg(fhc+_DXFTEXTYOFFSET*3).arg(fhc+_DXFTEXTYOFFSET*4).arg(strpiecename);
 	QTextStream qts(pdxf);
 	qts<<qsbb;
 	return true;
