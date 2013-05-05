@@ -51,6 +51,7 @@ void GObjectManager::Init()
 
 void GObjectManager::Release()
 {
+	MarqueeSelect::getInstance().DeSelectAll();
 	URManager::getInstance().Release();
 	nLockTreeChangeState = GMLOCKTREESTATE_REQUIRELOCK;
 	if (pBaseNode)

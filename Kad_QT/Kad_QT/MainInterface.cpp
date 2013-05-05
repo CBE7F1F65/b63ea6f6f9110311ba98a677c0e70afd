@@ -805,6 +805,7 @@ bool MainInterface::OpenFile()
 
 bool MainInterface::OpenFile( const char * filename )
 {
+	MarqueeSelect::getInstance().DeSelectAll();
 	QFile qopenfile(filename);
 	if (!qopenfile.open(QIODevice::ReadOnly))
 	{
