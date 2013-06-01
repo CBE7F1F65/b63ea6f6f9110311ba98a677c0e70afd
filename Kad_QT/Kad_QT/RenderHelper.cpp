@@ -24,6 +24,7 @@ RenderHelper::RenderHelper(void)
 	pPainter = NULL;
 
     bPreviewPrintMode = false;
+	bRenderPointIndicator = true;
 }
 
 RenderHelper::~RenderHelper(void)
@@ -392,6 +393,10 @@ void RenderHelper::SetLineStyle( int _style/*=0*/ )
 
 void RenderHelper::RenderAttributePoint_S( float x, float y, DWORD col )
 {
+	if (!bRenderPointIndicator)
+	{
+		return;
+	}
 	RenderSquare_S(x-_GATTRPT_RENDER_A, y-_GATTRPT_RENDER_A, _GATTRPT_RENDER_A*2, col);
 
 }
@@ -410,7 +415,10 @@ void RenderHelper::RenderMidPoint_S( float x, float y, DWORD col )
 	RenderLine_S(x-_GMIDPT_RENDER_L, y+_GMIDPT_RENDER_L, x, y-_GMIDPT_RENDER_L, col);
 	RenderLine_S(x+_GMIDPT_RENDER_L, y+_GMIDPT_RENDER_L, x, y-_GMIDPT_RENDER_L, col);
 	*/
-
+	if (!bRenderPointIndicator)
+	{
+		return;
+	}
 	float fmul=1.0f/3.0f;
 	RenderLine_S(x-_GSUBSPT_RENDER_L, y-_GSUBSPT_RENDER_L, x-_GSUBSPT_RENDER_L*fmul, y-_GSUBSPT_RENDER_L, col);
 	RenderLine_S(x+_GSUBSPT_RENDER_L*fmul, y-_GSUBSPT_RENDER_L, x+_GSUBSPT_RENDER_L, y-_GSUBSPT_RENDER_L, col);

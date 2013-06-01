@@ -155,6 +155,7 @@ private:
 	QPainter * pPainter;
 
     bool bPreviewPrintMode;
+	bool bRenderPointIndicator;
 
 	HGE * hge;
 };
