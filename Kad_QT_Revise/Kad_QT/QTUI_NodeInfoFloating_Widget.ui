@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QTUI_NodeInfoFloating_Widget</class>
+ <widget class="QWidget" name="QTUI_NodeInfoFloating_Widget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>256</width>
+    <height>192</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QTUI_NodeInfoFloating_Tree" name="treeWidget">
+     <property name="mouseTracking">
+      <bool>true</bool>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="indentation">
+      <number>16</number>
+     </property>
+     <property name="uniformRowHeights">
+      <bool>true</bool>
+     </property>
+     <property name="expandsOnDoubleClick">
+      <bool>false</bool>
+     </property>
+     <property name="columnCount">
+      <number>2</number>
+     </property>
+     <attribute name="headerVisible">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="headerDefaultSectionSize">
+      <number>40</number>
+     </attribute>
+     <column>
+      <property name="text">
+       <string notr="true">1</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string notr="true">2</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QTUI_NodeInfoFloating_Tree</class>
+   <extends>QTreeWidget</extends>
+   <header location="global">qtui_nodeinfofloating_tree.h</header>
+   <slots>
+    <slot>SLT_ItemClicked(QTreeWidgetItem*,int)</slot>
+    <slot>SLT_AdjustSize()</slot>
+    <slot>SLT_ItemDoubleClicked(QTreeWidgetItem*,int)</slot>
+    <slot>SLT_ItemChanged(QTreeWidgetItem*,int)</slot>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>treeWidget</sender>
+   <signal>itemClicked(QTreeWidgetItem*,int)</signal>
+   <receiver>treeWidget</receiver>
+   <slot>SLT_ItemClicked(QTreeWidgetItem*,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>111</x>
+     <y>89</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>111</x>
+     <y>89</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>treeWidget</sender>
+   <signal>collapsed(QModelIndex)</signal>
+   <receiver>treeWidget</receiver>
+   <slot>SLT_AdjustSize()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>162</x>
+     <y>82</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>163</x>
+     <y>112</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>treeWidget</sender>
+   <signal>expanded(QModelIndex)</signal>
+   <receiver>treeWidget</receiver>
+   <slot>SLT_AdjustSize()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>216</x>
+     <y>115</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>216</x>
+     <y>133</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>treeWidget</sender>
+   <signal>itemDoubleClicked(QTreeWidgetItem*,int)</signal>
+   <receiver>treeWidget</receiver>
+   <slot>SLT_ItemDoubleClicked(QTreeWidgetItem*,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>37</x>
+     <y>58</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>48</x>
+     <y>127</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>treeWidget</sender>
+   <signal>itemChanged(QTreeWidgetItem*,int)</signal>
+   <receiver>treeWidget</receiver>
+   <slot>SLT_ItemChanged(QTreeWidgetItem*,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>70</x>
+     <y>80</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>71</x>
+     <y>100</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>SLT_AdjustSize()</slot>
+ </slots>
+</ui>

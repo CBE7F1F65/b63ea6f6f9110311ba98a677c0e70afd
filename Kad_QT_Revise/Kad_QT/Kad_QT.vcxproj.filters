@@ -1,0 +1,970 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;cxx;c;def</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+    </Filter>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>moc;h;cpp</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Debug">
+      <UniqueIdentifier>{eff322b4-1267-43a9-b402-f6e8c87c64f0}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Release">
+      <UniqueIdentifier>{9d0b39ed-5270-4ff5-af78-21a66a5fb31e}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Main">
+      <UniqueIdentifier>{2f4f846d-8e39-4dbe-8a0e-57fcc087ceaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="QT">
+      <UniqueIdentifier>{0f4ba1cd-71d8-4aef-a686-c454bbdce2b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Class">
+      <UniqueIdentifier>{c0729e86-7021-48fa-b4b9-84f9b6ecc333}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command">
+      <UniqueIdentifier>{b49c6118-6483-464e-9203-959f5ba1c212}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Draw">
+      <UniqueIdentifier>{1853811d-4df1-42fe-87ac-a14af19f1bfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Internal">
+      <UniqueIdentifier>{aa40bc2a-50fa-4229-b6c6-31e0d8ab57ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Layer">
+      <UniqueIdentifier>{f2df3440-551c-4f7c-8482-4f7b580f5717}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Node">
+      <UniqueIdentifier>{aff4aa7b-1dd4-49dd-a611-ad4a3c1557ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Output">
+      <UniqueIdentifier>{7d16839b-5785-4ae8-be6a-770433712ce2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Template">
+      <UniqueIdentifier>{62abfb1f-066c-4f29-8a4b-e47623a6a9bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\UndoRedo">
+      <UniqueIdentifier>{97a12363-aa19-403b-960f-172c6dcfc63d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Core">
+      <UniqueIdentifier>{3e7b5ef4-e240-46f6-8108-497408b86465}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\GObject">
+      <UniqueIdentifier>{24bc7af2-b859-4109-84f3-d8dfa09addee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\GObject\GObject">
+      <UniqueIdentifier>{93eccce9-0c6c-4ed6-ab0b-5f09365e1df9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\GObject\GObjectManager">
+      <UniqueIdentifier>{53b0af30-54fc-4c91-9fab-55307e9369ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Core\StdAfx">
+      <UniqueIdentifier>{83bcd93a-7cf9-4a60-b587-cb3646e60c74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Core\Resource">
+      <UniqueIdentifier>{6533587b-ea17-4815-917b-157efca7d151}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Core\InitDllLoader">
+      <UniqueIdentifier>{488e50d4-2012-47a7-ae12-cd80b94fa0c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Combination">
+      <UniqueIdentifier>{3633b82a-ec5c-4653-9ba8-3f243a61590d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Template\Map">
+      <UniqueIdentifier>{efc3580f-31c4-401d-8113-c5f901ff8eb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Test">
+      <UniqueIdentifier>{361135fb-7d1f-42a9-b4de-0c326edf50e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Transform">
+      <UniqueIdentifier>{0079d06f-594d-49ea-a980-67c120bfb1ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Node\Move">
+      <UniqueIdentifier>{859c4ed0-9a00-4dae-be54-03759cc98e7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Node\Rotate">
+      <UniqueIdentifier>{8775ca4b-676b-473e-87e0-51f56b52dc93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Node\Scale">
+      <UniqueIdentifier>{b4b55f34-ff80-4825-83b7-bb4e5335c258}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Node\Extend">
+      <UniqueIdentifier>{7cced008-772a-47ad-9401-c9edd1536831}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Node\Flip">
+      <UniqueIdentifier>{a1768cad-f984-4f6e-ad68-58e5e109ef21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\GObject\Relationship">
+      <UniqueIdentifier>{a4af9df9-c204-4977-bb3a-6747f0d2fc95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Other">
+      <UniqueIdentifier>{a86a7d58-ded3-4b5d-8dc7-f23cd683bd89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="QT\Core">
+      <UniqueIdentifier>{876834ff-5b15-48ef-9cdb-7ef7de2d2de3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="QT\Interface">
+      <UniqueIdentifier>{07226185-4308-4ca0-8106-f1e3c559eb8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="QT\Manager">
+      <UniqueIdentifier>{12ef7ce0-dc1b-48bf-8b58-553e7dd45a90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="QT\Dialog">
+      <UniqueIdentifier>{75d1e98b-93a6-4af2-a974-dd54fc191a1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="QT\Command">
+      <UniqueIdentifier>{a8d7156c-4472-4576-9795-9478f469b51b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="QT\History">
+      <UniqueIdentifier>{c534540b-bdd6-486f-a975-34bdb4c30262}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="QT\Layer">
+      <UniqueIdentifier>{ca776f67-339d-45a2-aa6b-f683201b2baf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="QT\Marking">
+      <UniqueIdentifier>{da0d02d3-1efb-49c1-bf28-f1b6b30cdb74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="QT\NodeFloating">
+      <UniqueIdentifier>{d01f1b24-8872-42f1-afa8-05f7b1626d09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="QT\StatusBar">
+      <UniqueIdentifier>{b9ba2dfa-cf3b-43e5-a8fd-a0dbd009664a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Helper">
+      <UniqueIdentifier>{8d51eae2-a0c0-42c2-a169-37d2bcfbd5a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Helper\Helper">
+      <UniqueIdentifier>{e2934f04-a27f-4b06-baf4-c3b9f31b603b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Helper\Manager">
+      <UniqueIdentifier>{6f964a04-9b88-4e9a-955a-7fa05951f8cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Helper\Manager\Marking">
+      <UniqueIdentifier>{504d0514-40d9-4bd3-81fb-45aa500d27b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Helper\GObjectPicker">
+      <UniqueIdentifier>{39e7c4fc-edd6-471a-844a-a22d9178dadf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Helper\GObjectPicker\Template">
+      <UniqueIdentifier>{976dec8d-1ec3-4be0-815b-8b18f1d8fb82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\File">
+      <UniqueIdentifier>{a570bb0c-4c69-40d1-924d-ff8c75499eb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\GObject\XML">
+      <UniqueIdentifier>{877c28c0-cb35-42a6-a4b5-4a65dc7b0939}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Seam">
+      <UniqueIdentifier>{b7083797-b6e0-4dc2-a482-e999456c86fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Helper\DXF">
+      <UniqueIdentifier>{0cec8cda-7262-4411-a01f-55d34fafda38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\CopyPaste">
+      <UniqueIdentifier>{21551d42-f12d-4d4e-b111-44211497f7de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Command\Notch">
+      <UniqueIdentifier>{4716c1e3-e58e-40ce-89f7-e240fa58493e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GeneratedFiles\Debug\moc_kad_qt.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_kad_qt.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_kad_qt.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qtui_glview.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qtui_glview.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GUICoordinate.cpp">
+      <Filter>Main\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="GUICursor.cpp">
+      <Filter>Main\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="BezierCommand.cpp">
+      <Filter>Main\Command\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="LineCommand.cpp">
+      <Filter>Main\Command\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="InitialCommand.cpp">
+      <Filter>Main\Command\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="NewLayerCommand.cpp">
+      <Filter>Main\Command\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="SetWorkingLayerCommand.cpp">
+      <Filter>Main\Command\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="DeleteItemCommand.cpp">
+      <Filter>Main\Command\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="DuplicateCommand.cpp">
+      <Filter>Main\Command\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="ReparentCommand.cpp">
+      <Filter>Main\Command\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="SetNodeNameCommand.cpp">
+      <Filter>Main\Command\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="OutputCommand.cpp">
+      <Filter>Main\Command\Output</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandTemplate.cpp">
+      <Filter>Main\Command\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandGetTemplate.cpp">
+      <Filter>Main\Command\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="UnDoReDoCommand.cpp">
+      <Filter>Main\Command\UndoRedo</Filter>
+    </ClCompile>
+    <ClCompile Include="GObject.cpp">
+      <Filter>Main\GObject\GObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GObjectManager.cpp">
+      <Filter>Main\GObject\GObjectManager</Filter>
+    </ClCompile>
+    <ClCompile Include="GBaseNode.cpp">
+      <Filter>Main\GObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GShape.cpp">
+      <Filter>Main\GObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GLayer.cpp">
+      <Filter>Main\GObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GLine.cpp">
+      <Filter>Main\GObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GPiece.cpp">
+      <Filter>Main\GObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GPoint.cpp">
+      <Filter>Main\GObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorManager.cpp">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="IconManager.cpp">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageBoxManager.cpp">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="MouseCursorManager.cpp">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTargetManager.cpp">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="SnapshotManager.cpp">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="StringManager.cpp">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Command.cpp">
+      <Filter>Main\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Main\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="MainInterface.cpp">
+      <Filter>Main\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="MarqueeSelect.cpp">
+      <Filter>Main\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="MathHelper.cpp">
+      <Filter>Main\Helper\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderHelper.cpp">
+      <Filter>Main\Helper\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcessCommand.cpp">
+      <Filter>Main\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Main\Core\StdAfx</Filter>
+    </ClCompile>
+    <ClCompile Include="InitDllLoader.cpp">
+      <Filter>Main\Core\InitDllLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qtui_commanddockable.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qtui_commanddockable.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qtui_commandpanel_commandedit.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qtui_commandpanel_commandedit.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qtui_commandpanel_commandlog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qtui_commandpanel_commandlog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qtui_commandfloating_command.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qtui_commandfloating_command.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qtui_commandfloating_widget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qtui_commandfloating_widget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qtui_history_dockablepane.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qtui_history_dockablepane.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qtui_history_snapshottable.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qtui_history_snapshottable.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qtui_history_table.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qtui_history_table.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qtui_layer_dockablepane.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qtui_layer_dockablepane.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qtui_layer_tree.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qtui_layer_tree.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_QTDLG_LayerProperty.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_QTDLG_LayerProperty.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_QTUI_StatusBar.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_QTUI_StatusBar.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="MergeCommand.cpp">
+      <Filter>Main\Command\Combination</Filter>
+    </ClCompile>
+    <ClCompile Include="ClingCommand.cpp">
+      <Filter>Main\Command\Combination</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandMap.cpp">
+      <Filter>Main\Command\Template\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandSubState.cpp">
+      <Filter>Main\Command\Template\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCommand.cpp">
+      <Filter>Main\Command\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="BindHandleCommand.cpp">
+      <Filter>Main\Command\Combination</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_QTUI_NodeInfoFloating_Tree.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_QTUI_NodeInfoFloating_Tree.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_QTUI_NodeInfoFloating_Widget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_QTUI_NodeInfoFloating_Widget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="MarkingManager.cpp">
+      <Filter>Main\Helper\Manager\Marking</Filter>
+    </ClCompile>
+    <ClCompile Include="MarkingObject.cpp">
+      <Filter>Main\Helper\Manager\Marking</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_QTUI_MarkingFloating_Widget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_QTUI_MarkingFloating_Widget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="LineTransformCommand.cpp">
+      <Filter>Main\Command\Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_QTUI_MarkingFloating_Edit.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_QTUI_MarkingFloating_Edit.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GObjectPicker.cpp">
+      <Filter>Main\Helper\GObjectPicker</Filter>
+    </ClCompile>
+    <ClCompile Include="PickFilterTemplate.cpp">
+      <Filter>Main\Helper\GObjectPicker\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GObjectPicker_Update.cpp">
+      <Filter>Main\Helper\GObjectPicker</Filter>
+    </ClCompile>
+    <ClCompile Include="GObjectPicker_Check.cpp">
+      <Filter>Main\Helper\GObjectPicker</Filter>
+    </ClCompile>
+    <ClCompile Include="GObjectPicker_Sub.cpp">
+      <Filter>Main\Helper\GObjectPicker</Filter>
+    </ClCompile>
+    <ClCompile Include="ClipCommand.cpp">
+      <Filter>Main\Command\Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveNodeBatchCommand.cpp">
+      <Filter>Main\Command\Node\Move</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveNodeCommand.cpp">
+      <Filter>Main\Command\Node\Move</Filter>
+    </ClCompile>
+    <ClCompile Include="RotateNodeBatchCommand.cpp">
+      <Filter>Main\Command\Node\Rotate</Filter>
+    </ClCompile>
+    <ClCompile Include="ScaleNodeBatchCommand.cpp">
+      <Filter>Main\Command\Node\Scale</Filter>
+    </ClCompile>
+    <ClCompile Include="ExtendCommand.cpp">
+      <Filter>Main\Command\Node\Extend</Filter>
+    </ClCompile>
+    <ClCompile Include="GNodeRelationship.cpp">
+      <Filter>Main\GObject\Relationship</Filter>
+    </ClCompile>
+    <ClCompile Include="FlipNodeBatchCommand.cpp">
+      <Filter>Main\Command\Node\Flip</Filter>
+    </ClCompile>
+    <ClCompile Include="URManager.cpp">
+      <Filter>Main\Command\UndoRedo</Filter>
+    </ClCompile>
+    <ClCompile Include="RestoreToSnapshotCommand.cpp">
+      <Filter>Main\Command\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="DemergeCommand.cpp">
+      <Filter>Main\Command\Combination</Filter>
+    </ClCompile>
+    <ClCompile Include="JoinLineCommand.cpp">
+      <Filter>Main\Command\Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="kad_qt.cpp">
+      <Filter>QT\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="qtui_glview.cpp">
+      <Filter>QT\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="qmaininterface.cpp">
+      <Filter>QT\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="qkeystatemanager.cpp">
+      <Filter>QT\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="QTDLG_LayerProperty.cpp">
+      <Filter>QT\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="qtui_commanddockable.cpp">
+      <Filter>QT\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="qtui_commandfloating_command.cpp">
+      <Filter>QT\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="qtui_commandfloating_widget.cpp">
+      <Filter>QT\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="qtui_commandpanel_commandedit.cpp">
+      <Filter>QT\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="qtui_commandpanel_commandlog.cpp">
+      <Filter>QT\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="qtui_history_dockablepane.cpp">
+      <Filter>QT\History</Filter>
+    </ClCompile>
+    <ClCompile Include="qtui_history_snapshottable.cpp">
+      <Filter>QT\History</Filter>
+    </ClCompile>
+    <ClCompile Include="qtui_history_table.cpp">
+      <Filter>QT\History</Filter>
+    </ClCompile>
+    <ClCompile Include="qtui_layer_dockablepane.cpp">
+      <Filter>QT\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="qtui_layer_tree.cpp">
+      <Filter>QT\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="QTUI_MarkingFloating_Edit.cpp">
+      <Filter>QT\Marking</Filter>
+    </ClCompile>
+    <ClCompile Include="QTUI_MarkingFloating_Widget.cpp">
+      <Filter>QT\Marking</Filter>
+    </ClCompile>
+    <ClCompile Include="QTUI_NodeInfoFloating_Tree.cpp">
+      <Filter>QT\NodeFloating</Filter>
+    </ClCompile>
+    <ClCompile Include="QTUI_NodeInfoFloating_Widget.cpp">
+      <Filter>QT\NodeFloating</Filter>
+    </ClCompile>
+    <ClCompile Include="QTUI_StatusBar.cpp">
+      <Filter>QT\StatusBar</Filter>
+    </ClCompile>
+    <ClCompile Include="QTUI_NodeInfoFloating_Buttons.cpp">
+      <Filter>QT\NodeFloating</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_QTUI_NodeInfoFloating_Buttons.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_QTUI_NodeInfoFloating_Buttons.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="QTUI_Layer_Buttons.cpp">
+      <Filter>QT\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_QTUI_Layer_Buttons.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_QTUI_Layer_Buttons.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="CircleCommand.cpp">
+      <Filter>Main\Command\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="SaveCommand.cpp">
+      <Filter>Main\Command\File</Filter>
+    </ClCompile>
+    <ClCompile Include="GObjectXML.cpp">
+      <Filter>Main\GObject\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenCommand.cpp">
+      <Filter>Main\Command\File</Filter>
+    </ClCompile>
+    <ClCompile Include="AddSACommand.cpp">
+      <Filter>Main\Command\Seam</Filter>
+    </ClCompile>
+    <ClCompile Include="DumpCommand.cpp">
+      <Filter>Main\Command\Output</Filter>
+    </ClCompile>
+    <ClCompile Include="DXFWriter.cpp">
+      <Filter>Main\Helper\DXF</Filter>
+    </ClCompile>
+    <ClCompile Include="IsolateCommand.cpp">
+      <Filter>Main\Command\Combination</Filter>
+    </ClCompile>
+    <ClCompile Include="CopyCommand.cpp">
+      <Filter>Main\Command\CopyPaste</Filter>
+    </ClCompile>
+    <ClCompile Include="PasteCommand.cpp">
+      <Filter>Main\Command\CopyPaste</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageCommand.cpp">
+      <Filter>Main\Command\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchCommand.cpp">
+      <Filter>Main\Command\Notch</Filter>
+    </ClCompile>
+    <ClCompile Include="AttachCommand.cpp">
+      <Filter>Main\Command\Combination</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GeneratedFiles\ui_kad_qt.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUICoordinate.h">
+      <Filter>Main\Class</Filter>
+    </ClInclude>
+    <ClInclude Include="GUICursor.h">
+      <Filter>Main\Class</Filter>
+    </ClInclude>
+    <ClInclude Include="BezierCommand.h">
+      <Filter>Main\Command\Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="LineCommand.h">
+      <Filter>Main\Command\Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="InitialCommand.h">
+      <Filter>Main\Command\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="NewLayerCommand.h">
+      <Filter>Main\Command\Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="SetWorkingLayerCommand.h">
+      <Filter>Main\Command\Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="DeleteItemCommand.h">
+      <Filter>Main\Command\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="DuplicateCommand.h">
+      <Filter>Main\Command\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="SetNodeNameCommand.h">
+      <Filter>Main\Command\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="ReparentCommand.h">
+      <Filter>Main\Command\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputCommand.h">
+      <Filter>Main\Command\Output</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandTemplate.h">
+      <Filter>Main\Command\Template</Filter>
+    </ClInclude>
+    <ClInclude Include="MainDependency.h">
+      <Filter>Main\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="GObjectManager.h">
+      <Filter>Main\GObject\GObjectManager</Filter>
+    </ClInclude>
+    <ClInclude Include="GBaseNode.h">
+      <Filter>Main\GObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GShape.h">
+      <Filter>Main\GObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GLayer.h">
+      <Filter>Main\GObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GLine.h">
+      <Filter>Main\GObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GPiece.h">
+      <Filter>Main\GObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GPoint.h">
+      <Filter>Main\GObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorManager.h">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageBoxManager.h">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseCursorManager.h">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTargetManager.h">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="SnapshotManager.h">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="StringManager.h">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Command.h">
+      <Filter>Main\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandDefines.h">
+      <Filter>Main\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Const.h">
+      <Filter>Main\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="IconManager.h">
+      <Filter>Main\Helper\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="MathHelper.h">
+      <Filter>Main\Helper\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderHelper.h">
+      <Filter>Main\Helper\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="MarqueeSelect.h">
+      <Filter>Main\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Main\Core\StdAfx</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Main\Core\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Main\Core\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceCustomIDs.h">
+      <Filter>Main\Core\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="MainInterface.h">
+      <Filter>Main\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_qtui_commanddockable.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_qtui_commandfloating_widget.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_qtui_history_dockablepane.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_qtui_layer_dockablepane.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_QTDLG_LayerProperty.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_QTUI_StatusBar.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MergeCommand.h">
+      <Filter>Main\Command\Combination</Filter>
+    </ClInclude>
+    <ClInclude Include="ClingCommand.h">
+      <Filter>Main\Command\Combination</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandMap.h">
+      <Filter>Main\Command\Template\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandSubState.h">
+      <Filter>Main\Command\Template\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="TestCommand.h">
+      <Filter>Main\Command\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="BindHandleCommand.h">
+      <Filter>Main\Command\Combination</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_QTUI_NodeInfoFloating_Widget.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MarkingManager.h">
+      <Filter>Main\Helper\Manager\Marking</Filter>
+    </ClInclude>
+    <ClInclude Include="MarkingObject.h">
+      <Filter>Main\Helper\Manager\Marking</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_QTUI_MarkingFloating_Widget.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LineTransformCommand.h">
+      <Filter>Main\Command\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="GObjectPicker.h">
+      <Filter>Main\Helper\GObjectPicker</Filter>
+    </ClInclude>
+    <ClInclude Include="PickFilterTemplate.h">
+      <Filter>Main\Helper\GObjectPicker\Template</Filter>
+    </ClInclude>
+    <ClInclude Include="ClipCommand.h">
+      <Filter>Main\Command\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveNodeCommand.h">
+      <Filter>Main\Command\Node\Move</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveNodeBatchCommand.h">
+      <Filter>Main\Command\Node\Move</Filter>
+    </ClInclude>
+    <ClInclude Include="RotateNodeBatchCommand.h">
+      <Filter>Main\Command\Node\Rotate</Filter>
+    </ClInclude>
+    <ClInclude Include="ScaleNodeBatchCommand.h">
+      <Filter>Main\Command\Node\Scale</Filter>
+    </ClInclude>
+    <ClInclude Include="ExtendCommand.h">
+      <Filter>Main\Command\Node\Extend</Filter>
+    </ClInclude>
+    <ClInclude Include="GNodeRelationship.h">
+      <Filter>Main\GObject\Relationship</Filter>
+    </ClInclude>
+    <ClInclude Include="FlipNodeBatchCommand.h">
+      <Filter>Main\Command\Node\Flip</Filter>
+    </ClInclude>
+    <ClInclude Include="URManager.h">
+      <Filter>Main\Command\UndoRedo</Filter>
+    </ClInclude>
+    <ClInclude Include="RestoreToSnapshotCommand.h">
+      <Filter>Main\Command\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="DemergeCommand.h">
+      <Filter>Main\Command\Combination</Filter>
+    </ClInclude>
+    <ClInclude Include="JoinLineCommand.h">
+      <Filter>Main\Command\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="qmaininterface.h">
+      <Filter>QT\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="qkeystatemanager.h">
+      <Filter>QT\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="CircleCommand.h">
+      <Filter>Main\Command\Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveCommand.h">
+      <Filter>Main\Command\File</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenCommand.h">
+      <Filter>Main\Command\File</Filter>
+    </ClInclude>
+    <ClInclude Include="GObjectXML.h">
+      <Filter>Main\GObject\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="AddSACommand.h">
+      <Filter>Main\Command\Seam</Filter>
+    </ClInclude>
+    <ClInclude Include="DumpCommand.h">
+      <Filter>Main\Command\Output</Filter>
+    </ClInclude>
+    <ClInclude Include="DXFWriter.h">
+      <Filter>Main\Helper\DXF</Filter>
+    </ClInclude>
+    <ClInclude Include="IsolateCommand.h">
+      <Filter>Main\Command\Combination</Filter>
+    </ClInclude>
+    <ClInclude Include="CopyCommand.h">
+      <Filter>Main\Command\CopyPaste</Filter>
+    </ClInclude>
+    <ClInclude Include="PasteCommand.h">
+      <Filter>Main\Command\CopyPaste</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageCommand.h">
+      <Filter>Main\Command\Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchCommand.h">
+      <Filter>Main\Command\Notch</Filter>
+    </ClInclude>
+    <ClInclude Include="AttachCommand.h">
+      <Filter>Main\Command\Combination</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="kad_qt.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="kad_qt.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_commanddockable.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_commandfloating_widget.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_history_dockablepane.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_layer_dockablepane.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QTDLG_LayerProperty.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QTUI_StatusBar.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QTUI_NodeInfoFloating_Widget.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QTUI_MarkingFloating_Widget.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="kad_qt.h">
+      <Filter>QT\Core</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_glview.h">
+      <Filter>QT\Core</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QTDLG_LayerProperty.h">
+      <Filter>QT\Dialog</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_commandpanel_commandlog.h">
+      <Filter>QT\Command</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_commanddockable.h">
+      <Filter>QT\Command</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_commandfloating_command.h">
+      <Filter>QT\Command</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_commandfloating_widget.h">
+      <Filter>QT\Command</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_commandpanel_commandedit.h">
+      <Filter>QT\Command</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_history_table.h">
+      <Filter>QT\History</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_history_dockablepane.h">
+      <Filter>QT\History</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_history_snapshottable.h">
+      <Filter>QT\History</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_layer_tree.h">
+      <Filter>QT\Layer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtui_layer_dockablepane.h">
+      <Filter>QT\Layer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QTUI_MarkingFloating_Widget.h">
+      <Filter>QT\Marking</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QTUI_MarkingFloating_Edit.h">
+      <Filter>QT\Marking</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QTUI_NodeInfoFloating_Widget.h">
+      <Filter>QT\NodeFloating</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QTUI_NodeInfoFloating_Tree.h">
+      <Filter>QT\NodeFloating</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QTUI_StatusBar.h">
+      <Filter>QT\StatusBar</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QTUI_NodeInfoFloating_Buttons.h">
+      <Filter>QT\NodeFloating</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QTUI_Layer_Buttons.h">
+      <Filter>QT\Layer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GObject.h">
+      <Filter>Main\GObject\GObject</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

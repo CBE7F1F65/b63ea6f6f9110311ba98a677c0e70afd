@@ -1,0 +1,832 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QTUI_StatusBar</class>
+ <widget class="QStatusBar" name="QTUI_StatusBar">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1050</width>
+    <height>441</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QWidget" name="ContainerWidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>821</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>1</number>
+    </property>
+    <property name="topMargin">
+     <number>1</number>
+    </property>
+    <property name="rightMargin">
+     <number>1</number>
+    </property>
+    <property name="bottomMargin">
+     <number>1</number>
+    </property>
+    <property name="spacing">
+     <number>1</number>
+    </property>
+    <item row="0" column="11">
+     <widget class="QPushButton" name="PBSnapGeometryCoord">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>对象轴捕捉</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/StatusBarICO_SnapGeometryCoord.png</normaloff>:/Kad_QT/Resources/StatusBarICO_SnapGeometryCoord.png</iconset>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="18">
+     <widget class="QPushButton" name="PBIsolateMode">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>孤立模式</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/StatusBarICO_IsolateMode.png</normaloff>:/Kad_QT/Resources/StatusBarICO_IsolateMode.png</iconset>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="labelXPos">
+      <property name="text">
+       <string>XPos</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLabel" name="labelYPos">
+      <property name="text">
+       <string>YPos</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QLabel" name="labelScale">
+      <property name="text">
+       <string>Scale</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Maximum</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>60</width>
+        <height>21</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="0" column="4">
+     <widget class="QPushButton" name="PBShowGrid">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>显示网格</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/StatusBarICO_ShowGrid.png</normaloff>:/Kad_QT/Resources/StatusBarICO_ShowGrid.png</iconset>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="7">
+     <widget class="QPushButton" name="PBSnapGrid">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>网格对象捕捉</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/StatusBarICO_SnapGrid.png</normaloff>:/Kad_QT/Resources/StatusBarICO_SnapGrid.png</iconset>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="8">
+     <widget class="QPushButton" name="PBSnapGeometry">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>几何对象捕捉</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/StatusBarICO_SnapGeometry.png</normaloff>:/Kad_QT/Resources/StatusBarICO_SnapGeometry.png</iconset>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="10">
+     <widget class="QPushButton" name="PBSnapContinuity">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>延续对象捕捉</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/StatusBarICO_SnapContinuity.png</normaloff>:/Kad_QT/Resources/StatusBarICO_SnapContinuity.png</iconset>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="23">
+     <spacer name="horizontalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>417</width>
+        <height>21</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="0" column="24">
+     <widget class="QLabel" name="labelStatic_Precision">
+      <property name="text">
+       <string>Precision:  </string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="26">
+     <widget class="QLabel" name="labelFPS">
+      <property name="text">
+       <string>FPS</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="25">
+     <widget class="QSpinBox" name="spinPrecision">
+      <property name="maximum">
+       <number>100</number>
+      </property>
+      <property name="singleStep">
+       <number>5</number>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="6">
+     <spacer name="horizontalSpacer_3">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="0" column="9">
+     <widget class="QPushButton" name="PBSnapCoord">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>轴捕捉</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/StatusBarICO_SnapCoord.png</normaloff>:/Kad_QT/Resources/StatusBarICO_SnapCoord.png</iconset>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="12">
+     <widget class="QPushButton" name="PBSnapVirtualCoord">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>虚拟对象轴捕捉</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/StatusBarICO_SnapVirtualCoord.png</normaloff>:/Kad_QT/Resources/StatusBarICO_SnapVirtualCoord.png</iconset>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="14">
+     <widget class="QPushButton" name="PBSnapHandleOnly">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>仅捕捉操控柄</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/StatusBarICO_SnapHandleOnly.png</normaloff>:/Kad_QT/Resources/StatusBarICO_SnapHandleOnly.png</iconset>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="13">
+     <spacer name="horizontalSpacer_4">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="0" column="15">
+     <spacer name="horizontalSpacer_5">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="0" column="17">
+     <spacer name="horizontalSpacer_6">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="0" column="19">
+     <spacer name="horizontalSpacer_7">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="0" column="21">
+     <widget class="QSpinBox" name="spinSnapRange">
+      <property name="minimum">
+       <number>1</number>
+      </property>
+      <property name="maximum">
+       <number>50</number>
+      </property>
+      <property name="singleStep">
+       <number>1</number>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="20">
+     <widget class="QLabel" name="labelStatic_SnapRange">
+      <property name="text">
+       <string>Snap Range</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="16">
+     <widget class="QPushButton" name="PBPreviewPrintMode">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>打印预览</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/StatusBarICO_PrintPreview.png</normaloff>:/Kad_QT/Resources/StatusBarICO_PrintPreview.png</iconset>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="5">
+     <widget class="QPushButton" name="PBShowActualGrid">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>显示实际网格</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/StatusBarICO_ShowActualGrid.png</normaloff>:/Kad_QT/Resources/StatusBarICO_ShowActualGrid.png</iconset>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources>
+  <include location="kad_qt.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>spinPrecision</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>QTUI_StatusBar</receiver>
+   <slot>SLT_PrecisionChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>790</x>
+     <y>22</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>798</x>
+     <y>53</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PBSnapGrid</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>QTUI_StatusBar</receiver>
+   <slot>SLT_PBSnapGridTriggered(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>194</x>
+     <y>33</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>181</x>
+     <y>85</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PBSnapGeometry</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>QTUI_StatusBar</receiver>
+   <slot>SLT_PBSnapGeometryTriggered(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>219</x>
+     <y>36</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>211</x>
+     <y>110</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PBSnapCoord</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>QTUI_StatusBar</receiver>
+   <slot>SLT_PBSnapCoordTriggered(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>244</x>
+     <y>31</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>231</x>
+     <y>136</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PBSnapContinuity</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>QTUI_StatusBar</receiver>
+   <slot>SLT_PBSnapContinuityTriggered(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>269</x>
+     <y>32</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>255</x>
+     <y>161</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PBShowGrid</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>QTUI_StatusBar</receiver>
+   <slot>SLT_PBShowGridTriggered(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>115</x>
+     <y>31</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>111</x>
+     <y>53</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PBSnapGeometryCoord</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>QTUI_StatusBar</receiver>
+   <slot>SLT_PBSnapGeometryCoordTriggered(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>294</x>
+     <y>27</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>276</x>
+     <y>185</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PBSnapVirtualCoord</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>QTUI_StatusBar</receiver>
+   <slot>SLT_PBSnapVirtualCoordTriggered(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>319</x>
+     <y>31</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>292</x>
+     <y>215</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PBSnapHandleOnly</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>QTUI_StatusBar</receiver>
+   <slot>SLT_PBSnapHandleOnlyTriggered(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>365</x>
+     <y>28</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>346</x>
+     <y>232</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinSnapRange</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>QTUI_StatusBar</receiver>
+   <slot>SLT_SnapRangeChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>585</x>
+     <y>32</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>475</x>
+     <y>60</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PBIsolateMode</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>QTUI_StatusBar</receiver>
+   <slot>SLT_PBIsolateModeTriggered(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>457</x>
+     <y>36</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>473</x>
+     <y>287</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PBPreviewPrintMode</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>QTUI_StatusBar</receiver>
+   <slot>SLT_PBPreviewPrintModeTriggered(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>411</x>
+     <y>27</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>392</x>
+     <y>262</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PBShowActualGrid</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>QTUI_StatusBar</receiver>
+   <slot>SLT_PBShowActualGridTriggered(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>136</x>
+     <y>33</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>128</x>
+     <y>70</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>SLT_PrecisionChanged(int)</slot>
+  <slot>SLT_PBSnapGridTriggered(bool)</slot>
+  <slot>SLT_PBSnapGeometryTriggered(bool)</slot>
+  <slot>SLT_PBSnapCoordTriggered(bool)</slot>
+  <slot>SLT_PBSnapContinuityTriggered(bool)</slot>
+  <slot>SLT_PBShowGridTriggered(bool)</slot>
+  <slot>SLT_PBSnapGeometryCoordTriggered(bool)</slot>
+  <slot>SLT_PBSnapVirtualCoordTriggered(bool)</slot>
+  <slot>SLT_PBHandleVisibleTriggered(bool)</slot>
+  <slot>SLT_PBSnapHandleOnlyTriggered(bool)</slot>
+  <slot>SLT_SnapRangeChanged(int)</slot>
+  <slot>SLT_PBIsolateModeTriggered(bool)</slot>
+  <slot>SLT_PBPreviewPrintModeTriggered(bool)</slot>
+  <slot>SLT_PBShowActualGridTriggered(bool)</slot>
+ </slots>
+</ui>

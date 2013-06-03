@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QTUI_Layer_DockablePane</class>
+ <widget class="QDockWidget" name="QTUI_Layer_DockablePane">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Layer</string>
+  </property>
+  <widget class="QWidget" name="dockWidgetContents">
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>1</number>
+    </property>
+    <property name="topMargin">
+     <number>1</number>
+    </property>
+    <property name="rightMargin">
+     <number>1</number>
+    </property>
+    <property name="bottomMargin">
+     <number>1</number>
+    </property>
+    <property name="spacing">
+     <number>1</number>
+    </property>
+    <item row="1" column="0">
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>295</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="1">
+     <widget class="QPushButton" name="LTBTN_New">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="baseSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>新建层</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/LayerPanelICO_NewLayer.png</normaloff>:/Kad_QT/Resources/LayerPanelICO_NewLayer.png</iconset>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QPushButton" name="pushButton">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>新建子层</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/LayerPanelICO_NewSubLayer.png</normaloff>:/Kad_QT/Resources/LayerPanelICO_NewSubLayer.png</iconset>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="3">
+     <widget class="QPushButton" name="LTBTN_Copy">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>复制</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/LayerPanelICO_Copy.png</normaloff>:/Kad_QT/Resources/LayerPanelICO_Copy.png</iconset>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="4">
+     <widget class="QPushButton" name="LTBTN_Delete">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>删除</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/LayerPanelICO_Delete.png</normaloff>:/Kad_QT/Resources/LayerPanelICO_Delete.png</iconset>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0" colspan="5">
+     <widget class="QTUI_Layer_Tree" name="treeWidget">
+      <property name="mouseTracking">
+       <bool>true</bool>
+      </property>
+      <property name="dragEnabled">
+       <bool>true</bool>
+      </property>
+      <property name="dragDropMode">
+       <enum>QAbstractItemView::InternalMove</enum>
+      </property>
+      <property name="defaultDropAction">
+       <enum>Qt::MoveAction</enum>
+      </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::ExtendedSelection</enum>
+      </property>
+      <property name="indentation">
+       <number>16</number>
+      </property>
+      <property name="uniformRowHeights">
+       <bool>true</bool>
+      </property>
+      <property name="headerHidden">
+       <bool>true</bool>
+      </property>
+      <property name="expandsOnDoubleClick">
+       <bool>false</bool>
+      </property>
+      <property name="columnCount">
+       <number>6</number>
+      </property>
+      <attribute name="headerVisible">
+       <bool>false</bool>
+      </attribute>
+      <column>
+       <property name="text">
+        <string notr="true">1</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string notr="true">2</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string notr="true">3</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string notr="true">4</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string notr="true">5</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string notr="true">6</string>
+       </property>
+      </column>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QTUI_Layer_Tree</class>
+   <extends>QTreeWidget</extends>
+   <header location="global">qtui_layer_tree.h</header>
+   <slots>
+    <slot>SLT_ItemCollapsed(QTreeWidgetItem*)</slot>
+    <slot>SLT_ItemExpanded(QTreeWidgetItem*)</slot>
+    <slot>SLT_NewLayer()</slot>
+    <slot>SLT_NewSubLayer()</slot>
+    <slot>SLT_CopyItems()</slot>
+    <slot>SLT_DeleteItems()</slot>
+    <slot>SLT_UpdateSelectionNodes()</slot>
+    <slot>SLT_ItemDoubleClicked(QTreeWidgetItem*,int)</slot>
+    <slot>SLT_Collapsed(QModelIndex)</slot>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="kad_qt.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>treeWidget</sender>
+   <signal>itemCollapsed(QTreeWidgetItem*)</signal>
+   <receiver>treeWidget</receiver>
+   <slot>SLT_ItemCollapsed(QTreeWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>156</x>
+     <y>106</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>195</x>
+     <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>treeWidget</sender>
+   <signal>itemExpanded(QTreeWidgetItem*)</signal>
+   <receiver>treeWidget</receiver>
+   <slot>SLT_ItemExpanded(QTreeWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>92</x>
+     <y>120</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>257</x>
+     <y>147</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>LTBTN_New</sender>
+   <signal>clicked()</signal>
+   <receiver>treeWidget</receiver>
+   <slot>SLT_NewLayer()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>309</x>
+     <y>284</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>311</x>
+     <y>182</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>treeWidget</receiver>
+   <slot>SLT_NewSubLayer()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>340</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>337</x>
+     <y>227</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>LTBTN_Copy</sender>
+   <signal>clicked()</signal>
+   <receiver>treeWidget</receiver>
+   <slot>SLT_CopyItems()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>359</x>
+     <y>281</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>357</x>
+     <y>234</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>LTBTN_Delete</sender>
+   <signal>clicked()</signal>
+   <receiver>treeWidget</receiver>
+   <slot>SLT_DeleteItems()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>387</x>
+     <y>291</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>382</x>
+     <y>257</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>treeWidget</sender>
+   <signal>itemSelectionChanged()</signal>
+   <receiver>treeWidget</receiver>
+   <slot>SLT_UpdateSelectionNodes()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>49</x>
+     <y>215</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>120</x>
+     <y>237</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>treeWidget</sender>
+   <signal>itemDoubleClicked(QTreeWidgetItem*,int)</signal>
+   <receiver>treeWidget</receiver>
+   <slot>SLT_ItemDoubleClicked(QTreeWidgetItem*,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>33</x>
+     <y>87</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>54</x>
+     <y>89</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QTUI_History_DockablePane</class>
+ <widget class="QDockWidget" name="QTUI_History_DockablePane">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>569</width>
+    <height>313</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>History</string>
+  </property>
+  <widget class="QWidget" name="dockWidgetContents">
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>1</number>
+    </property>
+    <property name="topMargin">
+     <number>1</number>
+    </property>
+    <property name="rightMargin">
+     <number>1</number>
+    </property>
+    <property name="bottomMargin">
+     <number>1</number>
+    </property>
+    <property name="spacing">
+     <number>1</number>
+    </property>
+    <item row="0" column="0" colspan="4">
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="handleWidth">
+       <number>1</number>
+      </property>
+      <widget class="QTUI_History_SnapshotTable" name="SnapshotTable">
+       <property name="selectionMode">
+        <enum>QAbstractItemView::SingleSelection</enum>
+       </property>
+       <property name="selectionBehavior">
+        <enum>QAbstractItemView::SelectRows</enum>
+       </property>
+       <attribute name="horizontalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="verticalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+      </widget>
+      <widget class="QTUI_History_Table" name="HistoryTable">
+       <property name="contextMenuPolicy">
+        <enum>Qt::CustomContextMenu</enum>
+       </property>
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::SingleSelection</enum>
+       </property>
+       <property name="selectionBehavior">
+        <enum>QAbstractItemView::SelectRows</enum>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+       <attribute name="horizontalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="verticalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+      </widget>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>225</width>
+        <height>21</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="2">
+     <widget class="QPushButton" name="HTBTN_DeleteSnapshot">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>删除快照</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/HistoryPanelICO_DeleteSnapshot.png</normaloff>:/Kad_QT/Resources/HistoryPanelICO_DeleteSnapshot.png</iconset>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QPushButton" name="HTBTN_CreateSnapshot">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>创建快照</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="kad_qt.qrc">
+        <normaloff>:/Kad_QT/Resources/HistoryPanelICO_Snapshot.png</normaloff>:/Kad_QT/Resources/HistoryPanelICO_Snapshot.png</iconset>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QTUI_History_Table</class>
+   <extends>QTableWidget</extends>
+   <header location="global">qtui_history_table.h</header>
+   <slots>
+    <slot>SLT_ShowContextMenu(QPoint)</slot>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>QTUI_History_SnapshotTable</class>
+   <extends>QTableWidget</extends>
+   <header location="global">qtui_history_snapshottable.h</header>
+   <slots>
+    <slot>AddSnapshot()</slot>
+    <slot>DeleteSnapshot()</slot>
+    <slot>RevertToSnapshot(int)</slot>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="kad_qt.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>HTBTN_CreateSnapshot</sender>
+   <signal>clicked()</signal>
+   <receiver>SnapshotTable</receiver>
+   <slot>AddSnapshot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>541</x>
+     <y>311</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>154</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>HTBTN_DeleteSnapshot</sender>
+   <signal>clicked()</signal>
+   <receiver>SnapshotTable</receiver>
+   <slot>DeleteSnapshot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>566</x>
+     <y>311</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>256</x>
+     <y>154</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SnapshotTable</sender>
+   <signal>cellClicked(int,int)</signal>
+   <receiver>SnapshotTable</receiver>
+   <slot>RevertToSnapshot(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>74</x>
+     <y>114</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>175</x>
+     <y>130</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>HistoryTable</sender>
+   <signal>customContextMenuRequested(QPoint)</signal>
+   <receiver>HistoryTable</receiver>
+   <slot>SLT_ShowContextMenu(QPoint)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>120</x>
+     <y>229</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>155</x>
+     <y>230</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

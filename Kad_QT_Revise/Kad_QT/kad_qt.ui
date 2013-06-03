@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Kad_QTClass</class>
+ <widget class="QMainWindow" name="Kad_QTClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1257</width>
+    <height>798</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Kad_QT</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>1</number>
+    </property>
+    <property name="topMargin">
+     <number>1</number>
+    </property>
+    <property name="rightMargin">
+     <number>1</number>
+    </property>
+    <property name="bottomMargin">
+     <number>1</number>
+    </property>
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QTUI_GLView" name="GLView" native="true">
+      <property name="mouseTracking">
+       <bool>true</bool>
+      </property>
+      <widget class="QTUI_CommandFloating_Widget" name="FLT_Command" native="true">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>240</y>
+         <width>111</width>
+         <height>31</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QTUI_NodeInfoFloating_Widget" name="FLT_NodeInfo" native="true">
+       <property name="geometry">
+        <rect>
+         <x>740</x>
+         <y>380</y>
+         <width>120</width>
+         <height>80</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QScrollBar" name="horizontalScrollBar">
+      <property name="maximum">
+       <number>10000</number>
+      </property>
+      <property name="pageStep">
+       <number>100</number>
+      </property>
+      <property name="sliderPosition">
+       <number>5000</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QScrollBar" name="verticalScrollBar">
+      <property name="maximum">
+       <number>10000</number>
+      </property>
+      <property name="pageStep">
+       <number>100</number>
+      </property>
+      <property name="sliderPosition">
+       <number>5000</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1257</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="MainMenu_File">
+    <property name="title">
+     <string> File(&amp;F)</string>
+    </property>
+    <addaction name="action_New"/>
+    <addaction name="action_Open"/>
+    <addaction name="separator"/>
+    <addaction name="action_Save"/>
+    <addaction name="action_SaveAs"/>
+    <addaction name="separator"/>
+    <addaction name="action_Exit"/>
+   </widget>
+   <widget class="QMenu" name="MainMenu_Edit">
+    <property name="title">
+     <string>Edit(&amp;E)</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="MainMenu_View">
+    <property name="title">
+     <string>View(&amp;V)</string>
+    </property>
+    <addaction name="MMView_CommandWindow"/>
+    <addaction name="MMView_HistoryWindow"/>
+    <addaction name="MMView_LayerWindow"/>
+   </widget>
+   <widget class="QMenu" name="menu_D">
+    <property name="title">
+     <string>Draw(&amp;D)</string>
+    </property>
+    <addaction name="action_Command_Line"/>
+   </widget>
+   <widget class="QMenu" name="menuSeam_S">
+    <property name="title">
+     <string>Seam(&amp;S)</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuNotch_N">
+    <property name="title">
+     <string>Notch(&amp;N)</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuPiece_P">
+    <property name="title">
+     <string>Piece(&amp;P)</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuOutput_O">
+    <property name="title">
+     <string>Output(&amp;O)</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuWindow_W">
+    <property name="title">
+     <string>Window(&amp;W)</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuHelp_H">
+    <property name="title">
+     <string>Help(&amp;H)</string>
+    </property>
+   </widget>
+   <addaction name="MainMenu_File"/>
+   <addaction name="MainMenu_Edit"/>
+   <addaction name="MainMenu_View"/>
+   <addaction name="menu_D"/>
+   <addaction name="menuSeam_S"/>
+   <addaction name="menuNotch_N"/>
+   <addaction name="menuPiece_P"/>
+   <addaction name="menuOutput_O"/>
+   <addaction name="menuWindow_W"/>
+   <addaction name="menuHelp_H"/>
+  </widget>
+  <widget class="QDockWidget" name="CommandPanel_Dockable">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>80</width>
+     <height>150</height>
+    </size>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="CommandPanel_Layout">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QTUI_CommandDockable" name="CommandPanel" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>250</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QTUI_StatusBar" name="statusBar">
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>24</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>16777215</width>
+     <height>24</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QTUI_History_DockablePane" name="HistoryPanel_Dockable">
+   <property name="floating">
+    <bool>true</bool>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="HistoryDockableWidget"/>
+  </widget>
+  <widget class="QTUI_Layer_DockablePane" name="LayerPanel_Dockable">
+   <property name="floating">
+    <bool>true</bool>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="LayerDockableWidget"/>
+  </widget>
+  <action name="action_Command_Line">
+   <property name="text">
+    <string>直线(&amp;L)</string>
+   </property>
+  </action>
+  <action name="MMView_CommandWindow">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>指令窗口(&amp;C)</string>
+   </property>
+  </action>
+  <action name="MMView_HistoryWindow">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>历史窗口(H)</string>
+   </property>
+  </action>
+  <action name="MMView_LayerWindow">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>层窗口(&amp;L)</string>
+   </property>
+  </action>
+  <action name="action_New">
+   <property name="text">
+    <string>新建(&amp;N)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="action_Open">
+   <property name="text">
+    <string>打开(&amp;O)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="action_Save">
+   <property name="text">
+    <string>保存(&amp;S)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="action_SaveAs">
+   <property name="text">
+    <string>另存为(&amp;A)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="action_Exit">
+   <property name="text">
+    <string>退出(&amp;X)</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+F4</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QTUI_GLView</class>
+   <extends>QWidget</extends>
+   <header location="global">qtui_glview.h</header>
+   <container>1</container>
+   <slots>
+    <slot>SLT_HScrollValueChanged(int)</slot>
+    <slot>SLT_VScrollValueChanged(int)</slot>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>QTUI_CommandDockable</class>
+   <extends>QWidget</extends>
+   <header location="global">qtui_commanddockable.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QTUI_History_DockablePane</class>
+   <extends>QDockWidget</extends>
+   <header location="global">qtui_history_dockablepane.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QTUI_Layer_DockablePane</class>
+   <extends>QDockWidget</extends>
+   <header location="global">qtui_layer_dockablepane.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QTUI_StatusBar</class>
+   <extends>QStatusBar</extends>
+   <header location="global">qtui_statusbar.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QTUI_CommandFloating_Widget</class>
+   <extends>QWidget</extends>
+   <header location="global">qtui_commandfloating_widget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QTUI_NodeInfoFloating_Widget</class>
+   <extends>QWidget</extends>
+   <header location="global">qtui_nodeinfofloating_widget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>CommandPanel_Dockable</sender>
+   <signal>visibilityChanged(bool)</signal>
+   <receiver>MMView_CommandWindow</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>622</x>
+     <y>675</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MMView_CommandWindow</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>CommandPanel_Dockable</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>622</x>
+     <y>675</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalScrollBar</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>GLView</receiver>
+   <slot>SLT_HScrollValueChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>558</x>
+     <y>601</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>520</x>
+     <y>445</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>verticalScrollBar</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>GLView</receiver>
+   <slot>SLT_VScrollValueChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1161</x>
+     <y>385</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1107</x>
+     <y>399</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>HistoryPanel_Dockable</sender>
+   <signal>visibilityChanged(bool)</signal>
+   <receiver>MMView_HistoryWindow</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1244</x>
+     <y>309</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MMView_HistoryWindow</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>HistoryPanel_Dockable</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1244</x>
+     <y>309</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MMView_LayerWindow</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>LayerPanel_Dockable</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1204</x>
+     <y>580</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>LayerPanel_Dockable</sender>
+   <signal>visibilityChanged(bool)</signal>
+   <receiver>MMView_LayerWindow</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1204</x>
+     <y>580</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
